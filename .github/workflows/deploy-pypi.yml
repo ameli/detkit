@@ -201,5 +201,4 @@ jobs:
             - name: Test
               run: |
                   mv detkit detkit-DoNotImport
-                  rm tests/test_cu_linear_operator.py  # this raises ImportError
                   pytest
