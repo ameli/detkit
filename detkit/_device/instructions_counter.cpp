@@ -14,14 +14,16 @@
 // =======
 
 #include "./instructions_counter.h"
-#include <asm/unistd.h>
-#include <iostream>
 #include <string.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#include <iostream>
 
-#include <inttypes.h>
-#include <sys/types.h>
+#if __linux__
+    #include <asm/unistd.h>
+    #include <sys/ioctl.h>
+    #include <unistd.h>
+    #include <inttypes.h>
+    #include <sys/types.h>
+#endif
 
 
 // ===============
@@ -35,9 +37,12 @@ static long perf_event_open(
         int group_fd,
         unsigned long flags)
 {
-    int ret;
-    ret = syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
-    return ret;
+    #if __linux__
+        int ret;
+        ret = syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd,
+                      flags);
+        return ret;
+    #endif
 }
 
 
@@ -49,20 +54,22 @@ InstructionsCounter::InstructionsCounter():
     count(0),
     fd(-1)
 {
-    memset(&this->pe, 0, sizeof(struct perf_event_attr));
-    this->pe.type = PERF_TYPE_HARDWARE;
-    this->pe.size = sizeof(struct perf_event_attr);
-    this->pe.config = PERF_COUNT_HW_INSTRUCTIONS;
-    this->pe.disabled = 1;
-    this->pe.exclude_kernel = 1;
-    this->pe.exclude_hv = 1;  // Don't count hypervisor events.
+    #if __linux__
+        memset(&this->pe, 0, sizeof(struct perf_event_attr));
+        this->pe.type = PERF_TYPE_HARDWARE;
+        this->pe.size = sizeof(struct perf_event_attr);
+        this->pe.config = PERF_COUNT_HW_INSTRUCTIONS;
+        this->pe.disabled = 1;
+        this->pe.exclude_kernel = 1;
+        this->pe.exclude_hv = 1;  // Don't count hypervisor events.
 
-    this->fd = perf_event_open(&this->pe, 0, -1, -1, 0);
-    if (this->fd == -1)
-    {
-        // Error, cannot open th leader.
-        this->count = -1;
-    }
+        this->fd = perf_event_open(&this->pe, 0, -1, -1, 0);
+        if (this->fd == -1)
+        {
+            // Error, cannot open th leader.
+            this->count = -1;
+        }
+    #endif
 }
 
 
@@ -72,10 +79,12 @@ InstructionsCounter::InstructionsCounter():
 
 InstructionsCounter::~InstructionsCounter()
 {
-    if (this->fd != -1)
-    {
-        close(this->fd);
-    }
+    #if __linux__
+        if (this->fd != -1)
+        {
+            close(this->fd);
+        }
+    #endif
 }
 
 
@@ -85,11 +94,13 @@ InstructionsCounter::~InstructionsCounter()
 
 void InstructionsCounter::start()
 {
-    if (this->fd != -1)
-    {
-        ioctl(this->fd, PERF_EVENT_IOC_RESET, 0);
-        ioctl(this->fd, PERF_EVENT_IOC_ENABLE, 0);
-    }
+    #if __linux__
+        if (this->fd != -1)
+        {
+            ioctl(this->fd, PERF_EVENT_IOC_RESET, 0);
+            ioctl(this->fd, PERF_EVENT_IOC_ENABLE, 0);
+        }
+    #endif
 }
 
 
@@ -99,11 +110,13 @@ void InstructionsCounter::start()
 
 void InstructionsCounter::stop()
 {
-    if (this->fd != -1)
-    {
-        ioctl(this->fd, PERF_EVENT_IOC_DISABLE, 0);
-        read(this->fd, &this->count, sizeof(long long));
-    }
+    #if __linux__
+        if (this->fd != -1)
+        {
+            ioctl(this->fd, PERF_EVENT_IOC_DISABLE, 0);
+            read(this->fd, &this->count, sizeof(long long));
+        }
+    #endif
 }
 
 

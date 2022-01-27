@@ -16,7 +16,9 @@
 // Headers
 // =======
 
-#include <linux/perf_event.h>
+#if __linux__
+    #include <linux/perf_event.h>
+#endif
 
 
 // ====================
@@ -33,7 +35,9 @@ class InstructionsCounter
         long long get_count();
         
     // Member data
+    #if __linux__
     struct perf_event_attr pe;
+    #endif
     int fd;
     long long count;
 };
