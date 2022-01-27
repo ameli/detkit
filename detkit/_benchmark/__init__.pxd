@@ -7,6 +7,6 @@
 # directory of this source tree.
 
 
-from detkit._device.matmat_benchmark cimport MatMatBenchmark
+from detkit._benchmark.benchmark cimport Benchmark
 
-__all__ = ['MatMatBenchmark']
+__all__ = ['Benchmark']

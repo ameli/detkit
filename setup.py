@@ -804,7 +804,8 @@ class CustomBuildExtension(build_ext):
                                    '-Wunreachable-code', '-Wswitch-enum',
                                    '-Wpointer-arith', '-Wcast-align',
                                    '-Wwrite-strings', '-Wsign-compare',
-                                   '-pedantic', '-fno-common', '-Wundef']
+                                   '-Wundef', '-pedantic', '-fno-common',
+                                   '-fno-wrapv']
 
             # The option '-Wl, ..' will send arguments to the linker. Here,
             # '--strip-all' will remove all symbols from the shared library.
@@ -1349,7 +1350,12 @@ def main(argv):
                                            '_c_linear_algebra',
                                            '_device']))
 
-    extensions.append(create_extension(package_name, '_device'))
+    extensions.append(create_extension(package_name, '_benchmark',
+                                       other_source_dirs=[
+                                           '_c_basic_algebra',
+                                           '_c_linear_algebra',
+                                           '_device']))
+
     extensions.append(create_extension(package_name, '_definitions'))
 
     # Cythonize

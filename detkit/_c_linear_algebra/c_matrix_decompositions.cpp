@@ -23,7 +23,7 @@
 // lu
 // ==
 
-/// \brief LU decomposition (no pivoting).
+/// \brief LU decomposition (no pivoting). A and L are (n, n) matrices.
 ///
 
 template <typename DataType>
@@ -75,7 +75,8 @@ void cMatrixDecompositions<DataType>::lu(
 // lup
 // ===
 
-/// \brief LUP decomposition (with partial pivoting).
+/// \brief LUP decomposition (with partial pivoting). A is (n, n) matrix and
+///        P is a 1D array of size n+1.
 ///
 
 template <typename DataType>

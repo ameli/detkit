@@ -70,7 +70,7 @@ try:
     from ._functions import logdet, glogdet, py_glogdet            # noqa: E402
     from ._functions import plogdet, py_plogdet                    # noqa: E402
     from ._functions import orthogonalize                          # noqa: E402
-    from ._device import get_instructions_per_task                 # noqa: E402
+    from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
 
 except Exception as e:

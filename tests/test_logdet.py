@@ -23,19 +23,20 @@ from detkit import logdet
 # test logdet
 # ===========
 
-def test_logdet(argv):
+def test_logdet():
     """
     """
 
     n = 500
     A = numpy.random.rand(n, n)
-    A = A.T @ A
 
-    # Test
+    sym_pos=True
+
+    if sym_pos:
+        A = A.T @ A
+
     print(numpy.linalg.slogdet(A))
-
-    logdet_, sign = logdet(A, sym_pos=True)
-    # logdet_, sign = logdet(A, sym_pos=False)
+    logdet_, sign = logdet(A, sym_pos=sym_pos)
     print(logdet_)
     print(sign)
 
@@ -45,4 +46,4 @@ def test_logdet(argv):
 # ===========
 
 if __name__ == "__main__":
-    test_logdet(sys.argv)
+    test_logdet()

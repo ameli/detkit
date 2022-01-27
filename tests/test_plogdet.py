@@ -23,7 +23,7 @@ from detkit import plogdet, py_plogdet, orthogonalize
 # test logdet
 # ===========
 
-def test_logdet(argv):
+def test_logdet():
     """
     """
 
@@ -75,4 +75,4 @@ def test_logdet(argv):
 # ===========
 
 if __name__ == "__main__":
-    test_logdet(sys.argv)
+    test_logdet()

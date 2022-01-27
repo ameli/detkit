@@ -297,7 +297,10 @@ def benchmark(argv):
     devices = {
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
-        'instructions_per_task': get_instructions_per_task()
+        'instructions_per_matmat': get_instructions_per_task(task='matmat'),
+        'instructions_per_cholesky': \
+                get_instructions_per_task(task='cholesky'),
+        'instructions_per_lup': get_instructions_per_task(task='lup')
     }
 
     n = config['n']
@@ -418,14 +421,14 @@ def benchmark(argv):
             print(' Done.', flush=True)
 
     # Convery number of instructions to number of flops
-    inst_per_task = devices['instructions_per_task']
-    flops_lgcy_gen_gen /= inst_per_task
-    flops_lgcy_gen_ort /= inst_per_task
-    flops_lgcy_spd_gen /= inst_per_task
-    flops_lgcy_spd_ort /= inst_per_task
-    flops_proj_gen /= inst_per_task
-    flops_proj_ort_pre /= inst_per_task
-    flops_proj_ort /= inst_per_task
+    inst_per_matmat = devices['instructions_per_matmat']
+    flops_lgcy_gen_gen /= inst_per_matmat
+    flops_lgcy_gen_ort /= inst_per_matmat
+    flops_lgcy_spd_gen /= inst_per_matmat
+    flops_lgcy_spd_ort /= inst_per_matmat
+    flops_proj_gen /= inst_per_matmat
+    flops_proj_ort_pre /= inst_per_matmat
+    flops_proj_ort /= inst_per_matmat
 
     # Dictionary of results
     results = {

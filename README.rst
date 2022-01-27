@@ -21,7 +21,7 @@ A python package to compute common determinant functions in machine leanring.
 +================================================================+=================================================================+
 | * `Documentation <https://ameli.github.io/detkit/index.html>`_ | * `API <https://ameli.github.io/detkit/_modules/modules.html>`_ |
 | * `PyPi package <https://pypi.org/project/detkit/>`_           | * `Travis-CI <https://travis-ci.com/github/ameli/detkit>`_      |
-| * `Anaconda Cloud <https://anaconda.org/s-ameli/traceinv>`_    | * `Codecov <https://codecov.io/gh/ameli/detkit>`_               |
+| * `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_      | * `Codecov <https://codecov.io/gh/ameli/detkit>`_               |
 +----------------------------------------------------------------+-----------------------------------------------------------------+
 
 *******
@@ -36,7 +36,7 @@ Install by either of the following ways:
 
     python -m pip install detkit
 
-* **Method 2:** Install through the package available at `Anaconda Cloud <https://pypi.org/project/detkit>`_:
+* **Method 2:** Install through the package available at `Anaconda <https://anaconda.org/s-ameli/detkit>`_:
 
   ::
 

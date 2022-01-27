@@ -53,12 +53,12 @@ jobs:
             # only apply to windows, not linux and macos. To install cuda in
             # linux, see the second next actions below "Build wheel with cuda
             # support".
-            - name: Install CUDA
-              if: matrix.os == 'windows-latest'
-              uses: Jimver/cuda-toolkit@v0.2.1
-              id: cuda-toolkit
-              with:
-                  cuda: '11.2.2'
+            # - name: Install CUDA
+            #   if: matrix.os == 'windows-latest'
+            #   uses: Jimver/cuda-toolkit@v0.2.1
+            #   id: cuda-toolkit
+            #   with:
+            #       cuda: '11.2.2'
 
             # Build wheel for windows with CUDA enabled. Note that cibuildwheel
             # does not need manylinux docker, thuns, CUDA can be installed in
