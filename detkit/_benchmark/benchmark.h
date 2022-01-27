@@ -16,7 +16,6 @@
 // Headers
 // =======
 
-#include <linux/perf_event.h>
 #include "../_definitions/types.h"  // IndexType
 
 

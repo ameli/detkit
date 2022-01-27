@@ -51,8 +51,8 @@ static long perf_event_open(
 // ===========
 
 InstructionsCounter::InstructionsCounter():
-    count(0),
-    fd(-1)
+    fd(-1),
+    count(0)
 {
     #if __linux__
         memset(&this->pe, 0, sizeof(struct perf_event_attr));

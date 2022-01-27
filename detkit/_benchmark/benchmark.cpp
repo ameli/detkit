@@ -15,6 +15,7 @@
 
 #include "./benchmark.h"
 #include <cstdlib>  // rand, RAND_MAX
+#include <cassert>  // assert
 #include "../_definitions/definitions.h"  // COUNT_PERF
 #include "../_device/instructions_counter.h"  // InstructionsCounter
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
@@ -261,6 +262,12 @@ long long Benchmark<DataType>::lup(
         // LUP decomposition
         DataType tol = 1e-8;
         FlagType status = cMatrixDecompositions<DataType>::lup(A, P, n, tol);
+
+        // With the if condition, avoid -Wunused-value warning
+        if (status == 0)
+        {
+            assert(status != 0);
+        }
 
         // Terminate measuring flops
         instructions_counter.stop();

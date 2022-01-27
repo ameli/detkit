@@ -92,7 +92,6 @@ FlagType cMatrixDecompositions<DataType>::lup(
     LongIndexType imax;
 
     DataType maxA;
-    DataType* ptr;
     DataType absA;
 
     for (i = 0; i <= num_rows; ++i)
