@@ -31,7 +31,6 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
     compute a single flop task.
     """
 
-
     n = (1.0 / numpy.linspace(1.0/30.0, 1.0/500.0, 10) + 0.5).astype(int)
     inst_per_task = -numpy.ones((n.size, ), dtype=float)
 

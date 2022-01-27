@@ -13,7 +13,6 @@
 # Imports
 # =======
 
-import sys
 import numpy
 import numpy.linalg
 from detkit import logdet
@@ -30,7 +29,7 @@ def test_logdet():
     n = 500
     A = numpy.random.rand(n, n)
 
-    sym_pos=True
+    sym_pos = True
 
     if sym_pos:
         A = A.T @ A

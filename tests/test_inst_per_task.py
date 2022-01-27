@@ -13,8 +13,6 @@
 # Imports
 # =======
 
-import sys
-import numpy
 from detkit import get_instructions_per_task
 
 

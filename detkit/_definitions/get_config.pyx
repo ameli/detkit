@@ -21,7 +21,7 @@ from .c_get_config cimport is_use_symmetry, is_use_openmp, is_count_perf, \
 
 def get_config():
     """
-    Get the compile-time definitions, such as USE_SYMMETRY, 
+    Get the compile-time definitions, such as USE_SYMMETRY.
     """
 
     config = {

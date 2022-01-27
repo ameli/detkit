@@ -54,8 +54,8 @@ def glogdet(A, X, sym_pos=False, method='proj', X_orth=False, flops=False):
 
     data_type_name = get_data_type_name(A)
     glogdet_, sign, flops_ = pyc_glogdet(A, X, A.shape[0], X.shape[1],
-                                        data_type_name, sym_pos, method,
-                                        X_orth, flops)
+                                         data_type_name, sym_pos, method,
+                                         X_orth, flops)
 
     if flops != 0:
         return glogdet_, sign, flops_

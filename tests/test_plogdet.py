@@ -13,7 +13,6 @@
 # Imports
 # =======
 
-import sys
 import numpy
 import numpy.linalg
 from detkit import plogdet, py_plogdet, orthogonalize

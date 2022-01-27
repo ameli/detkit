@@ -53,8 +53,6 @@ RUN apt-get update && \
         python3-pip \
         libgomp1 \
         vim \
-        texlive-latex-recommended \
-        cm-super \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

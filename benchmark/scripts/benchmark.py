@@ -298,8 +298,8 @@ def benchmark(argv):
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
         'instructions_per_matmat': get_instructions_per_task(task='matmat'),
-        'instructions_per_cholesky': \
-                get_instructions_per_task(task='cholesky'),
+        'instructions_per_cholesky': get_instructions_per_task(
+            task='cholesky'),
         'instructions_per_lup': get_instructions_per_task(task='lup')
     }
 
@@ -382,7 +382,7 @@ def benchmark(argv):
 
             # Legacy method, generic matrix K, non-orthogonal X
             logdet_lgcy_gen_gen[j, i], wall_time_lgcy_gen_gen[j, i], \
-                proc_time_lgcy_gen_gen[j, i], flops_lgcy_gen_gen[j,i] = \
+                proc_time_lgcy_gen_gen[j, i], flops_lgcy_gen_gen[j, i] = \
                 legacy_method(
                         func, K, X_, sym_pos=False, X_orth=False)
 
@@ -408,7 +408,7 @@ def benchmark(argv):
 
             # Projection method with generic matrix X_
             logdet_proj_gen[j, i], wall_time_proj_gen[j, i], \
-                proc_time_proj_gen[j, i], flops_proj_gen[j, i]= \
+                proc_time_proj_gen[j, i], flops_proj_gen[j, i] = \
                 proj_method_gen(func, K, X_)
 
             # Projection method with orthogonal matrix X_ (X_ is overwritten)
