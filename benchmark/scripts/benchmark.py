@@ -298,8 +298,11 @@ def benchmark(argv):
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
         'instructions_per_matmat': get_instructions_per_task(task='matmat'),
+        'instructions_per_grammian': get_instructions_per_task(
+            task='grammian'),
         'instructions_per_cholesky': get_instructions_per_task(
             task='cholesky'),
+        'instructions_per_lu': get_instructions_per_task(task='lu'),
         'instructions_per_lup': get_instructions_per_task(task='lup')
     }
 
@@ -473,8 +476,12 @@ def benchmark(argv):
     benchmark_dir = '..'
     pickle_dir = 'pickle_results'
     log_n_str = str(int(numpy.log2(config['n'])))
+    if detkit_config['use_symmetry']:
+        grammian_status = 'gram'
+    else:
+        grammian_status = 'no-gram'
     output_filename = 'benchmark-' + arguments['func'] + '-' + log_n_str + \
-                      '.pickle'
+                      '-' + grammian_status + '.pickle'
     output_full_filename = join(benchmark_dir, pickle_dir, output_filename)
     with open(output_full_filename, 'wb') as file:
         pickle.dump(benchmark_results, file,

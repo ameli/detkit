@@ -332,19 +332,14 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
     else
     {
         // Perform LU Decomposition. A is overwritten to U.
-        // cMatrixDecompositions<DataType>::lu(A_copy, num_rows, L);
         P = new LongIndexType[num_rows+1];
         cMatrixDecompositions<DataType>::lup(A_copy, P, num_rows, tol);
 
         // Compute logdet based on the diagonals of A
-        // logdet_A = cMatrixFunctions<DataType>::triang_logdet(
-        //         A_copy, num_rows, sign);
         logdet_A = cMatrixFunctions<DataType>::triang_logdet(
                 A_copy, P, num_rows, sign_A);
 
         // Solve Y = Ainv * X using LU decomposition of A_copy. A_copy is U.
-        // cMatrixSolvers<DataType>::solve(
-        //         L, A_copy, X, Y, num_rows, num_columns, 0, 0);
         cMatrixSolvers<DataType>::lup_solve(
                 A_copy, P, X, Y, num_rows, num_columns, 0, 0);
 
@@ -665,8 +660,6 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
                 A_copy, P, num_rows, sign_A);
 
         // Solve Y = Ainv * X using LU decomposition of A_copy. A_copy is U.
-        // cMatrixSolvers<DataType>::solve(
-        //         L, A_copy, X, Y, num_rows, num_columns, 0, 0);
         cMatrixSolvers<DataType>::lup_solve(
                 A_copy, P, X, Y, num_rows, num_columns, 0, 0);
 
