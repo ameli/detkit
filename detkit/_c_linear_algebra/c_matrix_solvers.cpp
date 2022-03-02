@@ -15,6 +15,7 @@
 
 #include "./c_matrix_solvers.h"
 #include "../_definitions/definitions.h"
+#include "../_utilities/array_util.h"  // ArrayUtil
 
 
 // ==================
@@ -185,7 +186,7 @@ void cMatrixSolvers<DataType>::lu_solve(
                                                  X_transpose);
 
     // Free memory
-    delete[] Y;
+    ArrayUtil<DataType>::del(Y);
 }
 
 

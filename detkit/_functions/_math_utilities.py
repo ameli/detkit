@@ -54,6 +54,9 @@ def triang_logdet(lu, p=None):
 
     diag = numpy.diag(lu)
 
+    nonzero = (diag != 0)
+    diag = diag[nonzero]
+
     if numpy.any(diag == 0):
         logdet_ = -numpy.inf
         sign = 0

@@ -74,9 +74,9 @@ long long Benchmark<DataType>::matmat(
 }
 
 
-// ========
-// grammian
-// ========
+// =======
+// gramian
+// =======
 
 /// \brief  Computes the number of hardware instructions for a matrix-martrix
 ///         multiplication. This number is used to find on a certain device,
@@ -85,7 +85,7 @@ long long Benchmark<DataType>::matmat(
 ///         and one addition.
 
 template <typename DataType>
-long long Benchmark<DataType>::grammian(
+long long Benchmark<DataType>::gramian(
         const DataType* dummy_var,
         const LongIndexType n)
 {
@@ -107,8 +107,8 @@ long long Benchmark<DataType>::grammian(
         InstructionsCounter instructions_counter = InstructionsCounter();
         instructions_counter.start();
 
-        // Grammian matrix-matrix multiplications
-        cMatrixOperations<DataType>::grammian(A, B, n,n, 0.0);
+        // Gramian matrix-matrix multiplications
+        cMatrixOperations<DataType>::gramian(A, B, n,n, 0.0);
 
         // Terminate measuring flops
         instructions_counter.stop();
@@ -154,7 +154,7 @@ long long Benchmark<DataType>::cholesky(
         Benchmark<DataType>::random(A, n, n);
 
         // Make A to be symmetric positive-definite, outputs to B
-        cMatrixOperations<DataType>::grammian(A, B, n, n, 0.0);
+        cMatrixOperations<DataType>::gramian(A, B, n, n, 0.0);
 
         // Start measure flops
         InstructionsCounter instructions_counter = InstructionsCounter();

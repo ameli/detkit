@@ -275,14 +275,14 @@ void cMatrixOperations<DataType>::matmat(
 
 
 // ========
-// grammian
+// gramian
 // ========
 
 /// \brief matrix-matrix multiplication C = c*C + A.T * A, where A is (n, m),
 ///        and the output C is (m , m) matrix.
 
 template <typename DataType>
-void cMatrixOperations<DataType>::grammian(
+void cMatrixOperations<DataType>::gramian(
         const DataType* A,
         DataType* C,
         const LongIndexType n,
@@ -338,7 +338,7 @@ void cMatrixOperations<DataType>::grammian(
                 C[i*m + j] += c * static_cast<DataType>(sum);
             }
 
-            // Symmetry of Grammian matrix
+            // Symmetry of Gramian matrix
             #if USE_SYMMETRY
             if (i != j)
             {

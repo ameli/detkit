@@ -28,7 +28,7 @@ cdef extern from "benchmark.h":
                 const LongIndexType n) nogil
 
         @staticmethod
-        long long grammian(
+        long long gramian(
                 const DataType* dummy_var,
                 const LongIndexType n) nogil
 

@@ -1348,12 +1348,14 @@ def main(argv):
                                        other_source_dirs=[
                                            '_c_basic_algebra',
                                            '_c_linear_algebra',
+                                           '_utilities',
                                            '_device']))
 
     extensions.append(create_extension(package_name, '_benchmark',
                                        other_source_dirs=[
                                            '_c_basic_algebra',
                                            '_c_linear_algebra',
+                                           '_utilities',
                                            '_device']))
 
     extensions.append(create_extension(package_name, '_definitions'))
@@ -1426,11 +1428,14 @@ def main(argv):
             ],
             'docs': [
                 'sphinx',
-                'sphinx-math-dollar',
+                'sphinx_math_dollar',
                 'sphinx-toggleprompt',
                 'sphinx_rtd_theme',
+                'pydata_sphinx_theme',
                 'graphviz',
                 'sphinx-automodapi',
+                'sphinxcontrib-napoleon',
+                'numpydoc',
             ]
         },
         classifiers=[

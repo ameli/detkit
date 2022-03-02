@@ -22,9 +22,10 @@ from detkit import get_instructions_per_task
 
 def test_get_inst_per_task():
     """
+    Test for `get_inst_per_task` function.
     """
 
-    # Insrructions for each task
+    # Instructions for each task
     inst_per_matmat = get_instructions_per_task(task='matmat')
     inst_per_grammian = get_instructions_per_task(task='grammian')
     inst_per_cholesky = get_instructions_per_task(task='cholesky')

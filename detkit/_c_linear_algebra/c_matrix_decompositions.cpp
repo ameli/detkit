@@ -117,7 +117,7 @@ FlagType cMatrixDecompositions<DataType>::lup(
         if (maxA < tol)
         {
             //failure, matrix is degenerate
-            return 0;
+            return 1;
         }
 
         if (imax != i)
@@ -143,7 +143,7 @@ FlagType cMatrixDecompositions<DataType>::lup(
         }
     }
 
-    return 1;
+    return 0;
 }
 
 
@@ -155,7 +155,7 @@ FlagType cMatrixDecompositions<DataType>::lup(
 ///
 
 template <typename DataType>
-void cMatrixDecompositions<DataType>::cholesky(
+FlagType cMatrixDecompositions<DataType>::cholesky(
         DataType* A,
         const LongIndexType num_rows,
         DataType* L)
@@ -163,6 +163,7 @@ void cMatrixDecompositions<DataType>::cholesky(
     LongIndexType i;
     LongIndexType j;
     LongIndexType k;
+    DataType residual;
 
     // Initialize L as zero matrix
     for (i=0; i < num_rows; ++i)
@@ -188,7 +189,15 @@ void cMatrixDecompositions<DataType>::cholesky(
                     sum += L[j*num_rows + k] * L[j*num_rows + k];
                 }
 
-                L[j*num_rows + j] = sqrt(A[j*num_rows + j] - sum);
+                residual = A[j*num_rows + j] - sum;
+                if (residual < 0.0)
+                {
+                    // Cholesky decompositon fails. Matrix seems not to be
+                    // positive-definite.
+                    return 1;
+                }
+
+                L[j*num_rows + j] = sqrt(residual);
             }
             else
             {
@@ -202,6 +211,8 @@ void cMatrixDecompositions<DataType>::cholesky(
             }
         }
     }
+
+    return 0;
 }
 
 

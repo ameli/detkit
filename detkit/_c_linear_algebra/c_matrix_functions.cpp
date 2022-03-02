@@ -15,11 +15,11 @@
 
 #include "./c_matrix_functions.h"
 #include <cmath>  // log, abs, exp
-#include <cstddef>  // NULL
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
 #include "./c_matrix_decompositions.h"  // cMatrixDecompositions
 #include "./c_matrix_solvers.h"  // cMatrixSolver
 #include "../_device/instructions_counter.h"  // InstructionsCounter
+#include "../_utilities/array_util.h"  // ArrayUtil
 #include "../_definitions/definitions.h"
 
 
@@ -71,13 +71,26 @@ DataType cMatrixFunctions<DataType>::logdet(
     DataType* L = NULL;
     LongIndexType* P = NULL;
     DataType tol = 1e-8;
+    DataType status = 0;
 
     // Perform matrix decomposition
     if (sym_pos == 1)
     {
         // Perform Cholesky Decomposition. A is overwritten (not to U)
         L = new DataType[num_rows*num_rows];
-        cMatrixDecompositions<DataType>::cholesky(A, num_rows, L);
+        status = cMatrixDecompositions<DataType>::cholesky(A, num_rows, L);
+
+        // Check if the Cholesky decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is not positive-definite.
+            sign = -3;
+
+            // Free memory
+            ArrayUtil<DataType>::del(L);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_ = 2.0 * cMatrixFunctions<DataType>::triang_logdet(
@@ -87,7 +100,20 @@ DataType cMatrixFunctions<DataType>::logdet(
     {
         // Perform LU Decomposition. A is overwritten to LU.
         P = new LongIndexType[num_rows+1];
-        cMatrixDecompositions<DataType>::lup(A, P, num_rows, tol);
+        status = cMatrixDecompositions<DataType>::lup(A, P, num_rows, tol);
+        
+        // Check if the lup decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is degenerate.
+            sign = -4;
+
+            // Free memory
+            ArrayUtil<DataType>::del(L);
+            ArrayUtil<LongIndexType>::del(P);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_ = cMatrixFunctions<DataType>::triang_logdet(
@@ -95,17 +121,8 @@ DataType cMatrixFunctions<DataType>::logdet(
     }
 
     // Free array
-    if (L != NULL)
-    {
-        delete[] L;
-        L = NULL;
-    }
-
-    if (P != NULL)
-    {
-        delete[] P;
-        P = NULL;
-    }
+    ArrayUtil<DataType>::del(L);
+    ArrayUtil<LongIndexType>::del(P);
     
     return logdet_;
 }
@@ -162,9 +179,9 @@ DataType cMatrixFunctions<DataType>::triang_logdet(
     }
 
     // Adjust sign due to permutations of the rows of A
-    if (P != NULL)
+    if ((P != NULL) & (sign != -2))
     {
-        // Change sing if the number of permutations is an odd number
+        // Change sign if the number of permutations is an odd number
         if ((P[num_rows] - num_rows) % 2 == 1)
         {
             sign = -sign;
@@ -209,7 +226,7 @@ DataType cMatrixFunctions<DataType>::det(
 
 
 // =======
-// glogdet
+// loggdet
 // =======
 
 /// \brief Computes the logdet of likelihood function of Gaussian process.
@@ -217,7 +234,7 @@ DataType cMatrixFunctions<DataType>::det(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::glogdet(
+DataType cMatrixFunctions<DataType>::loggdet(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -228,7 +245,7 @@ DataType cMatrixFunctions<DataType>::glogdet(
         FlagType& sign,
         long long& flops)
 {
-    DataType glogdet_;
+    DataType loggdet_;
 
     #if COUNT_PERF
     // Measure flops
@@ -243,13 +260,13 @@ DataType cMatrixFunctions<DataType>::glogdet(
     if (method == 0)
     {
         // Using legacy method
-        glogdet_ = cMatrixFunctions<DataType>::_glogdet_legacy(
+        loggdet_ = cMatrixFunctions<DataType>::_loggdet_legacy(
                 A, X, num_rows, num_columns, sym_pos, sign);
     }
     else
     {
         // Using projection method
-        glogdet_ = cMatrixFunctions<DataType>::_glogdet_proj(
+        loggdet_ = cMatrixFunctions<DataType>::_loggdet_proj(
                 A, X, num_rows, num_columns, X_orth, sign);
     }
 
@@ -267,12 +284,12 @@ DataType cMatrixFunctions<DataType>::glogdet(
     }
     #endif
 
-    return glogdet_;
+    return loggdet_;
 }
 
 
 // ==============
-// glogdet legacy
+// loggdet legacy
 // ==============
 
 /// \brief Computes the logdet of likelihood function of Gaussian process.
@@ -280,7 +297,7 @@ DataType cMatrixFunctions<DataType>::glogdet(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::_glogdet_legacy(
+DataType cMatrixFunctions<DataType>::_loggdet_legacy(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -288,7 +305,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
         const FlagType sym_pos,
         FlagType& sign)
 {
-    DataType glogdet_;
+    DataType loggdet_;
     DataType logdet_A;
     DataType logdet_W;
     DataType coeff = 0;
@@ -302,6 +319,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
     DataType* L = NULL;
     LongIndexType* P = NULL;
     DataType tol = 1e-8;
+    DataType status = 0;
 
     // Copy A to A_copy since A_copy will be overwritten during decompositions
     cMatrixOperations<DataType>::copy(A, A_copy, num_rows, num_rows);
@@ -311,7 +329,23 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
     {
         // Perform Cholesky Decomposition. A is overwritten (not to U)
         L = new DataType[num_rows*num_rows];
-        cMatrixDecompositions<DataType>::cholesky(A_copy, num_rows, L);
+        status = cMatrixDecompositions<DataType>::cholesky(
+            A_copy, num_rows, L);
+
+        // Check if the Cholesky decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is not positive-definite.
+            sign = -3;
+
+            // Free array
+            ArrayUtil<DataType>::del(A_copy);
+            ArrayUtil<DataType>::del(Y);
+            ArrayUtil<DataType>::del(W);
+            ArrayUtil<DataType>::del(L);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_A = 2.0 * cMatrixFunctions<DataType>::triang_logdet(
@@ -322,7 +356,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
                 L, X, Y, num_rows, num_columns, 0, 0);
 
         // Compute W = Y.T * Y
-        cMatrixOperations<DataType>::grammian(
+        cMatrixOperations<DataType>::gramian(
                 Y, W, num_rows, num_columns, coeff);
 
         // Compute determinant of W
@@ -333,7 +367,23 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
     {
         // Perform LU Decomposition. A is overwritten to U.
         P = new LongIndexType[num_rows+1];
-        cMatrixDecompositions<DataType>::lup(A_copy, P, num_rows, tol);
+        status = cMatrixDecompositions<DataType>::lup(
+            A_copy, P, num_rows, tol);
+
+        // Check if the lup decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is degenerate.
+            sign = -4;
+
+            // Free memory
+            ArrayUtil<DataType>::del(A_copy);
+            ArrayUtil<DataType>::del(Y);
+            ArrayUtil<DataType>::del(W);
+            ArrayUtil<LongIndexType>::del(P);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_A = cMatrixFunctions<DataType>::triang_logdet(
@@ -352,8 +402,8 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
                 W, num_columns, sym_pos, sign_W);
     }
 
-    // Compute glogdet
-    glogdet_ = logdet_A + logdet_W;
+    // Compute loggdet
+    loggdet_ = logdet_A + logdet_W;
 
     // Sign
     if ((sign_A == -2) || (sign_W == -2))
@@ -367,28 +417,18 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
     }
 
     // Free array
-    delete[] A_copy;
-    delete[] Y;
-    delete[] W;
+    ArrayUtil<DataType>::del(A_copy);
+    ArrayUtil<DataType>::del(Y);
+    ArrayUtil<DataType>::del(W);
+    ArrayUtil<DataType>::del(L);
+    ArrayUtil<LongIndexType>::del(P);
 
-    if (L != NULL)
-    {
-        delete[] L;
-        L = NULL;
-    }
-
-    if (P != NULL)
-    {
-        delete[] P;
-        P = NULL;
-    }
-
-    return glogdet_;
+    return loggdet_;
 }
 
 
 // ============
-// glogdet proj
+// loggdet proj
 // ============
 
 /// \brief Computes the logdet of likelihood function of Gaussian process.
@@ -396,7 +436,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_legacy(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::_glogdet_proj(
+DataType cMatrixFunctions<DataType>::_loggdet_proj(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -404,7 +444,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_proj(
         const FlagType X_orth,
         FlagType& sign)
 {
-    DataType glogdet_;
+    DataType loggdet_;
     DataType logdet_N;
     DataType logdet_XtX = 0.0;
     FlagType sign_XtX = 1;
@@ -444,7 +484,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_proj(
     {
         // Compute XtX
         XtX = new DataType[num_columns*num_columns];
-        cMatrixOperations<DataType>::grammian(
+        cMatrixOperations<DataType>::gramian(
                 X, XtX, num_rows, num_columns, 0);
 
         // Perform Cholesky Decomposition. A is overwritten (not to U)
@@ -476,11 +516,16 @@ DataType cMatrixFunctions<DataType>::_glogdet_proj(
     // Compute logdet of N
     logdet_N = cMatrixFunctions<DataType>::logdet(N, num_rows, 0, sign_N);
 
-    // Compute glogdet
-    glogdet_ = logdet_N + logdet_XtX;
+    // Compute loggdet
+    loggdet_ = logdet_N + logdet_XtX;
 
     // Sign
-    if ((sign_N == -2) || (sign_XtX == -2))
+    if (sign_N == -4)
+    {
+        // Matrix is degenerate
+        sign = -4;
+    }
+    else if ((sign_N == -2) || (sign_XtX == -2))
     {
         sign = -2;
     }
@@ -490,41 +535,21 @@ DataType cMatrixFunctions<DataType>::_glogdet_proj(
     }
 
     // Free array
-    delete[] N;
-    delete[] A_I;
-    delete[] M;
-    delete[] S;
+    ArrayUtil<DataType>::del(N);
+    ArrayUtil<DataType>::del(A_I);
+    ArrayUtil<DataType>::del(M);
+    ArrayUtil<DataType>::del(S);
+    ArrayUtil<DataType>::del(XtX);
+    ArrayUtil<DataType>::del(L);
+    ArrayUtil<DataType>::del(Y);
+    ArrayUtil<LongIndexType>::del(P);
 
-    if (XtX != NULL)
-    {
-        delete[] XtX;
-        XtX = NULL;
-    }
-
-    if (L != NULL)
-    {
-        delete[] L;
-        L = NULL;
-    }
-
-    if (P != NULL)
-    {
-        delete[] P;
-        P = NULL;
-    }
-
-    if (Y != NULL)
-    {
-        delete[] Y;
-        Y = NULL;
-    }
-
-    return glogdet_;
+    return loggdet_;
 }
 
 
 // =======
-// plogdet
+// logpdet
 // =======
 
 /// \brief Computes the pseudo logdet of M.
@@ -532,7 +557,7 @@ DataType cMatrixFunctions<DataType>::_glogdet_proj(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::plogdet(
+DataType cMatrixFunctions<DataType>::logpdet(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -543,7 +568,7 @@ DataType cMatrixFunctions<DataType>::plogdet(
         FlagType& sign,
         long long& flops)
 {
-    DataType plogdet_;
+    DataType logpdet_;
     
     #if COUNT_PERF
     // Measure flops
@@ -558,13 +583,13 @@ DataType cMatrixFunctions<DataType>::plogdet(
     if (method == 0)
     {
         // Using legacy method
-        plogdet_ = cMatrixFunctions<DataType>::_plogdet_legacy(
+        logpdet_ = cMatrixFunctions<DataType>::_logpdet_legacy(
                 A, X, num_rows, num_columns, sym_pos, X_orth, sign);
     }
     else
     {
         // Using projection method
-        plogdet_ = cMatrixFunctions<DataType>::_plogdet_proj(
+        logpdet_ = cMatrixFunctions<DataType>::_logpdet_proj(
                 A, X, num_rows, num_columns, X_orth, sign);
     }
 
@@ -582,12 +607,12 @@ DataType cMatrixFunctions<DataType>::plogdet(
     }
     #endif
 
-    return plogdet_;
+    return logpdet_;
 }
 
 
 // ==============
-// plogdet legacy
+// logpdet legacy
 // ==============
 
 /// \brief Computes the logdet of likelihood function of Gaussian process.
@@ -595,7 +620,7 @@ DataType cMatrixFunctions<DataType>::plogdet(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::_plogdet_legacy(
+DataType cMatrixFunctions<DataType>::_logpdet_legacy(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -604,7 +629,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
         const FlagType X_orth,
         FlagType& sign)
 {
-    DataType plogdet_;
+    DataType logpdet_;
     DataType logdet_A;
     DataType logdet_W;
     DataType logdet_XtX;
@@ -622,6 +647,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
     DataType* L = NULL;
     LongIndexType* P = NULL;
     DataType tol = 1e-8;
+    DataType status = 0;
 
     // Copy A to A_copy since A_copy will be overwritten during decompositions
     cMatrixOperations<DataType>::copy(A, A_copy, num_rows, num_rows);
@@ -631,7 +657,22 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
     {
         // Perform Cholesky Decomposition. A is overwritten (not to U)
         L = new DataType[num_rows*num_rows];
-        cMatrixDecompositions<DataType>::cholesky(A_copy, num_rows, L);
+        status = cMatrixDecompositions<DataType>::cholesky(
+            A_copy, num_rows, L);
+
+        // Check if the Cholesky decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is not positive-definite.
+            sign = -3;
+    
+            ArrayUtil<DataType>::del(A_copy);
+            ArrayUtil<DataType>::del(Y);
+            ArrayUtil<DataType>::del(W);
+            ArrayUtil<DataType>::del(L);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_A = 2.0 * cMatrixFunctions<DataType>::triang_logdet(
@@ -642,7 +683,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
                 L, X, Y, num_rows, num_columns, 0, 0);
 
         // Compute W = Y.T * Y
-        cMatrixOperations<DataType>::grammian(
+        cMatrixOperations<DataType>::gramian(
                 Y, W, num_rows, num_columns, coeff);
 
         // Compute determinant of W
@@ -653,7 +694,23 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
     {
         // Perform LU Decomposition. A is overwritten to U.
         P = new LongIndexType[num_rows+1];
-        cMatrixDecompositions<DataType>::lup(A_copy, P, num_rows, tol);
+        status = cMatrixDecompositions<DataType>::lup(
+            A_copy, P, num_rows, tol);
+
+        // Check if the lup decomposition was successful.
+        if (status != 0)
+        {
+            // Matrix is degenerate.
+            sign = -4;
+
+            // Free memory
+            ArrayUtil<DataType>::del(A_copy);
+            ArrayUtil<DataType>::del(Y);
+            ArrayUtil<DataType>::del(W);
+            ArrayUtil<LongIndexType>::del(P);
+
+            return NAN;
+        }
 
         // Compute logdet based on the diagonals of A
         logdet_A = cMatrixFunctions<DataType>::triang_logdet(
@@ -681,15 +738,15 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
     {
         // Compute XtX
         XtX = new DataType[num_columns*num_columns];
-        cMatrixOperations<DataType>::grammian(
+        cMatrixOperations<DataType>::gramian(
                 X, XtX, num_rows, num_columns, 0);
 
         logdet_XtX = cMatrixFunctions<DataType>::logdet(
                 XtX, num_columns, 1, XtX_sign);
     }
 
-    // Compute plogdet
-    plogdet_ = logdet_XtX - logdet_A - logdet_W;
+    // Compute logpdet
+    logpdet_ = logdet_XtX - logdet_A - logdet_W;
 
     // Sign
     if (sign_XtX == -2)
@@ -708,34 +765,19 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
     }
 
     // Free array
-    delete[] A_copy;
-    delete[] Y;
-    delete[] W;
+    ArrayUtil<DataType>::del(A_copy);
+    ArrayUtil<DataType>::del(Y);
+    ArrayUtil<DataType>::del(W);
+    ArrayUtil<DataType>::del(L);
+    ArrayUtil<DataType>::del(XtX);
+    ArrayUtil<LongIndexType>::del(P);
 
-    if (L != NULL)
-    {
-        delete[] L;
-        L = NULL;
-    }
-
-    if (P != NULL)
-    {
-        delete[] P;
-        P = NULL;
-    }
-
-    if (XtX != NULL)
-    {
-        delete[] XtX;
-        XtX = NULL;
-    }
-
-    return plogdet_;
+    return logpdet_;
 }
 
 
 // ============
-// plogdet proj
+// logpdet proj
 // ============
 
 /// \brief Computes the logdet of likelihood function of Gaussian process.
@@ -743,7 +785,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_legacy(
 ///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
 
 template <typename DataType>
-DataType cMatrixFunctions<DataType>::_plogdet_proj(
+DataType cMatrixFunctions<DataType>::_logpdet_proj(
         const DataType* A,
         const DataType* X,
         const LongIndexType num_rows,
@@ -751,7 +793,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_proj(
         const FlagType X_orth,
         FlagType& sign)
 {
-    DataType plogdet_;
+    DataType logpdet_;
     DataType logdet_N;
     FlagType sign_N;
 
@@ -788,7 +830,7 @@ DataType cMatrixFunctions<DataType>::_plogdet_proj(
     {
         // Compute XtX
         XtX = new DataType[num_columns*num_columns];
-        cMatrixOperations<DataType>::grammian(
+        cMatrixOperations<DataType>::gramian(
                 X, XtX, num_rows, num_columns, 0);
 
         // Perform Cholesky Decomposition. A is overwritten (not to U)
@@ -816,10 +858,15 @@ DataType cMatrixFunctions<DataType>::_plogdet_proj(
     // Compute logdet of N
     logdet_N = cMatrixFunctions<DataType>::logdet(N, num_rows, 0, sign_N);
 
-    // Compute plogdet
-    plogdet_ = -logdet_N;
+    // Compute logpdet
+    logpdet_ = -logdet_N;
 
-    if (sign_N == -2)
+    if (sign_N == -4)
+    {
+        // Matrix is degenerate
+        sign = -4;
+    }
+    else if (sign_N == -2)
     {
         // Indicates that det of N is 0, so logdet of 1/N is +inf.
         sign = 2;
@@ -830,30 +877,15 @@ DataType cMatrixFunctions<DataType>::_plogdet_proj(
     }
 
     // Free array
-    delete[] N;
-    delete[] A_I;
-    delete[] M;
-    delete[] S;
+    ArrayUtil<DataType>::del(N);
+    ArrayUtil<DataType>::del(A_I);
+    ArrayUtil<DataType>::del(M);
+    ArrayUtil<DataType>::del(S);
+    ArrayUtil<DataType>::del(XtX);
+    ArrayUtil<DataType>::del(L);
+    ArrayUtil<DataType>::del(Y);
 
-    if (L != NULL)
-    {
-        delete[] L;
-        L = NULL;
-    }
-
-    if (Y != NULL)
-    {
-        delete[] Y;
-        Y = NULL;
-    }
-
-    if (XtX != NULL)
-    {
-        delete[] XtX;
-        XtX = NULL;
-    }
-
-    return plogdet_;
+    return logpdet_;
 }
 
 

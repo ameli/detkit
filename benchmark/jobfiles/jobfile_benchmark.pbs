@@ -19,7 +19,7 @@ LOG_DIR=$PWD
 
 # Logarithm of base 2 of the matrix size. For example N=10 is the size 1024.
 N=8
-FUNC="glogdet"
+FUNC="loggdet"
 REPEAT=30
 NUM_RATIOS=100
 STREAM_OUTPUT="stream_output-${N}.txt"

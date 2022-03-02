@@ -7,11 +7,8 @@
 # of this source tree.
 
 from .logdet import logdet
-from .glogdet import glogdet
-from .plogdet import plogdet
-from .py_glogdet import py_glogdet
-from .py_plogdet import py_plogdet
+from .loggdet import loggdet
+from .logpdet import logpdet
 from .orthogonalize import orthogonalize
 
-__all__ = ['logdet', 'glogdet', 'py_glogdet', 'plogdet', 'py_plogdet',
-           'orthogonalize']
+__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize']

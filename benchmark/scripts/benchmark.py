@@ -26,7 +26,7 @@ import subprocess
 import re
 
 from timer import Timer
-from detkit import glogdet, py_glogdet, plogdet, py_plogdet, orthogonalize, \
+from detkit import loggdet, py_loggdet, logpdet, py_logpdet, orthogonalize, \
         get_instructions_per_task, get_config
 
 
@@ -50,8 +50,8 @@ The following arguments are required:
 
     -n --size=[int]         Size of the matrix in log2. The size of matrix is 2
                             to the power of this number.
-    -f --func=[str]         Type of function, which can be either "glogdet", or
-                            "plogdet".
+    -f --func=[str]         Type of function, which can be either "loggdet", or
+                            "logpdet".
 
 The following arguments are optional:
 
@@ -66,17 +66,17 @@ The following arguments are optional:
 
 Examples:
 
-    1. Compute glogdet, set the matrix size to n=2**8=256, the array of 50
+    1. Compute loggdet, set the matrix size to n=2**8=256, the array of 50
        ratios m/n from 0 to 1, i.e. linspace(0, 1, 50), and repeat each
        experiment 3 times:
 
-       $ %s -n 8 -f glogdet -r 3 -t 50 -v
+       $ %s -n 8 -f loggdet -r 3 -t 50 -v
 
-    1. Compute plogdet, set the matrix size to n=2**9=512, the array of 100
+    1. Compute logpdet, set the matrix size to n=2**9=512, the array of 100
        ratios m/n from 0 to 1, i.e. linspace(0, 1, 100), and repeat each
        experiment 5 times:
 
-       $ %s -n 9 -f plogdet -r 5 -t 100 -v
+       $ %s -n 9 -f logpdet -r 5 -t 100 -v
         """ % (argv[0], argv[0])
 
         print(usage_string)
@@ -87,7 +87,7 @@ Examples:
     # Initialize variables (defaults)
     arguments = {
         'n': None,
-        'func': None,  # can be "glogdet" or "plogdet"
+        'func': None,  # can be "loggdet" or "logpdet"
         'repeat': 10,
         'num_ratios': 50,
         'verbose': False,
@@ -126,9 +126,9 @@ Examples:
         print('')
         print_usage(argv[0])
         sys.exit()
-    if arguments['func'] not in ['glogdet', 'plogdet']:
+    if arguments['func'] not in ['loggdet', 'logpdet']:
         print('ERROR: argument "-f" is required and should be equal to ' +
-              'either "glogdet" or "plogdet".')
+              'either "loggdet" or "logpdet".')
         print('')
         print_usage(argv[0])
         sys.exit()
@@ -178,15 +178,15 @@ def legacy_method(func, K, X, sym_pos=False, X_orth=False):
 
     timer = Timer()
     timer.tic()
-    glogdet_, _, inst = func(K, X, method='legacy', sym_pos=sym_pos,
+    loggdet_, _, inst = func(K, X, method='legacy', sym_pos=sym_pos,
                              X_orth=X_orth, flops=True)
     timer.toc()
 
-    # Time of computing glogdet
+    # Time of computing loggdet
     wall_time = timer.wall_time
     proc_time = timer.proc_time
 
-    return glogdet_, wall_time, proc_time, inst
+    return loggdet_, wall_time, proc_time, inst
 
 
 # ===============
@@ -201,15 +201,15 @@ def proj_method_gen(func, K, X):
 
     timer = Timer()
     timer.tic()
-    glogdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=False,
+    loggdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=False,
                              flops=True)
     timer.toc()
 
-    # Time of computing glogdet
+    # Time of computing loggdet
     wall_time = timer.wall_time
     proc_time = timer.proc_time
 
-    return glogdet_, wall_time, proc_time, inst
+    return loggdet_, wall_time, proc_time, inst
 
 
 # ===============
@@ -234,17 +234,17 @@ def proj_method_ort(func, K, X):
 
     timer.reset()
 
-    # Compute glogdet
+    # Compute loggdet
     timer.tic()
-    glogdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=True,
+    loggdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=True,
                              flops=True)
     timer.toc()
 
-    # Time of computing glogdet
+    # Time of computing loggdet
     wall_time = timer.wall_time
     proc_time = timer.proc_time
 
-    return glogdet_, wall_time_pre, proc_time_pre, wall_time, proc_time, inst
+    return loggdet_, wall_time_pre, proc_time_pre, wall_time, proc_time, inst
 
 
 # =========
@@ -261,18 +261,18 @@ def benchmark(argv):
     arguments = parse_arguments(argv)
 
     # Determine the computing function
-    if arguments['func'] == 'glogdet':
+    if arguments['func'] == 'loggdet':
         if arguments['use_blas']:
-            func = py_glogdet
+            func = py_loggdet
         else:
-            func = glogdet
-    elif arguments['func'] == 'plogdet':
+            func = loggdet
+    elif arguments['func'] == 'logpdet':
         if arguments['use_blas']:
-            func = py_plogdet
+            func = py_logpdet
         else:
-            func = plogdet
+            func = logpdet
     else:
-        raise ValueError('Function should be wither "glogdet" or "plogdet".')
+        raise ValueError('Function should be wither "loggdet" or "logpdet".')
 
     # Extract settings from arguments
     n = 2**arguments['n']
@@ -298,8 +298,8 @@ def benchmark(argv):
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
         'instructions_per_matmat': get_instructions_per_task(task='matmat'),
-        'instructions_per_grammian': get_instructions_per_task(
-            task='grammian'),
+        'instructions_per_gramian': get_instructions_per_task(
+            task='gramian'),
         'instructions_per_cholesky': get_instructions_per_task(
             task='cholesky'),
         'instructions_per_lu': get_instructions_per_task(task='lu'),
@@ -389,7 +389,7 @@ def benchmark(argv):
                 legacy_method(
                         func, K, X_, sym_pos=False, X_orth=False)
 
-            if config['func'] == 'plogdet':
+            if config['func'] == 'logpdet':
                 # Legacy method, generic matrix K, non-orthogonal X
                 logdet_lgcy_gen_ort[j, i], wall_time_lgcy_gen_ort[j, i], \
                     proc_time_lgcy_gen_ort[j, i], flops_lgcy_gen_ort[j, i] = \
@@ -402,7 +402,7 @@ def benchmark(argv):
                 legacy_method(
                         func, K, X_, sym_pos=True, X_orth=False)
 
-            if config['func'] == 'plogdet':
+            if config['func'] == 'logpdet':
                 # Legacy method, symmetric positive-definite matrix K, X ort
                 logdet_lgcy_spd_ort[j, i], wall_time_lgcy_spd_ort[j, i], \
                     proc_time_lgcy_spd_ort[j, i], flops_lgcy_spd_ort[j, i] = \
@@ -477,11 +477,11 @@ def benchmark(argv):
     pickle_dir = 'pickle_results'
     log_n_str = str(int(numpy.log2(config['n'])))
     if detkit_config['use_symmetry']:
-        grammian_status = 'gram'
+        gramian_status = 'gram'
     else:
-        grammian_status = 'no-gram'
+        gramian_status = 'no-gram'
     output_filename = 'benchmark-' + arguments['func'] + '-' + log_n_str + \
-                      '-' + grammian_status + '.pickle'
+                      '-' + gramian_status + '.pickle'
     output_full_filename = join(benchmark_dir, pickle_dir, output_filename)
     with open(output_full_filename, 'wb') as file:
         pickle.dump(benchmark_results, file,

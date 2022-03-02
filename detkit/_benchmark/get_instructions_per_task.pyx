@@ -27,8 +27,30 @@ __all__ = ['get_instructions_per_task']
 
 cpdef get_instructions_per_task(task='matmat', dtype='float64'):
     """
-    Finds how many hardware instructions are used on the current device to
-    compute a single flop task.
+    Counts the hardware instructions on the current device to compute a single
+    flop of a benchmark task. 
+
+    Parameters
+    ----------
+        task : {'matmat', 'gramian', 'cholesky', 'lu', 'lup'}, default='matmat'
+            The benchmark task to count its hardware instructions.
+            * ``'matmat'``: matrix-matrix multiplication task.
+            * ``'gramian'``: Gramian matrix-matrix multiplication task.
+            * ``'cholesky'``: Cholesky decomposition task.
+            * ``'lu'``: LU decomposition task.
+            * ``'lu'``: LUP decomposition task.
+
+        dtype : {'float32', 'float64', 'float128'}, default='float64'
+            The type of the test data.
+
+    Returns
+    -------
+
+        inst : int
+            Count of hardware instructions
+
+    Notes
+    -----
     """
 
     n = (1.0 / numpy.linspace(1.0/30.0, 1.0/500.0, 10) + 0.5).astype(int)
@@ -81,8 +103,8 @@ cpdef long long _get_instructions_float(
 
     if task == 'matmat':
         inst = Benchmark[float].matmat(dummy_var, n)
-    elif task == 'grammian':
-        inst = Benchmark[float].grammian(dummy_var, n)
+    elif task == 'gramian':
+        inst = Benchmark[float].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[float].cholesky(dummy_var, n)
     elif task == 'lu':
@@ -112,8 +134,8 @@ cpdef long long _get_instructions_double(
 
     if task == 'matmat':
         inst = Benchmark[double].matmat(dummy_var, n)
-    elif task == 'grammian':
-        inst = Benchmark[double].grammian(dummy_var, n)
+    elif task == 'gramian':
+        inst = Benchmark[double].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[double].cholesky(dummy_var, n)
     elif task == 'lu':
@@ -143,8 +165,8 @@ cpdef long long _get_instructions_long_double(
 
     if task == 'matmat':
         inst = Benchmark[long_double].matmat(dummy_var, n)
-    elif task == 'grammian':
-        inst = Benchmark[long_double].grammian(dummy_var, n)
+    elif task == 'gramian':
+        inst = Benchmark[long_double].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[long_double].cholesky(dummy_var, n)
     elif task == 'lu':

@@ -108,8 +108,8 @@ class cMatrixOperations
                 const LongIndexType num_columns,
                 const DataType c);
 
-        // grammian
-        static void grammian(
+        // gramian
+        static void gramian(
                 const DataType* A,
                 DataType* C,
                 const LongIndexType n,

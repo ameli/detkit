@@ -71,7 +71,7 @@ class cMatrixDecompositions
                 const DataType tol);
 
         // cholesky
-        static void cholesky(
+        static FlagType cholesky(
                 DataType* A,
                 const LongIndexType num_rows,
                 DataType* L);

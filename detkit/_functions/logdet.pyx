@@ -27,13 +27,110 @@ __all__ = ['logdet']
 # logdet
 # ======
 
-def logdet(A, sym_pos=False):
+def logdet(A, sym_pos=False, overwrite_A=False):
     """
+    Computes the `logdet` of a matrix.
+
+    The `logdet` function is defined by
+
+    .. math::
+
+        \\mathrm{logdet}(\\mathbf{A}) :=
+        \\log_{e} |\\mathrm{det}(\\mathbf{A})|.
+
+    Parameters
+    ----------
+    A : (n, n) array_like
+        Square matrix. The matrix type can be `float32`, `float64`, or
+        `float128`. If a matrix of the type `int32` or `int64` is given, the
+        type is cast to `float64`.
+
+    sym_pos : bool, default=False
+        If `True`, the matrix `A` is assumed to be symmetric and
+        positive-definite (SPD). The computation can be twice as fast as when
+        the matrix is not SPD. This function does not verify whether `A` is
+        symmetric or positive-definite.
+
+    overwrite_A : bool, default=False
+        If `True`, the input matrix `A` will be overwritten during the
+        computation. It uses less memory and could potentially be slightly
+        faster.
+
+    Returns
+    -------
+    logdet : float
+        `logdet` of `A`. If `A` is singular, returns ``-numpy.inf``.
+
+    sign : int
+        Sign of the determinant of `A` and can be ``+1`` for positive or ``-1``
+        for negative determinant. If `A` is singular, returns ``0``.
+
+    Raises
+    ------
+        RuntimeError
+            Error raised when ``sym_pos=True`` and matrix `A` is not symmetric
+            positive-definite.
+
+    Notes
+    -----
+        The function `logdet` is computed using the following algorithms:
+
+        * When ``sym_pos=False``, the `logdet` function is computed using the
+          *PLU decomposition* of `A`.
+        * When ``sym_pos=True``, the `logdet` function is computed using the
+          Cholesky decomposition of `A`.
+
+        This python function is a wrapper to a C++ implementation.
+
+    See Also
+    --------
+        loggdet : Log of determinant terms used in Gaussian process regression.
+        logpdet : Log of pseudo-determinant of the precision matrix in Gaussian
+            process regression.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        >>> import numpy
+        >>> from detkit import logdet
+
+        >>> # Generate a random matrix
+        >>> n = 1000
+        >>> rng = numpy.random.RandomState(0)
+        >>> A = rng.rand(n, n)
+
+        >>> # Compute logdet of matrix
+        >>> logdet(A)
+        (1710.9576831500378, -1)
+
+        >>> # Compute logdet of a symmetric and positive-definite matrix
+        >>> B = A.T @ A
+        >>> logdet(B, sym_pos=True)
+        (3421.9153663693114, 1)
+
+        >>> # Compute logdet of a singular matrix
+        >>> A[:, 0] = 0
+        >>> logdet(A)
+        (-inf, 0)
     """
 
-    data_type_name = get_data_type_name(A)
+    # A_ will be overwritten by PLU and cholesky decompositions
+    if overwrite_A:
+        # Input A will be overwritten
+        A_ = A
+    else:
+        # Input A will remain unaltered
+        A_ = numpy.copy(A)
+
+    # Convert int to float type
+    data_type_name = get_data_type_name(A_)
+    if data_type_name in [b'int32', b'int64']:
+        A_ = A_.astype(numpy.float64)
+        data_type_name = b'float64'
+
     sym_pos = int(sym_pos)
-    logdet_, sign = pyc_logdet(A, A.shape[0], data_type_name, sym_pos)
+    logdet_, sign = pyc_logdet(A_, A_.shape[0], data_type_name, sym_pos)
 
     return logdet_, sign
 
@@ -48,6 +145,7 @@ cpdef pyc_logdet(
         data_type_name,
         sym_pos):
     """
+    Dispatches to typed cython functions.
     """
 
     sign = numpy.array([0], dtype=numpy.int32)
@@ -64,10 +162,21 @@ cpdef pyc_logdet(
         raise TypeError('Data type should be "float32", "float64", or ' +
                         '"float128".')
 
-    if sign[0] == -2:
+    if (sign[0] == -3):
+        message = 'Cholesky decomposition failed since matrix "A" is not ' + \
+                  'symmetric positive-definite.'
+        if sym_pos:
+            message += ' Set "sym_pos" to False.'
+        raise RuntimeError(message)
+    elif (sign[0] == -4):
         logdet_ = -numpy.inf
-    if sign[0] == 2:
+        sign[0] = 0
+    elif sign[0] == -2:
+        logdet_ = -numpy.inf
+        sign[0] = 0
+    elif sign[0] == 2:
         logdet_ = numpy.inf
+        sign[0] = 0
 
     return logdet_, sign[0]
 
@@ -82,6 +191,7 @@ cdef float pyc_logdet_float(
         const FlagType sym_pos,
         FlagType* sign) except *:
     """
+    Dispatches to C++ function with 32-bit float type.
     """
 
     # Get c-pointer from memoryviews
@@ -104,6 +214,7 @@ cdef double pyc_logdet_double(
         const FlagType sym_pos,
         FlagType* sign) except *:
     """
+    Dispatches to C++ function with 64-bit float type.
     """
 
     # Get c-pointer from memoryviews
@@ -126,6 +237,7 @@ cdef long double pyc_logdet_long_double(
         const FlagType sym_pos,
         FlagType* sign) except *:
     """
+    Dispatches to C++ function with 128-bit float type.
     """
 
     # Get c-pointer from memoryviews

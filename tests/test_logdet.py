@@ -24,6 +24,7 @@ from detkit import logdet
 
 def test_logdet():
     """
+    Test for `logdet` function.
     """
 
     n = 500

@@ -66,7 +66,7 @@ InstructionsCounter::InstructionsCounter():
         this->fd = perf_event_open(&this->pe, 0, -1, -1, 0);
         if (this->fd == -1)
         {
-            // Error, cannot open th leader.
+            // Error, cannot open the leader.
             this->count = -1;
         }
     #endif

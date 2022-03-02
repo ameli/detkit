@@ -21,7 +21,33 @@ from .c_get_config cimport is_use_symmetry, is_use_openmp, is_count_perf, \
 
 def get_config():
     """
-    Get the compile-time definitions, such as USE_SYMMETRY.
+    Returns the definitions used in the compile-time of the package.
+
+    Returns
+    -------
+
+        config : dict
+            A dictionary of the definitions used in the compile-time with
+            the following fields:
+
+            * ``'use_symmetry'``: boolean, determines whether the Gramian
+              matrices are computed using symmetric matrix multiplication
+              (when True), or using the full matrix multiplication (when
+              False).
+            * ``'use_openmp'``: boolean, determines whether to use OpenMP
+              parallelism.
+            * ``'count_perf'``: boolean, determines whether to count hardware
+              instructions during the runtime.
+            * ``'chunk_tasks'``: boolean, chunks the multiply-add (MA)
+              operations, similar to a technique used for instance in BLAS
+              library. When True, every five MA operations are computed in the
+              same chunk.
+
+    Notes
+    -----
+
+    To configure the compile-time definitions, modify the
+    ``/detkit/_definitions/definitions.h`` file and recompile the package.
     """
 
     config = {

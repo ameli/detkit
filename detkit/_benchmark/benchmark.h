@@ -32,7 +32,7 @@ class Benchmark
                 const DataType* dummy_var,
                 const IndexType n);
 
-        static long long grammian(
+        static long long gramian(
                 const DataType* dummy_var,
                 const IndexType n);
 

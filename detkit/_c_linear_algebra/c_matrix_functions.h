@@ -77,8 +77,8 @@ class cMatrixFunctions
                 const LongIndexType num_rows,
                 const FlagType sym_pos);
 
-        // glogdet
-        static DataType glogdet(
+        // loggdet
+        static DataType loggdet(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,
@@ -89,8 +89,8 @@ class cMatrixFunctions
                 FlagType& sign,
                 long long& flops);
 
-        // glogdet legacy
-        static DataType _glogdet_legacy(
+        // loggdet legacy
+        static DataType _loggdet_legacy(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,
@@ -98,8 +98,8 @@ class cMatrixFunctions
                 const FlagType sym_pos,
                 FlagType& sign);
 
-        // glogdet proj
-        static DataType _glogdet_proj(
+        // loggdet proj
+        static DataType _loggdet_proj(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,
@@ -107,8 +107,8 @@ class cMatrixFunctions
                 const FlagType X_orth,
                 FlagType& sign);
 
-        // plogdet
-        static DataType plogdet(
+        // logpdet
+        static DataType logpdet(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,
@@ -119,8 +119,8 @@ class cMatrixFunctions
                 FlagType& sign,
                 long long& flops);
 
-        // plogdet legacy
-        static DataType _plogdet_legacy(
+        // logpdet legacy
+        static DataType _logpdet_legacy(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,
@@ -129,8 +129,8 @@ class cMatrixFunctions
                 const FlagType X_orth,
                 FlagType& sign);
 
-        // plogdet proj
-        static DataType _plogdet_proj(
+        // logpdet proj
+        static DataType _logpdet_proj(
                 const DataType* A,
                 const DataType* X,
                 const LongIndexType num_rows,

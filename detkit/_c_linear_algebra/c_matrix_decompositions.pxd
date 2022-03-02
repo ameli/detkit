@@ -11,7 +11,7 @@
 # Imports
 # =======
 
-from .._definitions.types cimport LongIndexType
+from .._definitions.types cimport LongIndexType, FlagType
 
 
 # =======
@@ -29,7 +29,7 @@ cdef extern from "c_matrix_decompositions.h":
                 DataType* L) nogil
 
         @staticmethod
-        void cholesky(
+        FlagType cholesky(
                 DataType* A,
                 const LongIndexType num_rows,
                 DataType* L) nogil

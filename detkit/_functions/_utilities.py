@@ -19,11 +19,18 @@ def get_data_type_name(data):
     Returns the typename of data as string.
     """
 
-    if data.dtype == 'float32':
+    if data.dtype in [b'float32', 'float32']:
         data_type_name = b'float32'
-    elif data.dtype == 'float64':
+    elif data.dtype in [b'float64', 'float64']:
         data_type_name = b'float64'
-    elif data.dtype == 'float128':
+    elif data.dtype in [b'float128', 'float128']:
         data_type_name = b'float128'
+    elif data.dtype in [b'int32', 'int32']:
+        data_type_name = b'int32'
+    elif data.dtype in [b'int64', 'int64']:
+        data_type_name = b'int64'
+    else:
+        raise TypeError('Data type should be "float32", "float64", ' +
+                        '"float128", "int32", or "int64".')
 
     return data_type_name
