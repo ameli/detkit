@@ -40,36 +40,36 @@ def logdet(A, sym_pos=False, overwrite_A=False):
 
     Parameters
     ----------
-    A : (n, n) array_like
-        Square matrix. The matrix type can be `float32`, `float64`, or
-        `float128`. If a matrix of the type `int32` or `int64` is given, the
-        type is cast to `float64`.
+        A : (n, n) array_like
+            Square matrix. The matrix type can be `float32`, `float64`, or
+            `float128`. If a matrix of the type `int32` or `int64` is given,
+            the type is cast to `float64`.
 
-    sym_pos : bool, default=False
-        If `True`, the matrix `A` is assumed to be symmetric and
-        positive-definite (SPD). The computation can be twice as fast as when
-        the matrix is not SPD. This function does not verify whether `A` is
-        symmetric or positive-definite.
+        sym_pos : bool, default=False
+            If `True`, the matrix `A` is assumed to be symmetric and
+            positive-definite (SPD). The computation can be twice as fast as
+            when the matrix is not SPD. This function does not verify whether
+            `A` is symmetric or positive-definite.
 
-    overwrite_A : bool, default=False
-        If `True`, the input matrix `A` will be overwritten during the
-        computation. It uses less memory and could potentially be slightly
-        faster.
+        overwrite_A : bool, default=False
+            If `True`, the input matrix `A` will be overwritten during the
+            computation. It uses less memory and could potentially be slightly
+            faster.
 
     Returns
     -------
-    logdet : float
-        `logdet` of `A`. If `A` is singular, returns ``-numpy.inf``.
+        logdet : float
+            `logdet` of `A`. If `A` is singular, returns ``-numpy.inf``.
 
-    sign : int
-        Sign of the determinant of `A` and can be ``+1`` for positive or ``-1``
-        for negative determinant. If `A` is singular, returns ``0``.
+        sign : int
+            Sign of the determinant of `A` and can be ``+1`` for positive or
+            ``-1`` for negative determinant. If `A` is singular, returns ``0``.
 
-    Raises
-    ------
-        RuntimeError
-            Error raised when ``sym_pos=True`` and matrix `A` is not symmetric
-            positive-definite.
+        Raises
+        ------
+            RuntimeError
+                Error raised when ``sym_pos=True`` and matrix `A` is not
+                symmetric positive-definite.
 
     Notes
     -----

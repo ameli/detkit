@@ -27,7 +27,23 @@ __all__ = ['orthogonalize']
 
 cpdef orthogonalize(A):
     """
-    Orthogonalizes columns of matrix. The matrix is overwritten.
+    Orthogonalizes the columns of matrix.
+
+    Parameters
+    ----------
+        A : array_like
+            Input matrix. This matrix will be overwritten in place of the
+            output orthogonal matrix.
+
+    Warnings
+    --------
+        The input matrix will be overwritten inplace.
+
+    Notes
+    -----
+
+    The Gram-Schmidt method is used to orthogonalize the columns of the input
+    matrix.
     """
 
     data_type_name = get_data_type_name(A)
@@ -52,7 +68,8 @@ cdef void _pyc_gram_schmidt_float(
         const LongIndexType num_rows,
         const LongIndexType num_columns) except *:
     """
-    Gram-Schmidt orthogonalization of the columns of a matrix.
+    Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
+    float type.
     """
 
     # Get c-pointer from memoryviews
@@ -70,7 +87,8 @@ cdef void _pyc_gram_schmidt_double(
         const LongIndexType num_rows,
         const LongIndexType num_columns) except *:
     """
-    Gram-Schmidt orthogonalization of the columns of a matrix.
+    Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
+    double type.
     """
 
     # Get c-pointer from memoryviews
@@ -88,7 +106,8 @@ cdef void _pyc_gram_schmidt_long_double(
         const LongIndexType num_rows,
         const LongIndexType num_columns) except *:
     """
-    Gram-Schmidt orthogonalization of the columns of a matrix.
+    Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
+    long double type.
     """
 
     # Get c-pointer from memoryviews

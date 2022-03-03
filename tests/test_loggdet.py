@@ -62,9 +62,9 @@ def test_loggdet():
     logdet_2, sign_2, flops_2 = loggdet(A, X, method='proj', sym_pos=True,
                                         X_orth=X_orth, flops=True)
     logdet_3, sign_3 = loggdet(A, X, method='legacy', sym_pos=sym_pos,
-                                  X_orth=False, use_scipy=True)
+                               X_orth=False, use_scipy=True)
     logdet_4, sign_4 = loggdet(A, X, method='proj', sym_pos=True,
-                                  X_orth=X_orth, use_scipy=True)
+                               X_orth=X_orth, use_scipy=True)
     print('%16.8f, %+d' % (logdet_0, sign_0))
     print('%16.8f, %+d, %ld' % (logdet_1, sign_1, flops_1))
     print('%16.8f, %+d, %ld' % (logdet_2, sign_2, flops_2))

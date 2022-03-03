@@ -27,13 +27,42 @@ __all__ = ['get_instructions_per_task']
 
 cpdef get_instructions_per_task(task='matmat', dtype='float64'):
     """
-    Counts the hardware instructions on the current device to compute a single
-    flop of a benchmark task. 
+    Counts the hardware instructions of computing a single FLOP of a benchmark
+    task on the current processor.
+
+    The goal of this function is to be used to measure the computational
+    complexity of an algorithm. To measure the complexity, we use floating
+    point operations (FLOPs). We define a FLOP by a fused multiply-add
+    operation.
+
+    FLOPs cannot be directly measured on the processor. Instead, we measure the
+    `hardware instructions` of the processor. To measure the FLOPs of an
+    algorithm, we can divide the instructions it takes to run the desired
+    algorithm by the instructions it takes to compute a single FLOP of another
+    benchmark task the same processor and same compiler configuration. The aim
+    of this function is to measure the instructions of a unit FLOP.
+
+    A benchmark task is a basic mathematical operation, such as matrix-matrix
+    multiplication, LU factorization, or Cholesky decomposition on a matrix.
+    Assuming the matrix size is :math:`n`, the complexity of either of the
+    tasks provided in are as follows
+
+    * ``'matmat'``: matrix-matrix multiplication, :math:`n^3` operations
+    * ``'gramian'``: Gramian matrix multiplication, :math:`\\frac{1}{2}n^3`
+      operations.
+    * ``'cholesky'``: Cholesky decomposition, :math:`\\frac{1}{3}n^3`
+      operations.
+    * ``'lup'``: LUP decomposition, :math:`\\frac{2}{3}n^3` operations.
+    * ``'lu'``: LU decomposition, :math:`\\frac{2}{3}n^3` operations.
+
+    This function measures the instructions of a benchmark task as :math:`n`
+    tends to infinity.
 
     Parameters
     ----------
         task : {'matmat', 'gramian', 'cholesky', 'lu', 'lup'}, default='matmat'
             The benchmark task to count its hardware instructions.
+
             * ``'matmat'``: matrix-matrix multiplication task.
             * ``'gramian'``: Gramian matrix-matrix multiplication task.
             * ``'cholesky'``: Cholesky decomposition task.
@@ -45,12 +74,72 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
 
     Returns
     -------
-
         inst : int
-            Count of hardware instructions
+            Count of hardware instructions. If the operating system or the
+            processor does not support the feature of counting the hardware
+            instructions, `-1` is returned.
+
+    See Also
+    --------
+        loggdet : Log of determinant terms used in Gaussian process regression.
+        logpdet : Log of pseudo-determinant of the precision matrix in Gaussian
+            process regression.
 
     Notes
     -----
+        * Instructions count depends on the processor and the compiler
+          configurations that compiles the package. Results may vary on
+          different computers.
+
+        * Instruction counts, :math:`c`, also varies by the size of the
+          matrices used in the benchmark test, but it converges when the matrix
+          size, :math:`n` is very large. To obtain a unique number, we use the
+          following asymptotic relation:
+
+          .. math::
+
+              c(n) = c_{\\infty} + \\frac{1}{n}
+
+          To measure :math:`c_{\\infty}`, this function measures :math:`c(n)`
+          on several matrix sizes :math:`n` and uses the above relation to find
+          their asymptote.
+
+        * It appears that the choice of `dtype` does not have an effect on the
+          count of hardware instructions.
+
+    Examples
+    --------
+    We can measure the FLOPs of computing, for instance, `loggdet` as follows:
+
+    .. code-block:: python
+
+        >>> import numpy
+        >>> from detkit import loggdet, get_instructions_per_count
+
+        >>> # Generate a random matrix
+        >>> n, m = 1000, 500
+        >>> rng = numpy.random.RandomState(0)
+        >>> A = rng.rand(n, n)
+        >>> X = rng.rand(n, m)
+
+        >>> # Measure the hardware instructions to compute loggdet of matrix
+        >>> loggdet_, sign, inst = loggdet(A, X, flops=True)
+        >>> print(inst)
+        11009228170
+
+        >>> # Measure hardware instructions of a single FLOP
+        >>> benchmark_inst = get_instructions_per_task(task='matmat')
+        >>> print(benchmark_int)
+        5.21
+
+        >>> # Calculate FLOPs of loggdet function
+        >>> flops = int(float(inst) / float(benchmark_inst))
+        >>> print(flops)
+        2110324959
+
+        >>> # Calculate coefficient of complexity
+        >>> print(flops / n**3)
+        2.11
     """
 
     n = (1.0 / numpy.linspace(1.0/30.0, 1.0/500.0, 10) + 0.5).astype(int)

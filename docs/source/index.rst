@@ -4,22 +4,59 @@ detkit
 
 |licence| |docs|
 
-This package provides both Python and Cython interfaces for Bessel functions and a few other special functions. 
+A toolkit to compute some common functions involving determinant of matrices used in machine learning.
 
 .. toctree::
     :maxdepth: 1
     :caption: Documentation
     :hidden:
+    
+    Install <install>
+    API Reference <api>
+    Tests <tests>
 
-    modules<_modules/detkit>
+=================
+List of Functions
+=================
+
+.. autosummary::
+    :recursive:
+    :nosignatures:
+    :template: autosummary/member.rst
+
+    detkit.logdet
+    detkit.loggdet
+    detkit.logpdet
+
+See :ref:`api` for a list of all functions.
 
 ========
 Features
 ========
 
-* **Lightweight:** This package requires *no python dependency* at runtime.
-* **Cython interface:** Both Python and Cython interfaces are available.
-* **Releasing GIL:** Most importantly, the functions can be used in ``with nogil:`` environment, which is essential in parallel OpenMP applications with Cython.
+* Functions are implemented with a novel algorithm described in [1]_.
+* The underlying library is implemented in C++ and wrapped in cython.
+* An accurate count of computational FLOPs during the execution of functions can be measured.
+
+=======
+Install
+=======
+
+|pypi| |conda-version|
+
+Install with `pip`:
+
+::
+
+    pip install detkit
+
+Install with `conda`:
+
+::
+
+    conda install -c s-ameli detkit
+
+For a complete install or build instructions, see :ref:`install_package`.
 
 
 ====================
@@ -51,9 +88,26 @@ We welcome contributions via `Github's pull request <https://github.com/ameli/de
 Related Packages
 ================
 
-* `scipy.special <https://docs.scipy.org/doc/scipy/reference/special.html>`_: Many special functions are available in *scipy.special* package.
-* `Gaussian Process <https://github.com/ameli/gaussian-process-param-estimation>`_: A python package that makes use of ``detkit``.
+* `glean <https://github.com/ameli/glearn>`_: A high-performance python package for machine learning using Gaussian process.
+* `imate <https://github.com/ameli/imate>`_: A high-performance python package for implicit matrix trace estimation.
 
+===========
+How to Cite
+===========
+
+
+.. [1] Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
+       Pseudo-Determinant Matrix Identities and Application to Gaussian
+       Process Regression (`in preparation`).
+
+.. code-block:: latex
+
+    @unpublished{AMELI-2022,
+        author = {Ameli, S. and Shadden, S. C.},
+        title  = {A Singular {Woodbury} and Pseudo-Determinant Matrix Identities and Application to {Gaussian} Process Regression},
+        year   = {2022},
+        note   = {in preparation}
+    }
 
 ================
 Acknowledgements
@@ -62,14 +116,6 @@ Acknowledgements
 * National Science Foundation #1520825
 * American Heart Association #18EIA33900046
 
-==================
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 
 .. |codecov-devel| image:: https://img.shields.io/codecov/c/github/ameli/detkit
    :target: https://codecov.io/gh/ameli/detkit
@@ -77,12 +123,6 @@ Indices and tables
    :target: https://ameli.github.io/detkit/index.html
 .. |licence| image:: https://img.shields.io/github/license/ameli/detkit
    :target: https://opensource.org/licenses/MIT
-.. |travis-devel-linux| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=linux&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |travis-devel-osx| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=osx&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |travis-devel-windows| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=windows&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
 .. |format| image:: https://img.shields.io/pypi/format/detkit

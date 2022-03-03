@@ -6,6 +6,12 @@
 # the terms of the license found in the LICENSE.txt file in the root directory
 # of this source tree.
 
+# =======
+# Imports
+# =======
+
+import os
+import sys
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -18,10 +24,6 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../'))
 
 # The following is treatment exclusively for CYTHON. Since I build cython
 # into '/build' directory, the lib files (*.so) are generated in the subfolder
@@ -90,12 +92,12 @@ extensions = [
     'sphinx_toggleprompt',
     # 'sphinx.ext.autosectionlabel',
     'sphinx.ext.autosummary',
-    'sphinx_automodapi.automodapi',
+    # 'sphinx_automodapi.automodapi',
     # 'sphinxcontrib.napoleon'                # either use napoleon or numpydoc
     'numpydoc'                                # either use napoleon or numpydoc
 ]
 
-# autosummary
+# Automatically generate autosummary after each build
 autosummary_generate = True
 
 # automodapi
@@ -144,6 +146,23 @@ html_theme = 'pydata_sphinx_theme'
 # html_theme = 'agogo'
 # html_theme = 'traditional'
 # html_theme = 'scrolls'
+
+# Options for theme
+html_theme_options = {
+    "github_url": "https://github.com/ameli/detkit",
+    "navbar_end": ["search-field.html", "navbar-icon-links.html"],
+    "page_sidebar_items": ["page-toc", "edit-this-page"]
+}
+
+html_sidebars = {
+    "**": ["sidebar-nav-bs", "sidebar-ethical-ads"]
+}
+
+project = u'detkit'
+copyright = u'2022, Siavash Ameli'
+
+html_title = f"{project} Manual"
+html_last_updated_fmt = '%b %d, %Y'
 
 # To use sphinx3, download at
 # https://github.com/sphinx-doc/sphinx/tree/master/doc/_themes/sphinx13

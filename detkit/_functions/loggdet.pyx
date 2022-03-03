@@ -59,44 +59,45 @@ def loggdet(
 
     Parameters
     ----------
-    A : (n, n) array_like
-        Invertible matrix. The matrix type can be `float32`, `float64`, or
-        `float128`. If a matrix of the type `int32` or `int64` is given, the
-        type is cast to `float64`.
+        A : (n, n) array_like
+            Invertible matrix. The matrix type can be `float32`, `float64`, or
+            `float128`. If a matrix of the type `int32` or `int64` is given,
+            the type is cast to `float64`.
 
-    X : (n, m) array_like
-        Rectangular matrix with full column-rank.
+        X : (n, m) array_like
+            Rectangular matrix with full column-rank.
 
-    method : {'legacy', 'proj'}, default='legacy'
-        Method of computing, and can be one of `legacy` or `proj`.
+        method : {'legacy', 'proj'}, default='legacy'
+            Method of computing, and can be one of `legacy` or `proj`.
 
-        * `'legacy'`: Computes `loggdet` directly by the equation given in
-          the above.
-        * `'proj'`: Computes 'loggdet' using Bott-Duffin inverse (See [1]_).
+            * `'legacy'`: Computes `loggdet` directly by the equation given in
+              the above.
+            * `'proj'`: Computes `loggdet` using Bott-Duffin inverse
+              (See [1]_).
 
-    sym_pos : bool, default=False
-        If `True`, the matrix `A` is assumed to be symmetric and
-        positive-definite (SPD). The computation can be twice as fast as when
-        the matrix is not SPD. This function does not verify whether `A` is
-        symmetric or positive-definite. This option is applicable when
-        ``method='legacy'``.
+        sym_pos : bool, default=False
+            If `True`, the matrix `A` is assumed to be symmetric and
+            positive-definite (SPD). The computation can be twice as fast as
+            when the matrix is not SPD. This function does not verify whether
+            `A` is symmetric or positive-definite. This option is applicable
+            when ``method='legacy'``.
 
-    X_orth : bool, default=False
-        If `True`, the matrix `X` is assumed to have orthogonal columns. The
-        computation in this case is faster. This function will not verify
-        whether `X` is orthogonal. This option is only applicable when
-        ``method='proj'``.
+        X_orth : bool, default=False
+            If `True`, the matrix `X` is assumed to have orthogonal columns.
+            The computation in this case is faster. This function will not
+            verify whether `X` is orthogonal. This option is only applicable
+            when ``method='proj'``.
 
-    flops : bool, default=False
-        If `True`, the count of the retired hardware instructions is returned
-        using `perf` tool. This functionality is only available on Linux
-        operating system and only newer models of Intel CPUs. This option is
-        only relevant when ``use_scipy=False``.
+        flops : bool, default=False
+            If `True`, the count of the retired hardware instructions is
+            returned using `perf` tool. This functionality is only available on
+            Linux operating system and only newer models of Intel CPUs. This
+            option is only relevant when ``use_scipy=False``.
 
-    use_scipy : bool, default=False
-        If `True`, it uses scipy functions which are the wrappers around
-        Fortran routines in BLAS and LAPACK. If `False`, it uses a C++
-        library developed in this package.
+        use_scipy : bool, default=False
+            If `True`, it uses scipy functions which are the wrappers around
+            Fortran routines in BLAS and LAPACK. If `False`, it uses a C++
+            library developed in this package.
 
     Returns
     -------
