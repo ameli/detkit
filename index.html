@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 
 <html>
@@ -38,12 +40,15 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Install" href="install.html" />
+    <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
     
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -128,6 +133,8 @@
             <div class="col-12 col-md-3 bd-sidebar">
               <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
+    
+    
     
   </div>
 </nav>
@@ -246,22 +253,31 @@
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Functions are implemented with a novel algorithm described in <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p></li>
+<li><p>Functions are implemented with a novel algorithm described in <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
 <li><p>The underlying library is implemented in C++ and wrapped in cython.</p></li>
 <li><p>An accurate count of computational FLOPs during the execution of functions can be measured.</p></li>
 </ul>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://pypi.org/project/special-functions/"><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a></p>
-<p>Install with <cite>pip</cite>:</p>
+<p><a class="reference external" href="https://pypi.org/project/special-functions/"><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a> <a class="reference external" href="https://img.shields.io/docker/pulls/sameli/detkit"><img alt="docker" src="https://img.shields.io/docker/pulls/sameli/detkit" /></a></p>
+<ul>
+<li><p>Install with <a class="reference external" href="https://pypi.org/project/special-functions/">pip</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">detkit</span>
 </pre></div>
 </div>
-<p>Install with <cite>conda</cite>:</p>
+</li>
+<li><p>Install with <cite>conda &lt;https://anaconda.org/s-ameli/detkit&gt;</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">s</span><span class="o">-</span><span class="n">ameli</span> <span class="n">detkit</span>
 </pre></div>
 </div>
+</li>
+<li><p>Pull from <a class="reference external" href="https://hub.docker.com/repository/docker/sameli/detkit">docker image</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">sameli</span><span class="o">/</span><span class="n">detkit</span>
+</pre></div>
+</div>
+</li>
+</ul>
 <p>For a complete install or build instructions, see <a class="reference internal" href="install.html#install-package"><span class="std std-ref">Install</span></a>.</p>
 </section>
 <section id="interactive-tutorial">
@@ -275,6 +291,7 @@
 <li><p><a class="reference external" href="https://anaconda.org/s-ameli/detkit">Package on Anaconda Cloud</a></p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/detkit/">Package on PyPi</a></p></li>
 <li><p><a class="reference external" href="https://github.com/ameli/detkit">Source code on Github</a></p></li>
+<li><p><a class="reference external" href="https://hub.docker.com/repository/docker/sameli/detkit">Docker image</a></p></li>
 </ul>
 </section>
 <section id="how-to-contribute">
@@ -291,7 +308,7 @@
 <section id="how-to-cite">
 <h2>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h2>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
 Pseudo-Determinant Matrix Identities and Application to Gaussian
 Process Regression (<cite>in preparation</cite>).</p>

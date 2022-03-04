@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 
 <html>
@@ -41,12 +43,15 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Running Tests" href="../tests.html" />
     <link rel="prev" title="get_config" href="detkit.get_config.html" />
+    <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
     
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -131,6 +136,7 @@
             <div class="col-12 col-md-3 bd-sidebar">
               <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
+    
     <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Main Functions
@@ -171,6 +177,7 @@
  </li>
 </ul>
 
+    
   </div>
 </nav>
               </div>
@@ -229,15 +236,41 @@ of this function is to measure the instructions of a unit FLOP.</p>
 multiplication, LU factorization, or Cholesky decomposition on a matrix.
 Assuming the matrix size is <span class="math notranslate nohighlight">\(n\)</span>, the complexity of either of the
 tasks provided in are as follows</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'matmat'</span></code>: matrix-matrix multiplication, <span class="math notranslate nohighlight">\(n^3\)</span> operations</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'gramian'</span></code>: Gramian matrix multiplication, <span class="math notranslate nohighlight">\(\frac{1}{2}n^3\)</span>
-operations.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'cholesky'</span></code>: Cholesky decomposition, <span class="math notranslate nohighlight">\(\frac{1}{3}n^3\)</span>
-operations.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'lup'</span></code>: LUP decomposition, <span class="math notranslate nohighlight">\(\frac{2}{3}n^3\)</span> operations.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'lu'</span></code>: LU decomposition, <span class="math notranslate nohighlight">\(\frac{2}{3}n^3\)</span> operations.</p></li>
-</ul>
+<table class="table">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 44%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code name</p></th>
+<th class="head"><p>Task name</p></th>
+<th class="head"><p>Complexity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'matmat'</span></code></p></td>
+<td><p>matrix-matrix multiplication</p></td>
+<td><p><span class="math notranslate nohighlight">\(n^3\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'gramian'</span></code></p></td>
+<td><p>Gramian matrix multiplication</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{2}n^3\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'cholesky'</span></code></p></td>
+<td><p>Cholesky decomposition</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{3}n^3\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'lup'</span></code></p></td>
+<td><p>LUP decomposition</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{2}{3}n^3\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'lu'</span></code></p></td>
+<td><p>LU decomposition</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{2}{3}n^3\)</span></p></td>
+</tr>
+</tbody>
+</table>
 <p>This function measures the instructions of a benchmark task as <span class="math notranslate nohighlight">\(n\)</span>
 tends to infinity.</p>
 <dl class="field-list simple">

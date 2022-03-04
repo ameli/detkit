@@ -42,19 +42,25 @@ Features
 Install
 =======
 
-|pypi| |conda-version|
+|pypi| |conda-version| |docker|
 
-Install with `pip`:
+* Install with `pip <https://pypi.org/project/special-functions/>`_:
 
-::
+  ::
+  
+      pip install detkit
 
-    pip install detkit
-
-Install with `conda`:
-
-::
-
-    conda install -c s-ameli detkit
+* Install with `conda <https://anaconda.org/s-ameli/detkit>`:
+  
+  ::
+  
+      conda install -c s-ameli detkit
+  
+* Pull from `docker image <https://hub.docker.com/repository/docker/sameli/detkit>`_
+  
+  ::
+      
+      docker pull sameli/detkit
 
 For a complete install or build instructions, see :ref:`install_package`.
 
@@ -74,6 +80,7 @@ Links
 * `Package on Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_
 * `Package on PyPi <https://pypi.org/project/detkit/>`_
 * `Source code on Github <https://github.com/ameli/detkit>`_
+* `Docker image <https://hub.docker.com/repository/docker/sameli/detkit>`_
 
 .. * `Interactive Jupyter notebook <https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb>`_.
 .. * `API <https://ameli.github.io/detkit/_modules/modules.html>`_
@@ -138,3 +145,5 @@ Acknowledgements
    :target: https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb
 .. |downloads| image:: https://pepy.tech/badge/special-functions
    :target: https://pepy.tech/project/detkit
+.. |docker| image:: https://img.shields.io/docker/pulls/sameli/detkit
+   :target: https://img.shields.io/docker/pulls/sameli/detkit
