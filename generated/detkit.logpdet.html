@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>logpdet &#8212; detkit Manual</title>
+    
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/toggleprompt.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="get_config" href="detkit.get_config.html" />
+    <link rel="prev" title="loggdet" href="detkit.loggdet.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">detkit</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../install.html">
+  Install
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../tests.html">
+  Tests
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/ameli/detkit" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Main Functions
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.logdet.html">
+   logdet
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.loggdet.html">
+   loggdet
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   logpdet
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Utility Functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.get_config.html">
+   get_config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.get_instructions_per_task.html">
+   get_instructions_per_task
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="logpdet">
+<h1>logpdet<a class="headerlink" href="#logpdet" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="detkit.logpdet">
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">logpdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'legacy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_orth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.logpdet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the <cite>logpdet</cite> of a matrix.</p>
+<p>The <cite>logpdet</cite> function is defined by</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{logpdet}(\mathbf{A}, \mathbf{X}) :=
+\log_{e} |\mathrm{pdet}(\mathbf{A}, \mathbf{X})|,\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{pdet}(\mathbf{A}, \mathbf{X}) :=
+\det(\mathbf{X}^{\intercal} \mathbf{X}) \det(\mathbf{A})
+\det(\mathbf{X}^{\intercal} \mathbf{A}^{-1} \mathbf{X}),\]</div>
+<p>and</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is an <span class="math notranslate nohighlight">\(n \times n\)</span> invertible matrix.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is an <span class="math notranslate nohighlight">\(n \times m\)</span> full column-rank matrix.</p></li>
+</ul>
+<p>The value of <cite>logpdet</cite> is independent of whether <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is
+orthogonal or not.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">(n, n) array_like</span></dt><dd><p>Invertible matrix. The matrix type can be <cite>float32</cite>, <cite>float64</cite>, or
+<cite>float128</cite>. If a matrix of the type <cite>int32</cite> or <cite>int64</cite> is given,
+the type is cast to <cite>float64</cite>.</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">(n, m) array_like</span></dt><dd><p>Rectangular matrix with full column-rank.</p>
+</dd>
+<dt><strong>method</strong><span class="classifier">{‘legacy’, ‘proj’}, default=’legacy’</span></dt><dd><p>Method of computing, and can be one of <cite>legacy</cite> or <cite>proj</cite>.</p>
+<ul class="simple">
+<li><p><cite>‘legacy’</cite>: Computes <cite>logpdet</cite> directly by the equation given in
+the above.</p></li>
+<li><p><cite>‘proj’</cite>: Computes <cite>logpdet</cite> using Bott-Duffin inverse
+(See <a class="reference internal" href="#rf378f2aa7539-1" id="id1">[1]</a>).</p></li>
+</ul>
+</dd>
+<dt><strong>sym_pos</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the matrix <cite>A</cite> is assumed to be symmetric and
+positive-definite (SPD). The computation can be twice as fast as
+when the matrix is not SPD. This function does not verify whether
+<cite>A</cite> is symmetric or positive-definite. This option is applicable
+when <code class="docutils literal notranslate"><span class="pre">method='legacy'</span></code>.</p>
+</dd>
+<dt><strong>X_orth</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the matrix <cite>X</cite> is assumed to have orthogonal columns.
+The computation in this case is faster. This function will not
+verify whether <cite>X</cite> is orthogonal. This option is only applicable
+when <code class="docutils literal notranslate"><span class="pre">method='proj'</span></code>.</p>
+</dd>
+<dt><strong>flops</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the count of the retired hardware instructions is
+returned using <cite>perf</cite> tool. This functionality is only available on
+Linux operating system and only newer models of Intel CPUs. This
+option is only relevant when <code class="docutils literal notranslate"><span class="pre">use_scipy=False</span></code>.</p>
+</dd>
+<dt><strong>use_scipy</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, it uses scipy functions which are the wrappers around
+Fortran routines in BLAS and LAPACK. If <cite>False</cite>, it uses a C++
+library developed in this package.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>logpdet</strong><span class="classifier">float</span></dt><dd><p><cite>logpdet</cite> of <cite>A</cite>.</p>
+</dd>
+<dt><strong>sign</strong><span class="classifier">int</span></dt><dd><p>Sign of <cite>gdet</cite> function and can be <code class="docutils literal notranslate"><span class="pre">+1</span></code> for positive or <code class="docutils literal notranslate"><span class="pre">-1</span></code>
+for negative determinant.</p>
+</dd>
+<dt><strong>flops</strong><span class="classifier">int</span></dt><dd><p>(returned if <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> and <code class="docutils literal notranslate"><span class="pre">use_scipy=False</span></code>)</p>
+<p>Count of the retired hardware instructions of the processor during
+the runtime of this function. If this feature is not supported on
+the operating system or the processor, <cite>-1</cite> is returned.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>Error raised when:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sym_pos=True</span></code> and matrix <cite>A</cite> is not symmetric
+positive-definite.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">method='legacy'</span></code> and matrix <cite>A</cite> is degenerate.</p></li>
+</ul>
+</dd>
+<dt>ValueError</dt><dd><p>Error raised when</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method='proj'</span></code> and <code class="docutils literal notranslate"><span class="pre">sym_pos=True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">method='proj'</span></code> and <cite>A</cite> is singular, no error is raised and an
+incorrect value is returned.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="detkit.logdet.html#detkit.logdet" title="detkit.logdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logdet</span></code></a></dt><dd><p>Computes the <cite>logdet</cite> of a matrix.</p>
+</dd>
+<dt><a class="reference internal" href="detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggdet</span></code></a></dt><dd><p>Log of determinant terms used in Gaussian process regression.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>When the method is <cite>legacy</cite>, the <cite>logpdet</cite> function is computed using
+the equation given in the above. However, when the method is set to
+‘proj’, an alternative formulation is used. Note that:</p>
+<ul class="simple">
+<li><p><cite>proj</cite> method is independent of whether <cite>A</cite> is symmetric
+positive-definite or not, thus, cannot take advantage of an SPD
+matrix <cite>A</cite>.</p></li>
+<li><p>The <em>value</em> of <cite>logpdet</cite> function is independent of whether <cite>X</cite> is
+orthogonal or not. However, when <cite>X</cite> is orthogonal, the option
+<code class="docutils literal notranslate"><span class="pre">X_orth=True</span></code> can enhance the performance of both <cite>proj</cite> and
+<cite>legacy</cite> method.</p></li>
+</ul>
+<p>The inner computation of the function <cite>logpdet</cite> applies the following
+algorithms:</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">sym_pos=False</span></code>, the <cite>logdet</cite> function is computed using the
+<em>PLU decomposition</em> of <cite>A</cite>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">sym_pos=True</span></code>, the <cite>logdet</cite> function is computed using the
+Cholesky decomposition of <cite>A</cite>.</p></li>
+</ul>
+<p>The <cite>logpdet</cite> function is used in the likelihood function of the
+Gaussian process regression (see <a class="reference internal" href="#rf378f2aa7539-2" id="id2">[2]</a>).</p>
+<p>If the compile-time variable <code class="docutils literal notranslate"><span class="pre">USE_OPENMP</span></code> is set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, this
+function is parallelized. The compile-time default is <code class="docutils literal notranslate"><span class="pre">0</span></code>. To see
+a list of compile-time definitions, see <code class="xref py py-func docutils literal notranslate"><span class="pre">get-config()</span></code> function.</p>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="rf378f2aa7539-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
+Pseudo-Determinant Matrix Identities and Application to Gaussian
+Process Regression.</p>
+</dd>
+<dt class="label" id="rf378f2aa7539-2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>Ameli, S., Shadden, S. C. (2022) Noise Estimation in Gaussian
+Process Regression.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">logpdet</span><span class="p">,</span> <span class="n">orthogonalize</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate a random matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">500</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute logpdet of matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logpdet</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="go">(-680.9183141420649, -1)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute logpdet of a symmetric and positive-definite matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">A</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logpdet</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">sym_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">(-2059.6208046883685, 1)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute logpdet when X is orthogonal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orthogonalize</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logpdet</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">sym_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">X_orth</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">(-2059.6208046883685, 1)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute logpdet of a singular matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logpdet</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<span class="go">RuntimeError: LUP factorization failed since matrix &quot;A&quot; is degenerate.</span>
+</pre></div>
+</div>
+<p>The count of the hardware instructions is only supported on the Linux
+operating system and on recent Intel processors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Count the processor instructions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logpdet</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">sym_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">X_orth</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flops</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">(-2059.6208046883685, 1, 8520537034)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="detkit.loggdet.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">loggdet</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="detkit.get_config.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">get_config</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, Siavash Ameli.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
