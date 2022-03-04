@@ -47,13 +47,15 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
     Assuming the matrix size is :math:`n`, the complexity of either of the
     tasks provided in are as follows
 
-    * ``'matmat'``: matrix-matrix multiplication, :math:`n^3` operations
-    * ``'gramian'``: Gramian matrix multiplication, :math:`\\frac{1}{2}n^3`
-      operations.
-    * ``'cholesky'``: Cholesky decomposition, :math:`\\frac{1}{3}n^3`
-      operations.
-    * ``'lup'``: LUP decomposition, :math:`\\frac{2}{3}n^3` operations.
-    * ``'lu'``: LU decomposition, :math:`\\frac{2}{3}n^3` operations.
+    ==============  =============================  =======================
+    Code name       Task name                      Complexity
+    ==============  =============================  =======================
+    ``'matmat'``    matrix-matrix multiplication   :math:`n^3`
+    ``'gramian'``   Gramian matrix multiplication  :math:`\\frac{1}{2}n^3`
+    ``'cholesky'``  Cholesky decomposition         :math:`\\frac{1}{3}n^3`
+    ``'lup'``       LUP decomposition              :math:`\\frac{2}{3}n^3`
+    ``'lu'``        LU decomposition               :math:`\\frac{2}{3}n^3`
+    ==============  =============================  =======================
 
     This function measures the instructions of a benchmark task as :math:`n`
     tends to infinity.

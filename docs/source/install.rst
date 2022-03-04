@@ -47,16 +47,16 @@ Install from PyPi
 
 |pypi| |format| |implementation| |pyversions|
 
-The recommended installation method is through the package available at `PyPi <https://pypi.org/project/detkit>`_ using ``pip``.
+The recommended installation method is through the package available at `PyPi <https://pypi.org/project/detkit>`_ using `pip`.
 
-1. Ensure ``pip`` is installed within Python and upgrade the existing ``pip`` by
+1. Ensure `pip` is installed within Python and upgrade the existing ``pip`` by
 
    ::
 
        python -m ensurepip
        python -m pip install --upgrade pip
 
-   If you are using PyPy instead of Python, ensure ``pip`` is installed and upgrade the existing ``pip`` by
+   If you are using PyPy instead of Python, ensure `pip` is installed and upgrade the existing `pip` by
 
    ::
 
@@ -99,23 +99,23 @@ Alternatively, the package can be installed through `Anaconda could <https://ana
 
 .. _Build_Locally:
 
-==================================
-Build and Install from Source Code
-==================================
+======================
+Build from Source Code
+======================
 
 |release|
 
-**Build dependencies:** To build the package from the source code, ``numpy`` and ``cython`` are required. These dependencies are installed automatically during the build process and no action is needed.
+**Build dependencies:** To build the package from the source code, `numpy` and `cython` are required. These dependencies are installed automatically during the build process and no action is needed.
 
 1. Install GCC compiler as follows.
 
-   * **Linux:** Install ``gcc``, for instance, by ``apt`` (or any other package manager on your Linux distro)
+   * **Linux:** Install `gcc`, for instance, by `apt` (or any other package manager on your Linux distro)
 
      ::
 
          sudo apt install gcc
 
-   * **macOS:** Install ``gcc`` via Homebrew:
+   * **macOS:** Install `gcc` via Homebrew:
 
      ::
 
@@ -157,11 +157,11 @@ If you do not want the installation to occupy your main python's site-packages, 
 
 .. _virtualenv_env:
 
--------------------------------------
-Install in ``virtualenv`` Environment
--------------------------------------
+-----------------------------------
+Install in `virtualenv` Environment
+-----------------------------------
 
-1. Install ``virtualenv``:
+1. Install `virtualenv`:
 
    ::
 
@@ -179,7 +179,7 @@ Install in ``virtualenv`` Environment
 
        source detkit_env/bin/activate
 
-4. Install ``detkit`` package with any of the :ref:`above methods <InstallationMethods>`. For instance:
+4. Install `detkit` package with any of the :ref:`above methods <InstallationMethods>`. For instance:
 
    ::
 
@@ -195,9 +195,9 @@ Install in ``virtualenv`` Environment
 
 .. _conda_env:
 
---------------------------------
-Install in ``conda`` Environment
---------------------------------
+------------------------------
+Install in `conda` Environment
+------------------------------
 
 In the following, it is assumed `anaconda <https://www.anaconda.com/products/individual#Downloads>`_ (or `miniconda <https://docs.conda.io/en/latest/miniconda.html>`_) is installed.
 
@@ -241,6 +241,56 @@ In the following, it is assumed `anaconda <https://www.anaconda.com/products/ind
 
        conda deactivate
 
+======
+Docker
+======
+
+|docker|
+
+The `detkit` package can be run inside `detkit` docker image which is based on the Ubuntu 20.04 image.
+
+**Download docker image**
+
+::
+    
+    docker pull sameli/detkit
+
+Installed programs on the docker image
+
+* Python 3.9: `/usr/bin/python3`
+* Python interpreters: `ipython`, `jupyter`
+* Editor: `vim`
+
+**Usage:**
+
+* To run the container and open *python* interpreter directly at startup:
+
+  ::
+      
+      docker run -it sameli/detkit
+
+   This also imports `detkit` package automatically.
+
+* To run the container and open *ipython* interpreter directly at startup:
+
+  ::
+      
+      docker run -it sameli/detkit ipython
+
+  This also imports `detkit` package automatically.
+
+* To open a *bash shell* only:
+
+  ::
+      
+      docker run -it --entrypoint /bin/bash sameli/detkit
+
+* To *mount* the host directory `/home/user/project` on the docker's container directory `/root`, use:
+
+  ::
+      
+      docker run -it -v /home/user/project:/root sameli/detkit
+
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
 .. |format| image:: https://img.shields.io/pypi/format/detkit
@@ -255,3 +305,5 @@ In the following, it is assumed `anaconda <https://www.anaconda.com/products/ind
    :target: https://github.com/ameli/detkit/releases/
 .. |conda-platform| image:: https://anaconda.org/s-ameli/detkit/badges/platforms.svg
    :target: https://anaconda.org/s-ameli/detkit
+.. |docker| image:: https://img.shields.io/docker/pulls/sameli/detkit
+   :target: https://img.shields.io/docker/pulls/sameli/detkit
