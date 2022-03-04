@@ -20,6 +20,7 @@ recursive-include _modules *.rst
 recursive-exclude docs/images *.pdf
 recursive-include docs *.bib
 recursive-include docs *.in
+recursive-include docs *.txt
 
 recursive-include pdet *.rst
 recursive-include examples *.py
@@ -28,6 +29,7 @@ recursive-include notebooks *.ipynb
 recursive-include tests *.py
 recursive-include tests *.rst
 recursive-exclude tests *.svg
+recursive-include tests *.txt
 
 include CHANGELOG.rst
 include README.rst

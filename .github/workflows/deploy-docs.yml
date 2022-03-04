@@ -21,7 +21,7 @@ jobs:
                   ACCESS_TOKEN: ${{ secrets.detkit_DOCS }}
                   BASE_BRANCH: main
                   BRANCH: gh-pages
-                  FOLDER: docs/_build/html
+                  FOLDER: docs/build/html
                   BUILD_SCRIPT: |
                       apt-get update
                       apt-get install graphviz -y
