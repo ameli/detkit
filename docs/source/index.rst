@@ -102,19 +102,10 @@ Related Packages
 How to Cite
 ===========
 
-
 .. [1] Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
        Pseudo-Determinant Matrix Identities and Application to Gaussian
        Process Regression (`in preparation`).
-
-.. code-block:: latex
-
-    @unpublished{AMELI-2022,
-        author = {Ameli, S. and Shadden, S. C.},
-        title  = {A Singular {Woodbury} and Pseudo-Determinant Matrix Identities and Application to {Gaussian} Process Regression},
-        year   = {2022},
-        note   = {in preparation}
-    }
+.. [2] Ameli, S. (2022). ameli/detkit: (v0.0.6). Zenodo. |code-doi|
 
 ================
 Acknowledgements
@@ -146,4 +137,6 @@ Acknowledgements
 .. |downloads| image:: https://pepy.tech/badge/special-functions
    :target: https://pepy.tech/project/detkit
 .. |docker| image:: https://img.shields.io/docker/pulls/sameli/detkit
-   :target: https://img.shields.io/docker/pulls/sameli/detkit
+   :target: https://hub.docker.com/repository/docker/sameli/detkit
+.. |code-doi| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6395319.svg
+   :target: https://doi.org/10.5281/zenodo.6395319
