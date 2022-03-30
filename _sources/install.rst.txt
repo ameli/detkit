@@ -306,4 +306,4 @@ Installed programs on the docker image
 .. |conda-platform| image:: https://anaconda.org/s-ameli/detkit/badges/platforms.svg
    :target: https://anaconda.org/s-ameli/detkit
 .. |docker| image:: https://img.shields.io/docker/pulls/sameli/detkit
-   :target: https://img.shields.io/docker/pulls/sameli/detkit
+   :target: https://hub.docker.com/repository/docker/sameli/detkit

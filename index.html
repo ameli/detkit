@@ -10,28 +10,25 @@
 
     <title>detkit &#8212; detkit Manual</title>
     
-    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     
-    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -50,7 +47,7 @@
     
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -151,7 +148,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -224,14 +221,14 @@
               <div>
                 
   <section id="detkit">
-<h1>detkit<a class="headerlink" href="#detkit" title="Permalink to this headline">¶</a></h1>
+<h1>detkit<a class="headerlink" href="#detkit" title="Permalink to this headline">#</a></h1>
 <p><a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="licence" src="https://img.shields.io/github/license/ameli/detkit" /></a> <a class="reference external" href="https://ameli.github.io/detkit/index.html"><img alt="docs" src="https://github.com/ameli/detkit/workflows/docs/badge.svg" /></a></p>
 <p>A toolkit to compute some common functions involving determinant of matrices used in machine learning.</p>
 <div class="toctree-wrapper compound">
 </div>
 <section id="list-of-functions">
-<h2>List of Functions<a class="headerlink" href="#list-of-functions" title="Permalink to this headline">¶</a></h2>
-<table class="longtable table autosummary">
+<h2>List of Functions<a class="headerlink" href="#list-of-functions" title="Permalink to this headline">#</a></h2>
+<table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -251,7 +248,7 @@
 <p>See <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> for a list of all functions.</p>
 </section>
 <section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>Functions are implemented with a novel algorithm described in <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
 <li><p>The underlying library is implemented in C++ and wrapped in cython.</p></li>
@@ -259,8 +256,8 @@
 </ul>
 </section>
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://pypi.org/project/special-functions/"><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a> <a class="reference external" href="https://img.shields.io/docker/pulls/sameli/detkit"><img alt="docker" src="https://img.shields.io/docker/pulls/sameli/detkit" /></a></p>
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
+<p><a class="reference external" href="https://pypi.org/project/special-functions/"><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a> <a class="reference external" href="https://hub.docker.com/repository/docker/sameli/detkit"><img alt="docker" src="https://img.shields.io/docker/pulls/sameli/detkit" /></a></p>
 <ul>
 <li><p>Install with <a class="reference external" href="https://pypi.org/project/special-functions/">pip</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">detkit</span>
@@ -281,12 +278,12 @@
 <p>For a complete install or build instructions, see <a class="reference internal" href="install.html#install-package"><span class="std std-ref">Install</span></a>.</p>
 </section>
 <section id="interactive-tutorial">
-<h2>Interactive Tutorial<a class="headerlink" href="#interactive-tutorial" title="Permalink to this headline">¶</a></h2>
+<h2>Interactive Tutorial<a class="headerlink" href="#interactive-tutorial" title="Permalink to this headline">#</a></h2>
 <p><a class="reference external" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb"><img alt="binder" src="https://mybinder.org/badge_logo.svg" /></a></p>
 <p>Launch an online interactive tutorial in <a class="reference external" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb">Jupyter notebook</a>.</p>
 </section>
 <section id="links">
-<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://anaconda.org/s-ameli/detkit">Package on Anaconda Cloud</a></p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/detkit/">Package on PyPi</a></p></li>
@@ -295,36 +292,31 @@
 </ul>
 </section>
 <section id="how-to-contribute">
-<h2>How to Contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h2>
+<h2>How to Contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">#</a></h2>
 <p>We welcome contributions via <a class="reference external" href="https://github.com/ameli/detkit/pulls">Github’s pull request</a>. If you do not feel comfortable modifying the code, we also welcome feature request and bug report as <a class="reference external" href="https://github.com/ameli/detkit/issues">Github issues</a>.</p>
 </section>
 <section id="related-packages">
-<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">¶</a></h2>
+<h2>Related Packages<a class="headerlink" href="#related-packages" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/ameli/glearn">glean</a>: A high-performance python package for machine learning using Gaussian process.</p></li>
 <li><p><a class="reference external" href="https://github.com/ameli/imate">imate</a>: A high-performance python package for implicit matrix trace estimation.</p></li>
 </ul>
 </section>
 <section id="how-to-cite">
-<h2>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h2>
+<h2>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">#</a></h2>
 <dl class="footnote brackets">
 <dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
 Pseudo-Determinant Matrix Identities and Application to Gaussian
 Process Regression (<cite>in preparation</cite>).</p>
 </dd>
+<dt class="label" id="id4"><span class="brackets">2</span></dt>
+<dd><p>Ameli, S. (2022). ameli/detkit: (v0.0.6). Zenodo. <a class="reference external" href="https://doi.org/10.5281/zenodo.6395319"><img alt="code-doi" src="https://zenodo.org/badge/DOI/10.5281/zenodo.6395319.svg" /></a></p>
+</dd>
 </dl>
-<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@unpublished<span class="nb">{</span>AMELI-2022,
-    author = <span class="nb">{</span>Ameli, S. and Shadden, S. C.<span class="nb">}</span>,
-    title  = <span class="nb">{</span>A Singular <span class="nb">{</span>Woodbury<span class="nb">}</span> and Pseudo-Determinant Matrix Identities and Application to <span class="nb">{</span>Gaussian<span class="nb">}</span> Process Regression<span class="nb">}</span>,
-    year   = <span class="nb">{</span>2022<span class="nb">}</span>,
-    note   = <span class="nb">{</span>in preparation<span class="nb">}</span>
-<span class="nb">}</span>
-</pre></div>
-</div>
 </section>
 <section id="acknowledgements">
-<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>National Science Foundation #1520825</p></li>
 <li><p>American Heart Association #18EIA33900046</p></li>
@@ -353,8 +345,9 @@ Process Regression (<cite>in preparation</cite>).</p>
       </div>
     </div>
   
-    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -365,7 +358,7 @@ Process Regression (<cite>in preparation</cite>).</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     
