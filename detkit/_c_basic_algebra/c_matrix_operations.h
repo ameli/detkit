@@ -104,8 +104,18 @@ class cMatrixOperations
                 const DataType* A,
                 const DataType* B,
                 DataType* C,
-                const LongIndexType num_rows,
-                const LongIndexType num_columns,
+                const LongIndexType n,
+                const LongIndexType m,
+                const LongIndexType p,
+                const DataType c);
+
+        // gramian matmat transpose
+        static void gramian_matmat_transpose(
+                const DataType* A,
+                const DataType* B,
+                DataType* C,
+                const LongIndexType n,
+                const LongIndexType m,
                 const DataType c);
 
         // gramian

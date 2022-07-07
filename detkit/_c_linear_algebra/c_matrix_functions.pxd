@@ -39,6 +39,8 @@ cdef extern from "c_matrix_functions.h":
         DataType loggdet(
                 DataType* A,
                 DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns,
                 const FlagType sym_pos,
@@ -51,6 +53,8 @@ cdef extern from "c_matrix_functions.h":
         DataType logpdet(
                 DataType* A,
                 DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns,
                 const FlagType sym_pos,

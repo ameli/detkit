@@ -68,7 +68,7 @@ def _check_import():
 try:
     # Import sub-packages
     from ._functions import logdet, loggdet, logpdet               # noqa: E402
-    from ._functions import orthogonalize                          # noqa: E402
+    from ._functions import orthogonalize, ortho_complement        # noqa: E402
     from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
 
@@ -81,7 +81,7 @@ except Exception as e:
     # error.
     raise e
 
-__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'get_config',
-           'get_instructions_per_task']
+__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'ortho_complement',
+           'get_config', 'get_instructions_per_task']
 
 from.__version__ import __version__                                # noqa: F401

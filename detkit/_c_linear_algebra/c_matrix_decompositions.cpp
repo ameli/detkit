@@ -15,8 +15,12 @@
 
 #include "./c_matrix_decompositions.h"
 #include <cmath>  // sqrt
-#include "../_c_basic_algebra/c_vector_operations.h"  // cVectorOperations
+#include <cassert>  // assert
+#include <cstdlib>  // rand, RAND_MAX
 #include "../_definitions/definitions.h"
+#include "../_c_basic_algebra/c_vector_operations.h"  // cVectorOperations
+#include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
+#include "../_utilities/array_util.h"  // ArrayUtil
 
 
 // ==
@@ -238,17 +242,106 @@ void cMatrixDecompositions<DataType>::gram_schmidt(
         {
             // Inner product of i-th and j-th columns of matrix A
             inner_prod = cVectorOperations<DataType>::inner_product(
-                    A, num_rows, num_columns, j, i);
+                    A, A, num_rows, num_columns, num_columns, j, i);
 
             // Subtraction
             cVectorOperations<DataType>::subtract_scaled_vector(
-                    A, num_rows, num_columns, inner_prod, j, i);
+                    A, A, num_rows, num_columns, num_columns, inner_prod, i,
+                    j);
         }
 
         // Normalize i-th column
         cVectorOperations<DataType>::normalize_vector_in_place(
                 A, num_rows, num_columns, i);
     }
+}
+
+
+// ================
+// ortho complement
+// ================
+
+/// \brief Computes orthonormal complement of the matrix \c X. If \c X is an
+///        \c (n,m) size matrix, then its orthonormal complement, \c Xp, is of
+///        size \c (n,n-m). The columns of \c Xp are orthogonal to the columsn
+///        of \c X, and are orthonormal. If \c X_orth is \c 1, it means \c X
+///        is already orthonormalized, hence this function will not
+///        orthonormalize it. If \c X_orth is \c 0, this function will copy
+///        \c X to a new array, \c Xc, and re-orthonormalize it.
+///
+/// \note  The matrix \c X is not overwritten.
+
+template <typename DataType>
+void cMatrixDecompositions<DataType>::ortho_complement(
+        const DataType *X,
+        DataType *Xp,
+        const LongIndexType num_rows,
+        const LongIndexType num_columns_X,
+        const LongIndexType num_columns_Xp,
+        const FlagType X_orth)
+{
+    // Check matrix size
+    assert(num_rows > num_columns_X);
+    assert(num_rows > num_columns_Xp);
+
+    DataType* Xc = new DataType[num_rows*num_columns_X];
+    cMatrixOperations<DataType>::copy(X, Xc, num_rows, num_columns_X);
+
+    if (X_orth != 1)
+    {
+        // Orthonormalize Xc
+        cMatrixDecompositions<DataType>::gram_schmidt(
+                Xc, num_rows, num_columns_X);
+    }
+
+    // Initialize Xp with random numbers
+    for (LongIndexType i=0; i < num_rows; ++i)
+    {
+        for (LongIndexType j=0; j < num_columns_Xp; ++j)
+        {
+            Xp[i*num_columns_Xp + j] = \
+                std::rand() / static_cast<DataType>(RAND_MAX);
+        }
+    }
+
+    DataType inner_prod;
+
+    // Iterate over columns of Xp (i counts columns of Xp)
+    for (LongIndexType i=0; i < num_columns_Xp; ++i)
+    {
+        // Orthogonalize Xp against Xc (j counts columns of Xc)
+        for (LongIndexType j=0; j < num_columns_X; ++j)
+        {
+            // Inner product of i-th column of Xp and j-th column of Xc
+            inner_prod = cVectorOperations<DataType>::inner_product(
+                    Xp, Xc, num_rows, num_columns_Xp, num_columns_X, i, j);
+
+            // Subtraction
+            cVectorOperations<DataType>::subtract_scaled_vector(
+                    Xp, Xc, num_rows, num_columns_Xp, num_columns_X,
+                    inner_prod, i, j);
+        }
+
+        // Orthogonalize Xp against Xc (j counts previous columns of Xp)
+        for (LongIndexType j=0; j < i; ++j)
+        {
+            // Inner product of i-th column of Xp and j-th column of Xp
+            inner_prod = cVectorOperations<DataType>::inner_product(
+                    Xp, Xp, num_rows, num_columns_Xp, num_columns_Xp, i, j);
+
+            // Subtraction
+            cVectorOperations<DataType>::subtract_scaled_vector(
+                    Xp, Xp, num_rows, num_columns_Xp, num_columns_Xp,
+                    inner_prod, i, j);
+        }
+
+        // Normalize i-th column
+        cVectorOperations<DataType>::normalize_vector_in_place(
+                Xp, num_rows, num_columns_Xp, i);
+    }
+
+    // Free array
+    ArrayUtil<DataType>::del(Xc);
 }
 
 

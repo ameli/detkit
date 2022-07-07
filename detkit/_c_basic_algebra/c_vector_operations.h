@@ -39,19 +39,23 @@ class cVectorOperations
         // subtract scaled vector
         static void subtract_scaled_vector(
                 DataType* A,
+                DataType* B,
                 const LongIndexType num_rows,
-                const LongIndexType num_columns,
+                const LongIndexType num_columns_A,
+                const LongIndexType num_columns_B,
                 const DataType scale,
-                const LongIndexType i,
-                const LongIndexType j);
+                const LongIndexType i_A,
+                const LongIndexType j_B);
 
         // inner product
         static DataType inner_product(
                 const DataType* A,
+                const DataType* B,
                 const LongIndexType num_rows,
-                const LongIndexType num_columns,
-                const LongIndexType i,
-                const LongIndexType j);
+                const LongIndexType num_columns_A,
+                const LongIndexType num_columns_B,
+                const LongIndexType i_A,
+                const LongIndexType j_B);
 
         // euclidean norm
         static DataType euclidean_norm(

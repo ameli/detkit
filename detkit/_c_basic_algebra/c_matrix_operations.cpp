@@ -274,9 +274,154 @@ void cMatrixOperations<DataType>::matmat(
 }
 
 
-// ========
+// ================
+// matmat transpose
+// ================
+
+/// \brief matrix-matrix multiplication C = c*C + A.T * B, where A is (n, m),
+///        and B is (n , p), and C is (m , p).
+
+template <typename DataType>
+void cMatrixOperations<DataType>::matmat_transpose(
+        const DataType* A,
+        const DataType* B,
+        DataType* C,
+        const LongIndexType n,
+        const LongIndexType m,
+        const LongIndexType p,
+        const DataType c)
+{
+    LongIndexType j;
+    LongIndexType k;
+    long double sum;
+    #if CHUNK_TASKS
+    LongIndexType chunk = 5;
+    LongIndexType n_chunked = n - (n % chunk);
+    #endif
+
+    #if USE_OPENMP == 1
+    #pragma omp parallel for private(j, k, sum)
+    #endif
+    for (LongIndexType i=0; i < m; ++i)
+    {
+        for (j=0; j < p; ++j)
+        {
+            sum = 0.0;
+            #if CHUNK_TASKS
+            for (k=0; k < n_chunked; k+= chunk)
+            {
+                sum += A[k*m + i] * B[k*p + j] +
+                       A[(k+1)*m + i] * B[(k+1)*p + j] +
+                       A[(k+2)*m + i] * B[(k+2)*p + j] +
+                       A[(k+3)*m + i] * B[(k+3)*p + j] +
+                       A[(k+4)*m + i] * B[(k+4)*p + j];
+            }
+            #endif
+
+            #if CHUNK_TASKS
+            for (k=n_chunked; k < n; ++k)
+            #else
+            for (k=0; k < n; ++k)
+            #endif
+            {
+                sum += A[k*m + i] * B[k*p + j];
+            }
+
+            if (c == 0)
+            {
+                C[i*p + j] = static_cast<DataType>(sum);
+            }
+            else
+            {
+                C[i*p + j] += c * static_cast<DataType>(sum);
+            }
+        }
+    }
+}
+
+
+// ========================
+// gramian matmat transpose
+// ========================
+
+/// \brief matrix-matrix multiplication C = c*C + A.T * B, where A is (n, m),
+///        and B is (n , m), and C is (m , m). It is assumed the matrix
+///        product is a symmetric matrix. So, here, we only compute half of the
+///        matrix product.
+
+template <typename DataType>
+void cMatrixOperations<DataType>::gramian_matmat_transpose(
+        const DataType* A,
+        const DataType* B,
+        DataType* C,
+        const LongIndexType n,
+        const LongIndexType m,
+        const DataType c)
+{
+    LongIndexType j;
+    LongIndexType k;
+    long double sum;
+    #if CHUNK_TASKS
+    LongIndexType chunk = 5;
+    LongIndexType n_chunked = n - (n % chunk);
+    #endif
+
+    #if USE_OPENMP == 1
+    #pragma omp parallel for private(j, k, sum)
+    #endif
+    for (LongIndexType i=0; i < m; ++i)
+    {
+        #if USE_SYMMETRY
+        for (j=0; j <= i; ++j)
+        #else
+        for (j=0; j < m; ++j)
+        #endif
+        {
+            sum = 0.0;
+            #if CHUNK_TASKS
+            for (k=0; k < n_chunked; k+= chunk)
+            {
+                sum += A[k*m + i] * B[k*m + j] +
+                       A[(k+1)*m + i] * B[(k+1)*m + j] +
+                       A[(k+2)*m + i] * B[(k+2)*m + j] +
+                       A[(k+3)*m + i] * B[(k+3)*m + j] +
+                       A[(k+4)*m + i] * B[(k+4)*m + j];
+            }
+            #endif
+
+            #if CHUNK_TASKS
+            for (k=n_chunked; k < n; ++k)
+            #else
+            for (k=0; k < n; ++k)
+            #endif
+            {
+                sum += A[k*m + i] * B[k*m + j];
+            }
+
+            if (c == 0)
+            {
+                C[i*m + j] = static_cast<DataType>(sum);
+            }
+            else
+            {
+                C[i*m + j] += c * static_cast<DataType>(sum);
+            }
+
+            #if USE_SYMMETRY
+            // Symmetric matrix
+            if (i != j)
+            {
+                C[j*m + i] = C[i*m + j];
+            }
+            #endif
+        }
+    }
+}
+
+
+// =======
 // gramian
-// ========
+// =======
 
 /// \brief matrix-matrix multiplication C = c*C + A.T * A, where A is (n, m),
 ///        and the output C is (m , m) matrix.

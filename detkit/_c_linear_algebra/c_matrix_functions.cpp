@@ -237,6 +237,8 @@ template <typename DataType>
 DataType cMatrixFunctions<DataType>::loggdet(
         const DataType* A,
         const DataType* X,
+        DataType* Xp,
+        const FlagType use_Xp,
         const LongIndexType num_rows,
         const LongIndexType num_columns,
         const FlagType sym_pos,
@@ -263,11 +265,18 @@ DataType cMatrixFunctions<DataType>::loggdet(
         loggdet_ = cMatrixFunctions<DataType>::_loggdet_legacy(
                 A, X, num_rows, num_columns, sym_pos, sign);
     }
-    else
+    else if (method == 1)
     {
         // Using projection method
         loggdet_ = cMatrixFunctions<DataType>::_loggdet_proj(
                 A, X, num_rows, num_columns, X_orth, sign);
+    }
+    else
+    {
+        // Using compression method (method=2)
+        loggdet_ = cMatrixFunctions<DataType>::_loggdet_comp(
+                A, X, Xp, use_Xp, num_rows, num_columns, sym_pos, X_orth,
+                sign);
     }
 
     #if COUNT_PERF
@@ -548,6 +557,129 @@ DataType cMatrixFunctions<DataType>::_loggdet_proj(
 }
 
 
+// ============
+// loggdet comp
+// ============
+
+/// \brief Computes the logdet of likelihood function of Gaussian process.
+///        The matrix \c A is assumd to be \c (n,n), where \c n is \c num_rows,
+///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
+
+template <typename DataType>
+DataType cMatrixFunctions<DataType>::_loggdet_comp(
+        const DataType* A,
+        const DataType* X,
+        DataType* Xp,
+        const FlagType use_Xp,
+        const LongIndexType num_rows,
+        const LongIndexType num_columns,
+        const FlagType sym_pos,
+        const FlagType X_orth,
+        FlagType& sign)
+{
+    DataType loggdet_;
+    DataType logdet_Ap;
+    DataType logdet_XtX = 0.0;
+    FlagType sign_XtX = 1;
+    FlagType sign_Ap;
+    LongIndexType num_columns_xp = num_rows - num_columns;
+    FlagType Xp_allocated = 0;
+
+    // Allocate matrices
+    DataType* Y = new DataType[num_rows*num_columns_xp];
+    DataType* Ap = new DataType[num_columns_xp*num_columns_xp];
+    DataType* XtX = NULL;
+    DataType* Xp_;
+
+    // Compute Xp, the orthonormal complement of X. If Xp is not null, it means
+    // it is already created.
+    if (use_Xp == 0)
+    {
+        Xp_ = new DataType[num_rows*num_columns_xp];
+
+        // Indicate Xp is allocated so to deallocate it. If not allocated, keep
+        // it as is because it may be used in the future function calls.
+        Xp_allocated = 1;
+
+        // Compute Xp, the orthonormal complement of X
+        cMatrixDecompositions<DataType>::ortho_complement(
+                X, Xp_, num_rows, num_columns, num_columns_xp, X_orth);
+    }
+    else
+    {
+        // If Xp is not NULL, it is assumed that Xp is orthogonal complement of
+        // X, and already pre-computed.
+        Xp_ = Xp;
+    }
+
+    // Compute Y = A * Xp
+    cMatrixOperations<DataType>::matmat(
+            A, Xp_, Y, num_rows, num_rows, num_columns_xp, 0.0);
+
+    // Compute Ap = Xp.T * Y
+    if (sym_pos == 1)
+    {
+        cMatrixOperations<DataType>::gramian_matmat_transpose(
+                Xp_, Y, Ap, num_rows, num_columns_xp, 0.0);
+    }
+    else
+    {
+        cMatrixOperations<DataType>::matmat_transpose(
+                Xp_, Y, Ap, num_rows, num_columns_xp, num_columns_xp, 0.0);
+    }
+
+    // Compute logdet of Ap
+    logdet_Ap = cMatrixFunctions<DataType>::logdet(
+            Ap, num_columns_xp, sym_pos, sign_Ap);
+
+    // Compute logdet of XtX
+    if (X_orth == 1)
+    {
+        logdet_XtX = 0.0;
+    }
+    else
+    {
+        // Compute XtX
+        XtX = new DataType[num_columns*num_columns];
+        cMatrixOperations<DataType>::gramian(
+                X, XtX, num_rows, num_columns, 0);
+
+        // Compute logdet of XtX. Note XtX_sign is always 1, will not be used.
+        logdet_XtX = cMatrixFunctions<DataType>::logdet(
+                XtX, num_columns, 1, sign_XtX);
+    }
+
+    // Compute loggdet
+    loggdet_ = logdet_Ap + logdet_XtX;
+
+    // Sign
+    if (sign_Ap == -4)
+    {
+        // Matrix is degenerate
+        sign = -4;
+    }
+    else if ((sign_Ap == -2) || (sign_XtX == -2))
+    {
+        sign = -2;
+    }
+    else
+    {
+        sign = sign_Ap * sign_XtX;
+    }
+
+    // Free array
+    if (Xp_allocated == 1)
+    {
+        ArrayUtil<DataType>::del(Xp_);
+    }
+    ArrayUtil<DataType>::del(Y);
+    ArrayUtil<DataType>::del(Ap);
+    ArrayUtil<DataType>::del(XtX);
+
+    return loggdet_;
+}
+
+
 // =======
 // logpdet
 // =======
@@ -560,6 +692,8 @@ template <typename DataType>
 DataType cMatrixFunctions<DataType>::logpdet(
         const DataType* A,
         const DataType* X,
+        DataType* Xp,
+        const FlagType use_Xp,
         const LongIndexType num_rows,
         const LongIndexType num_columns,
         const FlagType sym_pos,
@@ -586,11 +720,18 @@ DataType cMatrixFunctions<DataType>::logpdet(
         logpdet_ = cMatrixFunctions<DataType>::_logpdet_legacy(
                 A, X, num_rows, num_columns, sym_pos, X_orth, sign);
     }
-    else
+    else if (method == 1)
     {
         // Using projection method
         logpdet_ = cMatrixFunctions<DataType>::_logpdet_proj(
                 A, X, num_rows, num_columns, X_orth, sign);
+    }
+    else
+    {
+        // Using compression method (method=2)
+        logpdet_ = cMatrixFunctions<DataType>::_logpdet_comp(
+                A, X, Xp, use_Xp, num_rows, num_columns, sym_pos, X_orth,
+                sign);
     }
 
     #if COUNT_PERF
@@ -884,6 +1025,102 @@ DataType cMatrixFunctions<DataType>::_logpdet_proj(
     ArrayUtil<DataType>::del(XtX);
     ArrayUtil<DataType>::del(L);
     ArrayUtil<DataType>::del(Y);
+
+    return logpdet_;
+}
+
+
+// ============
+// logpdet comp
+// ============
+
+/// \brief Computes the logpdet of likelihood function of Gaussian process.
+///        The matrix \c A is assumd to be \c (n,n), where \c n is \c num_rows,
+///        and the matrix \c X is \c (n,m), where \c m is \c num_columns.
+
+template <typename DataType>
+DataType cMatrixFunctions<DataType>::_logpdet_comp(
+        const DataType* A,
+        const DataType* X,
+        DataType* Xp,
+        const FlagType use_Xp,
+        const LongIndexType num_rows,
+        const LongIndexType num_columns,
+        const FlagType sym_pos,
+        const FlagType X_orth,
+        FlagType& sign)
+{
+    DataType logpdet_;
+    DataType logdet_Ap;
+    FlagType sign_Ap;
+    LongIndexType num_columns_xp = num_rows - num_columns;
+    FlagType Xp_allocated = 0;
+
+    // Allocate matrices
+    DataType* Y = new DataType[num_rows*num_columns_xp];
+    DataType* Ap = new DataType[num_columns_xp*num_columns_xp];
+    DataType* XtX = NULL;
+    DataType* Xp_;
+
+    // Compute Xp, the orthonormal complement of X. If Xp is not null, it means
+    // it is already created.
+    if (use_Xp == 0)
+    {
+        Xp_ = new DataType[num_rows*num_columns_xp];
+
+        // Indicate Xp is allocated so to deallocate it. If not allocated, keep
+        // it as is because it may be used in the future function calls.
+        Xp_allocated = 1;
+
+        // Compute Xp, the orthonormal complement of X
+        cMatrixDecompositions<DataType>::ortho_complement(
+                X, Xp_, num_rows, num_columns, num_columns_xp, X_orth);
+    }
+    else
+    {
+        // If Xp is not NULL, it is assumed that Xp is orthogonal complement of
+        // X, and already pre-computed.
+        Xp_ = Xp;
+    }
+
+    // Compute Y = A * Xp
+    cMatrixOperations<DataType>::matmat(
+            A, Xp_, Y, num_rows, num_rows, num_columns_xp, 0.0);
+
+    // Compute Ap = Xp.T * Y
+    cMatrixOperations<DataType>::matmat_transpose(
+            Xp_, Y, Ap, num_rows, num_columns_xp, num_columns_xp, 0.0);
+
+    // Compute logdet of Ap
+    logdet_Ap = cMatrixFunctions<DataType>::logdet(
+            Ap, num_columns_xp, sym_pos, sign_Ap);
+
+    // Compute loggdet
+    logpdet_ = -logdet_Ap;
+
+    // Sign
+    if (sign_Ap == -4)
+    {
+        // Matrix is degenerate
+        sign = -4;
+    }
+    else if (sign_Ap == -2)
+    {
+        sign = -2;
+    }
+    else
+    {
+        sign = sign_Ap;
+    }
+
+    // Free array
+    if (Xp_allocated == 1)
+    {
+        ArrayUtil<DataType>::del(Xp_);
+    }
+    ArrayUtil<DataType>::del(Y);
+    ArrayUtil<DataType>::del(Ap);
+    ArrayUtil<DataType>::del(XtX);
 
     return logpdet_;
 }

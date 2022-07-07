@@ -81,6 +81,15 @@ class cMatrixDecompositions
                 DataType *A,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns);
+
+        // Orthonormal complement
+        static void ortho_complement(
+                const DataType *X,
+                DataType *Xp,
+                const LongIndexType num_rows,
+                const LongIndexType num_columns_X,
+                const LongIndexType num_columns_Xp,
+                const FlagType X_orth);
 };
 
 #endif  // _C_LINEAR_ALGEBRA_C_MATRIX_DECOMPOSITIONS_H_

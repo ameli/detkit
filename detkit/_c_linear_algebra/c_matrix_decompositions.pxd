@@ -39,3 +39,12 @@ cdef extern from "c_matrix_decompositions.h":
                 DataType *A,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns) nogil
+
+        @staticmethod
+        void ortho_complement(
+                DataType *X,
+                DataType *Xp,
+                const LongIndexType num_rows,
+                const LongIndexType num_columns_X,
+                const LongIndexType num_columns_Xp,
+                const FlagType X_ortho) nogil

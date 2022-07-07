@@ -22,17 +22,21 @@
 // subtract scaled vector
 // ======================
 
-/// \brief         Subtracts the scaled column from another column of a matrix.
+/// \brief         Subtracts the scaled column \c j of matrix \c B from the
+///                column \c i of \c A and writes to \c A inplace. Both
+///                matrices should have the same number of rows.
 ///
 
 template <typename DataType>
 void cVectorOperations<DataType>::subtract_scaled_vector(
         DataType* A,
+        DataType* B,
         const LongIndexType num_rows,
-        const LongIndexType num_columns,
+        const LongIndexType num_columns_A,
+        const LongIndexType num_columns_B,
         const DataType scale,
-        const LongIndexType i,
-        const LongIndexType j)
+        const LongIndexType i_A,
+        const LongIndexType j_B)
 {
     if (scale == 0.0)
     {
@@ -41,7 +45,7 @@ void cVectorOperations<DataType>::subtract_scaled_vector(
 
     for (LongIndexType k=0; k < num_rows; ++k)
     {
-        A[k*num_columns + j] -= scale * A[k*num_columns + i];
+        A[k*num_columns_A + i_A] -= scale * B[k*num_columns_B + j_B];
     }
 }
 
@@ -56,16 +60,18 @@ void cVectorOperations<DataType>::subtract_scaled_vector(
 template <typename DataType>
 DataType cVectorOperations<DataType>::inner_product(
         const DataType* A,
+        const DataType* B,
         const LongIndexType num_rows,
-        const LongIndexType num_columns,
-        const LongIndexType i,
-        const LongIndexType j)
+        const LongIndexType num_columns_A,
+        const LongIndexType num_columns_B,
+        const LongIndexType i_A,
+        const LongIndexType j_B)
 {
     long double inner_prod = 0.0;
 
     for (LongIndexType k=0; k < num_rows; ++k)
     {
-        inner_prod += A[k*num_columns + i] * A[k*num_columns + j];
+        inner_prod += A[k*num_columns_A + i_A] * B[k*num_columns_B + j_B];
     }
 
     return static_cast<DataType>(inner_prod);

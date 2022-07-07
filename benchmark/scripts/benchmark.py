@@ -26,8 +26,8 @@ import subprocess
 import re
 
 from timer import Timer
-from detkit import loggdet, py_loggdet, logpdet, py_logpdet, orthogonalize, \
-        get_instructions_per_task, get_config
+from detkit import loggdet, logpdet, orthogonalize, get_config, \
+        get_instructions_per_task
 
 
 # ===============
@@ -170,7 +170,7 @@ def get_processor_name():
 # legacy method
 # =============
 
-def legacy_method(func, K, X, sym_pos=False, X_orth=False):
+def legacy_method(func, K, X, sym_pos=False, X_orth=False, use_blas=False):
     """
     Computes determinant using the standard method. Note that for this method,
     the X_orth should always be False.
@@ -179,7 +179,7 @@ def legacy_method(func, K, X, sym_pos=False, X_orth=False):
     timer = Timer()
     timer.tic()
     loggdet_, _, inst = func(K, X, method='legacy', sym_pos=sym_pos,
-                             X_orth=X_orth, flops=True)
+                             X_orth=X_orth, flops=True, use_scipy=use_blas)
     timer.toc()
 
     # Time of computing loggdet
@@ -193,7 +193,7 @@ def legacy_method(func, K, X, sym_pos=False, X_orth=False):
 # proj method gen
 # ===============
 
-def proj_method_gen(func, K, X):
+def proj_method_gen(func, K, X, use_blas=False):
     """
     Computes determinant using the presented method. Note that for this method,
     the sym_pos should always be False.
@@ -202,7 +202,7 @@ def proj_method_gen(func, K, X):
     timer = Timer()
     timer.tic()
     loggdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=False,
-                             flops=True)
+                             flops=True, use_scipy=use_blas)
     timer.toc()
 
     # Time of computing loggdet
@@ -216,7 +216,7 @@ def proj_method_gen(func, K, X):
 # proj method ort
 # ===============
 
-def proj_method_ort(func, K, X):
+def proj_method_ort(func, K, X, use_blas=False):
     """
     Computes determinant using the presented method. Note that for this method,
     the sym_pos should always be False.
@@ -237,7 +237,7 @@ def proj_method_ort(func, K, X):
     # Compute loggdet
     timer.tic()
     loggdet_, _, inst = func(K, X, method='proj', sym_pos=False, X_orth=True,
-                             flops=True)
+                             flops=True, use_scipy=use_blas)
     timer.toc()
 
     # Time of computing loggdet
@@ -245,6 +245,33 @@ def proj_method_ort(func, K, X):
     proc_time = timer.proc_time
 
     return loggdet_, wall_time_pre, proc_time_pre, wall_time, proc_time, inst
+
+
+# ===========
+# comp method
+# ===========
+
+def comp_method(func, K, X, Xp=None, sym_pos=False, X_orth=False,
+                use_blas=False):
+    """
+    Computes determinant using the presented method. Note that for this method,
+    the sym_pos should always be False.
+    """
+
+    timer = Timer()
+
+    # Compute loggdet
+    timer.tic()
+    loggdet_, _, inst = func(K, X, Xp=Xp, method='comp', sym_pos=sym_pos,
+                             X_orth=X_orth, flops=True, use_scipy=use_blas)
+    timer.toc()
+
+    # Time of computing loggdet
+    wall_time = timer.wall_time
+    proc_time = timer.proc_time
+
+    # return loggdet_, wall_time_pre, proc_time_pre, wall_time, proc_time, inst
+    return loggdet_, wall_time, proc_time, inst
 
 
 # =========
@@ -262,15 +289,9 @@ def benchmark(argv):
 
     # Determine the computing function
     if arguments['func'] == 'loggdet':
-        if arguments['use_blas']:
-            func = py_loggdet
-        else:
-            func = loggdet
+        func = loggdet
     elif arguments['func'] == 'logpdet':
-        if arguments['use_blas']:
-            func = py_logpdet
-        else:
-            func = logpdet
+        func = logpdet
     else:
         raise ValueError('Function should be wither "loggdet" or "logpdet".')
 
@@ -320,6 +341,7 @@ def benchmark(argv):
     # Orthogonalize X
     Q, R = qr(X)
     X = Q
+    # orthogonalize(X)
 
     # Preallocate output arrays
     logdet_lgcy_gen_gen = numpy.zeros((ratios.size, repeat))
@@ -328,6 +350,12 @@ def benchmark(argv):
     logdet_lgcy_spd_ort = numpy.zeros((ratios.size, repeat))
     logdet_proj_gen = numpy.zeros((ratios.size, repeat))
     logdet_proj_ort = numpy.zeros((ratios.size, repeat))
+    logdet_comp_gen_gen = numpy.zeros((ratios.size, repeat))
+    logdet_comp_spd_gen = numpy.zeros((ratios.size, repeat))
+    logdet_comp_gen_ort = numpy.zeros((ratios.size, repeat))
+    logdet_comp_spd_ort = numpy.zeros((ratios.size, repeat))
+    logdet_comp_gen_ort_xp = numpy.zeros((ratios.size, repeat))
+    logdet_comp_spd_ort_xp = numpy.zeros((ratios.size, repeat))
 
     wall_time_lgcy_gen_gen = numpy.zeros((ratios.size, repeat))
     wall_time_lgcy_gen_ort = numpy.zeros((ratios.size, repeat))
@@ -336,6 +364,12 @@ def benchmark(argv):
     wall_time_proj_gen = numpy.zeros((ratios.size, repeat))
     wall_time_proj_ort_pre = numpy.zeros((ratios.size, repeat))
     wall_time_proj_ort = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_gen_gen = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_spd_gen = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_gen_ort = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_spd_ort = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_gen_ort_xp = numpy.zeros((ratios.size, repeat))
+    wall_time_comp_spd_ort_xp = numpy.zeros((ratios.size, repeat))
 
     proc_time_lgcy_gen_gen = numpy.zeros((ratios.size, repeat))  # A gen, X gen
     proc_time_lgcy_gen_ort = numpy.zeros((ratios.size, repeat))  # A gen, X ort
@@ -344,6 +378,12 @@ def benchmark(argv):
     proc_time_proj_gen = numpy.zeros((ratios.size, repeat))      # A gen, X gen
     proc_time_proj_ort_pre = numpy.zeros((ratios.size, repeat))  # A gen, X ort
     proc_time_proj_ort = numpy.zeros((ratios.size, repeat))      # A gen, X ort
+    proc_time_comp_gen_gen = numpy.zeros((ratios.size, repeat))  # A gen, X gen
+    proc_time_comp_spd_gen = numpy.zeros((ratios.size, repeat))  # A spd, X gen
+    proc_time_comp_gen_ort = numpy.zeros((ratios.size, repeat))  # A gen, X gen
+    proc_time_comp_spd_ort = numpy.zeros((ratios.size, repeat))  # A spd, X gen
+    proc_time_comp_gen_ort_xp = numpy.zeros((ratios.size, repeat))  # Xp known
+    proc_time_comp_spd_ort_xp = numpy.zeros((ratios.size, repeat))  # Xp known
 
     flops_lgcy_gen_gen = numpy.zeros((ratios.size, repeat))
     flops_lgcy_gen_ort = numpy.zeros((ratios.size, repeat))
@@ -352,8 +392,14 @@ def benchmark(argv):
     flops_proj_gen = numpy.zeros((ratios.size, repeat))
     flops_proj_ort_pre = numpy.zeros((ratios.size, repeat))
     flops_proj_ort = numpy.zeros((ratios.size, repeat))
+    flops_comp_gen_gen = numpy.zeros((ratios.size, repeat))
+    flops_comp_spd_gen = numpy.zeros((ratios.size, repeat))
+    flops_comp_gen_ort = numpy.zeros((ratios.size, repeat))
+    flops_comp_spd_ort = numpy.zeros((ratios.size, repeat))
+    flops_comp_gen_ort_xp = numpy.zeros((ratios.size, repeat))
+    flops_comp_spd_ort_xp = numpy.zeros((ratios.size, repeat))
 
-    # loop over ratios
+    # loop over ratios (Legacy and Proj methods only)
     for j in range(ratios.size):
 
         # Size of columns of X
@@ -379,6 +425,7 @@ def benchmark(argv):
         for i in range(repeat):
 
             X_ = numpy.copy(X[:, :m])
+            Xp = numpy.copy(X[:, m:])
 
             if config['verbose']:
                 print('.', end='', flush=True)
@@ -387,38 +434,152 @@ def benchmark(argv):
             logdet_lgcy_gen_gen[j, i], wall_time_lgcy_gen_gen[j, i], \
                 proc_time_lgcy_gen_gen[j, i], flops_lgcy_gen_gen[j, i] = \
                 legacy_method(
-                        func, K, X_, sym_pos=False, X_orth=False)
+                        func, K, X_, sym_pos=False, X_orth=False,
+                        use_blas=config['use_blas'])
 
             if config['func'] == 'logpdet':
                 # Legacy method, generic matrix K, non-orthogonal X
                 logdet_lgcy_gen_ort[j, i], wall_time_lgcy_gen_ort[j, i], \
                     proc_time_lgcy_gen_ort[j, i], flops_lgcy_gen_ort[j, i] = \
                     legacy_method(
-                            func, K, X_, sym_pos=False, X_orth=True)
+                            func, K, X_, sym_pos=False, X_orth=True,
+                            use_blas=config['use_blas'])
 
             # Legacy method, symmetric positive-definite matrix K, X not ort
             logdet_lgcy_spd_gen[j, i], wall_time_lgcy_spd_gen[j, i], \
                 proc_time_lgcy_spd_gen[j, i], flops_lgcy_spd_gen[j, i] = \
                 legacy_method(
-                        func, K, X_, sym_pos=True, X_orth=False)
+                        func, K, X_, sym_pos=True, X_orth=False,
+                        use_blas=config['use_blas'])
 
             if config['func'] == 'logpdet':
                 # Legacy method, symmetric positive-definite matrix K, X ort
                 logdet_lgcy_spd_ort[j, i], wall_time_lgcy_spd_ort[j, i], \
                     proc_time_lgcy_spd_ort[j, i], flops_lgcy_spd_ort[j, i] = \
                     legacy_method(
-                            func, K, X_, sym_pos=True, X_orth=True)
+                            func, K, X_, sym_pos=True, X_orth=True,
+                            use_blas=config['use_blas'])
 
             # Projection method with generic matrix X_
             logdet_proj_gen[j, i], wall_time_proj_gen[j, i], \
                 proc_time_proj_gen[j, i], flops_proj_gen[j, i] = \
-                proj_method_gen(func, K, X_)
+                proj_method_gen(func, K, X_, use_blas=config['use_blas'])
 
             # Projection method with orthogonal matrix X_ (X_ is overwritten)
             logdet_proj_ort[j, i], wall_time_proj_ort_pre[j, i], \
                 proc_time_proj_ort_pre[j, i], wall_time_proj_ort[j, i], \
                 proc_time_proj_ort[j, i], flops_proj_ort[j, i] = \
-                proj_method_ort(func, K, X_)
+                proj_method_ort(func, K, X_, use_blas=config['use_blas'])
+
+        if config['verbose']:
+            print(' Done.', flush=True)
+
+    # loop over ratios (Comp method only, With Xp). Note this loop is
+    # separated from Legacy and Proj methods as measuring process time
+    # of these methods interfere.
+    for j in range(ratios.size):
+
+        # Size of columns of X
+        m = int(n * ratios[j])
+        if m == 0:
+            m = 1
+        elif m == n:
+            m = n-1
+
+        # Print progress
+        if config['verbose']:
+            if int(numpy.log10(ratios.size)) < 3:
+                print('ratios: %2d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+            elif int(numpy.log10(ratios.size)) == 3:
+                print('ratios: %3d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+            elif int(numpy.log10(ratios.size)) > 3:
+                print('ratios: %4d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+
+        # Repeat experiment
+        for i in range(repeat):
+
+            X_ = numpy.copy(X[:, :m])
+            Xp = numpy.copy(X[:, m:])
+
+            if config['verbose']:
+                print('.', end='', flush=True)
+
+            # Compression method with generic A, orthonormal X, Xp known
+            logdet_comp_gen_ort_xp[j, i], wall_time_comp_gen_ort_xp[j, i], \
+                proc_time_comp_gen_ort_xp[j, i], \
+                flops_comp_gen_ort_xp[j, i] = \
+                comp_method(func, K, X_, Xp, sym_pos=False, X_orth=True,
+                            use_blas=config['use_blas'])
+
+            # Compression method with SPD matrix A, orthonormal X, Xp known
+            logdet_comp_spd_ort_xp[j, i], wall_time_comp_spd_ort_xp[j, i], \
+                proc_time_comp_spd_ort_xp[j, i], \
+                flops_comp_spd_ort_xp[j, i] = \
+                comp_method(func, K, X_, Xp, sym_pos=True, X_orth=True,
+                            use_blas=config['use_blas'])
+
+        if config['verbose']:
+            print(' Done.', flush=True)
+
+    # loop over ratios (Comp method only, Without Xp). Note this loop is
+    # separated from Legacy and Proj methods as measuring process time
+    # of these methods interfere.
+    for j in range(ratios.size):
+
+        # Size of columns of X
+        m = int(n * ratios[j])
+        if m == 0:
+            m = 1
+        elif m == n:
+            m = n-1
+
+        # Print progress
+        if config['verbose']:
+            if int(numpy.log10(ratios.size)) < 3:
+                print('ratios: %2d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+            elif int(numpy.log10(ratios.size)) == 3:
+                print('ratios: %3d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+            elif int(numpy.log10(ratios.size)) > 3:
+                print('ratios: %4d/%d ' % (j+1, ratios.size), end='',
+                      flush=True)
+
+        # Repeat experiment
+        for i in range(repeat):
+
+            X_ = numpy.copy(X[:, :m])
+            Xp = numpy.copy(X[:, m:])
+
+            if config['verbose']:
+                print('.', end='', flush=True)
+
+            # Compression method with generic A, generic X
+            logdet_comp_gen_gen[j, i], wall_time_comp_gen_gen[j, i], \
+                proc_time_comp_gen_gen[j, i], flops_comp_gen_gen[j, i] = \
+                comp_method(func, K, X_, sym_pos=False, X_orth=False,
+                            use_blas=config['use_blas'])
+
+            # Compression method with SPD matrix A, generic X
+            logdet_comp_spd_gen[j, i], wall_time_comp_spd_gen[j, i], \
+                proc_time_comp_spd_gen[j, i], flops_comp_spd_gen[j, i] = \
+                comp_method(func, K, X_, sym_pos=True, X_orth=False,
+                            use_blas=config['use_blas'])
+
+            # Compression method with generic A, orthonormal X
+            logdet_comp_gen_ort[j, i], wall_time_comp_gen_ort[j, i], \
+                proc_time_comp_gen_ort[j, i], flops_comp_gen_ort[j, i] = \
+                comp_method(func, K, X_, sym_pos=False, X_orth=True,
+                            use_blas=config['use_blas'])
+
+            # Compression method with SPD matrix A, orthonormal X
+            logdet_comp_spd_ort[j, i], wall_time_comp_spd_ort[j, i], \
+                proc_time_comp_spd_ort[j, i], flops_comp_spd_ort[j, i] = \
+                comp_method(func, K, X_, sym_pos=True, X_orth=True,
+                            use_blas=config['use_blas'])
 
         if config['verbose']:
             print(' Done.', flush=True)
@@ -432,6 +593,12 @@ def benchmark(argv):
     flops_proj_gen /= inst_per_matmat
     flops_proj_ort_pre /= inst_per_matmat
     flops_proj_ort /= inst_per_matmat
+    flops_comp_gen_gen /= inst_per_matmat
+    flops_comp_spd_gen /= inst_per_matmat
+    flops_comp_gen_ort /= inst_per_matmat
+    flops_comp_spd_ort /= inst_per_matmat
+    flops_comp_gen_ort_xp /= inst_per_matmat
+    flops_comp_spd_ort_xp /= inst_per_matmat
 
     # Dictionary of results
     results = {
@@ -441,6 +608,12 @@ def benchmark(argv):
         'logdet_lgcy_spd_ort': logdet_lgcy_spd_ort,
         'logdet_proj_gen': logdet_proj_gen,
         'logdet_proj_ort': logdet_proj_ort,
+        'logdet_comp_gen_gen': logdet_comp_gen_gen,
+        'logdet_comp_spd_gen': logdet_comp_spd_gen,
+        'logdet_comp_gen_ort': logdet_comp_gen_ort,
+        'logdet_comp_spd_ort': logdet_comp_spd_ort,
+        'logdet_comp_gen_ort_xp': logdet_comp_gen_ort_xp,
+        'logdet_comp_spd_ort_xp': logdet_comp_spd_ort_xp,
         'wall_time_lgcy_gen_gen': wall_time_lgcy_gen_gen,
         'wall_time_lgcy_gen_ort': wall_time_lgcy_gen_ort,
         'wall_time_lgcy_spd_gen': wall_time_lgcy_spd_gen,
@@ -448,6 +621,12 @@ def benchmark(argv):
         'wall_time_proj_gen': wall_time_proj_gen,
         'wall_time_proj_ort_pre': wall_time_proj_ort_pre,
         'wall_time_proj_ort': wall_time_proj_ort,
+        'wall_time_comp_gen_gen': wall_time_comp_gen_gen,
+        'wall_time_comp_spd_gen': wall_time_comp_spd_gen,
+        'wall_time_comp_gen_ort': wall_time_comp_gen_ort,
+        'wall_time_comp_spd_ort': wall_time_comp_spd_ort,
+        'wall_time_comp_gen_ort_xp': wall_time_comp_gen_ort_xp,
+        'wall_time_comp_spd_ort_xp': wall_time_comp_spd_ort_xp,
         'proc_time_lgcy_gen_gen': proc_time_lgcy_gen_gen,
         'proc_time_lgcy_gen_ort': proc_time_lgcy_gen_ort,
         'proc_time_lgcy_spd_gen': proc_time_lgcy_spd_gen,
@@ -455,6 +634,12 @@ def benchmark(argv):
         'proc_time_proj_gen': proc_time_proj_gen,
         'proc_time_proj_ort_pre': proc_time_proj_ort_pre,
         'proc_time_proj_ort': proc_time_proj_ort,
+        'proc_time_comp_gen_gen': proc_time_comp_gen_gen,
+        'proc_time_comp_spd_gen': proc_time_comp_spd_gen,
+        'proc_time_comp_gen_ort': proc_time_comp_gen_ort,
+        'proc_time_comp_spd_ort': proc_time_comp_spd_ort,
+        'proc_time_comp_gen_ort_xp': proc_time_comp_gen_ort_xp,
+        'proc_time_comp_spd_ort_xp': proc_time_comp_spd_ort_xp,
         'flops_lgcy_gen_gen': flops_lgcy_gen_gen,
         'flops_lgcy_gen_ort': flops_lgcy_gen_ort,
         'flops_lgcy_spd_gen': flops_lgcy_spd_gen,
@@ -462,6 +647,12 @@ def benchmark(argv):
         'flops_proj_gen': flops_proj_gen,
         'flops_proj_ort_pre': flops_proj_ort_pre,
         'flops_proj_ort': flops_proj_ort,
+        'flops_comp_gen_gen': flops_comp_gen_gen,
+        'flops_comp_spd_gen': flops_comp_spd_gen,
+        'flops_comp_gen_ort': flops_comp_gen_ort,
+        'flops_comp_spd_ort': flops_comp_spd_ort,
+        'flops_comp_gen_ort_xp': flops_comp_gen_ort_xp,
+        'flops_comp_spd_ort_xp': flops_comp_spd_ort_xp,
     }
 
     # Store all results

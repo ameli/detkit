@@ -81,6 +81,8 @@ class cMatrixFunctions
         static DataType loggdet(
                 const DataType* A,
                 const DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns,
                 const FlagType sym_pos,
@@ -107,10 +109,24 @@ class cMatrixFunctions
                 const FlagType X_orth,
                 FlagType& sign);
 
+        // loggdet comp
+        static DataType _loggdet_comp(
+                const DataType* A,
+                const DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
+                const LongIndexType num_rows,
+                const LongIndexType num_columns,
+                const FlagType sym_pos,
+                const FlagType X_orth,
+                FlagType& sign);
+
         // logpdet
         static DataType logpdet(
                 const DataType* A,
                 const DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns,
                 const FlagType sym_pos,
@@ -135,6 +151,18 @@ class cMatrixFunctions
                 const DataType* X,
                 const LongIndexType num_rows,
                 const LongIndexType num_columns,
+                const FlagType X_orth,
+                FlagType& sign);
+
+        // logpdet comp
+        static DataType _logpdet_comp(
+                const DataType* A,
+                const DataType* X,
+                DataType* Xp,
+                const FlagType use_Xp,
+                const LongIndexType num_rows,
+                const LongIndexType num_columns,
+                const FlagType sym_pos,
                 const FlagType X_orth,
                 FlagType& sign);
 };

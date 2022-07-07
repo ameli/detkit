@@ -10,5 +10,6 @@ from .logdet import logdet
 from .loggdet import loggdet
 from .logpdet import logpdet
 from .orthogonalize import orthogonalize
+from .ortho_complement import ortho_complement
 
-__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize']
+__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'ortho_complement']

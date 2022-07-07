@@ -30,6 +30,7 @@ __all__ = ['logpdet']
 def logpdet(
         A,
         X,
+        Xp=None,
         method='legacy',
         sym_pos=False,
         X_orth=False,
@@ -71,12 +72,18 @@ def logpdet(
         X : (n, m) array_like
             Rectangular matrix with full column-rank.
 
-        method : {'legacy', 'proj'}, default='legacy'
+        Xp : (n, n-m) array_like
+            Rectangular matrix with full column-rank. `Xp` is the orthonormal
+            complement of `X`. If `None`, this matrix will be generated.
+
+        method : {'legacy', 'proj', 'comp'}, default='legacy'
             Method of computing, and can be one of `legacy` or `proj`.
 
             * `'legacy'`: Computes `logpdet` directly by the equation given in
               the above.
             * `'proj'`: Computes `logpdet` using Bott-Duffin inverse
+              (See [1]_).
+            * `'comp'`: Computes `loggdet` using compression matrix
               (See [1]_).
 
         sym_pos : bool, default=False
@@ -84,13 +91,13 @@ def logpdet(
             positive-definite (SPD). The computation can be twice as fast as
             when the matrix is not SPD. This function does not verify whether
             `A` is symmetric or positive-definite. This option is applicable
-            when ``method='legacy'``.
+            when ``method='legacy'`` or ``method='comp'``.
 
         X_orth : bool, default=False
             If `True`, the matrix `X` is assumed to have orthogonal columns.
             The computation in this case is faster. This function will not
             verify whether `X` is orthogonal. This option is only applicable
-            when ``method='proj'``.
+            when ``method='proj'`` or ``method='comp'``.
 
         flops : bool, default=False
             If `True`, the count of the retired hardware instructions is
@@ -143,7 +150,7 @@ def logpdet(
     -----
         When the method is `legacy`, the `logpdet` function is computed using
         the equation given in the above. However, when the method is set to
-        'proj', an alternative formulation is used. Note that:
+        'proj' or 'comp', an alternative formulation is used. Note that:
 
         * `proj` method is independent of whether `A` is symmetric
           positive-definite or not, thus, cannot take advantage of an SPD
@@ -227,32 +234,47 @@ def logpdet(
 
     # Using scipy
     if use_scipy:
-        return sy_logpdet(A, X, method=method, sym_pos=sym_pos, X_orth=X_orth)
+        return sy_logpdet(A, X, Xp, method=method, sym_pos=sym_pos,
+                          X_orth=X_orth)
 
-    # Method
-    if method not in ['legacy', 'proj']:
-        raise ValueError('"method" should be either "legacy" or "proj".')
+    # Check method
+    if method not in ['legacy', 'proj', 'comp']:
+        raise ValueError('"method" should be either "legacy", "proj", or ' +
+                         '"comp".')
     elif method == 'legacy':
         method = 0
     elif method == 'proj':
         method = 1
+    elif method == 'comp':
+        method = 2
+
+    # X_orth only applicable to proj or comp method
+    if X_orth and method == 'legacy':
+        raise ValueError('"X_orth=True" can only used in "proj" or "comp" ' +
+                         ' methods.')
+    else:
+        X_orth = int(X_orth)
+
+    # sym_pos is only applicable to legacy or comp method
+    if sym_pos and method == 'proj':
+        raise ValueError('"sym_pos=True" can only used in "legacy" or ' +
+                         '"comp" methods.')
+    else:
+        sym_pos = int(sym_pos)
 
     # flops determines whether to compute flops of the algorithm
     flops = int(flops)
 
-    # X_orth can apply to both legacy and proj methods
-    X_orth = int(X_orth)
-
-    # sym_pos is only applicable to legacy method
-    if sym_pos and method == 'proj':
-        raise ValueError('"sym_pos=True" can only used in "legacy" method.')
+    # Use Xp if not None
+    if Xp is None:
+        use_Xp = 0
     else:
-        sym_pos = int(sym_pos)
+        use_Xp = 1
 
     data_type_name = get_data_type_name(A)
-    logpdet_, sign, flops_ = pyc_logpdet(A, X, A.shape[0], X.shape[1],
-                                         data_type_name, sym_pos, method,
-                                         X_orth, flops)
+    logpdet_, sign, flops_ = pyc_logpdet(A, X, Xp, use_Xp, A.shape[0],
+                                         X.shape[1], data_type_name, sym_pos,
+                                         method, X_orth, flops)
 
     if flops != 0:
         return logpdet_, sign, flops_
@@ -267,6 +289,8 @@ def logpdet(
 cpdef pyc_logpdet(
         A,
         X,
+        Xp,
+        use_Xp,
         num_rows,
         num_columns,
         data_type_name,
@@ -283,15 +307,15 @@ cpdef pyc_logpdet(
     cdef long long flops_ = flops
 
     if data_type_name == b'float32':
-        logpdet_ = pyc_logpdet_float(A, X, num_rows, num_columns, sym_pos,
-                                     method, X_orth, c_sign, flops_)
+        logpdet_ = pyc_logpdet_float(A, X, Xp, use_Xp, num_rows, num_columns,
+                                     sym_pos, method, X_orth, c_sign, flops_)
     elif data_type_name == b'float64':
-        logpdet_ = pyc_logpdet_double(A, X, num_rows, num_columns, sym_pos,
-                                      method, X_orth, c_sign, flops_)
+        logpdet_ = pyc_logpdet_double(A, X, Xp, use_Xp, num_rows, num_columns,
+                                      sym_pos, method, X_orth, c_sign, flops_)
     elif data_type_name == b'float128':
-        logpdet_ = pyc_logpdet_long_double(A, X, num_rows, num_columns,
-                                           method, X_orth, sym_pos, c_sign,
-                                           flops_)
+        logpdet_ = pyc_logpdet_long_double(A, X, Xp, use_Xp, num_rows,
+                                           num_columns, method, X_orth,
+                                           sym_pos, c_sign, flops_)
     else:
         raise TypeError('Data type should be "float32", "float64", or ' +
                         '"float128".')
@@ -320,6 +344,8 @@ cpdef pyc_logpdet(
 cdef float pyc_logpdet_float(
         float[:, ::1] A,
         float[:, ::1] X,
+        float[:, ::1] Xp,
+        const FlagType use_Xp,
         const LongIndexType num_rows,
         const LongIndexType num_columns,
         const FlagType sym_pos,
@@ -333,11 +359,17 @@ cdef float pyc_logpdet_float(
     # Get c-pointer from memoryviews
     cdef float* c_A = &A[0, 0]
     cdef float* c_X = &X[0, 0]
+    cdef float* c_Xp
+
+    if use_Xp == 0:
+        c_Xp = NULL
+    else:
+        c_Xp = &Xp[0, 0]
 
     # Compute logpdet
     cdef float logpdet_ = cMatrixFunctions[float].logpdet(
-            c_A, c_X, num_rows, num_columns, sym_pos, method, X_orth, sign[0],
-            flops)
+            c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
+            X_orth, sign[0], flops)
 
     return logpdet_
 
@@ -349,6 +381,8 @@ cdef float pyc_logpdet_float(
 cdef double pyc_logpdet_double(
         double[:, ::1] A,
         double[:, ::1] X,
+        double[:, ::1] Xp,
+        const FlagType use_Xp,
         const LongIndexType num_rows,
         const LongIndexType num_columns,
         const FlagType sym_pos,
@@ -362,11 +396,17 @@ cdef double pyc_logpdet_double(
     # Get c-pointer from memoryviews
     cdef double* c_A = &A[0, 0]
     cdef double* c_X = &X[0, 0]
+    cdef double* c_Xp
+
+    if use_Xp == 0:
+        c_Xp = NULL
+    else:
+        c_Xp = &Xp[0, 0]
 
     # Compute logpdet
     cdef double logpdet_ = cMatrixFunctions[double].logpdet(
-            c_A, c_X, num_rows, num_columns, sym_pos, method, X_orth, sign[0],
-            flops)
+            c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
+            X_orth, sign[0], flops)
 
     return logpdet_
 
@@ -378,6 +418,8 @@ cdef double pyc_logpdet_double(
 cdef long double pyc_logpdet_long_double(
         long double[:, ::1] A,
         long double[:, ::1] X,
+        long double[:, ::1] Xp,
+        const FlagType use_Xp,
         const LongIndexType num_rows,
         const LongIndexType num_columns,
         const FlagType sym_pos,
@@ -391,10 +433,16 @@ cdef long double pyc_logpdet_long_double(
     # Get c-pointer from memoryviews
     cdef long double* c_A = &A[0, 0]
     cdef long double* c_X = &X[0, 0]
+    cdef long double* c_Xp
+
+    if use_Xp == 0:
+        c_Xp = NULL
+    else:
+        c_Xp = &Xp[0, 0]
 
     # Compute logpdet
     cdef long double logpdet_ = cMatrixFunctions[long_double].logpdet(
-            c_A, c_X, num_rows, num_columns, sym_pos, method, X_orth, sign[0],
-            flops)
+            c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
+            X_orth, sign[0], flops)
 
     return logpdet_

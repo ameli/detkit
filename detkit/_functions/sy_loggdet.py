@@ -23,7 +23,7 @@ __all__ = ['sy_loggdet']
 # sy loggdet
 # ==========
 
-def sy_loggdet(A, X, method='proj', sym_pos=False, X_orth=False):
+def sy_loggdet(A, X, Xp, method='proj', sym_pos=False, X_orth=False):
     """
     Implementation of `loggdet` function using scipy.
     """
@@ -32,8 +32,11 @@ def sy_loggdet(A, X, method='proj', sym_pos=False, X_orth=False):
         return _sy_loggdet_legacy(A, X, sym_pos=sym_pos)
     elif method == 'proj':
         return _sy_loggdet_proj(A, X, X_orth=X_orth)
+    elif method == 'comp':
+        return _sy_loggdet_comp(A, X, Xp, sym_pos=sym_pos, X_orth=X_orth)
     else:
-        raise ValueError('"method" should be either "legacy" or "proj".')
+        raise ValueError('"method" should be either "legacy", "proj", ' +
+                         'or "comp".')
 
 
 # =================
@@ -109,3 +112,41 @@ def _sy_loggdet_proj(A, X, X_orth=False):
     loggdet_ = logdet_N + logdet_XtX
 
     return loggdet_, sign_N
+
+
+# ===============
+# sy loggdet comp
+# ===============
+
+def _sy_loggdet_comp(A, X, Xp, sym_pos=False, X_orth=False):
+    """
+    Using compression method.
+    """
+
+    # Finding Xp, the orthonormal complement of X
+    if Xp is None:
+        q, r = numpy.linalg.qr(X, mode='complete')
+        Xp = q[:, X.shape[1]:]
+
+    # Computing compression of A on the column space of Xp
+    Ap = Xp.T @ A @ Xp
+
+    # Logdet of Ap
+    logdet_Ap, sign_Ap = logdet(Ap, sym_pos=sym_pos)
+
+    # Logdet of XtX
+    if X_orth:
+        sign_XtX = 1.0
+        logdet_XtX = 0.0
+
+    else:
+        XtX = X.T @ X
+        L = scipy.linalg.cholesky(XtX, lower=True)
+        logdet_L, sign_L = triang_logdet(L)
+        logdet_XtX = 2.0 * logdet_L
+        sign_XtX = 1.0
+
+    loggdet_ = logdet_Ap + logdet_XtX
+    sign_ = sign_Ap * sign_XtX
+
+    return loggdet_, sign_
