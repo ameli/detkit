@@ -43,7 +43,7 @@ def test_logpdet():
 
     # Pre-compute Xp, the orthonormal complement of X
     Xp = numpy.random.randn(n, n-m)
-    ortho_complement(X, Xp, X_orth)
+    ortho_complement(Xp, X, X_orth)
 
     XtX = X.T @ X
     C = X.T @ numpy.linalg.inv(A) @ X

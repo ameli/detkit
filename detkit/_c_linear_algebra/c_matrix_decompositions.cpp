@@ -273,16 +273,16 @@ void cMatrixDecompositions<DataType>::gram_schmidt(
 
 template <typename DataType>
 void cMatrixDecompositions<DataType>::ortho_complement(
-        const DataType *X,
         DataType *Xp,
+        const DataType *X,
         const LongIndexType num_rows,
-        const LongIndexType num_columns_X,
         const LongIndexType num_columns_Xp,
+        const LongIndexType num_columns_X,
         const FlagType X_orth)
 {
     // Check matrix size
-    assert(num_rows > num_columns_X);
     assert(num_rows > num_columns_Xp);
+    assert(num_rows > num_columns_X);
 
     DataType* Xc = new DataType[num_rows*num_columns_X];
     cMatrixOperations<DataType>::copy(X, Xc, num_rows, num_columns_X);

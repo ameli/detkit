@@ -68,9 +68,10 @@ def loggdet(
         X : (n, m) array_like
             Rectangular matrix with full column-rank.
 
-        Xp : (n, n-m) array_like
+        Xp : (n, n-m) array_like, default: None
             Rectangular matrix with full column-rank. `Xp` is the orthonormal
-            complement of `X`. If `None`, this matrix will be generated.
+            complement of `X`. If `None`, this matrix will be generated. Only
+            used if `method` is `comp`.
 
         method : {'legacy', 'proj', 'comp'}, default='legacy'
             Method of computing, and can be one of `legacy` or `proj`.
@@ -264,6 +265,9 @@ def loggdet(
         use_Xp = 0
     else:
         use_Xp = 1
+
+        if method != 2:
+            raise ValueError('"Xp" can be used only if "method" is "comp".')
 
     data_type_name = get_data_type_name(A)
     loggdet_, sign, flops_ = pyc_loggdet(A, X, Xp, use_Xp, A.shape[0],

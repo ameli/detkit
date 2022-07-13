@@ -603,7 +603,7 @@ DataType cMatrixFunctions<DataType>::_loggdet_comp(
 
         // Compute Xp, the orthonormal complement of X
         cMatrixDecompositions<DataType>::ortho_complement(
-                X, Xp_, num_rows, num_columns, num_columns_xp, X_orth);
+                Xp_, X, num_rows, num_columns_xp, num_columns, X_orth);
     }
     else
     {
@@ -1074,7 +1074,7 @@ DataType cMatrixFunctions<DataType>::_logpdet_comp(
 
         // Compute Xp, the orthonormal complement of X
         cMatrixDecompositions<DataType>::ortho_complement(
-                X, Xp_, num_rows, num_columns, num_columns_xp, X_orth);
+                Xp_, X, num_rows, num_columns_xp, num_columns, X_orth);
     }
     else
     {
