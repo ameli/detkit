@@ -3,18 +3,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Install &#8212; detkit Manual</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -25,13 +29,14 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/toggleprompt.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -40,33 +45,41 @@
     <link rel="prev" title="detkit" href="index.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
     
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
-<a class="navbar-brand" href="index.html">
-<p class="title">detkit</p>
-</a>
+  
 
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">detkit Manual</p>
+  
+</a>
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -123,32 +136,33 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
     
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -208,28 +222,26 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   <section id="install">
-<span id="install-package"></span><h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h1>
+<span id="install-package"></span><h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h1>
 <section id="supported-platforms">
-<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permalink to this headline">#</a></h2>
+<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permalink to this heading">#</a></h2>
 <p>Successful installation and tests have been performed on the following platforms and Python/PyPy versions shown in the table below.</p>
 <table class="table">
 <colgroup>
@@ -299,7 +311,7 @@
 </div>
 </section>
 <section id="install-from-pypi">
-<span id="installationmethods"></span><h2>Install from PyPi<a class="headerlink" href="#install-from-pypi" title="Permalink to this headline">#</a></h2>
+<span id="installationmethods"></span><h2>Install from PyPi<a class="headerlink" href="#install-from-pypi" title="Permalink to this heading">#</a></h2>
 <p><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /> <img alt="format" src="https://img.shields.io/pypi/format/detkit" /> <img alt="implementation" src="https://img.shields.io/pypi/implementation/detkit" /> <img alt="pyversions" src="https://img.shields.io/pypi/pyversions/detkit" /></p>
 <p>The recommended installation method is through the package available at <a class="reference external" href="https://pypi.org/project/detkit">PyPi</a> using <cite>pip</cite>.</p>
 <ol class="arabic">
@@ -326,7 +338,7 @@
 </ol>
 </section>
 <section id="install-from-anaconda-cloud">
-<span id="install-conda"></span><h2>Install from Anaconda Cloud<a class="headerlink" href="#install-from-anaconda-cloud" title="Permalink to this headline">#</a></h2>
+<span id="install-conda"></span><h2>Install from Anaconda Cloud<a class="headerlink" href="#install-from-anaconda-cloud" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-platform" src="https://anaconda.org/s-ameli/detkit/badges/platforms.svg" /></a></p>
 <p>Alternatively, the package can be installed through <a class="reference external" href="https://anaconda.org/s-ameli/detkit">Anaconda could</a>.</p>
 <ul>
@@ -343,7 +355,7 @@
 </ul>
 </section>
 <section id="build-from-source-code">
-<span id="build-locally"></span><h2>Build from Source Code<a class="headerlink" href="#build-from-source-code" title="Permalink to this headline">#</a></h2>
+<span id="build-locally"></span><h2>Build from Source Code<a class="headerlink" href="#build-from-source-code" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://github.com/ameli/detkit/releases/"><img alt="release" src="https://img.shields.io/github/v/tag/ameli/detkit" /></a></p>
 <p><strong>Build dependencies:</strong> To build the package from the source code, <cite>numpy</cite> and <cite>cython</cite> are required. These dependencies are installed automatically during the build process and no action is needed.</p>
 <ol class="arabic">
@@ -387,10 +399,10 @@ To properly import the package, change the current working directory to a direct
 </div>
 </section>
 <section id="install-in-virtual-environment">
-<h2>Install in Virtual Environment<a class="headerlink" href="#install-in-virtual-environment" title="Permalink to this headline">#</a></h2>
+<h2>Install in Virtual Environment<a class="headerlink" href="#install-in-virtual-environment" title="Permalink to this heading">#</a></h2>
 <p>If you do not want the installation to occupy your main python’s site-packages, you may install the package in an isolated virtual environment. Below we describe the installation procedure in two common virtual environments, namely, <a class="reference internal" href="#virtualenv-env"><span class="std std-ref">virtualenv</span></a> and <a class="reference internal" href="#conda-env"><span class="std std-ref">conda</span></a>.</p>
 <section id="install-in-virtualenv-environment">
-<span id="virtualenv-env"></span><h3>Install in <cite>virtualenv</cite> Environment<a class="headerlink" href="#install-in-virtualenv-environment" title="Permalink to this headline">#</a></h3>
+<span id="virtualenv-env"></span><h3>Install in <cite>virtualenv</cite> Environment<a class="headerlink" href="#install-in-virtualenv-environment" title="Permalink to this heading">#</a></h3>
 <ol class="arabic">
 <li><p>Install <cite>virtualenv</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span>
@@ -421,7 +433,7 @@ To properly import the package, change the current working directory to a direct
 </ol>
 </section>
 <section id="install-in-conda-environment">
-<span id="conda-env"></span><h3>Install in <cite>conda</cite> Environment<a class="headerlink" href="#install-in-conda-environment" title="Permalink to this headline">#</a></h3>
+<span id="conda-env"></span><h3>Install in <cite>conda</cite> Environment<a class="headerlink" href="#install-in-conda-environment" title="Permalink to this heading">#</a></h3>
 <p>In the following, it is assumed <a class="reference external" href="https://www.anaconda.com/products/individual#Downloads">anaconda</a> (or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) is installed.</p>
 <ol class="arabic">
 <li><p>Initialize conda (if it was not initialized before)</p>
@@ -459,7 +471,7 @@ To properly import the package, change the current working directory to a direct
 </section>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">#</a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://hub.docker.com/repository/docker/sameli/detkit"><img alt="docker" src="https://img.shields.io/docker/pulls/sameli/detkit" /></a></p>
 <p>The <cite>detkit</cite> package can be run inside <cite>detkit</cite> docker image which is based on the Ubuntu 20.04 image.</p>
 <p><strong>Download docker image</strong></p>
@@ -502,51 +514,55 @@ This also imports `detkit` package automatically.
 </section>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">detkit</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="api.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API Reference</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">detkit</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="api.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">API Reference</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, Siavash Ameli.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>
