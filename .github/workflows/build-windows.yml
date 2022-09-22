@@ -39,6 +39,7 @@ jobs:
               run: |
                   python -m pip install --upgrade pytest
                   python -m pip install --upgrade pytest-cov
+                  python -m pip install cython
                   mv detkit detkit-DoNotImport
                   pytest
 

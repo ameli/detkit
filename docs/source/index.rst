@@ -157,7 +157,6 @@ Related Projects
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
 .. |format| image:: https://img.shields.io/pypi/format/detkit
-.. |pypi| image:: https://img.shields.io/pypi/v/detkit
 .. |conda| image:: https://anaconda.org/s-ameli/traceinv/badges/installer/conda.svg
    :target: https://anaconda.org/s-ameli/traceinv
 .. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/traceinv?color=orange?label=platforms

@@ -132,6 +132,11 @@ jobs:
 
             - name: Install Python
               uses: actions/setup-python@v4
+
+            - name: Install numpy
+              run: |
+                  python -m pip install --upgrade pip
+                  python -m pip install --upgrade numpy
             
             - name: Build sdist
               run: python setup.py sdist
@@ -191,6 +196,7 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   python -m pip install pytest-cov
+                  python -m pip install cython
                   python -m pip install --upgrade detkit
 
             # This does not install plot packages (matplotlib, seaborn) when
