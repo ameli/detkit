@@ -114,7 +114,6 @@ Launch an online interactive tutorial in `Jupyter notebook <https://mybinder.org
 
 .. toctree::
     :maxdepth: 1
-    :numbered:
     :hidden:
 
     API Reference <api>
@@ -126,6 +125,8 @@ We welcome contributions via `Github's pull request <https://github.com/ameli/de
 
 Related Projects
 ================
+
+|project| is used in the following python packages:
 
 .. grid:: 2
 
