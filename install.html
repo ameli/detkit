@@ -6,11 +6,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Install &#8212; detkit Manual</title>
+    <title>1. Install &#8212; detkit Manual</title>
 <script>
-  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
 </script>
 
@@ -28,7 +28,9 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom-pydata.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
@@ -39,11 +41,30 @@
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/toggleprompt.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/js/custom-pydata.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/custom-pydata.css"></script>
+    <link rel="shortcut icon" href="_static/logo-detkit.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="next" title="2. Running Tests" href="tests.html" />
     <link rel="prev" title="detkit" href="index.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
+
+    <!-- Adobe Embed API -->
+    <script src="https://documentcloud.adobe.com/view-sdk/viewer.js"></script>
+
+    <!-- My custom JS -->
+    <script type="text/javascript" src="../_static/js/custom-pydata.js"></script>
+
+    <!-- Syntax highlighting for BibTex code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-solarizedlight.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs-bibtex@2.0.1/prism-bibtex.min.js"></script>
+
     
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="docsearch:language" content="en">
@@ -51,7 +72,7 @@
   </head>
   
   
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="auto">
     <div class="bd-header-announcement container-fluid" id="banner">
       
 
@@ -71,8 +92,9 @@
   
   
   
+    <img src="_static/images/icons/logo-detkit-light.png" class="logo__image only-light" alt="Logo image">
+    <img src="_static/images/icons/logo-detkit-dark.png" class="logo__image only-dark" alt="Logo image">
   
-    <p class="title logo__title">detkit Manual</p>
   
 </a>
     
@@ -90,19 +112,25 @@
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 current active nav-item">
  <a class="current reference internal nav-link" href="#">
-  Install
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="api.html">
-  API Reference
+  1. Install
  </a>
 </li>
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="tests.html">
-  Tests
+  2. Test
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="docker.html">
+  3. Docker
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="api.html">
+  4. API Reference
  </a>
 </li>
 
@@ -113,6 +141,14 @@
     </div>
 
     <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
       
       <div class="navbar-end-item">
         <form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -126,6 +162,22 @@
         <li class="nav-item">
           <a class="nav-link" href="https://github.com/ameli/detkit" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/detkit/" rel="noopener" target="_blank" title="PyPI"><span><i class="fab fa-python"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://anaconda.org/s-ameli/detkit" rel="noopener" target="_blank" title="Anaconda Cloud"><span><i class="fa fa-circle-notch"></i></span>
+            <label class="sr-only">Anaconda Cloud</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://hub.docker.com/r/sameli/detkit" rel="noopener" target="_blank" title="Docker Hub"><span><i class="fab fa-docker"></i></span>
+            <label class="sr-only">Docker Hub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb" rel="noopener" target="_blank" title="Lanuch Jupyter on Binder"><span><i class="fa fa-chart-line"></i></span>
+            <label class="sr-only">Lanuch Jupyter on Binder</label></a>
         </li>
       </ul>
       </div>
@@ -171,53 +223,136 @@
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#supported-platforms">
-   Supported Platforms
+   1.1. Supported Platforms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-from-pypi">
-   Install from PyPi
+  <a class="reference internal nav-link" href="#install-project-from-wheels">
+   1.2. Install
+   <span class="synco">
+    detkit
+   </span>
+   From Wheels
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-with-pip">
+     1.2.1. Install with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       pip
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-with-conda">
+     1.2.2. Install with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       conda
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-from-anaconda-cloud">
-   Install from Anaconda Cloud
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#build-from-source-code">
-   Build from Source Code
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-in-virtual-environment">
-   Install in Virtual Environment
+  <a class="reference internal nav-link" href="#install-project-in-virtual-environments">
+   1.3. Install
+   <span class="synco">
+    detkit
+   </span>
+   in Virtual Environments
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#install-in-virtualenv-environment">
-     Install in
-     <cite>
-      virtualenv
-     </cite>
+     1.3.1. Install in
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       virtualenv
+      </span>
+     </code>
      Environment
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#install-in-conda-environment">
-     Install in
-     <cite>
-      conda
-     </cite>
+     1.3.2. Install in
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       conda
+      </span>
+     </code>
      Environment
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#docker">
-   Docker
+  <a class="reference internal nav-link" href="#compile-from-source">
+   1.4. Compile from Source
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#when-to-compile-project">
+     1.4.1. When to Compile
+     <span class="synco">
+      detkit
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-c-compiler-and-openmp-required">
+     1.4.2. Install C++ Compiler and OpenMP (
+     <cite>
+      Required
+     </cite>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#install-openmp-required">
+     1.4.3. Install OpenMP (
+     <cite>
+      Required
+     </cite>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#configure-compile-time-environment-variables-optional">
+     1.4.4. Configure Compile-Time Environment Variables (
+     <cite>
+      Optional
+     </cite>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#compile-and-install">
+     1.4.5. Compile and Install
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#generate-documentation">
+   1.5. Generate Documentation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#compile-package">
+     1.5.1. Compile Package
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#generate-sphinx-documentation">
+     1.5.2. Generate Sphinx Documentation
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -226,6 +361,13 @@
     
     <div class="toc-item">
       
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/https://github.com/ameli/detkit/edit/main/docs/source/install.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
     </div>
     
   
@@ -239,277 +381,457 @@
               <article class="bd-article" role="main">
                 
   <section id="install">
-<span id="install-package"></span><h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h1>
+<span id="install-package"></span><h1><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">1. </span>Install</a><a class="headerlink" href="#install" title="Permalink to this heading">#</a></h1>
+<nav class="contents" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#install" id="id3">Install</a></p>
+<ul>
+<li><p><a class="reference internal" href="#supported-platforms" id="id4">Supported Platforms</a></p></li>
+<li><p><a class="reference internal" href="#install-project-from-wheels" id="id5">Install <span class="synco">detkit</span> From Wheels</a></p>
+<ul>
+<li><p><a class="reference internal" href="#install-with-pip" id="id6">Install with <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></p></li>
+<li><p><a class="reference internal" href="#install-with-conda" id="id7">Install with <code class="docutils literal notranslate"><span class="pre">conda</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#install-project-in-virtual-environments" id="id8">Install <span class="synco">detkit</span> in Virtual Environments</a></p>
+<ul>
+<li><p><a class="reference internal" href="#install-in-virtualenv-environment" id="id9">Install in <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> Environment</a></p></li>
+<li><p><a class="reference internal" href="#install-in-conda-environment" id="id10">Install in <code class="docutils literal notranslate"><span class="pre">conda</span></code> Environment</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#compile-from-source" id="id11">Compile from Source</a></p>
+<ul>
+<li><p><a class="reference internal" href="#when-to-compile-project" id="id12">When to Compile <span class="synco">detkit</span></a></p></li>
+<li><p><a class="reference internal" href="#install-c-compiler-and-openmp-required" id="id13">Install C++ Compiler and OpenMP (<cite>Required</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#install-openmp-required" id="id14">Install OpenMP (<cite>Required</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#configure-compile-time-environment-variables-optional" id="id15">Configure Compile-Time Environment Variables (<cite>Optional</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#compile-and-install" id="id16">Compile and Install</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#generate-documentation" id="id17">Generate Documentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#compile-package" id="id18">Compile Package</a></p></li>
+<li><p><a class="reference internal" href="#generate-sphinx-documentation" id="id19">Generate Sphinx Documentation</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
 <section id="supported-platforms">
-<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">1.1. </span>Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this heading">#</a></h2>
 <p>Successful installation and tests have been performed on the following platforms and Python/PyPy versions shown in the table below.</p>
 <table class="table">
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head" rowspan="2"><p>Platform</p></th>
-<th class="head" colspan="4"><p>Python version</p></th>
-<th class="head" colspan="3"><p>PyPy version</p></th>
-<th class="head" colspan="2"><p>Status</p></th>
+<th class="head" rowspan="2"><p>Arch</p></th>
+<th class="head" colspan="5"><p>Python Version</p></th>
+<th class="head" colspan="2"><p>PyPy Version</p></th>
+<th class="head" rowspan="2"><p>Continuous
+Integration</p></th>
 </tr>
 <tr class="row-even"><th class="head"><p>3.6</p></th>
 <th class="head"><p>3.7</p></th>
 <th class="head"><p>3.8</p></th>
 <th class="head"><p>3.9</p></th>
+<th class="head"><p>3.10</p></th>
 <th class="head"><p>3.6</p></th>
 <th class="head"><p>3.7</p></th>
-<th class="head" colspan="3"></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-odd"><td><p>Linux</p></td>
+<td><p>X86-64</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
-<td colspan="3"><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux"><img alt="build-linux" src="https://github.com/ameli/detkit/workflows/build-linux/badge.svg" /></a></p></td>
+<td><p>✔</p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux"><img alt="build-linux" src="https://github.com/ameli/detkit/workflows/build-linux/badge.svg" /></a></p></td>
 </tr>
 <tr class="row-even"><td><p>macOS</p></td>
+<td><p>X86-64</p></td>
+<td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✖</p></td>
 <td><p>✖</p></td>
-<td colspan="3"><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-macos"><img alt="build-macos" src="https://github.com/ameli/detkit/workflows/build-macos/badge.svg" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-macos"><img alt="build-macos" src="https://github.com/ameli/detkit/workflows/build-macos/badge.svg" /></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Windows</p></td>
+<td><p>X86-64</p></td>
+<td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✔</p></td>
 <td><p>✖</p></td>
 <td><p>✖</p></td>
-<td colspan="3"><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows"><img alt="build-windows" src="https://github.com/ameli/detkit/workflows/build-windows/badge.svg" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows"><img alt="build-windows" src="https://github.com/ameli/detkit/workflows/build-windows/badge.svg" /></a></p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>For the Python/PyPy versions indicated by ✔ in the above, this package can be installed using either <code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span></code> (see <a class="reference internal" href="#installationmethods"><span class="std std-ref">installation instructions</span></a> below.)</p></li>
-<li><p>This package cannot be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span></code> on the Python/PyPy versions indicated by ✖ in the above table.</p></li>
-<li><p>To install on the older Python 3 versions that are not listed in the above (for example Python 3.5), build this package from the source code (see <a class="reference internal" href="#build-locally"><span class="std std-ref">build instructions</span></a>).</p></li>
-</ul>
-</div>
+<p>Python wheels for <span class="synco">detkit</span> for all supported platforms and versions in the above are available through <a class="reference external" href="https://pypi.org/project/detkit/">PyPI</a> and <a class="reference external" href="https://anaconda.org/s-ameli/detkit">Anaconda Cloud</a>. If you need <span class="synco">detkit</span> on other platforms, architectures, and Python or PyPy versions, <a class="reference external" href="https://github.com/ameli/detkit/issues">raise an issue</a> on GitHub and we build its Python Wheel for you.</p>
 </section>
-<section id="install-from-pypi">
-<span id="installationmethods"></span><h2>Install from PyPi<a class="headerlink" href="#install-from-pypi" title="Permalink to this heading">#</a></h2>
-<p><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /> <img alt="format" src="https://img.shields.io/pypi/format/detkit" /> <img alt="implementation" src="https://img.shields.io/pypi/implementation/detkit" /> <img alt="pyversions" src="https://img.shields.io/pypi/pyversions/detkit" /></p>
-<p>The recommended installation method is through the package available at <a class="reference external" href="https://pypi.org/project/detkit">PyPi</a> using <cite>pip</cite>.</p>
-<ol class="arabic">
-<li><p>Ensure <cite>pip</cite> is installed within Python and upgrade the existing <code class="docutils literal notranslate"><span class="pre">pip</span></code> by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ensurepip</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
-</pre></div>
-</div>
-<p>If you are using PyPy instead of Python, ensure <cite>pip</cite> is installed and upgrade the existing <cite>pip</cite> by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">ensurepip</span>
-<span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
-</pre></div>
-</div>
-</li>
-<li><p>Install this package in Python by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-<p>or, in PyPy by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pypy</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-</li>
-</ol>
+<section id="install-project-from-wheels">
+<span id="install-wheels"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">1.2. </span>Install <span class="synco">detkit</span> From Wheels</a><a class="headerlink" href="#install-project-from-wheels" title="Permalink to this heading">#</a></h2>
+<p>Python wheels for <span class="synco">detkit</span> are available for various operating systems and Python versions on both PyPI and Anaconda Cloud.</p>
+<section id="install-with-pip">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">1.2.1. </span>Install with <code class="docutils literal notranslate"><span class="pre">pip</span></code></a><a class="headerlink" href="#install-with-pip" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://pypi.org/project/detkit"><img alt="pypi" src="https://img.shields.io/pypi/v/detkit" /></a></p>
+<p>Install <span class="synco">detkit</span> and its Python dependencies through <a class="reference external" href="https://pypi.org/project/detkit">PyPI</a> by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">python -m pip install --upgrade pip</span>
+<span class="prompt1">python -m pip install detkit</span>
+</pre></div></div><p>If you are using PyPy instead of Python, install with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pypy -m pip install --upgrade pip</span>
+<span class="prompt1">pypy -m pip install detkit</span>
+</pre></div></div></section>
+<section id="install-with-conda">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">1.2.2. </span>Install with <code class="docutils literal notranslate"><span class="pre">conda</span></code></a><a class="headerlink" href="#install-with-conda" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a></p>
+<p>Alternately, install <span class="synco">detkit</span> and its Python dependencies from <a class="reference external" href="https://anaconda.org/s-ameli/detkit">Anaconda Cloud</a> by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda install -c s-ameli detkit -y</span>
+</pre></div></div></section>
 </section>
-<section id="install-from-anaconda-cloud">
-<span id="install-conda"></span><h2>Install from Anaconda Cloud<a class="headerlink" href="#install-from-anaconda-cloud" title="Permalink to this heading">#</a></h2>
-<p><a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-version" src="https://img.shields.io/conda/v/s-ameli/detkit" /></a> <a class="reference external" href="https://anaconda.org/s-ameli/detkit"><img alt="conda-platform" src="https://anaconda.org/s-ameli/detkit/badges/platforms.svg" /></a></p>
-<p>Alternatively, the package can be installed through <a class="reference external" href="https://anaconda.org/s-ameli/detkit">Anaconda could</a>.</p>
-<ul>
-<li><p>In <strong>Linux</strong> and <strong>Windows</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">s</span><span class="o">-</span><span class="n">ameli</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-</li>
-<li><p>In <strong>macOS</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">s</span><span class="o">-</span><span class="n">ameli</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
-<section id="build-from-source-code">
-<span id="build-locally"></span><h2>Build from Source Code<a class="headerlink" href="#build-from-source-code" title="Permalink to this heading">#</a></h2>
-<p><a class="reference external" href="https://github.com/ameli/detkit/releases/"><img alt="release" src="https://img.shields.io/github/v/tag/ameli/detkit" /></a></p>
-<p><strong>Build dependencies:</strong> To build the package from the source code, <cite>numpy</cite> and <cite>cython</cite> are required. These dependencies are installed automatically during the build process and no action is needed.</p>
-<ol class="arabic">
-<li><p>Install GCC compiler as follows.</p>
-<ul>
-<li><p><strong>Linux:</strong> Install <cite>gcc</cite>, for instance, by <cite>apt</cite> (or any other package manager on your Linux distro)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">gcc</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>macOS:</strong> Install <cite>gcc</cite> via Homebrew:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">gcc</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Windows:</strong> Install <a class="reference external" href="https://visualstudio.microsoft.com/vs/features/cplusplus/">Microsoft Visual C++ compiler</a>. Open the command prompt (where you will enter the installation commands in the next step) and load the Intel compiler variables by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">Program</span> <span class="n">Files</span> <span class="p">(</span><span class="n">x86</span><span class="p">)</span>\<span class="n">Intel</span>\<span class="n">oneAPI</span>\<span class="n">setvars</span><span class="o">.</span><span class="n">bat</span>
-</pre></div>
-</div>
-<p>You may set this directory accordingly to the directory of your Intel compiler.</p>
-</li>
-</ul>
-</li>
-<li><p>Clone the source code and install this package by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ameli</span><span class="o">/</span><span class="n">detkit</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">detkit</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>After the package is built and installed from the source code, the package cannot be imported properly if the current working directory is the same as the source code directory.
-To properly import the package, change the current working directory to a directory anywhere else <strong>outside</strong> of the source code directory. For instance:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
-<span class="n">python</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">detkit</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="install-in-virtual-environment">
-<h2>Install in Virtual Environment<a class="headerlink" href="#install-in-virtual-environment" title="Permalink to this heading">#</a></h2>
-<p>If you do not want the installation to occupy your main python’s site-packages, you may install the package in an isolated virtual environment. Below we describe the installation procedure in two common virtual environments, namely, <a class="reference internal" href="#virtualenv-env"><span class="std std-ref">virtualenv</span></a> and <a class="reference internal" href="#conda-env"><span class="std std-ref">conda</span></a>.</p>
+<section id="install-project-in-virtual-environments">
+<span id="virtual-env"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">1.3. </span>Install <span class="synco">detkit</span> in Virtual Environments</a><a class="headerlink" href="#install-project-in-virtual-environments" title="Permalink to this heading">#</a></h2>
+<p>If you do not want the installation to occupy your main python’s site-packages (either you are testing or the dependencies may clutter your existing installed packages), install the package in an isolated virtual environment. Two common virtual environments are <a class="reference internal" href="#virtualenv-env"><span class="std std-ref">virtualenv</span></a> and <a class="reference internal" href="#conda-env"><span class="std std-ref">conda</span></a>.</p>
 <section id="install-in-virtualenv-environment">
-<span id="virtualenv-env"></span><h3>Install in <cite>virtualenv</cite> Environment<a class="headerlink" href="#install-in-virtualenv-environment" title="Permalink to this heading">#</a></h3>
+<span id="virtualenv-env"></span><h3><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">1.3.1. </span>Install in <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> Environment</a><a class="headerlink" href="#install-in-virtualenv-environment" title="Permalink to this heading">#</a></h3>
 <ol class="arabic">
-<li><p>Install <cite>virtualenv</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span>
-</pre></div>
-</div>
-</li>
-<li><p>Create a virtual environment and give it a name, such as <code class="docutils literal notranslate"><span class="pre">detkit_env</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">virtualenv</span> <span class="n">detkit_env</span>
-</pre></div>
-</div>
-</li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python -m pip install virtualenv</span>
+</pre></div></div></li>
+<li><p>Create a virtual environment and give it a name, such as <code class="docutils literal notranslate"><span class="pre">imate_env</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python -m virtualenv imate_env</span>
+</pre></div></div></li>
 <li><p>Activate python in the new environment</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">detkit_env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
-</pre></div>
-</div>
-</li>
-<li><p>Install <cite>detkit</cite> package with any of the <a class="reference internal" href="#installationmethods"><span class="std std-ref">above methods</span></a>. For instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-<p>Then, use the package in this environment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">source</span> imate_env/bin/activate</span>
+</pre></div></div></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">imate</span></code> package with any of the <a class="reference internal" href="#install-wheels"><span class="std std-ref">above methods</span></a>. For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python -m pip install imate</span>
+</pre></div></div><p>Then, use the package in this environment.</p>
 </li>
 <li><p>To exit from the environment</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deactivate</span>
-</pre></div>
-</div>
-</li>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">deactivate</span>
+</pre></div></div></li>
 </ol>
 </section>
 <section id="install-in-conda-environment">
-<span id="conda-env"></span><h3>Install in <cite>conda</cite> Environment<a class="headerlink" href="#install-in-conda-environment" title="Permalink to this heading">#</a></h3>
-<p>In the following, it is assumed <a class="reference external" href="https://www.anaconda.com/products/individual#Downloads">anaconda</a> (or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) is installed.</p>
+<span id="conda-env"></span><h3><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">1.3.2. </span>Install in <code class="docutils literal notranslate"><span class="pre">conda</span></code> Environment</a><a class="headerlink" href="#install-in-conda-environment" title="Permalink to this heading">#</a></h3>
+<p>In the followings, it is assumed <a class="reference external" href="https://www.anaconda.com/products/individual#Downloads">anaconda</a> (or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) is installed.</p>
 <ol class="arabic">
-<li><p>Initialize conda (if it was not initialized before)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">init</span>
-</pre></div>
-</div>
-<p>You may need to close and reopen the terminal after the above command. Alternatively, instead of the above, you can do</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo sh $(conda info --root)/etc/profile.d/conda.sh
-</pre></div>
-</div>
-</li>
-<li><p>Create a virtual environment and give it a name, such as <code class="docutils literal notranslate"><span class="pre">detkit_env</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">detkit_env</span> <span class="o">-</span><span class="n">y</span>
-</pre></div>
-</div>
-<p>The command <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">info</span> <span class="pre">--envs</span></code> shows the list of all environments. The current environment is marked by an asterisk in the list, which should be the default environment at this stage. In the next step, we will change the current environment to the one we created.</p>
+<li><p>Initialize conda</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda init</span>
+</pre></div></div><p>You may need to close and reopen your terminal after the above command. Alternatively, instead of the above, you can do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo sh <span class="k">$(</span>conda info --root<span class="k">)</span>/etc/profile.d/conda.sh</span>
+</pre></div></div></li>
+<li><p>Create a virtual environment and give it a name, such as <code class="docutils literal notranslate"><span class="pre">imate_env</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda create --name imate_env -y</span>
+</pre></div></div><p>The command <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">info</span> <span class="pre">--envs</span></code> shows the list of all environments. The current environment is marked by an asterisk in the list, which should be the default environment at this stage. In the next step, we will change the current environment to the one we created.</p>
 </li>
 <li><p>Activate the new environment</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">detkit_env</span>
-</pre></div>
-</div>
-</li>
-<li><p>Install <code class="docutils literal notranslate"><span class="pre">detkit</span></code> with any of the <a class="reference internal" href="#installationmethods"><span class="std std-ref">above methods</span></a>. For instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">s</span><span class="o">-</span><span class="n">ameli</span> <span class="n">detkit</span>
-</pre></div>
-</div>
-<p>Then, use the package in this environment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">source</span> activate imate_env</span>
+</pre></div></div></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">imate</span></code> with any of the <a class="reference internal" href="#install-wheels"><span class="std std-ref">above methods</span></a>. For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda install -c s-ameli imate</span>
+</pre></div></div><p>Then, use the package in this environment.</p>
 </li>
 <li><p>To exit from the environment</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">deactivate</span>
-</pre></div>
-</div>
-</li>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda deactivate</span>
+</pre></div></div></li>
 </ol>
 </section>
 </section>
-<section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">#</a></h2>
-<p><a class="reference external" href="https://hub.docker.com/repository/docker/sameli/detkit"><img alt="docker" src="https://img.shields.io/docker/pulls/sameli/detkit" /></a></p>
-<p>The <cite>detkit</cite> package can be run inside <cite>detkit</cite> docker image which is based on the Ubuntu 20.04 image.</p>
-<p><strong>Download docker image</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">sameli</span><span class="o">/</span><span class="n">detkit</span>
-</pre></div>
-</div>
-<p>Installed programs on the docker image</p>
+<section id="compile-from-source">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink"><span class="section-number">1.4. </span>Compile from Source</a><a class="headerlink" href="#compile-from-source" title="Permalink to this heading">#</a></h2>
+<section id="when-to-compile-project">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink"><span class="section-number">1.4.1. </span>When to Compile <span class="synco">detkit</span></a><a class="headerlink" href="#when-to-compile-project" title="Permalink to this heading">#</a></h3>
+<p>Generally, it is not required to compile <span class="synco">detkit</span> as the installation through <code class="docutils literal notranslate"><span class="pre">pip</span></code> and <code class="docutils literal notranslate"><span class="pre">conda</span></code>. You may compile <span class="synco">detkit</span> if you want to:</p>
 <ul class="simple">
-<li><p>Python 3.9: <cite>/usr/bin/python3</cite></p></li>
-<li><p>Python interpreters: <cite>ipython</cite>, <cite>jupyter</cite></p></li>
-<li><p>Editor: <cite>vim</cite></p></li>
+<li><p>modify <span class="synco">detkit</span>.</p></li>
+<li><p>enable <cite>debugging mode</cite>.</p></li>
+<li><p>or, build this <cite>documentation</cite>.</p></li>
 </ul>
-<p><strong>Usage:</strong></p>
-<ul>
-<li><p>To run the container and open <em>python</em> interpreter directly at startup:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   docker run -it sameli/detkit
+<p>Otherwise, install <span class="synco">detkit</span> through the <a class="reference internal" href="#install-wheels"><span class="std std-ref">Python Wheels</span></a>.</p>
+<p>This section walks you through the compilation process.</p>
+</section>
+<section id="install-c-compiler-and-openmp-required">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink"><span class="section-number">1.4.2. </span>Install C++ Compiler and OpenMP (<cite>Required</cite>)</a><a class="headerlink" href="#install-c-compiler-and-openmp-required" title="Permalink to this heading">#</a></h3>
+<p>Compile <span class="synco">detkit</span> with either of GCC, Clang/LLVM, or Intel C++ compiler on UNIX operating systems. For Windows, compile <span class="synco">detkit</span> with <a class="reference external" href="https://code.visualstudio.com/docs/cpp/config-msvc#:~:text=You%20can%20install%20the%20C,the%20C%2B%2B%20workload%20is%20checked.">Microsoft Visual Studio (MSVC) Compiler for C++</a>.</p>
+<p class="rubric">Install GNU GCC Compiler</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-0">
+Ubuntu/Debian</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo apt install build-essential</span>
+</pre></div></div></div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-1">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo yum group install <span class="s2">&quot;Development Tools&quot;</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-2">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo dnf group install <span class="s2">&quot;Development Tools&quot;</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-3">
+macOS</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo brew install gcc libomp</span>
+</pre></div></div></div>
+</div>
+<p>Then, export <code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> variables by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/usr/local/bin/gcc</span>
+<span class="prompt1"><span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>/usr/local/bin/g++</span>
+</pre></div></div><p class="rubric">Install Clang/LLVN Compiler</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-4">
+Ubuntu/Debian</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo apt install clang</span>
+</pre></div></div></div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-5">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo yum install yum-utils</span>
+<span class="prompt1">sudo yum-config-manager --enable extras</span>
+<span class="prompt1">sudo yum makecache</span>
+<span class="prompt1">sudo yum install clang</span>
+</pre></div></div></div>
+<input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-6">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo dnf install yum-utils</span>
+<span class="prompt1">sudo dnf config-manager --enable extras</span>
+<span class="prompt1">sudo dnf makecache</span>
+<span class="prompt1">sudo dnf install clang</span>
+</pre></div></div></div>
+<input id="sd-tab-item-7" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-7">
+macOS</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo brew install llvm libomp-dev</span>
+</pre></div></div></div>
+</div>
+<p>Then, export <code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">CXX</span></code> variables by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/usr/local/bin/clang</span>
+<span class="prompt1"><span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>/usr/local/bin/clang++</span>
+</pre></div></div><p class="rubric">Install Intel oneAPI Compiler</p>
+<p>To install <cite>Intel Compiler</cite> see <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html?operatingsystem=linux&amp;distributions=aptpackagemanager">Intel oneAPI Base Toolkit</a>.</p>
+</section>
+<section id="install-openmp-required">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink"><span class="section-number">1.4.3. </span>Install OpenMP (<cite>Required</cite>)</a><a class="headerlink" href="#install-openmp-required" title="Permalink to this heading">#</a></h3>
+<p>OpenMP comes with the C++ compiler installed. However, you may alternatively install it directly on UNIX. Install <cite>OpenMP</cite> library on UNIX as follows:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-8">
+Ubuntu/Debian</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo apt install libgomp1 -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-9" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-9">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo yum install libgomp -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-10" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-10">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo dnf install libgomp -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-11" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-11">
+macOS</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo brew install libomp</span>
+</pre></div></div></div>
+</div>
+</section>
+<section id="configure-compile-time-environment-variables-optional">
+<span id="config-env-variables"></span><h3><a class="toc-backref" href="#id15" role="doc-backlink"><span class="section-number">1.4.4. </span>Configure Compile-Time Environment Variables (<cite>Optional</cite>)</a><a class="headerlink" href="#configure-compile-time-environment-variables-optional" title="Permalink to this heading">#</a></h3>
+<p>Set the following environment variables as desired to configure the compilation process.</p>
+<dl class="glossary">
+<dt id="term-CYTHON_BUILD_IN_SOURCE"><code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_IN_SOURCE</span></code><a class="headerlink" href="#term-CYTHON_BUILD_IN_SOURCE" title="Permalink to this term">#</a></dt><dd><p>By default, this variable is set to <cite>0</cite>, in which the compilation process generates source files outside of the source directory, in <code class="docutils literal notranslate"><span class="pre">/build</span></code> directry. When it is set to <cite>1</cite>, the build files are generated in the source directory. To set this variable, run</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-3" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-12">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">CYTHON_BUILD_IN_SOURCE</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-13" name="sd-tab-set-3" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-13">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt2:before {
+  content: "PS C:\\> ";
+}
+</style><span class="prompt2"><span class="nv">$env:export</span> <span class="n">CYTHON_BUILD_IN_SOURCE</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you generated the source files inside the source directory by setting this variable, and later you wanted to clean them, see <a class="reference internal" href="#clean-files"><span class="std std-ref">Clean Compilation Files</span></a>.</p>
+</div>
+</dd>
+<dt id="term-CYTHON_BUILD_FOR_DOC"><code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code><a class="headerlink" href="#term-CYTHON_BUILD_FOR_DOC" title="Permalink to this term">#</a></dt><dd><p>Set this variable if you are building this documentation. By default, this variable is set to <cite>0</cite>. When it is set to <cite>1</cite>, the package will be built suitable for generating the documentation. To set this variable, run</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-14" name="sd-tab-set-4" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-14">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-15" name="sd-tab-set-4" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-15">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:export</span> <span class="n">CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not use this option to build the package for <cite>production</cite> (release) as it has a slower performance. Building the package by enabling this variable is only suitable for generating the documentation.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>By enabling this variable, the build will be <cite>in-source</cite>, similar to setting <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_IN_SOURCE=1</span></code>. To clean the source directory from the generated files, see <a class="reference internal" href="#clean-files"><span class="std std-ref">Clean Compilation Files</span></a>.</p>
+</div>
+</dd>
+<dt id="term-DEBUG_MODE"><code class="docutils literal notranslate"><span class="pre">DEBUG_MODE</span></code><a class="headerlink" href="#term-DEBUG_MODE" title="Permalink to this term">#</a></dt><dd><p>By default, this variable is set to <cite>0</cite>, meaning that <span class="synco">detkit</span> is compiled without debugging mode enabled. By enabling debug mode, you can debug the code with tools such as <code class="docutils literal notranslate"><span class="pre">gdb</span></code>. Set this variable to <cite>1</cite> to enable debugging mode by</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-16" name="sd-tab-set-5" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-16">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">DEBUG_MODE</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-17" name="sd-tab-set-5" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-17">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:export</span> <span class="n">DEBUG_MODE</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>With the debugging mode enabled, the size of the package will be larger and its performance may be slower, which is not suitable for <cite>production</cite>.</p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="compile-and-install">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink"><span class="section-number">1.4.5. </span>Compile and Install</a><a class="headerlink" href="#compile-and-install" title="Permalink to this heading">#</a></h3>
+<p><a class="reference external" href="https://github.com/ameli/detkit"><img alt="repo-size" src="https://img.shields.io/github/repo-size/ameli/detkit" /></a></p>
+<p>Get the source code of <span class="synco">detkit</span> from the GitHub repository by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">git clone https://github.com/ameli/detkit.git</span>
+<span class="prompt1"><span class="nb">cd</span> detkit</span>
+</pre></div></div><p>To compile and install, run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python setup.py install</span>
+</pre></div></div><p>The above command may need <code class="docutils literal notranslate"><span class="pre">sudo</span></code> privilege.</p>
+<p class="rubric">A Note on Using <code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
+<p>If you are using <code class="docutils literal notranslate"><span class="pre">sudo</span></code> for the above command, add <code class="docutils literal notranslate"><span class="pre">-E</span></code> option to <code class="docutils literal notranslate"><span class="pre">sudo</span></code> to make sure the environment variables (if you have set any) are accessible to the root user. For instance</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-18">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda
+<span class="nb">export</span> <span class="nv">USE_CUDA</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">CUDA_DYNAMIC_LOADING</span><span class="o">=</span><span class="m">1</span>
 
-This also imports `detkit` package automatically.
-</pre></div>
+<span class="hll">sudo -E python setup.py install
+</span></pre></div>
 </div>
-</li>
-<li><p>To run the container and open <em>ipython</em> interpreter directly at startup:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="n">sameli</span><span class="o">/</span><span class="n">detkit</span> <span class="n">ipython</span>
-</pre></div>
 </div>
-<p>This also imports <cite>detkit</cite> package automatically.</p>
-</li>
-<li><p>To open a <em>bash shell</em> only:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">entrypoint</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span> <span class="n">sameli</span><span class="o">/</span><span class="n">detkit</span>
-</pre></div>
+<input id="sd-tab-item-19" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-19">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-PowerShell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:export</span> <span class="n">CUDA_HOME</span> <span class="p">=</span> <span class="s2">&quot;/usr/local/cuda&quot;</span>
+<span class="nv">$env:export</span> <span class="n">USE_CUDA</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span>
+<span class="nv">$env:export</span> <span class="n">CUDA_DYNAMIC_LOADING</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span>
+
+<span class="hll"><span class="n">sudo</span> <span class="n">-E</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span>
+</span></pre></div>
 </div>
-</li>
-<li><p>To <em>mount</em> the host directory <cite>/home/user/project</cite> on the docker’s container directory <cite>/root</cite>, use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">-</span><span class="n">v</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">project</span><span class="p">:</span><span class="o">/</span><span class="n">root</span> <span class="n">sameli</span><span class="o">/</span><span class="n">detkit</span>
-</pre></div>
 </div>
-</li>
-</ul>
+</div>
+<p>Once the installation is completed, check the package can be loaded by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span> ..  <span class="c1"># do not load detkit in the same directory of the source code</span></span>
+<span class="prompt1">python -c <span class="s2">&quot;import detkit&quot;</span></span>
+</pre></div></div><div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Do not load <span class="synco">detkit</span> if your current working directory is the root directory of the source code of <span class="synco">detkit</span>, since python cannot load the installed package properly. Always change the current directory to somewhere else (for example, <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">..</span></code> as shown in the above).</p>
+</div>
+<p class="rubric" id="clean-files">Cleaning Compilation Files</p>
+<p>If you set <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_IN_SOURCE</span></code> or <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code>, the output files of Cython’s compiler will be generated inside the source code directories. To clean the source code from these files (<cite>optional</cite>), run the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python setup.py clean</span>
+</pre></div></div></section>
+</section>
+<section id="generate-documentation">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink"><span class="section-number">1.5. </span>Generate Documentation</a><a class="headerlink" href="#generate-documentation" title="Permalink to this heading">#</a></h2>
+<p>Before generating the Sphinx documentation, you should compile the package. First, get the source code from the GitHub repository.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">git clone https://github.com/ameli/detkit.git</span>
+<span class="prompt1"><span class="nb">cd</span> detkit</span>
+</pre></div></div><p>If you already had the source code, clean it from any previous build (especially if you built <cite>in-source</cite>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python setup.py clean</span>
+</pre></div></div><section id="compile-package">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink"><span class="section-number">1.5.1. </span>Compile Package</a><a class="headerlink" href="#compile-package" title="Permalink to this heading">#</a></h3>
+<p>Set <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code> to <cite>1</cite> (see <a class="reference internal" href="#config-env-variables"><span class="std std-ref">Configure Compile-Time Environment variables</span></a>). Compile and install the package by</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-20" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-20">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span> <span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span></span>
+<span class="prompt1"><span class="nb">export</span> <span class="nv">USE_CUDA</span><span class="o">=</span><span class="m">0</span></span>
+<span class="prompt1">sudo -E python setup.py install</span>
+</pre></div></div></div>
+<input id="sd-tab-item-21" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-21">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:export</span> <span class="n">CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+<span class="prompt2"><span class="nv">$env:export</span> <span class="n">USE_CUDA</span> <span class="p">=</span> <span class="s2">&quot;0&quot;</span></span>
+<span class="prompt2"><span class="n">sudo</span> <span class="n">-E</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span></span>
+</pre></div></div></div>
+</div>
+</section>
+<section id="generate-sphinx-documentation">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink"><span class="section-number">1.5.2. </span>Generate Sphinx Documentation</a><a class="headerlink" href="#generate-sphinx-documentation" title="Permalink to this heading">#</a></h3>
+<p>Install the requirements for the Sphinx documentation by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python -m pip install -r docs/requirements.txt</span>
+</pre></div></div><p>The above command installs the required packages in Python’s path directory. Make sure python’s directory is on the <cite>PATH</cite>, for instance, by</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-22">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="sb">`</span>python -c <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="sb">`</span></span>
+<span class="prompt1"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PYTHON_PATH</span><span class="si">}</span>:<span class="nv">$PATH</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-23" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-23">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$PYTHON_PATH</span> <span class="p">=</span> <span class="p">(</span><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="p">)</span></span>
+<span class="prompt2"><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;$PYTHON_PATH&quot;</span></span>
+</pre></div></div></div>
+</div>
+<p>Now, build the documentation:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-24">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make clean html --directory<span class="o">=</span>docs</span>
+</pre></div></div></div>
+<input id="sd-tab-item-25" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-25">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nb">cd </span><span class="n">docs</span></span>
+<span class="prompt2"><span class="n">make</span><span class="p">.</span><span class="n">bat</span> <span class="n">clean</span> <span class="n">html</span></span>
+</pre></div></div></div>
+</div>
+<p>The main page of the documentation can be found in <code class="docutils literal notranslate"><span class="pre">/docs/build/html/index.html</span></code>.</p>
+</section>
 </section>
 </section>
 
@@ -528,10 +850,10 @@ This also imports `detkit` package automatically.
           <p class="prev-next-title">detkit</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="api.html" title="next page">
+  <a class='right-next' id="next-link" href="tests.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">API Reference</p>
+      <p class="prev-next-title"><span class="section-number">2. </span>Running Tests</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>
@@ -558,7 +880,7 @@ This also imports `detkit` package automatically.
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
 </p>
   </div>
   

@@ -1,6 +1,5 @@
 .. _Run_Tests:
 
-*************
 Running Tests
 *************
 
@@ -8,38 +7,31 @@ Running Tests
 
 The package can be tested by running the `test scripts <https://github.com/ameli/detkit/tree/main/tests>`_, which tests all `modules <https://github.com/ameli/detkit/tree/main/detkit>`_. 
 
-===========================
 Running Tests with `pytest`
 ===========================
 
+The package can be tested by running several `test scripts <https://github.com/ameli/detkit/tree/main/tests>`_, which test all `sub-packages <https://github.com/ameli/detkit/tree/main/detkit>`_ and `examples <https://github.com/ameli/detkit/tree/main/examples>`_.
 
-0. Install this package by either of the methods described in the :ref:`installation instructions <Install_Package>`.
+Clone the source code from the repository and install the required test packages by
 
-1. Install test dependencies:
+.. prompt:: bash
 
-   ::
+    git clone https://github.com/ameli/detkit.git
+    cd detkit
+    python -m pip install -r tests/requirements.txt
+    python setup.py install
 
-       python -m pip install -r tests/requirements.txt
+To automatically run all tests, use ``pytest`` which is installed by the above commands.
 
-2. Clone the package source code and install the test dependencies:
+.. prompt:: bash
 
-   ::
+    mv detkit detkit-do-not-import
+    pytest
 
-       git clone https://github.com/ameli/detkit.git
-       cd detkit
+.. attention::
 
-3. Test the package by:
+    To properly run ``pytest``, rename ``/detkit/detkit`` directory as shown in the above code. This makes ``pytest`` to properly import |project| from the installed location, not from the source code directory.
 
-   ::
-
-       cd tests
-       pytest
-
-   .. warning::
-
-       Do not run tests in the root directory of the package ``/detkit``. To properly run tests, change current working directory to ``/detkit/tests`` sub-directory.
-
-========================
 Running Tests with `tox`
 ========================
 
@@ -47,20 +39,20 @@ To run a test in a virtual environment, use ``tox`` as follows:
 
 1. Install `tox`:
    
-   ::
+   .. prompt:: bash
        
        python -m pip install tox
 
 2. Clone the source code from the repository:
    
-   ::
+   .. prompt:: bash
        
        git clone https://github.com/ameli/detkit.git
 
 3. run tests by
    
-   ::
-       
+   .. prompt:: bash
+
        cd detkit
        tox
   
