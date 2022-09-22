@@ -4,18 +4,31 @@
 
 # -----------------------------------------------------------------------------
 # How to build
-#   $ cd ..  # go to root dir of package
+#
+#   $ cd ..  # go to root dir of package (it must run from the parent dir)
 #   $ docker build . -t sameli/detkit -f docker/Dockerfile
 #
+# If you run `docker build` multiple times to fix issues, it is better to add
+# `--no-cache` option, so that in each run it starts from fresh:
+#
+#   $ docker build . --no-cache -t sameli/imate -f docker/Dockerfile
+#
 # How to run:
+#
 #   $ docker run -it -v/host_dir:/image_dir detkit
+#
+# Notes:
+#
+# The `ADD` command copies the contents of the package to a directory in the
+# comtainer, but it does not copy all files/folders. See `.dockerignore` to
+# see which files are ingored.
 # -----------------------------------------------------------------------------
 
 # -----
 # Build
 # -----
 
-FROM ubuntu:20.04 as builder
+FROM ubuntu:22.04 as builder
 MAINTAINER Siavash Ameli <samei@berkeley.edu>
 LABEL Description="detkit python package"
 
@@ -32,18 +45,22 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Build package wheel
-# ENV USE_CUDA=1
 RUN mkdir /tmp/detkit
+
+# Note: ADD does not copy all files. See .dockerignore
 ADD . /tmp/detkit/
 WORKDIR /tmp/detkit
 RUN rm -rf build dist
+
+# Note: run setup.py clean to remove in-source cpp build files (if there are any)
+RUN /usr/bin/python3 setup.py clean
 RUN /usr/bin/python3 setup.py bdist_wheel
 
 # -------
 # Runtime
 # -------
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Install python3 and libcudablas, libcusparse, since they are not in the NVIDIA
 # cuda's "base" image.

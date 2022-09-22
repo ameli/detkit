@@ -19,18 +19,24 @@ recursive-include docs Makefile
 recursive-include docs *.bib
 recursive-include docs *.in
 recursive-include docs *.txt
-recursive-exclude docs *.pdf
-recursive-exclude docs/source *.html
 recursive-exclude docs *.html
+recursive-exclude docs *.pdf
+recursive-include docs *.ico
+recursive-include docs *.ipynb
+recursive-include docs *.js
+recursive-include docs *.png
+recursive-include docs *.ttf
+recursive-include docs/source *.html
 
-recursive-include pdet *.rst
+recursive-include detkit *.rst
 recursive-include examples *.py
 recursive-include examples *.rst
 recursive-include notebooks *.ipynb
 recursive-include tests *.py
 recursive-include tests *.rst
-recursive-exclude tests *.svg
 recursive-include tests *.txt
+recursive-exclude tests *.svg
+recursive-exclude tests *.pdf
 
 include CHANGELOG.rst
 include README.rst
@@ -42,6 +48,7 @@ include .coveragerc
 include tox.ini
 include environment.yml
 include .dockerignore
+include .tokeignore
 include docker/Dockerfile
 
 exclude TODO.rst

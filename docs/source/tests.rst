@@ -1,6 +1,5 @@
 .. _Run_Tests:
 
-*************
 Running Tests
 *************
 
@@ -8,7 +7,6 @@ Running Tests
 
 The package can be tested by running the `test scripts <https://github.com/ameli/detkit/tree/main/tests>`_, which tests all `modules <https://github.com/ameli/detkit/tree/main/detkit>`_. 
 
-===========================
 Running Tests with `pytest`
 ===========================
 
@@ -39,7 +37,6 @@ Running Tests with `pytest`
 
        Do not run tests in the root directory of the package ``/detkit``. To properly run tests, change current working directory to ``/detkit/tests`` sub-directory.
 
-========================
 Running Tests with `tox`
 ========================
 

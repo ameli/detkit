@@ -12,6 +12,7 @@
 
 import os
 import sys
+from datetime import date
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -74,9 +75,46 @@ for build_subdirectory in build_subdirectories:
 # -- Project information -----------------------------------------------------
 
 project = 'detkit'
-copyright = '2022, Siavash Ameli'
 author = 'Siavash Ameli'
+copyright = f'{date.today().year}, ' + author
 
+# -- Sphinx Settings ----------------------------------------------------------
+
+# Check links and references
+nitpicky = True
+
+# Why setting "root_doc": by using toctree in index.rst, two things are added
+# to index.html main page: (1) a toc in that location of page, (2) toc in the
+# sidebar menu. If we add :hidden: option to toctree, it removes toc from
+# both page and sidebar menu. There is no way we can have only one of these,
+# for instance, toc only in the page, but not in the menu. A solution to 
+# this is as follows:
+#   1. Set "root_doc= 'content'". Then add those toc that should go into the
+#      menu in the content.rst file.
+#   2. Add those toc that should go into the page in index.rst file.
+# This way, we can control which toc appears where.
+#
+# A problem: by setting "root_doc='content'", the sidebar logo links to
+# contents.html page, not the main page. There is a logo_url variable but it
+# does not seem to do anything. To fix this, I added a javascript (see in
+# /docs/source/_static/js/custom-pydata.js) which overwrites
+# <a href"path/contents.html"> to <a href="path/index.html>".
+# root_doc = "contents"
+
+# Common definitions for the whole pages
+rst_epilog = f'''
+.. role:: synco
+   :class: synco
+
+.. |project| replace:: :synco:`detkit`
+'''
+
+# Figure, Tables, etc numbering
+# numfig = True
+# numfig_format = {
+#     'figure': 'Figure %s',
+#     'table': 'Table %s'
+# }
 
 # -- General configuration ---------------------------------------------------
 
@@ -88,17 +126,30 @@ extensions = [
     # 'sphinx_math_dollar',
     'sphinx.ext.mathjax',
     'sphinx.ext.graphviz', 'sphinx.ext.inheritance_diagram',
-    'sphinx.ext.viewcode',
+    # 'sphinx.ext.viewcode',
     'sphinx_toggleprompt',
     # 'sphinx.ext.autosectionlabel',
     'sphinx.ext.autosummary',
     # 'sphinx_automodapi.automodapi',
-    # 'sphinxcontrib.napoleon'                # either use napoleon or numpydoc
-    'numpydoc'                                # either use napoleon or numpydoc
+    # 'sphinxcontrib.napoleon',               # either use napoleon or numpydoc
+    'numpydoc',                               # either use napoleon or numpydoc
+    'sphinx_design',
+    'sphinx_multitoc_numbering',
+    'sphinx-prompt',
+    'sphinx_copybutton',
+    'nbsphinx',
 ]
+
+# Copy button settings
+copybutton_prompt_is_regexp = True
+copybutton_prompt_text = r'>>> |\.\.\. '
 
 # Automatically generate autosummary after each build
 autosummary_generate = True
+autosummary_imported_members = True
+
+# Remove the module names from the signature
+# add_module_names = False
 
 # automodapi
 numpydoc_show_class_members = False
@@ -122,7 +173,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['build', 'Thumbs.db', '.DS_Store']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -150,19 +201,69 @@ html_theme = 'pydata_sphinx_theme'
 # Options for theme
 html_theme_options = {
     "github_url": "https://github.com/ameli/detkit",
-    "navbar_end": ["search-field.html", "navbar-icon-links.html"],
-    "page_sidebar_items": ["page-toc", "edit-this-page"]
+    "navbar_end": [
+        "theme-switcher",
+        "search-field.html",
+        "navbar-icon-links.html"
+    ],
+    "page_sidebar_items": ["page-toc", "edit-this-page"],
+    # "header_links_before_dropdown": 4,
+    "use_edit_page_button": True,
+    "icon_links": [
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/detkit/",
+            "icon": "fab fa-python",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Anaconda Cloud",
+            "url": "https://anaconda.org/s-ameli/detkit",
+            "icon": "fa fa-circle-notch",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Docker Hub",
+            "url": "https://hub.docker.com/r/sameli/detkit",
+            "icon": "fab fa-docker",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Lanuch Jupyter on Binder",
+            "url": "https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb",
+            "icon": "fa fa-chart-line",
+            "type": "fontawesome",
+        },
+    ],
+    "pygment_light_style": "tango",
+    "pygment_dark_style": "native",
+    "logo": {
+        "image_light": "images/icons/logo-detkit-light.png",
+        "image_dark": "images/icons/logo-detkit-dark.png",
+    },
+}
+
+html_context = {
+    "default_mode": "auto",
+    "github_user": "https://github.com/ameli",
+    "github_repo": "detkit",
+    "github_version": "main",
+    "doc_path": "docs/source",
 }
 
 html_sidebars = {
     "**": ["sidebar-nav-bs", "sidebar-ethical-ads"]
 }
 
-project = u'detkit'
-copyright = u'2022, Siavash Ameli'
+# Using Font Awesome icons
+# html_css_files = [
+#     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+# ]
+
 
 html_title = f"{project} Manual"
 html_last_updated_fmt = '%b %d, %Y'
+# html_show_sourcelink = False
 
 # To use sphinx3, download at
 # https://github.com/sphinx-doc/sphinx/tree/master/doc/_themes/sphinx13
@@ -192,10 +293,12 @@ html_last_updated_fmt = '%b %d, %Y'
 html_static_path = ['_static']
 
 # # Add css
-# html_css_files = [
-#     'custom.css',
-# ]
+# html_css_files = ["css/custom.css"]
+# html_css_files = ['css/custom-anaconda-doc.css']
 
+html_js_files = ["js/custom-pydata.css"]
+# html_logo = '_static/images/icons/logo-detkit-light.png'
+html_favicon = '_static/images/icons/logo-detkit.ico'
 
 # =====
 # setup
@@ -204,8 +307,10 @@ html_static_path = ['_static']
 def setup(app):
     """
     This function is used to employ a css file to the themes.
-    Note: paths are relative to /docs/_static
+    Note: paths are relative to /docs/source/_static
     """
 
-    app.add_css_file('css/custom.css')
+    app.add_css_file('css/custom-pydata.css')
+    app.add_js_file('js/custom-pydata.js')
+    # app.add_css_file('css/custom.css')
     # app.add_css_file('css/custom-anaconda-doc.css')

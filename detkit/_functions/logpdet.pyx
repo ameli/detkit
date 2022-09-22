@@ -174,7 +174,8 @@ def logpdet(
 
         If the compile-time variable ``USE_OPENMP`` is set to ``1``, this
         function is parallelized. The compile-time default is ``0``. To see
-        a list of compile-time definitions, see :func:`get-config` function.
+        a list of compile-time definitions, see :func:`detkit.get_config`
+        function.
 
     See Also
     --------

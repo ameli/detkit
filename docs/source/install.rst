@@ -14,17 +14,17 @@ Successful installation and tests have been performed on the following platforms
 .. |y| unicode:: U+2714
 .. |n| unicode:: U+2716
 
-+----------+-----+-----+-----+-----+-----+-----+-----+-----------+
-| Platform | Python version        | PyPy version    | Status    |
-+          +-----+-----+-----+-----+-----+-----+-----+-----+-----+
-|          | 3.6 | 3.7 | 3.8 | 3.9 | 3.6 | 3.7 |                 |
-+==========+=====+=====+=====+=====+=====+=====+=================+
-| Linux    | |y| | |y| | |y| | |y| | |y| | |y| | |build-linux|   |
-+----------+-----+-----+-----+-----+-----+-----+-----------------+
-| macOS    | |y| | |y| | |y| | |y| | |n| | |n| | |build-macos|   |
-+----------+-----+-----+-----+-----+-----+-----+-----------------+
-| Windows  | |y| | |y| | |y| | |y| | |n| | |n| | |build-windows| |
-+----------+-----+-----+-----+-----+-----+-----+-----------------+
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| Platform | Arch   | Python Version                        | PyPy Version  | Continuous      |
++          |        +-------+-------+-------+-------+-------+-------+-------+ Integration     +
+|          |        |  3.6  |  3.7  |  3.8  |  3.9  |  3.10 |  3.6  |  3.7  |                 |
++==========+========+=======+=======+=======+=======+=======+=======+=======+=================+
+| Linux    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| macOS    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  | |build-macos|   |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| Windows  | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  | |build-windows| |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 
 .. |build-linux| image:: https://github.com/ameli/detkit/workflows/build-linux/badge.svg
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux 
@@ -33,11 +33,7 @@ Successful installation and tests have been performed on the following platforms
 .. |build-windows| image:: https://github.com/ameli/detkit/workflows/build-windows/badge.svg
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows
 
-.. note::
-
-    * For the Python/PyPy versions indicated by |y| in the above, this package can be installed using either ``pip`` or ``conda`` (see :ref:`installation instructions <InstallationMethods>` below.)
-    * This package cannot be installed via ``pip`` or ``conda`` on the Python/PyPy versions indicated by |n| in the above table.
-    * To install on the older Python 3 versions that are not listed in the above (for example Python 3.5), build this package from the source code (see :ref:`build instructions <Build_Locally>`).
+Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/imate/>`_ and `Anaconda Cloud <https://anaconda.org/s-ameli/imate>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/imate/issues>`_ on GitHub and we build its Python Wheel for you.
 
 .. _InstallationMethods:
 

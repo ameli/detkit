@@ -1,21 +1,32 @@
-******
 detkit
 ******
 
-|licence| |docs|
+|license| |deploy-docs|
 
-A toolkit to compute some common functions involving determinant of matrices used in machine learning.
+A python package to compute some common functions involving determinant of matrices used in machine learning.
 
-.. toctree::
-    :maxdepth: 1
-    :caption: Documentation
-    :hidden:
-    
-    Install <install>
-    API Reference <api>
-    Tests <tests>
+.. grid:: 4
 
-=================
+    .. grid-item-card:: GitHub
+        :link: https://github.com/ameli/detkit
+        :text-align: center
+        :class-card: custom-card-link
+
+    .. grid-item-card:: PyPI
+        :link: https://pypi.org/project/detkit/
+        :text-align: center
+        :class-card: custom-card-link
+
+    .. grid-item-card:: Anaconda Cloud
+        :link: https://anaconda.org/s-ameli/detkit
+        :text-align: center
+        :class-card: custom-card-link
+
+    .. grid-item-card:: Docker Hub
+        :link: https://hub.docker.com/r/sameli/detkit
+        :text-align: center
+        :class-card: custom-card-link
+
 List of Functions
 =================
 
@@ -30,7 +41,6 @@ List of Functions
 
 See :ref:`api` for a list of all functions.
 
-========
 Features
 ========
 
@@ -38,105 +48,149 @@ Features
 * The underlying library is implemented in C++ and wrapped in cython.
 * An accurate count of computational FLOPs during the execution of functions can be measured.
 
-=======
 Install
 =======
 
-|pypi| |conda-version| |docker|
+|conda-downloads|
 
-* Install with `pip <https://pypi.org/project/special-functions/>`_:
+.. grid:: 2
 
-  ::
-  
-      pip install detkit
+    .. grid-item-card:: 
 
-* Install with `conda <https://anaconda.org/s-ameli/detkit>`:
-  
-  ::
-  
-      conda install -c s-ameli detkit
-  
-* Pull from `docker image <https://hub.docker.com/repository/docker/sameli/detkit>`_
-  
-  ::
-      
-      docker pull sameli/detkit
+        Install with ``pip`` from `PyPI <https://pypi.org/project/detkit/>`_:
 
-For a complete install or build instructions, see :ref:`install_package`.
+        .. prompt:: bash
+            
+            pip install detkit
 
+    .. grid-item-card::
 
-====================
-Interactive Tutorial
-====================
+        Install with ``conda`` from `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_:
+
+        .. prompt:: bash
+            
+            conda install -c s-ameli detkit
+
+For complete installation guide, see:
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    Install <install>
+    Test <tests>
+
+Docker
+======
+
+|docker-pull| |deploy-docker|
+
+The docker image comes with a pre-installed |project|, an NVIDIA graphic driver, and a compatible version of CUDA Toolkit libraries.
+
+.. grid:: 1
+
+    .. grid-item-card::
+
+        Pull docker image from `Docker Hub <https://hub.docker.com/r/sameli/detkit>`_:
+
+        .. prompt:: bash
+            
+            docker pull sameli/detkit
+
+For a complete guide, see:
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    Docker <docker>
+
+Tutorials
+=========
 
 |binder|
 
 Launch an online interactive tutorial in `Jupyter notebook <https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb>`_.
 
-=====
-Links
-=====
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+    :hidden:
 
-* `Package on Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_
-* `Package on PyPi <https://pypi.org/project/detkit/>`_
-* `Source code on Github <https://github.com/ameli/detkit>`_
-* `Docker image <https://hub.docker.com/repository/docker/sameli/detkit>`_
+    API Reference <api>
 
-.. * `Interactive Jupyter notebook <https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb>`_.
-.. * `API <https://ameli.github.io/detkit/_modules/modules.html>`_
-
-=================
 How to Contribute
 =================
 
 We welcome contributions via `Github's pull request <https://github.com/ameli/detkit/pulls>`_. If you do not feel comfortable modifying the code, we also welcome feature request and bug report as `Github issues <https://github.com/ameli/detkit/issues>`_.
 
-================
-Related Packages
-================
-
-* `glean <https://github.com/ameli/glearn>`_: A high-performance python package for machine learning using Gaussian process.
-* `imate <https://github.com/ameli/imate>`_: A high-performance python package for implicit matrix trace estimation.
-
-===========
-How to Cite
-===========
-
-.. [1] Ameli, S., Shadden, S. C. (2022) A Singular Woodbury and
-       Pseudo-Determinant Matrix Identities and Application to Gaussian
-       Process Regression (`in preparation`).
-.. [2] Ameli, S. (2022). ameli/detkit: (v0.0.6). Zenodo. |code-doi|
-
-================
-Acknowledgements
+Related Projects
 ================
 
-* National Science Foundation #1520825
-* American Heart Association #18EIA33900046
+.. grid:: 2
 
+   .. grid-item-card:: |glearn-light| |glearn-dark|
+       :link: https://ameli.github.io/glearn/index.html
+       :text-align: center
+       :class-card: custom-card-link
+   
+       A high-performance python package for machine learning using Gaussian process regression.
 
+   .. grid-item-card:: |imate-light| |imate-dark|
+       :link: https://ameli.github.io/imate/index.html
+       :text-align: center
+       :class-card: custom-card-link
+   
+       A high-performance python package for machine learning using Gaussian process regression.
+
+.. How to Cite
+.. include:: cite.rst
+
+.. |deploy-docs| image:: https://img.shields.io/github/workflow/status/ameli/detkit/deploy-docs?label=docs
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docs
+.. |deploy-docker| image:: https://img.shields.io/github/workflow/status/ameli/detkit/deploy-docker?label=build%20docker
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docker
 .. |codecov-devel| image:: https://img.shields.io/codecov/c/github/ameli/detkit
    :target: https://codecov.io/gh/ameli/detkit
-.. |docs| image:: https://github.com/ameli/detkit/workflows/docs/badge.svg
-   :target: https://ameli.github.io/detkit/index.html
-.. |licence| image:: https://img.shields.io/github/license/ameli/detkit
-   :target: https://opensource.org/licenses/MIT
+.. |license| image:: https://img.shields.io/github/license/ameli/detkit
+   :target: https://opensource.org/licenses/BSD-3-Clause
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
 .. |format| image:: https://img.shields.io/pypi/format/detkit
 .. |pypi| image:: https://img.shields.io/pypi/v/detkit
-   :target: https://pypi.org/project/special-functions/
-.. |conda| image:: https://anaconda.org/s-ameli/detkit/badges/installer/conda.svg
-   :target: https://anaconda.org/s-ameli/detkit
-.. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/detkit?color=orange?label=platforms
-   :target: https://anaconda.org/s-ameli/detkit
-.. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/detkit
-   :target: https://anaconda.org/s-ameli/detkit
+.. |conda| image:: https://anaconda.org/s-ameli/traceinv/badges/installer/conda.svg
+   :target: https://anaconda.org/s-ameli/traceinv
+.. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/traceinv?color=orange?label=platforms
+   :target: https://anaconda.org/s-ameli/traceinv
+.. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/traceinv
+   :target: https://anaconda.org/s-ameli/traceinv
 .. |binder| image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FSpecial%20Functions.ipynb
-.. |downloads| image:: https://pepy.tech/badge/special-functions
-   :target: https://pepy.tech/project/detkit
-.. |docker| image:: https://img.shields.io/docker/pulls/sameli/detkit
-   :target: https://hub.docker.com/repository/docker/sameli/detkit
-.. |code-doi| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6395319.svg
-   :target: https://doi.org/10.5281/zenodo.6395319
+   :target: https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb
+.. |conda-downloads| image:: https://img.shields.io/conda/dn/s-ameli/detkit
+   :target: https://anaconda.org/s-ameli/detkit
+.. |tokei| image:: https://tokei.rs/b1/github/ameli/detkit?category=lines
+   :target: https://github.com/ameli/detkit
+.. |tokei-2| image:: https://img.shields.io/badge/code%20lines-67.0k-blue
+   :target: https://github.com/ameli/detkit
+.. |languages| image:: https://img.shields.io/github/languages/count/ameli/detkit
+   :target: https://github.com/ameli/detkit
+.. |docker-pull| image:: https://img.shields.io/docker/pulls/sameli/detkit?color=green&label=downloads
+   :target: https://hub.docker.com/r/sameli/detkit
+.. |glearn-light| image:: _static/images/icons/logo-glearn-light.svg
+   :height: 30
+   :class: only-light
+.. |glearn-dark| image:: _static/images/icons/logo-glearn-dark.svg
+   :height: 30
+   :class: only-dark
+.. |imate-light| image:: _static/images/icons/logo-imate-light.svg
+   :height: 23
+   :class: only-light
+.. |imate-dark| image:: _static/images/icons/logo-imate-dark.svg
+   :height: 23
+   :class: only-dark
+.. |detkit-light| image:: _static/images/icons/logo-detkit-light.svg
+   :height: 27
+   :class: only-light
+.. |detkit-dark| image:: _static/images/icons/logo-detkit-dark.svg
+   :height: 27
+   :class: only-dark
