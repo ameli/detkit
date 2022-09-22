@@ -141,7 +141,7 @@ Related Projects
        :text-align: center
        :class-card: custom-card-link
    
-       A high-performance python package for machine learning using Gaussian process regression.
+       A high-performance python package for scalable randomized algorithms for matrix functions in machine learning.
 
 .. How to Cite
 .. include:: cite.rst
