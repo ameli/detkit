@@ -74,6 +74,38 @@ Alternately, install |project| and its Python dependencies from `Anaconda Cloud 
 
 .. _virtual-env:
 
+Dependencies
+============
+
+|project| can count the FLOPs of the computations, if the argument ``flops=True`` is used in the functions (see :ref:`API Reference <api>`). To this end, the `Linux Performance Counter tool <https://perf.wiki.kernel.org/index.php/Main_Page>`_, known as ``perf`` should be installed.
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu/Debian
+        :sync: ubuntu
+
+        .. prompt:: bash
+
+            sudo apt install linux-tools
+
+    .. tab-item:: CentOS 7
+        :sync: centos
+
+        .. prompt:: bash
+
+            sudo yum group install perf
+
+    .. tab-item:: RHEL 9
+        :sync: rhel
+
+        .. prompt:: bash
+
+            sudo dnf group install perf
+
+.. attention::
+
+    The ``perf`` tool is not available in macOS and Windows.
+
 Install |project| in Virtual Environments
 =========================================
 
@@ -185,7 +217,6 @@ Install C++ Compiler and OpenMP (`Required`)
 Compile |project| with either of GCC, Clang/LLVM, or Intel C++ compiler on UNIX operating systems. For Windows, compile |project| with `Microsoft Visual Studio (MSVC) Compiler for C++ <https://code.visualstudio.com/docs/cpp/config-msvc#:~:text=You%20can%20install%20the%20C,the%20C%2B%2B%20workload%20is%20checked.>`_.
 
 .. rubric:: Install GNU GCC Compiler
-
 
 .. tab-set::
 
