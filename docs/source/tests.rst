@@ -10,27 +10,27 @@ The package can be tested by running the `test scripts <https://github.com/ameli
 Running Tests with `pytest`
 ===========================
 
-The package can be tested by running several `test scripts <https://github.com/ameli/detkit/tree/main/tests>`_, which test all `sub-packages <https://github.com/ameli/detkit/tree/main/detkit>`_ and `examples <https://github.com/ameli/detkit/tree/main/examples>`_.
+The package can be tested by running several `test scripts <https://github.com/ameli/detkit/tree/main/tests>`_, which test all `sub-packages <https://github.com/ameli/detkit/tree/main/detkit>`_.
 
-Clone the source code from the repository and install the required test packages by
+1. Clone the source code from the repository and install the required test packages by
+  
+   .. prompt:: bash
+  
+      git clone https://github.com/ameli/detkit.git
+      cd detkit
+      python -m pip install -r tests/requirements.txt
+      python setup.py install
 
-.. prompt:: bash
+2. To automatically run all tests, use ``pytest`` which is installed by the above commands.
+  
+   .. prompt:: bash
+   
+       mv detkit detkit-do-not-import
+       pytest
 
-    git clone https://github.com/ameli/detkit.git
-    cd detkit
-    python -m pip install -r tests/requirements.txt
-    python setup.py install
-
-To automatically run all tests, use ``pytest`` which is installed by the above commands.
-
-.. prompt:: bash
-
-    mv detkit detkit-do-not-import
-    pytest
-
-.. attention::
-
-    To properly run ``pytest``, rename ``/detkit/detkit`` directory as shown in the above code. This makes ``pytest`` to properly import |project| from the installed location, not from the source code directory.
+   .. attention::
+  
+      To properly run ``pytest``, rename ``/detkit/detkit`` directory as shown in the above code. This makes ``pytest`` to properly import |project| from the installed location, not from the source code directory.
 
 Running Tests with `tox`
 ========================

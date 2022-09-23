@@ -456,10 +456,7 @@ If you are using ``sudo`` for the above command, add ``-E`` option to ``sudo`` t
         .. code-block:: Bash
             :emphasize-lines: 5
 
-            export CUDA_HOME=/usr/local/cuda
-            export USE_CUDA=1
-            export CUDA_DYNAMIC_LOADING=1
-
+            export CYTHON_BUILD_FOR_DOC=1
             sudo -E python setup.py install
 
     .. tab-item:: Windows (Powershell)
@@ -468,10 +465,7 @@ If you are using ``sudo`` for the above command, add ``-E`` option to ``sudo`` t
         .. code-block:: PowerShell
             :emphasize-lines: 5
 
-            $env:export CUDA_HOME = "/usr/local/cuda"
-            $env:export USE_CUDA = "1"
-            $env:export CUDA_DYNAMIC_LOADING = "1"
-
+            $env:export CYTHON_BUILD_FOR_DOC = "1"
             sudo -E python setup.py install
 
 Once the installation is completed, check the package can be loaded by
@@ -524,7 +518,6 @@ Set ``CYTHON_BUILD_FOR_DOC`` to `1` (see :ref:`Configure Compile-Time Environmen
         .. prompt:: bash
 
             export CYTHON_BUILD_FOR_DOC=1
-            export USE_CUDA=0
             sudo -E python setup.py install
 
     .. tab-item:: Windows (Powershell)
@@ -533,7 +526,6 @@ Set ``CYTHON_BUILD_FOR_DOC`` to `1` (see :ref:`Configure Compile-Time Environmen
         .. prompt:: powershell
 
             $env:export CYTHON_BUILD_FOR_DOC = "1"
-            $env:export USE_CUDA = "0"
             sudo -E python setup.py install
 
 Generate Sphinx Documentation
