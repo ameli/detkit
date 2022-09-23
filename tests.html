@@ -269,8 +269,9 @@
 <p>The package can be tested by running the <a class="reference external" href="https://github.com/ameli/detkit/tree/main/tests">test scripts</a>, which tests all <a class="reference external" href="https://github.com/ameli/detkit/tree/main/detkit">modules</a>.</p>
 <section id="running-tests-with-pytest">
 <h2><span class="section-number">2.1. </span>Running Tests with <cite>pytest</cite><a class="headerlink" href="#running-tests-with-pytest" title="Permalink to this heading">#</a></h2>
-<p>The package can be tested by running several <a class="reference external" href="https://github.com/ameli/detkit/tree/main/tests">test scripts</a>, which test all <a class="reference external" href="https://github.com/ameli/detkit/tree/main/detkit">sub-packages</a> and <a class="reference external" href="https://github.com/ameli/detkit/tree/main/examples">examples</a>.</p>
-<p>Clone the source code from the repository and install the required test packages by</p>
+<p>The package can be tested by running several <a class="reference external" href="https://github.com/ameli/detkit/tree/main/tests">test scripts</a>, which test all <a class="reference external" href="https://github.com/ameli/detkit/tree/main/detkit">sub-packages</a>.</p>
+<ol class="arabic">
+<li><p>Clone the source code from the repository and install the required test packages by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
   content: "$ ";
@@ -279,13 +280,16 @@ span.prompt1:before {
 <span class="prompt1"><span class="nb">cd</span> detkit</span>
 <span class="prompt1">python -m pip install -r tests/requirements.txt</span>
 <span class="prompt1">python setup.py install</span>
-</pre></div></div><p>To automatically run all tests, use <code class="docutils literal notranslate"><span class="pre">pytest</span></code> which is installed by the above commands.</p>
+</pre></div></div></li>
+<li><p>To automatically run all tests, use <code class="docutils literal notranslate"><span class="pre">pytest</span></code> which is installed by the above commands.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">mv detkit detkit-do-not-import</span>
 <span class="prompt1">pytest</span>
 </pre></div></div><div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>To properly run <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, rename <code class="docutils literal notranslate"><span class="pre">/detkit/detkit</span></code> directory as shown in the above code. This makes <code class="docutils literal notranslate"><span class="pre">pytest</span></code> to properly import <span class="synco">detkit</span> from the installed location, not from the source code directory.</p>
 </div>
+</li>
+</ol>
 </section>
 <section id="running-tests-with-tox">
 <h2><span class="section-number">2.2. </span>Running Tests with <cite>tox</cite><a class="headerlink" href="#running-tests-with-tox" title="Permalink to this heading">#</a></h2>
