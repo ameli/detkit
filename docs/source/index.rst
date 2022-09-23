@@ -41,13 +41,6 @@ List of Functions
 
 See :ref:`api` for a list of all functions.
 
-Features
-========
-
-* Functions are implemented with a novel algorithm described in [1]_.
-* The underlying library is implemented in C++ and wrapped in cython.
-* An accurate count of computational FLOPs during the execution of functions can be measured.
-
 Install
 =======
 
@@ -118,6 +111,15 @@ Launch an online interactive tutorial in `Jupyter notebook <https://mybinder.org
 
     API Reference <api>
 
+Features
+========
+
+|tokei-2| |languages|
+
+* Functions are implemented with a novel algorithm described in [1]_.
+* The underlying library is implemented in C++ and wrapped in cython.
+* An accurate count of computational FLOPs during the execution of functions can be measured.
+
 How to Contribute
 =================
 
@@ -170,7 +172,7 @@ Related Projects
    :target: https://anaconda.org/s-ameli/detkit
 .. |tokei| image:: https://tokei.rs/b1/github/ameli/detkit?category=lines
    :target: https://github.com/ameli/detkit
-.. |tokei-2| image:: https://img.shields.io/badge/code%20lines-67.0k-blue
+.. |tokei-2| image:: https://img.shields.io/badge/code%20lines-11.5k-blue
    :target: https://github.com/ameli/detkit
 .. |languages| image:: https://img.shields.io/github/languages/count/ameli/detkit
    :target: https://github.com/ameli/detkit
