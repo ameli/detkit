@@ -531,6 +531,45 @@ Set ``CYTHON_BUILD_FOR_DOC`` to `1` (see :ref:`Configure Compile-Time Environmen
 Generate Sphinx Documentation
 -----------------------------
 
+Install `Pandoc <https://pandoc.org/>`_ by
+
+.. tab-set::
+
+   .. tab-item:: Ubuntu/Debian
+      :sync: ubuntu
+
+      .. prompt:: bash
+
+            sudo apt install pandoc -y
+
+   .. tab-item:: CentOS 7
+      :sync: centos
+
+      .. prompt:: bash
+
+          sudo yum install pandoc -y
+
+   .. tab-item:: RHEL 9
+      :sync: rhel
+
+      .. prompt:: bash
+
+          sudo dnf install pandoc -y
+
+   .. tab-item:: macOS
+      :sync: osx
+
+      .. prompt:: bash
+
+          sudo brew install pandoc -y
+
+   .. tab-item:: Windows (Powershell)
+      :sync: win
+
+      .. prompt:: powershell
+
+          scoop install pandoc
+
 Install the requirements for the Sphinx documentation by
 
 .. prompt:: bash
