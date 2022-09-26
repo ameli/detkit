@@ -40,6 +40,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/toggleprompt.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -822,18 +823,46 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 </section>
 <section id="generate-sphinx-documentation">
 <h3><a class="toc-backref" href="#id20" role="doc-backlink"><span class="section-number">1.6.2. </span>Generate Sphinx Documentation</a><a class="headerlink" href="#generate-sphinx-documentation" title="Permalink to this heading">#</a></h3>
+<p>Install <a class="reference external" href="https://pandoc.org/">Pandoc</a> by</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-25" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-25">
+Ubuntu/Debian</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo apt install pandoc -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-26" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-26">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo yum install pandoc -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-27" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-27">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo dnf install pandoc -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-28" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-28">
+macOS</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo brew install pandoc -y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-29" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-29">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="n">scoop</span> <span class="n">install</span> <span class="n">pandoc</span></span>
+</pre></div></div></div>
+</div>
 <p>Install the requirements for the Sphinx documentation by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python -m pip install -r docs/requirements.txt</span>
 </pre></div></div><p>The above command installs the required packages in Python’s path directory. Make sure python’s directory is on the <cite>PATH</cite>, for instance, by</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-25" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-25">
+<input checked="checked" id="sd-tab-item-30" name="sd-tab-set-10" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-30">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="sb">`</span>python -c <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="sb">`</span></span>
 <span class="prompt1"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PYTHON_PATH</span><span class="si">}</span>:<span class="nv">$PATH</span></span>
 </pre></div></div></div>
-<input id="sd-tab-item-26" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-26">
+<input id="sd-tab-item-31" name="sd-tab-set-10" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-31">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$PYTHON_PATH</span> <span class="p">=</span> <span class="p">(</span><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="p">)</span></span>
 <span class="prompt2"><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;$PYTHON_PATH&quot;</span></span>
@@ -841,13 +870,13 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 </div>
 <p>Now, build the documentation:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-27" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-27">
+<input checked="checked" id="sd-tab-item-32" name="sd-tab-set-11" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-32">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make clean html --directory<span class="o">=</span>docs</span>
 </pre></div></div></div>
-<input id="sd-tab-item-28" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-28">
+<input id="sd-tab-item-33" name="sd-tab-set-11" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-33">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nb">cd </span><span class="n">docs</span></span>
 <span class="prompt2"><span class="n">make</span><span class="p">.</span><span class="n">bat</span> <span class="n">clean</span> <span class="n">html</span></span>
@@ -903,7 +932,7 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.1.<br>
 </p>
   </div>
   
