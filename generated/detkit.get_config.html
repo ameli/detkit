@@ -48,7 +48,7 @@
     <script src="../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/custom-pydata.css"></script>
-    <link rel="shortcut icon" href="../_static/logo-detkit.ico"/>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="get_instructions_per_task" href="detkit.get_instructions_per_task.html" />
@@ -279,7 +279,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.get_config.rst">
+    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.get_config.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -325,9 +325,31 @@ the same chunk.</p></li>
 </dl>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="detkit.get_instructions_per_task.html#detkit.get_instructions_per_task" title="detkit.get_instructions_per_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_instructions_per_task</span></code></a></dt><dd></dd>
+</dl>
+</div>
 <p class="rubric">Notes</p>
 <p>To configure the compile-time definitions, modify the
 <code class="docutils literal notranslate"><span class="pre">/detkit/_definitions/definitions.h</span></code> file and recompile the package.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">detkit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{</span>
+<span class="go">    &#39;use_symmetry&#39;: True,</span>
+<span class="go">    &#39;use_openmp&#39;: False,</span>
+<span class="go">    &#39;count_perf&#39;: True,</span>
+<span class="go">    &#39;chunk_tasks&#39;: True</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>The above configuration shows the package was compiled where the symmetric
+matrix multiplication for Gram matrices is enabled, the package supports
+parallelism on shared memory with OpenMP, it can count hardware
+instructions at the runtime, and chunks multiply-add operations to
+improve performance.</p>
 </dd></dl>
 
 </section>
@@ -377,7 +399,7 @@ the same chunk.</p></li>
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.1.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.2.<br>
 </p>
   </div>
   
