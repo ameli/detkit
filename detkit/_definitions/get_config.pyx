@@ -43,11 +43,36 @@ def get_config():
               library. When `True`, every five MA operations are computed in
               the same chunk.
 
+    See Also
+    --------
+
+    detkit.get_instructions_per_task
+
     Notes
     -----
 
     To configure the compile-time definitions, modify the
     ``/detkit/_definitions/definitions.h`` file and recompile the package.
+
+    Examples
+    --------
+
+    .. code-block:: python
+
+        >>> import detkit
+        >>> detkit.get_config()
+        {
+            'use_symmetry': True,
+            'use_openmp': False,
+            'count_perf': True,
+            'chunk_tasks': True
+        }
+
+    The above configuration shows the package was compiled where the symmetric
+    matrix multiplication for Gram matrices is enabled, the package supports
+    parallelism on shared memory with OpenMP, it can count hardware
+    instructions at the runtime, and chunks multiply-add operations to
+    improve performance.
     """
 
     config = {

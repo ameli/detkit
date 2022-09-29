@@ -454,7 +454,6 @@ If you are using ``sudo`` for the above command, add ``-E`` option to ``sudo`` t
         :sync: unix
 
         .. code-block:: Bash
-            :emphasize-lines: 5
 
             export CYTHON_BUILD_FOR_DOC=1
             sudo -E python setup.py install
@@ -463,7 +462,6 @@ If you are using ``sudo`` for the above command, add ``-E`` option to ``sudo`` t
         :sync: win
 
         .. code-block:: PowerShell
-            :emphasize-lines: 5
 
             $env:export CYTHON_BUILD_FOR_DOC = "1"
             sudo -E python setup.py install
