@@ -33,7 +33,7 @@ Successful installation and tests have been performed on the following platforms
 .. |build-windows| image:: https://github.com/ameli/detkit/workflows/build-windows/badge.svg
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows
 
-Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`_ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
+Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`__ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
 
 .. _install-wheels:
 
@@ -47,7 +47,7 @@ Install with ``pip``
 
 |pypi|
 
-Install |project| and its Python dependencies through `PyPI <https://pypi.org/project/detkit>`_ by
+Install |project| and its Python dependencies through `PyPI <https://pypi.org/project/detkit>`__ by
 
 .. prompt:: bash
     

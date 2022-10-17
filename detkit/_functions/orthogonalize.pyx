@@ -31,19 +31,58 @@ cpdef orthogonalize(A):
 
     Parameters
     ----------
-        A : array_like
-            Input matrix. This matrix will be overwritten in place of the
-            output orthogonal matrix.
 
-    Warnings
+    A : array_like
+        Input matrix. This matrix will be overwritten in place of the output
+        orthogonal matrix.
+
+    See Also
     --------
-        The input matrix will be overwritten inplace.
+
+    detkit.ortho_complement
 
     Notes
     -----
 
     The Gram-Schmidt method is used to orthogonalize the columns of the input
-    matrix.
+    matrix :math:`\\mathbf{X}` so that it satisfies
+
+    .. math::
+
+        \\mathbf{X}^{\\intercal} \\mathbf{X} = \\mathbf{I},
+
+    where :math:`\\mathbf{I}` is the identity matrix.
+
+    .. warning::
+
+        The input matrix will be overwritten inplace.
+
+    Examples
+    --------
+
+    .. code-block:: python
+        :emphasize-lines: 14
+
+        >>> # Create a random matrix
+        >>> import numpy
+        >>> numpy.random.seed(0)
+        >>> A = numpy.random.rand(6, 3)
+
+        >>> # Check orthogonality of A
+        >>> numpy.around(A.T @ A, decimals=3)
+        array([[1.267, 1.845, 1.42 ],
+               [1.845, 2.97 , 2.065],
+               [1.42 , 2.065, 2.687]])
+
+        >>> # Orthogonalize matrix
+        >>> from detkit import orthogonalize
+        >>> orthogonalize(A)
+
+        >>> # Check orthogonality of A again
+        >>> numpy.around(A.T @ A, decimals=15)
+        array([[ 1., -0., -0.],
+               [-0.,  1.,  0.],
+               [-0.,  0.,  1.]])
     """
 
     data_type_name = get_data_type_name(A)

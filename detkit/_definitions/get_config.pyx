@@ -26,22 +26,20 @@ def get_config():
     Returns
     -------
 
-        config : dict
-            A dictionary of the definitions used in the compile-time with
-            the following fields:
+    config : dict
+        A dictionary of the definitions used in the compile-time with the
+        following fields:
 
-            * ``'use_symmetry'``: boolean, determines whether the Gramian
-              matrices are computed using symmetric matrix multiplication
-              (when `True`), or using the full matrix multiplication (when
-              `False`).
-            * ``'use_openmp'``: boolean, determines whether to use OpenMP
-              parallelism.
-            * ``'count_perf'``: boolean, determines whether to count hardware
-              instructions during the runtime.
-            * ``'chunk_tasks'``: boolean, chunks the multiply-add (MA)
-              operations, similar to a technique used for instance in BLAS
-              library. When `True`, every five MA operations are computed in
-              the same chunk.
+        * ``'use_symmetry'``: boolean, determines whether the Gramian
+          matrices are computed using symmetric matrix multiplication (when
+          `True`), or using the full matrix multiplication (when `False`).
+        * ``'use_openmp'``: boolean, determines whether to use OpenMP
+          parallelism.
+        * ``'count_perf'``: boolean, determines whether to count hardware
+          instructions during the runtime.
+        * ``'chunk_tasks'``: boolean, chunks the multiply-add (MA) operations,
+          similar to a technique used for instance in BLAS library. When
+          `True`, every five MA operations are computed in the same chunk.
 
     See Also
     --------
