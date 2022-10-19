@@ -39,7 +39,7 @@ cpdef ortho_complement(Xp, X, X_orth=False):
 
     X : array_like
         Input matrix.
-        
+
     X_orth: bool, default=False
         Determines whether `X` is already orthonormalized or not.
 
