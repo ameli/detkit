@@ -52,7 +52,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="get_instructions_per_task" href="detkit.get_instructions_per_task.html" />
-    <link rel="prev" title="logpdet" href="detkit.logpdet.html" />
+    <link rel="prev" title="ortho_complement" href="detkit.ortho_complement.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- Adobe Embed API -->
@@ -222,6 +222,23 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  Orthogonalization
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.orthogonalize.html">
+   orthogonalize
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.ortho_complement.html">
+   ortho_complement
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Utility Functions
  </span>
 </p>
@@ -305,21 +322,19 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>config</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of the definitions used in the compile-time with
-the following fields:</p>
+<dt><strong>config</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of the definitions used in the compile-time with the
+following fields:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'use_symmetry'</span></code>: boolean, determines whether the Gramian
-matrices are computed using symmetric matrix multiplication
-(when <cite>True</cite>), or using the full matrix multiplication (when
-<cite>False</cite>).</p></li>
+matrices are computed using symmetric matrix multiplication (when
+<cite>True</cite>), or using the full matrix multiplication (when <cite>False</cite>).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'use_openmp'</span></code>: boolean, determines whether to use OpenMP
 parallelism.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'count_perf'</span></code>: boolean, determines whether to count hardware
 instructions during the runtime.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'chunk_tasks'</span></code>: boolean, chunks the multiply-add (MA)
-operations, similar to a technique used for instance in BLAS
-library. When <cite>True</cite>, every five MA operations are computed in
-the same chunk.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'chunk_tasks'</span></code>: boolean, chunks the multiply-add (MA) operations,
+similar to a technique used for instance in BLAS library. When
+<cite>True</cite>, every five MA operations are computed in the same chunk.</p></li>
 </ul>
 </dd>
 </dl>
@@ -362,11 +377,11 @@ improve performance.</p>
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="detkit.logpdet.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="detkit.ortho_complement.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">logpdet</p>
+          <p class="prev-next-title">ortho_complement</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="detkit.get_instructions_per_task.html" title="next page">
@@ -399,7 +414,7 @@ improve performance.</p>
   
   <div class="footer-item">
     <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.2.2.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
 </p>
   </div>
   

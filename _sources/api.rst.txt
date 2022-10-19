@@ -16,6 +16,17 @@ API Reference
     detkit.loggdet
     detkit.logpdet
 
+.. rubric:: Orthogonalization
+
+.. autosummary::
+    :toctree: generated
+    :caption: Orthogonalization
+    :recursive:
+    :template: autosummary/member.rst
+
+    detkit.orthogonalize
+    detkit.ortho_complement
+
 .. rubric:: Utilities
    
 .. autosummary::

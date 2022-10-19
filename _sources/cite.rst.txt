@@ -1,5 +1,3 @@
-.. _cite:
-
 How to Cite
 ===========
 
