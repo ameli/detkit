@@ -54,7 +54,7 @@ If you publish work that uses |project|, please consider citing the following ma
 .. |btn-view-pdf-1| raw:: html
 
     <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF01">
-        View Article
+        PDF
     </button>
     
 .. |ameli-woodbury| image:: https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg
