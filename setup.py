@@ -1573,7 +1573,7 @@ def main(argv):
         ext_modules=external_modules,
         include_dirs=[numpy.get_include()],
         install_requires=requirements,
-        python_requires='>=3.7',
+        python_requires='>=3.6',
         setup_requires=[
             'setuptools',
             'wheel',

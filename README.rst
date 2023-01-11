@@ -1,106 +1,119 @@
 ******
-detkit
+|logo|
 ******
 
-|travis-devel| |codecov-devel| |licence| |format| |pypi| |implementation| |pyversions|
+``detKit``, is a Python package for computing determinant functions of matrices.
 
-A python package to compute common determinant functions in machine leanring.
+Links
+=====
 
-.. For users
-..     * `Documentation <https://ameli.github.io/detkit/index.html>`_
-..     * `PyPi package <https://pypi.org/project/detkit/>`_
-..     * `Source code <https://github.com/ameli/detkit>`_
-..
-.. For developers
-..     * `API <https://ameli.github.io/detkit/_modules/modules.html>`_
-..     * `Travis-CI <https://travis-ci.com/github/ameli/detkit>`_
-..     * `Codecov <https://codecov.io/gh/ameli/detkit>`_
+* `Documentation <https://ameli.github.io/detkit>`_
+* `PyPI <https://pypi.org/project/detkit/>`_
+* `Anaconda <https://anaconda.org/s-ameli/detkit>`_
+* `Docker Hub <https://hub.docker.com/r/sameli/detkit>`_
+* `Git Hub <https://github.com/ameli/detkit>`_
 
-+----------------------------------------------------------------+-----------------------------------------------------------------+
-|    For users                                                   | For developers                                                  |
-+================================================================+=================================================================+
-| * `Documentation <https://ameli.github.io/detkit/index.html>`_ | * `API <https://ameli.github.io/detkit/_modules/modules.html>`_ |
-| * `PyPi package <https://pypi.org/project/detkit/>`_           | * `Travis-CI <https://travis-ci.com/github/ameli/detkit>`_      |
-| * `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_      | * `Codecov <https://codecov.io/gh/ameli/detkit>`_               |
-+----------------------------------------------------------------+-----------------------------------------------------------------+
-
-*******
 Install
-*******
+=======
 
-Install by either of the following ways:
+Install with ``pip``
+--------------------
 
-* **Method 1:** The recommended way is to install through the package available at `PyPi <https://pypi.org/project/detkit>`_:
+|pypi|
 
-  ::
+::
 
-    python -m pip install detkit
+    pip install detkit
 
-* **Method 2:** Install through the package available at `Anaconda <https://anaconda.org/s-ameli/detkit>`_:
+Install with ``conda``
+----------------------
 
-  ::
+|conda-version|
+
+::
 
     conda install -c s-ameli detkit
 
+Docker Image
+------------
 
-* **Method 3:** download the source code and install by:
+|docker-pull| |deploy-docker|
 
-  ::
+::
 
-    git clone https://github.com/ameli/detkit.git
-    cd detkit
-    python -m pip install -e .
+    docker pull sameli/detkit
 
+Supported Platforms
+===================
 
-.. ********
-.. Citation
-.. ********
-..
-.. .. [Ameli-2020] Ameli, S., and Shadden. S. C. (2020). Interpolating the Trace of the Inverse of Matrix **A** + t **B**. `arXiv:2009.07385 <https://arxiv.org/abs/2009.07385>`__ [math.NA]
-..
-.. ::
-..
-..     @misc{AMELI-2020,
-..         title={Interpolating the Trace of the Inverse of Matrix $\mathbf{A} + t \mathbf{B}$},
-..         author={Siavash Ameli and Shawn C. Shadden},
-..         year={2020},
-..         month = sep,
-..         eid = {arXiv:2009.07385},
-..         eprint={2009.07385},
-..         archivePrefix={arXiv},
-..         primaryClass={math.NA},
-..         howpublished={\emph{arXiv}: 2009.07385 [math.NA]},
-..     }
-..
+Successful installation and tests performed on the following operating systems, architectures, and Python and `PyPy <https://www.pypy.org/>`_ versions:
 
-.. ****************
-.. Acknowledgements
-.. ****************
-..
-.. * American Heart Association #18EIA33900046
+.. |y| unicode:: U+2714
+.. |n| unicode:: U+2716
 
-.. |examplesdir| replace:: ``/examples`` 
-.. _examplesdir: https://github.com/ameli/detkit/blob/main/examples
-.. |example1| replace:: ``/examples/Plot_detkit_FullRank.py``
-.. _example1: https://github.com/ameli/detkit/blob/main/examples/Plot_detkit_FullRank.py
-.. |example2| replace:: ``/examples/Plot_detkit_IllConditioned.py``
-.. _example2: https://github.com/ameli/detkit/blob/main/examples/Plot_detkit_IllConditioned.py
-.. |example3| replace:: ``/examples/Plot_GeneralizedCorssValidation.py``
-.. _example3: https://github.com/ameli/detkit/blob/main/examples/Plot_GeneralizedCrossValidation.py
++----------+--------+-------+-------+-------+-------+-------+-----------------+
+| Platform | Arch   | Python Version                        | Continuous      |
++          |        +-------+-------+-------+-------+-------+ Integration     +
+|          |        |  3.7  |  3.8  |  3.9  |  3.10 |  3.11 |                 |
++==========+========+=======+=======+=======+=======+=======+=================+
+| Linux    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
++----------+--------+-------+-------+-------+-------+-------+-----------------+
+| macOS    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-macos|   |
++----------+--------+-------+-------+-------+-------+-------+-----------------+
+| Windows  | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-windows| |
++----------+--------+-------+-------+-------+-------+-------+-----------------+
 
-.. |travis-devel| image:: https://img.shields.io/travis/com/ameli/detkit
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |codecov-devel| image:: https://img.shields.io/codecov/c/github/ameli/detkit
-   :target: https://codecov.io/gh/ameli/detkit
-.. |licence| image:: https://img.shields.io/github/license/ameli/detkit
+.. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux 
+.. |build-macos| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-macos.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-macos
+.. |build-windows| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-windows.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows
+
+Python wheels for ``detkit`` for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`_ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need ``detkit`` on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
+
+Documentation
+=============
+
+|deploy-docs| |binder|
+
+See `documentation <https://ameli.github.io/detkit/index.html>`__ of the package.
+
+Benchmark Test
+==============
+
+Read about the `benchmark test <https://ameli.github.io/detkit/benchmark.html>`__ of ``detkit`` in practical applications.
+
+How to Contribute
+=================
+
+We welcome contributions via `GitHub's pull request <https://github.com/ameli/detkit/pulls>`_. If you do not feel comfortable modifying the code, we also welcome feature requests and bug reports as `GitHub issues <https://github.com/ameli/detkit/issues>`_.
+
+How to Cite
+===========
+
+If you publish work that uses ``detkit``, please consider citing the manuscripts available `here <https://ameli.github.io/detkit/cite.html>`_.
+
+License
+=======
+
+|license|
+
+This project uses a `BSD 3-clause license <https://github.com/ameli/detkit/blob/main/LICENSE.txt>`_, in hopes that it will be accessible to most projects. If you require a different license, please raise an `issue <https://github.com/ameli/detkit/issues>`_ and we will consider a dual license.
+
+.. |logo| image:: https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg
+   :width: 160
+.. |license| image:: https://img.shields.io/github/license/ameli/detkit
    :target: https://opensource.org/licenses/BSD-3-Clause
-.. |travis-devel-linux| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=linux&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |travis-devel-osx| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=osx&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |travis-devel-windows| image:: https://img.shields.io/travis/com/ameli/detkit?env=BADGE=windows&label=build&branch=main
-   :target: https://travis-ci.com/github/ameli/detkit
-.. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
-.. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
-.. |format| image:: https://img.shields.io/pypi/format/detkit
+.. |deploy-docs| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docs.yml?label=docs
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docs
+.. |binder| image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2Fquick_start.ipynb
 .. |pypi| image:: https://img.shields.io/pypi/v/detkit
+   :target: https://pypi.org/project/detkit/
+.. |deploy-docker| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docker.yml?label=build%20docker
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docker
+.. |docker-pull| image:: https://img.shields.io/docker/pulls/sameli/detkit?color=green&label=downloads
+   :target: https://hub.docker.com/r/sameli/detkit
+.. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/detkit
+   :target: https://anaconda.org/s-ameli/detkit
