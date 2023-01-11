@@ -149,9 +149,9 @@ Related Projects
 .. How to Cite
 .. include:: cite.rst
 
-.. |deploy-docs| image:: https://img.shields.io/github/workflow/status/ameli/detkit/deploy-docs?label=docs
+.. |deploy-docs| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docs.yml?label=docs
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docs
-.. |deploy-docker| image:: https://img.shields.io/github/workflow/status/ameli/detkit/deploy-docker?label=build%20docker
+.. |deploy-docker| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docker.yml?label=build%20docker
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docker
 .. |codecov-devel| image:: https://img.shields.io/codecov/c/github/ameli/detkit
    :target: https://codecov.io/gh/ameli/detkit
