@@ -196,7 +196,7 @@ FlagType cMatrixDecompositions<DataType>::cholesky(
                 residual = A[j*num_rows + j] - sum;
                 if (residual < 0.0)
                 {
-                    // Cholesky decompositon fails. Matrix seems not to be
+                    // Cholesky decomposition fails. Matrix seems not to be
                     // positive-definite.
                     return 1;
                 }

@@ -25,10 +25,11 @@ __all__ = ['electrocardiogram']
 
 def electrocardiogram(
         start=0.0,
-        end=30.0,
+        end=10.0,
         bw_window=0.5,
         freq_cut=45,
-        plot=False):
+        plot=False,
+        plot_bw=False):
     """
     Load an electrocardiogram signal as an example for a 1D signal.
 
@@ -53,6 +54,11 @@ def electrocardiogram(
     plot : bool, default=False
         If `True`, the signal is plotted.
 
+    plt_bw : bool, default=False
+        If `True`, plots the baseline wander and the original signal along with
+        the filtered signal. This option is effective only if ``plot=True`` is
+        set.
+
     Returns
     -------
 
@@ -61,6 +67,11 @@ def electrocardiogram(
 
         time : numpy.array
             Time axis corresponding to the ECG signal.
+
+    See Also
+    --------
+
+    detkit.covariance_matrix
 
     Notes
     -----
@@ -92,6 +103,14 @@ def electrocardiogram(
            PhysioToolkit, and PhysioNet: Components of a New Research Resource
            for Complex Physiologic Signals. Circulation 101(23):e215-e220;
            DOI:10.1161/01.CIR.101.23.e215
+
+    Examples
+    --------
+
+    .. code-block:: python
+
+        >>> from detkit.datasets import electrocardiogram
+        >>> time, ecg = electrocardiogram(plot=True, plot_bw=True)
     """
 
     # Read dataset
@@ -138,7 +157,7 @@ def electrocardiogram(
         else:
             save = True
 
-        _plot(time, ecg, ecg_bw, ecg_filtered, save=save)
+        _plot(time, ecg, ecg_bw, ecg_filtered, plot_bw, save=save)
 
     return time, ecg_filtered
 
@@ -250,6 +269,7 @@ def _plot(
         ecg,
         ecg_bw,
         ecg_filtered,
+        plot_bw,
         save=True):
     """
     Plots the ECG signal.
@@ -265,26 +285,36 @@ def _plot(
     label_fontsize = 10
     tick_fontsize = 10
 
-    # Plots
-    fig, ax = plt.subplots(nrows=2, figsize=(9.8, 3.4))
-    ax[0].plot(time, ecg, color='black', label='Original')
-    ax[0].plot(time, ecg_bw, color='orange', label='Baseline wander')
-    ax[1].plot(time, ecg_filtered, color='black', label='Filtered')
-    ax[0].set_xlabel(r"$t$ (sec)", fontsize=label_fontsize)
-    ax[1].set_xlabel(r"$t$ (sec)", fontsize=label_fontsize)
-    ax[0].set_ylabel("ECG (mV)", fontsize=label_fontsize)
-    ax[1].set_ylabel("ECG (mV)", fontsize=label_fontsize)
-    ax[0].set_xlim([time[0], time[-1]])
-    ax[1].set_xlim([time[0], time[-1]])
-    ax[0].legend(fontsize='x-small')
-    ax[1].legend(fontsize='x-small')
-    ax[0].set_title('ECG Signal', fontsize=title_fontsize)
-    ax[0].tick_params(axis='both', labelsize=tick_fontsize)
-    ax[1].tick_params(axis='both', labelsize=tick_fontsize)
+    # Plot baseline wander or not
+    if plot_bw:
+        fig, (ax_bw, ax_filt) = plt.subplots(nrows=2, figsize=(9.8, 3.4))
+    else:
+        fig, ax_filt = plt.subplots(nrows=1, figsize=(9.8, 1.7))
 
-    # Remove bottom axis
-    ax[0].tick_params(axis='x', which='both', bottom=False, top=False,
-                      labelbottom=False)
+    # Plot baseline wander and the original signal
+    if plot_bw:
+        ax_bw.plot(time, ecg, color='black', label='Original')
+        ax_bw.plot(time, ecg_bw, color='orange', label='Baseline wander')
+        ax_bw.set_xlabel(r"$t$ (sec)", fontsize=label_fontsize)
+        ax_bw.set_ylabel("ECG (mV)", fontsize=label_fontsize)
+        ax_bw.set_xlim([time[0], time[-1]])
+        ax_bw.legend(fontsize='x-small')
+        ax_bw.set_title('ECG Signal', fontsize=title_fontsize)
+        ax_bw.tick_params(axis='both', labelsize=tick_fontsize)
+
+        # Remove bottom axis
+        ax_bw.tick_params(axis='x', which='both', bottom=False, top=False,
+                          labelbottom=False)
+
+    # Plot filtered signal
+    ax_filt.plot(time, ecg_filtered, color='black', label='Filtered')
+    ax_filt.set_xlabel(r"$t$ (sec)", fontsize=label_fontsize)
+    ax_filt.set_ylabel("ECG (mV)", fontsize=label_fontsize)
+    ax_filt.set_xlim([time[0], time[-1]])
+    ax_filt.tick_params(axis='both', labelsize=tick_fontsize)
+
+    if plot_bw:
+        ax_filt.legend(fontsize='x-small')
 
     plt.tight_layout()
     plt.subplots_adjust(hspace=0)

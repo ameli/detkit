@@ -6,7 +6,8 @@
 # under the terms of the license found in the LICENSE.txt file in the root
 # directory of this source tree.
 
+from .electrocardiogram import electrocardiogram
 from .design_matrix import design_matrix
 from .covariance_matrix import covariance_matrix
 
-__all__ = ['bases_matrix', 'covariance_matrix']
+__all__ = ['electrocardiogram', 'design_matrix', 'covariance_matrix']

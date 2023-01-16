@@ -71,7 +71,8 @@ try:
     from ._functions import orthogonalize, ortho_complement        # noqa: E402
     from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
-    from .datasets import electrocardiogram
+    from .datasets import electrocardiogram                        # noqa: E402
+    from .datasets import covariance_matrix, design_matrix         # noqa: E402
 
 except Exception as e:
     # Before printing the exception, check if the exception is raised due to

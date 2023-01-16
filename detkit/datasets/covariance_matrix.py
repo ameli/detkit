@@ -13,7 +13,7 @@
 
 import numpy
 import scipy
-from ._electrocardiogram import electrocardiogram
+from .electrocardiogram import electrocardiogram
 from ._plot_utilities import plt, load_plot_settings, save_plot, \
         make_axes_locatable
 from ._display_utilities import is_notebook
@@ -27,7 +27,9 @@ def covariance_matrix(
         size=2**9,
         sample=2,
         cor=False,
-        wrap=True,
+        ecg_start=0.0,
+        ecg_end=30.0,
+        ecg_wrap=True,
         plot=False):
     """
     Create covariance matrix based on the autocorrelation of electrocardiogram
@@ -46,7 +48,13 @@ def covariance_matrix(
         If `True`, instead of the covariance matrix, the correlation matrix is
         returned.
 
-    wrap : bool, default=True
+    ecg_start : float, default=0.0
+        Start time of the electrocardiogram signal in seconds.
+
+    ecg_end : float, default=30.0
+        End time of the electrocardiogram signal in seconds.
+
+    ecg_wrap : bool, default=True
         If `True`, the electrocardiogram signal is assumed to be wrapped.
 
     plot : bool, default=False
@@ -58,6 +66,12 @@ def covariance_matrix(
 
         matrix : numpy.ndarray
             The covariance (or correlation, if `cor` is `True`) matrix.
+
+    See Also
+    --------
+
+    detkit.electrocardiogram
+    detkit.design_matrix
 
     Notes
     -----
@@ -124,17 +138,17 @@ def covariance_matrix(
     """
 
     # Load electrocardiogram signal
-    tie, signal = electrocardiogram(start=0.0, end=30, bw_window=0.5,
-                                    freq_cut=45, plot=False)
+    tie, signal = electrocardiogram(start=ecg_start, end=ecg_end,
+                                    bw_window=0.5, freq_cut=45, plot=False)
 
     # Signal
     signal = signal - numpy.mean(signal)
     n = signal.size
 
     # Compute auto-covariance function
-    if wrap:
+    if ecg_wrap:
         # Assume ECG signal is wrapped
-        acf = scipy.ndimage.convolve1d(signal, signal[::-1], mode='wrap')
+        acf = scipy.ndimage.convolve1d(signal, signal[::-1], mode='wrap') / n
         add, half = 0, 2
     else:
         # No wrapping
@@ -155,9 +169,9 @@ def covariance_matrix(
 
     # Toeplitz matrix to form covariance matrix from autocorrelation function
     matrix = scipy.linalg.toeplitz(acf, acf)
-    var = numpy.var(signal)
 
-    # Output matrix
+    # Change covariance to correlation
+    var = numpy.var(signal)
     if cor:
         # Convert covariance to correlation
         matrix = matrix / var
@@ -210,10 +224,16 @@ def _plot(
     label_fontsize = 10
     tick_fontsize = 10
 
+    # Limit of the colormap plot
+    if cor:
+        limit = 1
+    else:
+        limit = numpy.around(var, decimals=2)
+
     # Plot autocorrelation function
     ax[0].plot(lag_time, acf, color='black')
     ax[0].set_xlim([lag_time[0], lag_time[-1]])
-    ax[0].set_ylim(top=1)
+    ax[0].set_ylim(top=limit)
     ax[0].set_xlabel(r'$\Delta t$ (sec)', fontsize=label_fontsize)
     ax[0].set_ylabel(r'$\tau(\Delta t)$', fontsize=label_fontsize)
     if cor:
@@ -223,19 +243,13 @@ def _plot(
     ax[0].set_title(title, fontsize=title_fontsize)
     ax[0].axhline(0, color='grey', linewidth=0.5)
     ax[0].tick_params(axis='both', labelsize=tick_fontsize)
-    ax[0].set_yticks([0, 0.5, 1])
-
-    # Limit of the colormap plot
-    if cor:
-        limit = 1
-    else:
-        limit = numpy.around(var, decimals=2)
+    ax[0].set_yticks([0, 0.5*limit, limit])
 
     # Plot correlation matrix
     cmap = plt.cm.seismic
     divider = make_axes_locatable(ax[1])
     cax = divider.append_axes("right", size="5%", pad=0.09)
-    mat = ax[1].matshow(cor, cmap=cmap,
+    mat = ax[1].matshow(matrix, cmap=cmap,
                         extent=[0, lag_time[-1], lag_time[-1], 0],
                         aspect=1, vmin=-limit, vmax=limit)
     cb = fig.colorbar(mat, cax=cax, ticks=numpy.array([-limit, 0, limit]))
