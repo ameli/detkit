@@ -15,6 +15,7 @@
 
 from detkit.datasets import electrocardiogram
 import os
+import sys
 
 
 # ===========
@@ -37,7 +38,17 @@ def remove_file(filename):
 def test_electrocardiogram():
     """
     Test for `electrocardiogram` function.
+
+    Note that this test can only be done on Python 3.8 and above.
     """
+
+    # Find Python version
+    py_major = sys.versioninfo.major
+    py_minor = sys.versioninfo.minor
+
+    # This test can only be done on Python 3.8 and above.
+    if (py_major < 3) or (py_minor < 8):
+        return
 
     electrocardiogram(start=0.0, end=10.0, bw_window=0.5, freq_cut=45,
                       plot=True, plot_bw=False)

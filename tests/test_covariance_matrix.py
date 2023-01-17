@@ -15,6 +15,7 @@
 
 from detkit.datasets import covariance_matrix
 import os
+import sys
 
 
 # ===========
@@ -37,7 +38,17 @@ def remove_file(filename):
 def test_covariance_matrix():
     """
     Test for `covariance_matrix` function.
+    
+    Note that this test can only be done on Python 3.8 and above.
     """
+
+    # Find Python version
+    py_major = sys.versioninfo.major
+    py_minor = sys.versioninfo.minor
+
+    # This test can only be done on Python 3.8 and above.
+    if (py_major < 3) or (py_minor < 8):
+        return
 
     covariance_matrix(size=2**9, sample=2, cor=False, ecg_start=0.0,
                       ecg_end=30.0, ecg_wrap=False, plot=True)
