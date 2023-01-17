@@ -43,8 +43,8 @@ def test_covariance_matrix():
     """
 
     # Find Python version
-    py_major = sys.versioninfo.major
-    py_minor = sys.versioninfo.minor
+    py_major = sys.version_info.major
+    py_minor = sys.version_info.minor
 
     # This test can only be done on Python 3.8 and above.
     if (py_major < 3) or (py_minor < 8):
