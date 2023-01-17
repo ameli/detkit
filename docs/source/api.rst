@@ -27,6 +27,18 @@ API Reference
     detkit.orthogonalize
     detkit.ortho_complement
 
+.. rubric:: Datasets
+
+.. autosummary::
+    :toctree: generated
+    :caption: Datasets
+    :recursive:
+    :template: autosummary/member.rst
+
+    detkit.electrocardiogram
+    detkit.covariance_matrix
+    detkit.design_matrix
+
 .. rubric:: Utilities
    
 .. autosummary::

@@ -84,6 +84,7 @@ except Exception as e:
     raise e
 
 __all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'ortho_complement',
-           'get_config', 'get_instructions_per_task']
+           'get_config', 'get_instructions_per_task', 'electrocardiogram',
+           'covariance_matrix', 'design_matrix']
 
 from .__version__ import __version__                          # noqa: F401 E402

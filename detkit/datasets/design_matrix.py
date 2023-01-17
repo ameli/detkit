@@ -59,9 +59,9 @@ def design_matrix(
 
         X_{ij} =
         \\begin{cases}
-            1 & j = 1, \\
-            \\sin(t_i \\pi j) & j = 2k, \\
-            \\sin(t_i \\pi j) & j = 2k+1, \\
+            1 & j = 1, \\\\
+            \\sin(t_i \\pi j) & j = 2k, \\\\
+            \\sin(t_i \\pi j) & j = 2k+1,
         \\end{cases}
 
     where :math:`t_i = \\frac{i}{n}` and :math:`n` is the number of the rows
@@ -69,7 +69,7 @@ def design_matrix(
 
     **Orthonormalization:**
 
-    The matrix :math:`\\tens{X}` is orthonormalized by Gram-Schmidt process
+    The matrix :math:`\\mathbf{X}` is orthonormalized by Gram-Schmidt process
     using :func:`detkit.orthogonalize` function.
 
     Examples

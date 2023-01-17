@@ -54,7 +54,7 @@ def electrocardiogram(
     plot : bool, default=False
         If `True`, the signal is plotted.
 
-    plt_bw : bool, default=False
+    plot_bw : bool, default=False
         If `True`, plots the baseline wander and the original signal along with
         the filtered signal. This option is effective only if ``plot=True`` is
         set.
@@ -96,13 +96,15 @@ def electrocardiogram(
 
     .. [1] Moody GB, Mark RG. The impact of the MIT-BIH Arrhythmia Database.
            IEEE Eng in Med and Biol 20(3):45-50 (May-June 2001).
-           (PMID: 11446209); DOI:10.13026/C2F305
+           (PMID: 11446209); DOI: `10.13026/C2F305
+           <https://doi.org/10.13026/C2F305>`__
 
     .. [2] Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark
            RG, Mietus JE, Moody GB, Peng C-K, Stanley HE. PhysioBank,
            PhysioToolkit, and PhysioNet: Components of a New Research Resource
            for Complex Physiologic Signals. Circulation 101(23):e215-e220;
-           DOI:10.1161/01.CIR.101.23.e215
+           DOI: `10.1161/01.CIR.101.23.e215
+           <https://doi.org/10.1161/01.CIR.101.23.e215>`__
 
     Examples
     --------
@@ -111,6 +113,10 @@ def electrocardiogram(
 
         >>> from detkit.datasets import electrocardiogram
         >>> time, ecg = electrocardiogram(plot=True, plot_bw=True)
+
+    .. image:: ../_static/images/plots/electrocardiogram.png
+        :align: center
+        :class: custom-dark
     """
 
     # Read dataset
@@ -143,12 +149,12 @@ def electrocardiogram(
         ecg_filtered = _remove_noise(ecg_filtered, fs, freq_cut, filter_order)
 
     # Cut time
-    start_index = int(start*fs)
-    end_index = int(end*fs)
-    time = time[start_index:end_index]
-    ecg = ecg[start_index:end_index]
-    ecg_bw = ecg_bw[start_index:end_index]
-    ecg_filtered = ecg_filtered[start_index:end_index]
+    start_index = int(start*fs + 0.5)
+    end_index = int(end*fs + 0.5)
+    time = time[start_index:end_index + 1]
+    ecg = ecg[start_index:end_index + 1]
+    ecg_bw = ecg_bw[start_index:end_index + 1]
+    ecg_filtered = ecg_filtered[start_index:end_index + 1]
 
     # Plot
     if plot:
@@ -289,7 +295,7 @@ def _plot(
     if plot_bw:
         fig, (ax_bw, ax_filt) = plt.subplots(nrows=2, figsize=(9.8, 3.4))
     else:
-        fig, ax_filt = plt.subplots(nrows=1, figsize=(9.8, 1.7))
+        fig, ax_filt = plt.subplots(nrows=1, figsize=(9.8, 2))
 
     # Plot baseline wander and the original signal
     if plot_bw:
@@ -299,7 +305,6 @@ def _plot(
         ax_bw.set_ylabel("ECG (mV)", fontsize=label_fontsize)
         ax_bw.set_xlim([time[0], time[-1]])
         ax_bw.legend(fontsize='x-small')
-        ax_bw.set_title('ECG Signal', fontsize=title_fontsize)
         ax_bw.tick_params(axis='both', labelsize=tick_fontsize)
 
         # Remove bottom axis
@@ -315,6 +320,11 @@ def _plot(
 
     if plot_bw:
         ax_filt.legend(fontsize='x-small')
+
+    if plot_bw:
+        ax_bw.set_title('(a) Electrocardiogram', fontsize=title_fontsize)
+    else:
+        ax_filt.set_title('(a) Electrocardiogram', fontsize=title_fontsize)
 
     plt.tight_layout()
     plt.subplots_adjust(hspace=0)

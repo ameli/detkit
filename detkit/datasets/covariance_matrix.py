@@ -135,6 +135,10 @@ def covariance_matrix(
         >>> from detit.datasets import covariance_matrix
         >>> A = covariance_matrix(size=2**9, cor=True, plot=True)
 
+    .. image:: ../_static/images/plots/covariance.png
+        :align: center
+        :class: custom-dark
+
     """
 
     # Load electrocardiogram signal
@@ -237,9 +241,9 @@ def _plot(
     ax[0].set_xlabel(r'$\Delta t$ (sec)', fontsize=label_fontsize)
     ax[0].set_ylabel(r'$\tau(\Delta t)$', fontsize=label_fontsize)
     if cor:
-        title = '(a) Autocorrelation'
+        title = '(b) Autocorrelation'
     else:
-        title = '(a) Autocovariance'
+        title = '(b) Autocovariance'
     ax[0].set_title(title, fontsize=title_fontsize)
     ax[0].axhline(0, color='grey', linewidth=0.5)
     ax[0].tick_params(axis='both', labelsize=tick_fontsize)
@@ -261,9 +265,9 @@ def _plot(
     ax[1].tick_params(axis='x', which='both', bottom=False, top=True,
                       labelbottom=False)
     if cor:
-        title = '(b) Correlation Matrix'
+        title = '(c) Correlation Matrix'
     else:
-        title = '(b) Covariance Matrix'
+        title = '(c) Covariance Matrix'
     ax[1].set_title(title, y=-0.13, fontsize=title_fontsize)
     ax[1].tick_params(axis='both', labelsize=tick_fontsize)
 
@@ -273,16 +277,19 @@ def _plot(
     ax[2].set_xlabel(r'$i$', fontsize=label_fontsize)
     ax[2].set_ylabel(r'$\lambda_i$', fontsize=label_fontsize)
     if cor:
-        title = '(c) Eigenvalues of Correlation'
+        title = '(d) Eigenvalues of Correlation'
     else:
-        title = '(c) Eigenvalues of Covariance'
+        title = '(d) Eigenvalues of Covariance'
     ax[2].set_title(title, fontsize=title_fontsize)
-    x_range = 2**numpy.arange(0, 10)
+
+    # Find x limit of the plot in base 2
+    base_2 = int(numpy.log2(size) + 0.5)
+    x_range = 2**numpy.arange(0, base_2+1)
     ax[2].set_xticks(x_range)
-    ax[2].set_xticklabels([r'$2^{%d}$' % y for y in numpy.arange(0, 10)])
+    ax[2].set_xticklabels([r'$2^{%d}$' % y for y in numpy.arange(0, base_2+1)])
     ax[2].tick_params(axis='x', which='minor', length=0)
     ax[2].tick_params(axis='both', labelsize=tick_fontsize)
-    ax[2].set_xlim([x_range[0], x_range[-1]])
+    ax[2].set_xlim([1, size+1])
     ax[2].yaxis.tick_right()
     ax[2].yaxis.set_label_position('right')
     ax[2].grid(which='major')
