@@ -34,7 +34,7 @@ def test_orthogonalize():
     X = numpy.random.randn(n, m).astype(numpy.float64)
     orthogonalize(X)
 
-    X = numpy.random.randn(n, m).astype(numpy.float128)
+    X = numpy.random.randn(n, m).astype(numpy.longdouble)
     orthogonalize(X)
 
     # Check orthonormal
