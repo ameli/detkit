@@ -85,7 +85,7 @@ FlagType is_count_perf()
 
 FlagType is_chunk_tasks()
 {
-    if (USE_SYMMETRY == 1)
+    if (CHUNK_TASKS == 1)
     {
         return 1;
     }

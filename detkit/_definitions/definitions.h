@@ -75,9 +75,9 @@
     #define CHUNK_TASKS 1
 #endif
 
-// If enabled, to compute Grammian matrices as transpose of matrix multiplied
+// If enabled, to compute Gramian matrices as transpose of matrix multiplied
 // by itself, only half of the matrix multiplication is computed and the other
-// half is obtained by Grammian matrix symmetry.
+// half is obtained by Gramian matrix symmetry.
 #ifndef USE_SYMMETRY
     #define USE_SYMMETRY 1
 #endif

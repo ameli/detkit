@@ -53,6 +53,37 @@ Input Data
 Instructions to Reproduce Results
 ---------------------------------
 
+Install Linux `Perf` Tool
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install `perf` tool in Ubuntu by:
+
+.. prompt:: bash
+
+    sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+
+.. prompt:: bash
+
+    sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid
+
+To test if the `perf` tool works,
+
+.. prompt::
+
+    perf stat ls
+
+Alternatively, you may also test `perf` tool with |project| by
+
+.. code-block:: python
+
+    >>> import detkit
+    >>> detkit..get_instructions_per_task()
+
+If the installed `perf` tool is configured properly, the output of either of the above commands should not be empty.
+
+Compile Package
+~~~~~~~~~~~~~~~
+
 1. Compile |project| package:
 
    .. prompt:: bash
