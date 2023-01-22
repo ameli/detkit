@@ -65,11 +65,11 @@ def logdet(A, sym_pos=False, overwrite_A=False):
             Sign of the determinant of `A` and can be ``+1`` for positive or
             ``-1`` for negative determinant. If `A` is singular, returns ``0``.
 
-        Raises
-        ------
-            RuntimeError
-                Error raised when ``sym_pos=True`` and matrix `A` is not
-                symmetric positive-definite.
+    Raises
+    ------
+        RuntimeError
+            Error raised when ``sym_pos=True`` and matrix `A` is not symmetric
+            positive-definite.
 
     Notes
     -----

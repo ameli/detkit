@@ -38,7 +38,7 @@ def remove_file(filename):
 def test_covariance_matrix():
     """
     Test for `covariance_matrix` function.
-    
+
     Note that this test can only be done on Python 3.8 and above.
     """
 

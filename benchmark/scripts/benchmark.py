@@ -26,8 +26,8 @@ import subprocess
 import re
 
 from timer import Timer
-from detkit import loggdet, logpdet, orthogonalize, get_config, \
-        get_instructions_per_task
+from detkit import loggdet, logpdet, orthogonalize, covariance_matrix, \
+        design_matrix, get_config, get_instructions_per_task
 
 
 # ===============
@@ -284,6 +284,12 @@ def benchmark(argv):
     presented methods.
     """
 
+    # Check if perf tool is installed (or user permission is set for perf)
+    inst = get_instructions_per_task()
+    if numpy.isnan(inst):
+        raise RuntimeError('Perf tool is not installed or the user ' +
+                           'permission is not set to run perf tool.')
+
     # get use input arguments from commandline
     arguments = parse_arguments(argv)
 
@@ -331,17 +337,23 @@ def benchmark(argv):
     ratios = config['ratios']
     repeat = config['repeat']
 
-    # Generate random matrices
-    K = numpy.random.randn(n, n)
-    X = numpy.random.randn(n, n)
+    # # Generate random matrices
+    # K = numpy.random.randn(n, n)
+    # X = numpy.random.randn(n, n)
+    #
+    # # Make K to be symmetric positive-definite (SPD)
+    # K = K.T @ K
+    #
+    # # Orthogonalize X
+    # Q, R = qr(X)
+    # X = Q
+    # # orthogonalize(X)
 
-    # Make K to be symmetric positive-definite (SPD)
-    K = K.T @ K
+    # Generate covariance matrix from ECG signal
+    K = covariance_matrix(n)
 
-    # Orthogonalize X
-    Q, R = qr(X)
-    X = Q
-    # orthogonalize(X)
+    # Generate orthonormal design matrix from sin, cos of various frequencies
+    X = design_matrix(n, n-1, ortho=True)  
 
     # Preallocate output arrays
     logdet_lgcy_gen_gen = numpy.zeros((ratios.size, repeat))
@@ -584,7 +596,7 @@ def benchmark(argv):
         if config['verbose']:
             print(' Done.', flush=True)
 
-    # Convery number of instructions to number of flops
+    # Convert number of instructions to number of flops
     inst_per_matmat = devices['instructions_per_matmat']
     flops_lgcy_gen_gen /= inst_per_matmat
     flops_lgcy_gen_ort /= inst_per_matmat
@@ -666,6 +678,9 @@ def benchmark(argv):
     # Save results
     benchmark_dir = '..'
     pickle_dir = 'pickle_results'
+    base_dir = join(benchmark_dir, pickle_dir)
+    if not os.path.isdir(base_dir):
+        base_dir = '.'
     log_n_str = str(int(numpy.log2(config['n'])))
     if detkit_config['use_symmetry']:
         gramian_status = 'gram'
@@ -673,7 +688,7 @@ def benchmark(argv):
         gramian_status = 'no-gram'
     output_filename = 'benchmark-' + arguments['func'] + '-' + log_n_str + \
                       '-' + gramian_status + '.pickle'
-    output_full_filename = join(benchmark_dir, pickle_dir, output_filename)
+    output_full_filename = join(base_dir, output_filename)
     with open(output_full_filename, 'wb') as file:
         pickle.dump(benchmark_results, file,
                     protocol=pickle.HIGHEST_PROTOCOL)

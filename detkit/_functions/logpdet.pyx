@@ -124,8 +124,7 @@ def logpdet(
             (returned if ``flops=True`` and ``use_scipy=False``)
 
             Count of the retired hardware instructions of the processor during
-            the runtime of this function. If this feature is not supported on
-            the operating system or the processor, `-1` is returned.
+            the runtime of this function.
 
     Raises
     ------
@@ -135,6 +134,9 @@ def logpdet(
             * ``sym_pos=True`` and matrix `A` is not symmetric
               positive-definite.
             * ``method='legacy'`` and matrix `A` is degenerate.
+            * ``flops=True`` and either `Perf` tool is not installed (Linux
+              only), or the user permission for the `Perf` tool is not set, or
+              the performance counter is not supported on the user's CPU.
 
         ValueError
             Error raised when
@@ -149,6 +151,7 @@ def logpdet(
 
     Notes
     -----
+
         When the method is `legacy`, the `logpdet` function is computed using
         the equation given in the above. However, when the method is set to
         'proj' or 'comp', an alternative formulation is used. Note that:
@@ -176,6 +179,37 @@ def logpdet(
         function is parallelized. The compile-time default is ``0``. To see
         a list of compile-time definitions, see :func:`detkit.get_config`
         function.
+
+        **Counting Flops:**
+
+        When ``flops`` is set to `True`, make sure
+        `perf tool <https://perf.wiki.kernel.org/>`__ is installed
+        (Linux only). On Ubuntu, install `perf` by
+
+        .. prompt:: bash
+
+            sudo apt-get install linux-tools-common linux-tools-generic \\
+                    linux-tools-`uname -r`
+
+        .. prompt:: bash
+
+            sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid
+
+        To test if the `perf` tool works,
+
+        .. prompt::
+
+            perf stat ls
+
+        Alternatively, you may also test `perf` tool with |project| by
+
+        .. code-block:: python
+
+            >>> import detkit
+            >>> detkit..get_instructions_per_task()
+
+        If the installed `perf` tool is configured properly, the output of
+        either of the above commands should not be empty.
 
     See Also
     --------
@@ -280,6 +314,14 @@ def logpdet(
     logpdet_, sign, flops_ = pyc_logpdet(A, X, Xp, use_Xp, A.shape[0],
                                          X.shape[1], data_type_name, sym_pos,
                                          method, X_orth, flops)
+    
+    # Check is perf tool is unable to count performance
+    if (flops == 1) and (use_scipy == 0) and (flops_ < 0):
+        raise RuntimeError('Cannot count flops. Make sure "perf" tool is ' +
+                           'installed (Linux only) and user permission is ' +
+                           'set. See documentation for this function for ' +
+                           'details. Alternatively, set "flops" option to ' +
+                           'False.')
 
     if flops != 0:
         return logpdet_, sign, flops_
