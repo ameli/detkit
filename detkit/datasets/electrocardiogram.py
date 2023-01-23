@@ -13,10 +13,47 @@
 
 import numpy
 import scipy
+import scipy.signal
 from ._plot_utilities import plt, load_plot_settings, save_plot
 from ._display_utilities import is_notebook
+from pkgutil import iter_modules
 
 __all__ = ['electrocardiogram']
+
+
+# ========
+# load ecg
+# ========
+
+def _load_ecg():
+    """
+    Load electrocardiogram signal.
+    """
+
+    ecg = None
+    found = False
+
+    # Search through the sub modules of scipy package
+    for submodule in iter_modules(scipy.__path__):
+
+        if submodule.name == 'datasets':
+            # In new scipy versions
+            from scipy.datasets import electrocardiogram
+            found = True
+            break
+        elif submodule.name == 'misc':
+            # In older scipy versions
+            from scipy.misc import electrocardiogram
+            found = True
+            break
+
+    if not found:
+        raise RuntimeError('Cannot find electrocardiogram function in scipy ' +
+                           'package.')
+    else:
+        ecg = electrocardiogram()
+
+    return ecg
 
 
 # =================
@@ -120,15 +157,7 @@ def electrocardiogram(
     """
 
     # Read dataset
-    if hasattr(scipy, 'datasets'):
-        # Scipy version 1.10
-        ecg = scipy.datasets.electrocardiogram()
-    elif hasattr(scipy, 'misc'):
-        # Scipy prior to version 1.10
-        ecg = scipy.misc.electrocardiogram()
-    else:
-        raise RuntimeError('Cannot find electrocardiogram function in scipy ' +
-                           'package.')
+    ecg = _load_ecg()
 
     # Sampling frequency in Hz for this dataset
     fs = 360
