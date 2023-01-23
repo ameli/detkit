@@ -15,6 +15,7 @@
 
 #include "./c_matrix_functions.h"
 #include <cmath>  // log, abs, exp
+#include <cstddef>  // NULL
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
 #include "./c_matrix_decompositions.h"  // cMatrixDecompositions
 #include "./c_matrix_solvers.h"  // cMatrixSolver
