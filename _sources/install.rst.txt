@@ -17,7 +17,7 @@ Successful installation and tests have been performed on the following platforms
 +----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | Platform | Arch   | Python Version                        | PyPy Version  | Continuous      |
 +          |        +-------+-------+-------+-------+-------+-------+-------+ Integration     +
-|          |        |  3.6  |  3.7  |  3.8  |  3.9  |  3.10 |  3.6  |  3.7  |                 |
+|          |        |  3.7  |  3.8  |  3.9  |  3.10 |  3.11 |  3.6  |  3.7  |                 |
 +==========+========+=======+=======+=======+=======+=======+=======+=======+=================+
 | Linux    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
 +----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
@@ -72,7 +72,7 @@ Alternately, install |project| and its Python dependencies from `Anaconda Cloud 
 
     conda install -c s-ameli detkit -y
 
-.. _virtual-env:
+.. _dependencies:
 
 Dependencies
 ============
@@ -86,7 +86,7 @@ Dependencies
 
         .. prompt:: bash
 
-            sudo apt install linux-tools
+            sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
 
     .. tab-item:: CentOS 7
         :sync: centos
@@ -105,6 +105,29 @@ Dependencies
 .. attention::
 
     The ``perf`` tool is not available in macOS and Windows.
+
+Grant permissions to the user to be able to run the perf tool:
+
+.. prompt:: bash
+
+    sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+    
+Test if the `perf` tool works by
+
+.. prompt::
+
+    perf stat ls
+
+Alternatively, you may also test `perf` tool with |project| by
+
+.. code-block:: python
+
+    >>> import detkit
+    >>> detkit..get_instructions_per_task()
+
+If the installed `perf` tool is configured properly, the output of either of the above commands should not be empty.
+
+.. _virtual-env:
 
 Install |project| in Virtual Environments
 =========================================
@@ -194,6 +217,8 @@ In the followings, it is assumed `anaconda <https://www.anaconda.com/products/in
    .. prompt:: bash
 
        conda deactivate
+
+.. _compile:
        
 Compile from Source
 ===================
@@ -211,8 +236,8 @@ Otherwise, install |project| through the :ref:`Python Wheels <install-wheels>`.
 
 This section walks you through the compilation process.
 
-Install C++ Compiler and OpenMP (`Required`)
---------------------------------------------
+Install C++ Compiler (`Required`)
+---------------------------------
 
 Compile |project| with either of GCC, Clang/LLVM, or Intel C++ compiler on UNIX operating systems. For Windows, compile |project| with `Microsoft Visual Studio (MSVC) Compiler for C++ <https://code.visualstudio.com/docs/cpp/config-msvc#:~:text=You%20can%20install%20the%20C,the%20C%2B%2B%20workload%20is%20checked.>`_.
 
@@ -338,6 +363,18 @@ OpenMP comes with the C++ compiler installed. However, you may alternatively ins
         .. prompt:: bash
 
             sudo brew install libomp
+
+.. note::
+
+    In *macOS*, starting from ``libomp`` with version ``15`` and above, Homebrew installs OpenMP as *keg-only*. To be able to use the OpenMP installation, create the following symbolic links :
+
+    .. prompt:: bash
+
+        ln -s /usr/local/opt/libomp/include/omp-tools.h /usr/local/include/omp-tools.h
+        ln -s /usr/local/opt/libomp/include/omp.h /usr/local/include/omp.h
+        ln -s /usr/local/opt/libomp/include/ompt.h /usr/local/include/ompt.h
+        ln -s /usr/local/opt/libomp/lib/libomp.a /usr/local/lib/libomp.a
+        ln -s /usr/local/opt/libomp/lib/libomp.dylib /usr/local/lib/libomp.dylib
 
 .. _config-env-variables:
 
