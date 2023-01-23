@@ -15,7 +15,8 @@
 
 import numpy
 import numpy.linalg
-from detkit import loggdet, orthogonalize, ortho_complement
+from detkit import loggdet, orthogonalize, ortho_complement, \
+        get_instructions_per_task
 
 
 # ============
@@ -62,17 +63,34 @@ def test_loggdet():
     logdet_7 = numpy.linalg.slogdet(XtX)[1] + numpy.linalg.slogdet(N)[1]
     print('%16.8f' % logdet_7)
 
+    # Check if flops can be used
+    if numpy.isnan(get_instructions_per_task()):
+        flops = False
+    else:
+        flops = True
+
     # Using C++
-    logdet_1, sign_1, flops_1 = loggdet(A, X, method='legacy', sym_pos=sym_pos,
-                                        X_orth=False, flops=True)
-    logdet_2, sign_2, flops_2 = loggdet(A, X, method='proj', sym_pos=True,
-                                        X_orth=X_orth, flops=True)
-    logdet_31, sign_31, flops_31 = loggdet(A, X, Xp=None, method='comp',
-                                           sym_pos=sym_pos, X_orth=X_orth,
-                                           flops=True)
-    logdet_32, sign_32, flops_32 = loggdet(A, X, Xp=Xp, method='comp',
-                                           sym_pos=sym_pos, X_orth=X_orth,
-                                           flops=True)
+    output_1 = loggdet(A, X, method='legacy', sym_pos=sym_pos, X_orth=False,
+                       flops=flops)
+    output_2 = loggdet(A, X, method='proj', sym_pos=True, X_orth=X_orth,
+                       flops=flops)
+    output_31 = loggdet(A, X, Xp=None, method='comp', sym_pos=sym_pos,
+                        X_orth=X_orth, flops=flops)
+    output_32 = loggdet(A, X, Xp=Xp, method='comp', sym_pos=sym_pos,
+                        X_orth=X_orth, flops=flops)
+
+    # Extract output
+    if flops:
+        logdet_1, sign_1, flops_1 = output_1
+        logdet_2, sign_2, flops_2 = output_2
+        logdet_31, sign_31, flops_31 = output_31
+        logdet_32, sign_32, flops_32 = output_32
+    else:
+        logdet_1, sign_1 = output_1
+        logdet_2, sign_2 = output_2
+        logdet_31, sign_31 = output_31
+        logdet_32, sign_32 = output_32
+        flops_1 = flops_2 = flops_31 = flops_32 = -1
 
     # Using scipy
     logdet_4, sign_4 = loggdet(A, X, method='legacy', sym_pos=sym_pos,

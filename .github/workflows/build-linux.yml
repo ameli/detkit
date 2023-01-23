@@ -38,8 +38,7 @@ jobs:
             - name: Install prerequisites for Test
               run: |
                   sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
-                  sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
-                  echo `perf stat ls`
+                  sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
 
             # Despite the package is built on both cpython and pypy, here we
             # only test it on cpython, not on pypy, since many other required

@@ -207,7 +207,7 @@ jobs:
               if: matrix.os == 'ubuntu-latest'
               run: |
                   sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
-                  sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+                  sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
 
             - name: Install packages
               # if: matrix.python-version != 'pypy-3.6' && matrix.python-version != 'pypy-3.7'
