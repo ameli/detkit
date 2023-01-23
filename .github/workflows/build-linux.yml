@@ -35,14 +35,18 @@ jobs:
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
 
+            - name: Install prerequisites for Test
+              run: |
+                  sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+                  sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+                  echo `perf stat ls`
+
             # Despite the package is built on both cpython and pypy, here we
             # only test it on cpython, not on pypy, since many other required
             # dependencies (like matplotlib, etc) need to be compiled on pypy.
             - name: Test
               if: (!contains(matrix.python-version, 'pypy'))
               run: |
-                  sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
-                  sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
                   python -m pip install --upgrade pytest
                   python -m pip install --upgrade pytest-cov
                   python -m pip install cython
