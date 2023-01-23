@@ -110,13 +110,13 @@ Grant permissions to the user to be able to run the perf tool:
 
 .. prompt:: bash
 
-    sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+    sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
     
 Test if the `perf` tool works by
 
 .. prompt::
 
-    perf stat ls
+    perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=100000
 
 Alternatively, you may also test `perf` tool with |project| by
 

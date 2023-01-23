@@ -478,13 +478,13 @@ span.prompt1:before {
 }
 </style><span class="prompt1">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>linux-tools-common<span class="w"> </span>linux-tools-generic<span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>linux-tools-<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span></span>
-</pre></div></div><div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo 1 &gt;/proc/sys/kernel/perf_event_paranoid&#39;</span></span>
+</pre></div></div><div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo -1 &gt;/proc/sys/kernel/perf_event_paranoid&#39;</span></span>
 </pre></div></div><p>Test if the <cite>perf</cite> tool works by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt2:before {
   content: " ";
 }
-</style><span class="prompt2">perf stat ls</span>
+</style><span class="prompt2">perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=1000</span>
 </pre></div></div><p>Alternatively, you may also test <cite>perf</cite> tool with <span class="synco">detkit</span> by</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">detkit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">..</span><span class="n">get_instructions_per_task</span><span class="p">()</span>
