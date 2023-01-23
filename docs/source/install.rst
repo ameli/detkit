@@ -72,7 +72,7 @@ Alternately, install |project| and its Python dependencies from `Anaconda Cloud 
 
     conda install -c s-ameli detkit -y
 
-.. _virtual-env:
+.. _dependencies:
 
 Dependencies
 ============
@@ -86,7 +86,7 @@ Dependencies
 
         .. prompt:: bash
 
-            sudo apt install linux-tools
+            sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
 
     .. tab-item:: CentOS 7
         :sync: centos
@@ -105,6 +105,29 @@ Dependencies
 .. attention::
 
     The ``perf`` tool is not available in macOS and Windows.
+
+Grant permissions to the user to be able to run the perf tool:
+
+.. prompt:: bash
+
+    sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
+    
+Test if the `perf` tool works by
+
+.. prompt::
+
+    perf stat ls
+
+Alternatively, you may also test `perf` tool with |project| by
+
+.. code-block:: python
+
+    >>> import detkit
+    >>> detkit..get_instructions_per_task()
+
+If the installed `perf` tool is configured properly, the output of either of the above commands should not be empty.
+
+.. _virtual-env:
 
 Install |project| in Virtual Environments
 =========================================
@@ -194,6 +217,8 @@ In the followings, it is assumed `anaconda <https://www.anaconda.com/products/in
    .. prompt:: bash
 
        conda deactivate
+
+.. _compile:
        
 Compile from Source
 ===================

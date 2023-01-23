@@ -9,7 +9,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=28
 ###SBATCH --mem=64gb
 #SBATCH --output=output.log
 
@@ -21,7 +21,7 @@ LOG_DIR=$PWD
 N=9
 FUNC="loggdet"
 REPEAT=10
-NUM_RATIOS=50
+NUM_RATIOS=30
 STREAM_OUTPUT="stream_output-${N}.txt"
 
 $PYTHON_DIR/bin/python ${SCRIPTS_DIR}/benchmark.py -n $N -f $FUNC -r $REPEAT \

@@ -72,7 +72,7 @@ Examples:
 
        $ %s -n 8 -f loggdet -r 3 -t 50 -v
 
-    1. Compute logpdet, set the matrix size to n=2**9=512, the array of 100
+    2. Compute logpdet, set the matrix size to n=2**9=512, the array of 100
        ratios m/n from 0 to 1, i.e. linspace(0, 1, 100), and repeat each
        experiment 5 times:
 

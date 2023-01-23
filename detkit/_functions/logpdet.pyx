@@ -193,9 +193,9 @@ def logpdet(
 
         .. prompt:: bash
 
-            sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid
+            sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
 
-        To test if the `perf` tool works,
+        Test if the `perf` tool works by
 
         .. prompt::
 
