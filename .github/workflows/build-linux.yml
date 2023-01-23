@@ -41,6 +41,8 @@ jobs:
             - name: Test
               if: (!contains(matrix.python-version, 'pypy'))
               run: |
+                  sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+                  sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
                   python -m pip install --upgrade pytest
                   python -m pip install --upgrade pytest-cov
                   python -m pip install cython
