@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Benchmark Tests &#8212; detkit Manual</title>
+    <title>Benchmark Test &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -53,6 +53,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="get_instructions_per_task" href="generated/detkit.get_instructions_per_task.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -129,6 +130,12 @@
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="api.html">
   API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  Benchmark
  </a>
 </li>
 
@@ -220,8 +227,8 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#test-functions">
-   Test Functions
+  <a class="reference internal nav-link" href="#test-description">
+   Test Description
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -235,8 +242,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#perform-benchmark-test">
-   Perform Benchmark Test
+  <a class="reference internal nav-link" href="#perform-test">
+   Perform Test
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -287,69 +294,87 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="benchmark-tests">
-<span id="benchmark"></span><h1>Benchmark Tests<a class="headerlink" href="#benchmark-tests" title="Permalink to this heading">#</a></h1>
-<p>A numerical analysis on the performance of <span class="synco">detkit</span> functions is presented in Section 4 of <a class="footnote-reference brackets" href="#id6" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. Here, we provide supplemental details on how to reproduce the numerical results of that reference.</p>
-<p>This notebook plots the results that are produced by <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/scripts/benchmark.py"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/scripts/benchmark.py</span></code></a> script. The purpose of this script is to compare the presented method versus the conventional method of computing the determinant functions described below.</p>
-<section id="test-functions">
-<h2>Test Functions<a class="headerlink" href="#test-functions" title="Permalink to this heading">#</a></h2>
-<p>Consider the matrices <span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{n \times n}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{X} \in \mathbb{R}^{n \times p}\)</span>. We compute  the matrix function</p>
+  <section id="benchmark-test">
+<span id="benchmark"></span><h1>Benchmark Test<a class="headerlink" href="#benchmark-test" title="Permalink to this heading">#</a></h1>
+<p>This page demonstrates the performance of <span class="synco">detkit</span> on matrices from real applications. We refer the reader to <a class="footnote-reference brackets" href="#id9" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for details of the numerical test. Here, we provide supplemental details on how to reproduce the numerical results of that reference.</p>
+<section id="test-description">
+<h2>Test Description<a class="headerlink" href="#test-description" title="Permalink to this heading">#</a></h2>
+<p>This numerical test aims to compute the function</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align}
-    \mathrm{loggdet}(\mathbf{A}, \mathbf{X}) :=&amp; \mathrm{logdet}(\mathbf{A}) +  \mathrm{logdet}(\mathbf{X}^{\intercal} \mathbf{A}^{-1} \mathbf{X}), \tag{LD1}\\
+    \mathrm{logdet}(\mathbf{A}, \mathbf{X}) :=&amp; \mathrm{logdet}(\mathbf{A}) +  \mathrm{logdet}(\mathbf{X}^{\intercal} \mathbf{A}^{-1} \mathbf{X}), \tag{LD1}\\
     =&amp; \mathrm{logdet}(\mathbf{X}^{\intercal}  \mathbf{X}) + \mathrm{logdet}(\mathbf{N}), \tag{LD2}\\
     =&amp; \mathrm{logdet}(\mathbf{X}^{\intercal}  \mathbf{X}) + \mathrm{logdet}(\mathbf{U}_{\mathcal{X}^{\perp}}^{\intercal} \mathbf{A} \mathbf{U}_{\mathcal{X}^{\perp}}), \tag{LD3}
 \end{align}\end{split}\]</div>
-<p>where</p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{n \times n}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{X} \in \mathbb{R}^{n \times p}\)</span> are given matrices and</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\mathbf{N} = \mathbf{A} + \mathbf{P} - \mathbf{A}\mathbf{P}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\mathbf{P} = \mathbf{I} - \mathbf{X}(\mathbf{X}^{\intercal} \mathbf{X})^{-1} \mathbf{X}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\mathbf{M} = \mathbf{A}^{-1} - \mathbf{A}^{-1} \mathbf{X}(\mathbf{X}^{\intercal} \mathbf{A}^{-1} \mathbf{X})^{-1} \mathbf{X}^{\intercal} \mathbf{A}^{-1}\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\mathbf{U}_{\mathcal{X}^{\perp}}\)</span> is the orthonormal basis that is orthogonal to the image of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>.</p></li>
 </ul>
-<p>The function <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span> is implemented by <a class="reference internal" href="generated/detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.loggdet()</span></code></a>. To use either of the relations LD1, LD2, and LD3, the parameters <code class="docutils literal notranslate"><span class="pre">method=legacy</span></code>, <code class="docutils literal notranslate"><span class="pre">method=proj</span></code>, and <code class="docutils literal notranslate"><span class="pre">method=comp</span></code> can be passed to this function, respectively.</p>
-<p>In our experiment, we <em>assume</em> both cases:</p>
+<p>The reader is referred to Section 3 of <a class="footnote-reference brackets" href="#id9" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> for the motivation for the definition of the function <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span>. In <span class="synco">detkit</span>, the three relations in the above are implemented by <a class="reference internal" href="generated/detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.loggdet()</span></code></a> which accepts the parameter <code class="docutils literal notranslate"><span class="pre">method</span></code> with the possible values <code class="docutils literal notranslate"><span class="pre">method=legacy</span></code>, <code class="docutils literal notranslate"><span class="pre">method=proj</span></code>, and <code class="docutils literal notranslate"><span class="pre">method=comp</span></code> corresponding to the relations LD1, LD2, and LD3, respectively.</p>
+<p>In the numerical test, we compare the numerical performance of the above three relations by measuring their process time and the empirical computational FLOPs. We consider four cases where</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is orthogonal.</p></li>
-<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is not orthogonal.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is orthogonal and not orthogonal.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is symmetric and positive-definite (SPD) and not SPD.</p></li>
 </ul>
 </div></blockquote>
-<p>We also <em>assume</em> both cases where</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is SPD.</p></li>
-<li><p><span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is not SPD.</p></li>
-</ul>
-</div></blockquote>
-<p>The complexity of computing <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span> using either of LD1, LD2, or LD3 relations in the above is shown in the figure below (see also Figure 1 of <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>).</p>
+<p>The complexity of computing <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span> using either of LD1, LD2, or LD3 relations for the above cases is shown in the figure below (see also Figure 1 of <a class="footnote-reference brackets" href="#id9" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>).</p>
 <a class="custom-dark reference internal image-reference" href="_images/loggdet-9-analytic-flops.svg"><img alt="_images/loggdet-9-analytic-flops.svg" class="custom-dark align-center" src="_images/loggdet-9-analytic-flops.svg" width="63%" /></a>
-<p>In the benchmark test, we compare the process time and the empirical computational FLOPs of the relations LD1, LD2, and LD3.</p>
 </section>
 <section id="dataset">
 <h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this heading">#</a></h2>
-<p>In our experiment, the matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is generated by <span class="math notranslate nohighlight">\(\sin(\omega x)\)</span> and <span class="math notranslate nohighlight">\(\cos(\omega x)\)</span> basis functions in the domain <span class="math notranslate nohighlight">\(x \in [0, 1]\)</span> and <span class="math notranslate nohighlight">\(\omega\)</span> is varied. This matrix can be generated by the function <a class="reference internal" href="generated/detkit.design_matrix.html#detkit.design_matrix" title="detkit.design_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.design_matrix()</span></code></a>. We set the size <span class="math notranslate nohighlight">\(n \times p\)</span>. The ratio <span class="math notranslate nohighlight">\(p/n\)</span> is varied from <span class="math notranslate nohighlight">\(0, \cdots, 1\)</span> at <span class="math notranslate nohighlight">\(t=30\)</span> different ratios, while <span class="math notranslate nohighlight">\(n\)</span> is fixed. The columns of this matrix are orthogonalized.</p>
-<p>Also, the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is obtained by <a class="reference internal" href="generated/detkit.covariance_matrix.html#detkit.covariance_matrix" title="detkit.covariance_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.covariance_matrix()</span></code></a> function. The generated matrix is symmetric and positive-definite (SPD). This function generates the covariance matrix corresponding to the autocorrelation function of an electrocardiogram (ECG) signal <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. A part of the ECG signal is shown in the following figure using the code below:</p>
+<p>In our experiment, the matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is generated by trigonometric basis functions in the domain <span class="math notranslate nohighlight">\(x \in [0, 1]\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}X_{ij} =
+\begin{cases}
+    1 &amp; j = 1, \\
+    \sin(x_i \pi j) &amp; j = 2k, \\
+    \cos(x_i \pi j) &amp; j = 2k+1,
+\end{cases}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(x_i = \frac{i}{n}\)</span> and <span class="math notranslate nohighlight">\(n\)</span> is the number of the rows of the matrix. We fix the size <span class="math notranslate nohighlight">\(n = 2^9\)</span> and vary <span class="math notranslate nohighlight">\(p = p_1, \dots, p_t\)</span> where <span class="math notranslate nohighlight">\(p_j = \frac{jn}{t}\)</span> and <span class="math notranslate nohighlight">\(t = 30\)</span>. This matrix can be generated by <a class="reference internal" href="generated/detkit.design_matrix.html#detkit.design_matrix" title="detkit.design_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.design_matrix()</span></code></a>. We also orthogonalize the columns of <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>. A code to produce such matrix is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># First, install detkit by: pip install detkit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit.datasets</span> <span class="kn">import</span> <span class="n">design_matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">design_matrix</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">,</span> <span class="n">ortho</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also, we generate an SPD matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> using <a class="reference internal" href="generated/detkit.covariance_matrix.html#detkit.covariance_matrix" title="detkit.covariance_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.covariance_matrix()</span></code></a> function, which produces a covariance matrix based on the autocovariance of an electrocardiogram (ECG) signal as described below. The ECG signal that we use is obtained from <a class="footnote-reference brackets" href="#id10" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id11" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> and a segment of the signal is shown in the first row of the figure below.</p>
+<p>To obtain a stationary signal, we removed the baseline wander variation of the ECG signal (shown by the orange curve) by passing a moving average filter with <span class="math notranslate nohighlight">\(0.5\)</span> seconds window length. Also, we reduce the signal noise by a low-pass filter with a cut frequency of <span class="math notranslate nohighlight">\(45\)</span> Hz. A segment of the smoothed signal is shown in the second row of the figure.</p>
 <img alt="_images/electrocardiogram.png" class="custom-dark align-center" src="_images/electrocardiogram.png" />
-<p>The autocorrelation function corresponding to 30 seconds of the above signal is shown in Figure (a) below. Also, the corresponding covariance matrix is shown in Figure (c). Here we set the matrix size to <span class="math notranslate nohighlight">\(n = 2^9\)</span>. Figure (d) shows the eigenvalues of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, indicating the matrix is positive-definite.</p>
+<p>The above figure can be produced by <a class="reference internal" href="generated/detkit.electrocardiogram.html#detkit.electrocardiogram" title="detkit.electrocardiogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.electrocardiogram()</span></code></a> function as shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit.datasets</span> <span class="kn">import</span> <span class="n">electrocardiogram</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ecg</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="n">electrocardiogram</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">bw_window</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">freq_cut</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span>
+<span class="go">                                  plot=True, plot_bw=True)</span>
+</pre></div>
+</div>
+<p>To generate the covariance matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, the first 30 seconds of the above ECG signal is used as follows. It is assumed that the smoothed ECG signal is a wide-sense stationary stochastic process, so its autocovariance function can be obtained by</p>
+<div class="math notranslate nohighlight">
+\[\kappa(\Delta t) = \mathbb{E}[(f(t+\Delta t) - \bar{f})(f(t) - \bar{f})],\]</div>
+<p>where <span class="math notranslate nohighlight">\(f\)</span> is the ECG signal, <span class="math notranslate nohighlight">\(\Delta t\)</span> is the lag-time of the autocovariance function, <span class="math notranslate nohighlight">\(\mathbb{E}\)</span> is the expectation operator, and <span class="math notranslate nohighlight">\(\bar{f}\)</span> is the mean of the <span class="math notranslate nohighlight">\(f\)</span>. The covariance matrix <span class="math notranslate nohighlight">\(\boldsymbol{A}\)</span> is defined by the Toeplitz matrix of the autocovariance with the components</p>
+<div class="math notranslate nohighlight">
+\[A_{ij} = \tau(\vert i - j \vert f_s \nu)\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_s = 360\)</span> Hz is the sampling frequency of the ECG signal and <span class="math notranslate nohighlight">\(\nu\)</span> is the sampling of the autocorrelation function that is set to <span class="math notranslate nohighlight">\(\nu = 2\)</span>.</p>
+<p>The autocorrelation function <span class="math notranslate nohighlight">\(\tau\)</span> and covariance matrix <span class="math notranslate nohighlight">\(\mathbf{K}\)</span> can also be defined from the autocovariance function and covariance matrix by <span class="math notranslate nohighlight">\(\tau = \sigma^{-2} \kappa\)</span> and <span class="math notranslate nohighlight">\(\mathbf{K} = \sigma^{-2} \mathbf{A}\)</span> where <span class="math notranslate nohighlight">\(\sigma^2 = \kappa(0)\)</span> is the variance of the stationary signal. Figures (a) and (b) below respectively show the autocorrelation function and correlation matrix, respectively. Figure (c) shows the eigenvalues of the correlation matrix which indicates that the correlation (and hence the covariance) matrix is positive-definite as all the eigenvalues are positive.</p>
 <img alt="_images/covariance.png" class="custom-dark align-center" src="_images/covariance.png" />
 <p>The above figure can be produced by the code below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit.datasets</span> <span class="kn">import</span> <span class="n">covariance_matrix</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ecg_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-<span class="go">                      ecg_end=30.0, ecg_wrap=True, plot=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">K</span> <span class="o">=</span> <span class="n">covariance_matrix</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">9</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ecg_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="go">                          ecg_end=30.0, ecg_wrap=True, plot=True)</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The following numerical results are insensitive to the matrices used during the benchmark tests. Users can test the following benchmark test with randomly generated matrices.</p>
+<p>The following numerical results are insensitive to the matrices used during the benchmark tests. The user can reproduce the following benchmark results with randomly generated matrices.</p>
 </div>
 </section>
 <section id="configure-settings">
 <h2>Configure Settings<a class="headerlink" href="#configure-settings" title="Permalink to this heading">#</a></h2>
-<p>The following numerical experiment consists of testing the code with two different implementations for Gramian matrix multiplications within the source code of this package. To do so, the source code should be configured and <span class="synco">detkit</span> needs to be compiled for each configuration as described below.</p>
+<p>The following numerical experiment consists of testing the code with two different implementations for Gramian matrix multiplications within the source code of this package. To do so, <span class="synco">detkit</span> needs to be compiled for both configurations as described below.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Note that a normal usage of <span class="synco">detkit</span> does not require compiling it from source.</p>
+<p>Note that, beside this numerical test, a normal usage of <span class="synco">detkit</span> does not require compiling it from source.</p>
 </div>
 <p>First, obtain the source code of <span class="synco">detkit</span> by</p>
 <blockquote>
@@ -361,26 +386,18 @@ span.prompt1:before {
 </pre></div></div></div></blockquote>
 <p>To configure the Gramian matrix multiplication, modify <a class="reference external" href="https://github.com/ameli/detkit/blob/main/detkit/_definitions/definitions.h"><code class="docutils literal notranslate"><span class="pre">/detkit/detkit/_definitions/definitions.h</span></code></a> file as follows:</p>
 <ul class="simple">
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> to use symmetry in Gramian matrix multiplication,</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to not use symmetry in Gramian matrix multiplication.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> to use symmetric Gramian matrix multiplication. This setting corresponds to the parameter <span class="math notranslate nohighlight">\(\gamma = \frac{1}{2}\)</span> in Section 4 of <a class="footnote-reference brackets" href="#id9" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to not use symmetric Gramian matrix multiplication. This setting corresponds to the parameter <span class="math notranslate nohighlight">\(\gamma = 1\)</span> in Section 4 of <a class="footnote-reference brackets" href="#id9" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In <a class="reference external" href="https://github.com/ameli/detkit/blob/main/detkit/_definitions/definitions.h"><code class="docutils literal notranslate"><span class="pre">/detkit/detkit/_definitions/definitions.h</span></code></a> files, there are also other settings as follows:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">CHUNK_TASKS</span></code> should be set to <code class="docutils literal notranslate"><span class="pre">1</span></code>. If it is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, first, the process times become very oscillatory, and second, the FLOPs per unit matrix-multiplication task (<code class="docutils literal notranslate"><span class="pre">matmat</span></code> task) becomes a different number. For example, with chunk, the FLOP of <code class="docutils literal notranslate"><span class="pre">matmat</span></code> is near 5, and without it, it is 10.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">USE_OPENMP</span></code> should be set to <code class="docutils literal notranslate"><span class="pre">0</span></code> to properly compare both methods of LHS and RHS.</p></li>
-</ul>
-</div>
-<p>For each of the above cases, compile the package as described in <a class="reference internal" href="install.html#compile"><span class="std std-ref">Compile from Source</span></a>, then run the experiment as described below.</p>
+<p>For each of the above cases, compile the package as described in <a class="reference internal" href="install.html#compile"><span class="std std-ref">Compile from Source</span></a> and run the experiment as described next.</p>
 </section>
-<section id="perform-benchmark-test">
-<h2>Perform Benchmark Test<a class="headerlink" href="#perform-benchmark-test" title="Permalink to this heading">#</a></h2>
+<section id="perform-test">
+<h2>Perform Test<a class="headerlink" href="#perform-test" title="Permalink to this heading">#</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To run the following tests, make sure the Linux <cite>perf tool</cite> is installed as described in <a class="reference internal" href="install.html#dependencies"><span class="std std-ref">Dependencies</span></a>. Note that the followings can only be tested on Linux.</p>
+<p>To run the following tests, make sure the Linux <cite>perf tool</cite> is installed as described in <a class="reference internal" href="install.html#dependencies"><span class="std std-ref">Dependencies</span></a>. Note that the numerical experiment can only be tested on Linux due to the dependency of the test on the <cite>perf tool</cite>.</p>
 </div>
-<p>The benchmark script is <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/scripts/benchmark.py"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/scripts/benchmark.py</span></code></a> file located at <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark</span></code></a> directory of the source code. This script accepts some user arguments in the command line which can be found by inquiring its help by</p>
+<p>The script to run the benchmark test is provided by <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/scripts/benchmark.py"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/scripts/benchmark.py</span></code></a> file located at <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark</span></code></a> directory of the source code. This script accepts user arguments in the command line. To print the list of the arguments and usage of the script, use <code class="docutils literal notranslate"><span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">--help</span></code> option as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>detkit/benchmark/scripts</span>
 <span class="prompt1">python<span class="w"> </span>./benchmark.py<span class="w"> </span>-h</span>
 </pre></div></div><p>The above command prints the usage of the script as shown below:</p>
@@ -419,7 +436,7 @@ Examples:
        $ benchmark.py -n 9 -f logpdet -r 5 -t 100 -v
 </pre></div>
 </div>
-<p>We run the script with <span class="math notranslate nohighlight">\(n = 2^9\)</span>, repeating the results by <span class="math notranslate nohighlight">\(r=10\)</span> times and generate <span class="math notranslate nohighlight">\(t = 30\)</span> data points in the interval for <span class="math notranslate nohighlight">\(p/n = 0, \cdots, 1\)</span>.</p>
+<p>We run the script with <span class="math notranslate nohighlight">\(n = 2^9\)</span> to test the function <a class="reference internal" href="generated/detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.loggdet()</span></code></a> using the option <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">loggdet</span></code>, and we repeat the experiment ten times using <span class="math notranslate nohighlight">\(r=10\)</span>. We generate <span class="math notranslate nohighlight">\(t = 30\)</span> points for the ratio <span class="math notranslate nohighlight">\(p/n = 0, \cdots, 1\)</span>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>/detkit/benchmark/scripts</span>
 <span class="prompt1">python<span class="w"> </span>./benchmark.py<span class="w"> </span>-n<span class="w"> </span><span class="m">9</span><span class="w"> </span>-f<span class="w"> </span>loggdet<span class="w"> </span>-r<span class="w"> </span><span class="m">10</span><span class="w"> </span>-t<span class="w"> </span><span class="m">30</span><span class="w"> </span>-v</span>
 </pre></div></div><section id="run-on-cluster">
@@ -427,43 +444,40 @@ Examples:
 <p>To run the <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/scripts/benchmark.py"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/scripts/benchmark.py</span></code></a> script on a cluster, use the job files provided in <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark/jobfiles"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/jobfiles</span></code></a> directory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Run the benchmakr script on only one processor thread to produce accurate results.</p>
+<p>Run the benchmark script on only one processor thread to produce accurate results for measuring process time.</p>
 </div>
 <ul>
 <li><p>To run the experiment on a cluster with <cite>Torque</cite> workload manager, submit <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/jobfiles/jobfile_benchmark.pbs"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/jobfiles/jobfile_benchmark.pbs</span></code></a> job file by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>/imate/benchmark/jobfiles</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>/detkit/benchmark/jobfiles</span>
 <span class="prompt1">qsub<span class="w"> </span>jobfile_benchmark.pbs</span>
 </pre></div></div></li>
 <li><p>To run the experiment on a cluster with <cite>SLURM</cite> workload manager, submit <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/jobfiles/jobfile_benchmark.sh"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/jobfiles/jobfile_benchmark.sh</span></code></a> job file by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>/imate/benchmark/jobfiles</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">cd</span><span class="w"> </span>/detkit/benchmark/jobfiles</span>
 <span class="prompt1">sbatch<span class="w"> </span>jobfile_benchmark.sh</span>
 </pre></div></div></li>
 </ul>
-<p>Before submitting the job, on either of the job Torque or SLURM files, make sure the followings are set: <code class="docutils literal notranslate"><span class="pre">N=9</span></code> (corresponding to <span class="math notranslate nohighlight">\(n = 2^9\)</span>), <code class="docutils literal notranslate"><span class="pre">NUM_RATIOS=30</span></code> (corresponding to <span class="math notranslate nohighlight">\(t=30\)</span>), <code class="docutils literal notranslate"><span class="pre">REPEAT=10</span></code> (corresponding to <span class="math notranslate nohighlight">\(r=10\)</span>). Also, set <code class="docutils literal notranslate"><span class="pre">FUNC=&quot;loggdet&quot;</span></code>, which computes <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span>.</p>
+<p>In either of the two job files in the above, the argument of the benchmark script can be configured for instance by setting <code class="docutils literal notranslate"><span class="pre">N=9</span></code> (corresponding to <span class="math notranslate nohighlight">\(n = 2^9\)</span>), <code class="docutils literal notranslate"><span class="pre">NUM_RATIOS=30</span></code> (corresponding to <span class="math notranslate nohighlight">\(t=30\)</span>), <code class="docutils literal notranslate"><span class="pre">REPEAT=10</span></code> (corresponding to <span class="math notranslate nohighlight">\(r=10\)</span>). Also, set <code class="docutils literal notranslate"><span class="pre">FUNC=&quot;loggdet&quot;</span></code>, which computes <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span>.</p>
 </section>
 </section>
 <section id="output-files">
 <h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this heading">#</a></h2>
-<p>The output of the above two experiments will be stored in <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark/pickle_results"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/pickle_results</span></code></a> directory. Corresponding to each experiment, the output file is as follows:</p>
+<p>The output of the above two experiments is stored in <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark/pickle_results"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/pickle_results</span></code></a> directory. Corresponding to each experiment, the output file has the following name:</p>
 <blockquote>
 <div><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Output filename</p></th>
-<th class="head"><p>function</p></th>
 <th class="head"><p>matrix size</p></th>
 <th class="head"><p>Gramian Matrix Multiplication</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark_loggdet_9_gram.pickle</span></code></p></td>
-<td><p><span class="math notranslate nohighlight">\(\mathrm{loggdet}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(n=2^9\)</span></p></td>
-<td><p>with symmetry</p></td>
+<td><p>with utilizing symmetry</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">benchmark_loggdet_9_no-gram.pickle</span></code></p></td>
-<td><p><span class="math notranslate nohighlight">\(\mathrm{loggdet}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(n=2^9\)</span></p></td>
-<td><p>without symmetry</p></td>
+<td><p>without utilizing symmetry</p></td>
 </tr>
 </tbody>
 </table>
@@ -471,14 +485,14 @@ Examples:
 </section>
 <section id="plot-results">
 <h2>Plot Results<a class="headerlink" href="#plot-results" title="Permalink to this heading">#</a></h2>
-<p>Make sure the above <code class="docutils literal notranslate"><span class="pre">*.pickle</span></code> files are stored in <a class="reference external" href="https://github.com/ameli/detkit/tree/main/benchmark/pickle_results"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/pickle_results</span></code></a> directory. To reproduce the plots, run the notebook file <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/notebooks/benchmark_plot_draft_3.ipynb"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/notebooks/benchmark_plot_draft_3.ipynb</span></code></a>. The notebook stores the plots as <cite>svg</cite> and <cite>pdf</cite> files in <a class="reference external" href="https://github.com/ameli/imate/blob/main/benchmark/plots"><code class="docutils literal notranslate"><span class="pre">/imate/benchmark/plots/</span></code></a> directory. These plots correspond to Figure 2 of <a class="footnote-reference brackets" href="#id6" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, which is also shown below.</p>
+<p>To reproduce the plots, run the notebook file <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/notebooks/benchmark_plot.ipynb"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/notebooks/benchmark_plot.ipynb</span></code></a>. The notebook stores the plots as <cite>svg</cite> and <cite>pdf</cite> files in <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/plots"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/plots/</span></code></a> directory. These plots correspond to Figure 2 of <a class="footnote-reference brackets" href="#id9" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, which is also shown below. Note that in the figures, the processing time and FLOPs are normalized by <span class="math notranslate nohighlight">\(n^3\)</span> (recall that here <span class="math notranslate nohighlight">\(n = 2^9\)</span>). Such normalization is advantageous if <span class="math notranslate nohighlight">\(n\)</span> is varied as the plot scale remains unchanged.</p>
 <img alt="_images/loggdet-9-exp-flops-proc-time.svg" class="custom-dark align-center" src="_images/loggdet-9-exp-flops-proc-time.svg" /></section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id6" role="note">
+<aside class="footnote brackets" id="id9" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id5">3</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id6">4</a>,<a role="doc-backlink" href="#id7">5</a>,<a role="doc-backlink" href="#id8">6</a>)</span>
 <p>Ameli, S., and Shadden. S. C. (2022). <em>A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression</em> <a class="reference external" href="https://doi.org/10.48550/arXiv.2207.08038"><img alt="arXiv 2207.08038" src="https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg" /></a> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
     BibTeX
 </button> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF01">
@@ -499,14 +513,14 @@ Examples:
 }</code></pre>
 </div>
 </div></aside>
-<aside class="footnote brackets" id="id7" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id10" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">2</a><span class="fn-bracket">]</span></span>
 <p>Moody GB, Mark RG. The impact of the MIT-BIH Arrhythmia Database.
 IEEE Eng in Med and Biol 20(3):45-50 (May-June 2001).
 (PMID: 11446209); DOI: <a class="reference external" href="https://doi.org/10.13026/C2F305">10.13026/C2F305</a></p>
 </aside>
-<aside class="footnote brackets" id="id8" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id11" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
 <p>Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark
 RG, Mietus JE, Moody GB, Peng C-K, Stanley HE. PhysioBank,
 PhysioToolkit, and PhysioNet: Components of a New Research Resource
@@ -525,6 +539,13 @@ DOI: <a class="reference external" href="https://doi.org/10.1161/01.CIR.101.23.e
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="generated/detkit.get_instructions_per_task.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">get_instructions_per_task</p>
+      </div>
+  </a>
 </div>
               </footer>
               

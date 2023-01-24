@@ -657,7 +657,7 @@ The main page of the documentation can be found in ``/docs/build/html/index.html
 .. |format| image:: https://img.shields.io/pypi/format/detkit
 .. |pypi| image:: https://img.shields.io/pypi/v/detkit
    :target: https://pypi.org/project/detkit
-.. |conda| image:: https://anaconda.org/s-ameli/detkit/badges/installer/conda.svg
+.. |conda| image:: https://img.shields.io/conda/v/s-ameli/detkit
    :target: https://anaconda.org/s-ameli/detkit
 .. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/detkit?color=orange?label=platforms
    :target: https://anaconda.org/s-ameli/detkit
