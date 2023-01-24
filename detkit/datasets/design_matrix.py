@@ -61,7 +61,7 @@ def design_matrix(
         \\begin{cases}
             1 & j = 1, \\\\
             \\sin(t_i \\pi j) & j = 2k, \\\\
-            \\sin(t_i \\pi j) & j = 2k+1,
+            \\cos(t_i \\pi j) & j = 2k+1,
         \\end{cases}
 
     where :math:`t_i = \\frac{i}{n}` and :math:`n` is the number of the rows

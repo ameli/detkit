@@ -44,7 +44,7 @@ See :ref:`api` for a list of all functions.
 Install
 =======
 
-|conda-downloads|
+|pypi| |conda|
 
 .. grid:: 2
 
@@ -116,6 +116,12 @@ Benchmarks
 
 See :ref:`benchmark test <benchmark>` for evaluating the numerical performance of the functions in real applications.
 
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    Benchmark <benchmark>
+
 Features
 ========
 
@@ -154,6 +160,8 @@ Related Projects
 .. How to Cite
 .. include:: cite.rst
 
+.. |pypi| image:: https://img.shields.io/pypi/v/detkit
+   :target: https://pypi.org/project/detkit
 .. |deploy-docs| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docs.yml?label=docs
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Adeploy-docs
 .. |deploy-docker| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/deploy-docker.yml?label=build%20docker
@@ -165,12 +173,12 @@ Related Projects
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
 .. |format| image:: https://img.shields.io/pypi/format/detkit
-.. |conda| image:: https://anaconda.org/s-ameli/traceinv/badges/installer/conda.svg
-   :target: https://anaconda.org/s-ameli/traceinv
-.. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/traceinv?color=orange?label=platforms
-   :target: https://anaconda.org/s-ameli/traceinv
-.. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/traceinv
-   :target: https://anaconda.org/s-ameli/traceinv
+.. |conda| image:: https://img.shields.io/conda/v/s-ameli/detkit
+   :target: https://anaconda.org/s-ameli/detkit
+.. |platforms| image:: https://img.shields.io/conda/pn/s-ameli/detkit?color=orange?label=platforms
+   :target: https://anaconda.org/s-ameli/detkit
+.. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/detkit
+   :target: https://anaconda.org/s-ameli/detkit
 .. |binder| image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb
 .. |conda-downloads| image:: https://img.shields.io/conda/dn/s-ameli/detkit
