@@ -80,16 +80,23 @@ def covariance_matrix(
 
     The covariance matrix is computed based on the autocorrelation of and ECG
     signal. It is assumed that the ECG signal is wide-sense stationary
-    stochastic process, so its autocorrelation function can be defined by
+    stochastic process, so its autocovariance function can be defined by
 
     .. math::
 
-        \\tau(\\Delta t) = \\mathbb{E}[
+        \\kappa(\\Delta t) = \\mathbb{E}[
             (f(t+\\Delta t) - \\bar{f})(f(t) - \\bar{f})],
 
     where :math:`f` is the ECG signal, :math:`\\Delta t` is the lag-time of the
     autocorrelation function, :math:`\\mathbb{E}` is the expectation operator,
-    and :math:`\\bar{f}` is the mean of the :math:`f`.
+    and :math:`\\bar{f}` is the mean of the :math:`f`. The autocorrelation
+    function is defined by
+
+    .. math::
+
+        \\tau(\\Delta t) = \\sigma^{-2} \\kappa(\\Delta t),
+
+    where :math:`\\sigma^2 = \kappa(0)` is the variance of the ECG signal.
 
     **Covariance Matrix:**
 
@@ -98,7 +105,7 @@ def covariance_matrix(
 
     .. math::
 
-        \\Sigma_{ij} = \\tau(\\vert i - j \\vert f_s \\nu)
+        \\Sigma_{ij} = \\kappa(\\vert i - j \\vert f_s \\nu)
 
     where :math:`f_s = 360` Hz is the sampling frequency of the ECG signal and
     :math:`\\nu` is the sampling of the autocorrelation function that is
@@ -123,9 +130,7 @@ def covariance_matrix(
 
     .. math::
 
-        \\boldsymbol{\\Sigma} = \\sigma^2 \\mathbf{K}
-
-    where :math:`\\sigma` is the standard deviation of the ECG signal.
+        \\mathbf{K} = \\sigma^{-2} \\boldsymbol{\\Sigma}.
 
     Examples
     --------

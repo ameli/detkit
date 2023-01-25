@@ -25,4 +25,4 @@ NUM_RATIOS=30
 STREAM_OUTPUT="stream_output-${N}.txt"
 
 $PYTHON_DIR/bin/python ${SCRIPTS_DIR}/benchmark.py -n $N -f $FUNC -r $REPEAT \
-    -t $NUM_RATIOS -v > ${LOG_DIR}/${STREAM_OUTPUT}
+    -l $NUM_RATIOS -v > ${LOG_DIR}/${STREAM_OUTPUT}

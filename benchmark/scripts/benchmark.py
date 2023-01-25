@@ -59,7 +59,7 @@ The following arguments are optional:
                             and scipy, otherwise, it uses the cython code.
     -r --repeat=[int]       Number of times the numerical experiment is
                             repeated. Default is 10.
-    -t --num-ratios=[int]   Number of ratios (m/n) from 0 to 1 to be tested.
+    -l --num-ratios=[int]   Number of ratios (p/n) from 0 to 1 to be tested.
                             Default is 50.
     -v --verbose            Prints verbose output. Default is False.
     -h --help               Prints the help message.
@@ -67,16 +67,16 @@ The following arguments are optional:
 Examples:
 
     1. Compute loggdet, set the matrix size to n=2**8=256, the array of 50
-       ratios m/n from 0 to 1, i.e. linspace(0, 1, 50), and repeat each
+       ratios p/n from 0 to 1, i.e. linspace(0, 1, 50), and repeat each
        experiment 3 times:
 
-       $ %s -n 8 -f loggdet -r 3 -t 50 -v
+       $ %s -n 8 -f loggdet -r 3 -l 50 -v
 
     2. Compute logpdet, set the matrix size to n=2**9=512, the array of 100
-       ratios m/n from 0 to 1, i.e. linspace(0, 1, 100), and repeat each
+       ratios p/n from 0 to 1, i.e. linspace(0, 1, 100), and repeat each
        experiment 5 times:
 
-       $ %s -n 9 -f logpdet -r 5 -t 100 -v
+       $ %s -n 9 -f logpdet -r 5 -l 100 -v
         """ % (argv[0], argv[0])
 
         print(usage_string)
@@ -111,7 +111,7 @@ Examples:
             arguments['func'] = arg
         elif opt in ('-r', '--repeat'):
             arguments['repeat'] = int(arg)
-        elif opt in ('-t', '--num-ratios'):
+        elif opt in ('-l', '--num-ratios'):
             arguments['num_ratios'] = int(arg)
         elif opt in ('-b', '--blas'):
             arguments['use_blas'] = True
