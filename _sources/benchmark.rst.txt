@@ -25,9 +25,9 @@ where :math:`\mathbf{A} \in \mathbb{R}^{n \times n}` and :math:`\mathbf{X} \in \
 * :math:`\mathbf{M} = \mathbf{A}^{-1} - \mathbf{A}^{-1} \mathbf{X}(\mathbf{X}^{\intercal} \mathbf{A}^{-1} \mathbf{X})^{-1} \mathbf{X}^{\intercal} \mathbf{A}^{-1}`.
 * :math:`\mathbf{U}_{\mathcal{X}^{\perp}}` is the orthonormal basis that is orthogonal to the image of :math:`\mathbf{X}`.
 
-The reader is referred to Section 3 of [1]_ for the motivation for the definition of the function :math:`\mathrm{logdet}(\mathbf{A}, \mathbf{X})`. In |project|, the three relations in the above are implemented by :func:`detkit.loggdet` which accepts the parameter ``method`` with the possible values ``method=legacy``, ``method=proj``, and ``method=comp`` corresponding to the relations LD1, LD2, and LD3, respectively.
+The reader is referred to Section 3 of [1]_ for the motivation for the definition of the function :math:`\mathrm{logdet}(\mathbf{A}, \mathbf{X})`. In |project|, the three relations in the above are implemented by :func:`detkit.loggdet` function. This function accepts the parameter ``method`` with the possible values ``method=legacy``, ``method=proj``, and ``method=comp`` corresponding to the relations LD1, LD2, and LD3, respectively.
 
-In the numerical test, we compare the numerical performance of the above three relations by measuring their process time and the empirical computational FLOPs. We consider four cases where
+In the numerical test, we compare the numerical performance of the above three relations by measuring their processing time and the empirical computational FLOPs. We consider four cases where
 
     * :math:`\mathbf{X}` is orthogonal and not orthogonal.
     * :math:`\mathbf{A}` is symmetric and positive-definite (SPD) and not SPD.
@@ -63,7 +63,7 @@ where :math:`t_i = \frac{i}{n}` and :math:`n` is the number of the rows of the m
 
 Also, we generate an SPD matrix :math:`\mathbf{A}` using :func:`detkit.covariance_matrix` function, which produces a covariance matrix based on the autocovariance of an electrocardiogram (ECG) signal as described below. The ECG signal that we use is obtained from [2]_ and [3]_ and a segment of the signal is shown in the first row of the figure below.
 
-To obtain a stationary signal, we removed the baseline wander variation of the ECG signal (shown by the orange curve) by passing a moving average filter with :math:`0.5` seconds window length. Also, we reduce the signal noise by a low-pass filter with a cut frequency of :math:`45` Hz. A segment of the smoothed signal is shown in the second row of the figure.
+To obtain a stationary signal, we removed the baseline wander variation of the ECG signal (shown by the orange curve) by passing a moving average filter with :math:`0.5` seconds window length. Also, we reduce the signal noise using a low-pass filter with a cut frequency of :math:`45` Hz. A segment of the smoothed signal is shown in the second row of the figure.
 
 .. image:: _static/images/plots/electrocardiogram.png
     :align: center
@@ -83,13 +83,13 @@ To generate the covariance matrix :math:`\mathbf{A}`, the first 30 seconds of th
 
     \kappa(\Delta t) = \mathbb{E}[(f(t+\Delta t) - \bar{f})(f(t) - \bar{f})],
 
-where :math:`f` is the ECG signal, :math:`\Delta t` is the lag-time of the autocovariance function, :math:`\mathbb{E}` is the expectation operator, and :math:`\bar{f}` is the mean of the :math:`f`. The covariance matrix :math:`\boldsymbol{A}` is defined by the Toeplitz matrix of the autocovariance with the components
+where :math:`\Delta t` is the lag-time of the autocovariance function, :math:`\mathbb{E}` is the expectation operator, and :math:`f` is the ECG signal with the mean :math:`\bar{f}`. The covariance matrix :math:`\boldsymbol{A}` is defined by the components
 
 .. math::
 
     A_{ij} = \kappa(\vert i - j \vert f_s \nu)
 
-where :math:`f_s = 360` Hz is the sampling frequency of the ECG signal and :math:`\nu` is the sampling of the autocorrelation function that is set to :math:`\nu = 2`.
+where :math:`f_s = 360` Hz is the sampling frequency of the ECG signal and :math:`\nu` is the sampling of the autocorrelation function that is set to :math:`\nu = 2`. Note that :math:`\mathbf{A}` is a Toeplitz matrix.
 
 The autocorrelation function :math:`\tau` and covariance matrix :math:`\mathbf{K}` can also be defined from the autocovariance function and covariance matrix by :math:`\tau = \sigma^{-2} \kappa` and :math:`\mathbf{K} = \sigma^{-2} \mathbf{A}` where :math:`\sigma^2 = \kappa(0)` is the variance of the stationary signal. Figures (a) and (b) below respectively show the autocorrelation function and correlation matrix, respectively. Figure (c) shows the eigenvalues of the correlation matrix which indicates that the correlation (and hence the covariance) matrix is positive-definite as all the eigenvalues are positive.
 
@@ -107,16 +107,12 @@ The above figure can be produced by the code below:
 
 .. note::
 
-    The following numerical results are insensitive to the matrices used during the benchmark tests. The user can reproduce the following benchmark results with randomly generated matrices.
+    Our numerical results below are independent of the matrices used during the benchmark tests. The user can reproduce the benchmark results with randomly generated matrices.
 
 Configure Settings
 ------------------
 
 The following numerical experiment consists of testing the code with two different implementations for Gramian matrix multiplications within the source code of this package. To do so, |project| needs to be compiled for both configurations as described below.
-
-.. note::
-
-    Note that, beside this numerical test, a normal usage of |project| does not require compiling it from source.
 
 First, obtain the source code of |project| by
 
@@ -126,19 +122,23 @@ First, obtain the source code of |project| by
 
 To configure the Gramian matrix multiplication, modify |definitions|_ file as follows:
 
-* Set ``USE_SYMMETRY`` to ``1`` to use symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = \frac{1}{2}` in Section 4 of [1]_.
-* Set ``USE_SYMMETRY`` to ``0`` to not use symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = 1` in Section 4 of [1]_.
+* Set ``USE_SYMMETRY`` to ``1`` to enable symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = \frac{1}{2}` in Section 4 of [1]_.
+* Set ``USE_SYMMETRY`` to ``0`` to disable symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = 1` in Section 4 of [1]_.
 
 For each of the above cases, compile the package as described in :ref:`compile` and run the experiment as described next.
+
+.. note::
+
+    Note that, except for test purposes, compiling |project| from source code is not required. An installation of |project| through `pip` or `conda` is pre-configured with symmetric Gramian matrix multiplication enabled. 
 
 Perform Test
 ------------
 
 .. note::
 
-    To run the following tests, make sure the Linux `perf tool` is installed as described in :ref:`dependencies`. Note that the numerical experiment can only be tested on Linux due to the dependency of the test on the `perf tool`.
+    To run the following tests, make sure the Linux `perf tool` is installed as described in :ref:`dependencies`. Note that the numerical experiment can only be tested on Linux operating systems due to the dependency of the test on the `perf tool`.
 
-The script to run the benchmark test is provided by |benchmark_py|_ file located at |benchmark_folder|_ directory of the source code. This script accepts user arguments in the command line. To print the list of the arguments and usage of the script, use ``-h`` or ``--help`` option as follows:
+The script to run the benchmark test is provided by |benchmark_py|_ file located at |benchmark_folder|_ directory of the source code. To see the script usage and a list of user arguments that can be passed to the script in the command line, call the script with ``-h`` or ``--help`` option as follows:
 
 .. prompt:: bash
 
@@ -197,7 +197,7 @@ To run the |benchmark_py|_ script on a cluster, use the job files provided in |j
 
 .. note::
 
-    Run the benchmark script on only one processor thread to produce accurate results for measuring process time.
+    Run the benchmark script on only one processor thread to produce accurate results for measuring processing time.
 
 * To run the experiment on a cluster with `Torque` workload manager, submit |jobfile_torque|_ job file by
 
