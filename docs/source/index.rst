@@ -1,5 +1,5 @@
-detkit
-******
+|project| Documentation
+***********************
 
 |license| |deploy-docs|
 
