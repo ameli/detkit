@@ -30,15 +30,12 @@
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom-pydata.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/toggleprompt.js"></script>
@@ -50,7 +47,7 @@
     <script>window.MathJax = {"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/custom-pydata.css"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="get_instructions_per_task" href="generated/detkit.get_instructions_per_task.html" />
@@ -322,7 +319,7 @@
 </ul>
 </div></blockquote>
 <p>The complexity of computing <span class="math notranslate nohighlight">\(\mathrm{logdet}(\mathbf{A}, \mathbf{X})\)</span> using either of LD1, LD2, or LD3 relations for the above cases is shown in the figure below (see also Figure 1 of <a class="footnote-reference brackets" href="#id9" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>).</p>
-<a class="custom-dark reference internal image-reference" href="_images/loggdet-9-analytic-flops.svg"><img alt="_images/loggdet-9-analytic-flops.svg" class="custom-dark align-center" src="_images/loggdet-9-analytic-flops.svg" width="63%" /></a>
+<a class="custom-dark reference internal image-reference" href="_static/images/plots/loggdet-9-analytic-flops.svg"><img alt="_static/images/plots/loggdet-9-analytic-flops.svg" class="custom-dark align-center" src="_static/images/plots/loggdet-9-analytic-flops.svg" width="63%" /></a>
 </section>
 <section id="dataset">
 <h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this heading">#</a></h2>
@@ -486,14 +483,14 @@ Examples:
 <section id="plot-results">
 <h2>Plot Results<a class="headerlink" href="#plot-results" title="Permalink to this heading">#</a></h2>
 <p>To reproduce the plots, run the notebook file <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/notebooks/benchmark_plot.ipynb"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/notebooks/benchmark_plot.ipynb</span></code></a>. The notebook stores the plots as <cite>svg</cite> and <cite>pdf</cite> files in <a class="reference external" href="https://github.com/ameli/detkit/blob/main/benchmark/plots"><code class="docutils literal notranslate"><span class="pre">/detkit/benchmark/plots/</span></code></a> directory. These plots correspond to Figure 2 of <a class="footnote-reference brackets" href="#id9" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, which is also shown below. Note that in the figures, the processing time and FLOPs are normalized by <span class="math notranslate nohighlight">\(n^3\)</span> (recall that here <span class="math notranslate nohighlight">\(n = 2^9\)</span>). Such normalization is advantageous if <span class="math notranslate nohighlight">\(n\)</span> is varied as the plot scale remains unchanged.</p>
-<img alt="_images/loggdet-9-exp-flops-proc-time.svg" class="custom-dark align-center" src="_images/loggdet-9-exp-flops-proc-time.svg" /></section>
+<img alt="_static/images/plots/loggdet-9-exp-flops-proc-time.svg" class="custom-dark align-center" src="_static/images/plots/loggdet-9-exp-flops-proc-time.svg" /></section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id9" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id6">4</a>,<a role="doc-backlink" href="#id7">5</a>,<a role="doc-backlink" href="#id8">6</a>)</span>
-<p>Ameli, S., and Shadden. S. C. (2022). <em>A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression</em> <a class="reference external" href="https://doi.org/10.48550/arXiv.2207.08038"><img alt="arXiv 2207.08038" src="https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg" /></a> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
+<p>Ameli, S., and Shadden. S. C. (2023). <em>A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression</em>. Applied Mathematics and Computation 452, 128032. <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a> <a class="reference external" href="https://doi.org/10.48550/arXiv.2207.08038"><img alt="arXiv 2207.08038" src="https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg" /></a> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
     BibTeX
 </button> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF01">
     PDF
@@ -501,15 +498,15 @@ Examples:
 <div class="highlight-BibTeX notranslate collapse" id="collapse-bib1">
 <div class="highlight">
 <pre class="language-bib">
-<code class="language-bib">@misc{arxiv.2207.08038,
-    doi = {10.48550/arXiv.2207.08038},
-    author = {Ameli, S. and Shadden, S. C.},
-    title = {A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression},
-    year = {2022},
-    archivePrefix={arXiv},
-    eprint = {2207.08038},
-    primaryClass={math.NA},
-    howpublished={\emph{arXiv}: 2207.08038 [math.ST]},
+<code class="language-bib">@article{amc-2023,
+    title = {A singular Woodbury and pseudo-determinant matrix identities and application to Gaussian process regression},
+    journal = {Applied Mathematics and Computation},
+    volume = {452},
+    pages = {128032},
+    year = {2023},
+    issn = {0096-3003},
+    doi = {https://doi.org/10.1016/j.amc.2023.128032},
+    author = {Siavash Ameli and Shawn C. Shadden},
 }</code></pre>
 </div>
 </div></aside>
