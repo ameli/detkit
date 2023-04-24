@@ -3,22 +3,22 @@ How to Cite
 
 If you publish work that uses |project|, please consider citing the following manuscripts.
 
-.. [1] Ameli, S., and Shadden. S. C. (2022). *A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression* |ameli-woodbury| |btn-bib-1| |btn-view-pdf-1|
+.. [1] Ameli, S., and Shadden. S. C. (2023). *A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression*. Applied Mathematics and Computation 452, 128032. |btn-amc-doi| |ameli-amc| |btn-bib-1| |btn-view-pdf-1|
 
    .. raw:: html
 
         <div class="highlight-BibTeX notranslate collapse" id="collapse-bib1">
         <div class="highlight">
         <pre class="language-bib">
-        <code class="language-bib">@misc{arxiv.2207.08038,
-            doi = {10.48550/arXiv.2207.08038},
-            author = {Ameli, S. and Shadden, S. C.}, 
-            title = {A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression},
-            year = {2022}, 
-            archivePrefix={arXiv},
-            eprint = {2207.08038},
-            primaryClass={math.NA},
-            howpublished={\emph{arXiv}: 2207.08038 [math.ST]},
+        <code class="language-bib">@article{amc-2023,
+            title = {A singular Woodbury and pseudo-determinant matrix identities and application to Gaussian process regression},
+            journal = {Applied Mathematics and Computation},
+            volume = {452},
+            pages = {128032},
+            year = {2023},
+            issn = {0096-3003},
+            doi = {https://doi.org/10.1016/j.amc.2023.128032},
+            author = {Siavash Ameli and Shawn C. Shadden},
         }</code></pre>
         </div>
         </div>
@@ -39,6 +39,10 @@ If you publish work that uses |project|, please consider citing the following ma
         </div>
         </div>
 
+.. |btn-amc-doi| raw:: html
+
+    <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a>
+
 .. |btn-bib-1| raw:: html
 
     <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
@@ -57,7 +61,7 @@ If you publish work that uses |project|, please consider citing the following ma
         PDF
     </button>
     
-.. |ameli-woodbury| image:: https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg
+.. |ameli-amc| image:: https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg
    :target: https://doi.org/10.48550/arXiv.2207.08038
    :alt: arXiv 2207.08038
 

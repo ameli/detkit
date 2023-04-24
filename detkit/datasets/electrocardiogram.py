@@ -330,11 +330,12 @@ def _plot(
     if plot_bw:
         ax_bw.plot(time, ecg, color='black', label='Original')
         ax_bw.plot(time, ecg_bw, color='orange', label='Baseline wander')
-        ax_bw.set_xlabel(r"$t$ (sec)", fontsize=label_fontsize)
         ax_bw.set_ylabel("ECG (mV)", fontsize=label_fontsize)
         ax_bw.set_xlim([time[0], time[-1]])
-        ax_bw.legend(fontsize='x-small')
         ax_bw.tick_params(axis='both', labelsize=tick_fontsize)
+        lg_bw = ax_bw.legend(fontsize='x-small')
+        lg_bw.get_frame().set_alpha(None)
+        lg_bw.get_frame().set_facecolor((0, 0, 0, 0.0))
 
         # Remove bottom axis
         ax_bw.tick_params(axis='x', which='both', bottom=False, top=False,
@@ -348,7 +349,9 @@ def _plot(
     ax_filt.tick_params(axis='both', labelsize=tick_fontsize)
 
     if plot_bw:
-        ax_filt.legend(fontsize='x-small')
+        lg_filt = ax_filt.legend(fontsize='x-small')
+        lg_filt.get_frame().set_alpha(None)
+        lg_filt.get_frame().set_facecolor((0, 0, 0, 0.0))
 
     if plot_bw:
         ax_bw.set_title('(a) Electrocardiogram', fontsize=title_fontsize)

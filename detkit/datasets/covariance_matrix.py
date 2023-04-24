@@ -96,7 +96,7 @@ def covariance_matrix(
 
         \\tau(\\Delta t) = \\sigma^{-2} \\kappa(\\Delta t),
 
-    where :math:`\\sigma^2 = \kappa(0)` is the variance of the ECG signal.
+    where :math:`\\sigma^2 = \\kappa(0)` is the variance of the ECG signal.
 
     **Covariance Matrix:**
 
