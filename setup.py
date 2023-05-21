@@ -1564,7 +1564,7 @@ def main(argv):
             "Tracker": tracker_url,
         },
         platforms=['Linux', 'OSX', 'Windows'],
-        packages=setuptools.find_packages(exclude=[
+        packages=setuptools.find_namespace_packages(exclude=[
             'tests.*',
             'tests',
             'examples.*',
