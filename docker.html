@@ -7,8 +7,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Using detkit on Docker" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://ameli.github.io/docker.html" />
+<meta property="og:site_name" content="DetKit" />
+<meta property="og:description" content="Contents: Using detkit on Docker- Install Docker, Get detkit Docker Image, Examples of Using detkit Docker Container, Deploy detkit Docker Container on GPU- Install NVIDIA Container Toolkit, Run detkit Docker Container on GPU... Install Docker: The followings are instructions to install docker on..." />
+<meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
+<meta property="og:image:alt" content="DetKit" />
+<meta name="description" content="Contents: Using detkit on Docker- Install Docker, Get detkit Docker Image, Examples of Using detkit Docker Container, Deploy detkit Docker Container on GPU- Install NVIDIA Container Toolkit, Run detkit Docker Container on GPU... Install Docker: The followings are instructions to install docker on..." />
+<meta property="og:title" content="RestoreIO">
+<meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>3. Using detkit on Docker &#8212; detkit Manual</title>
+    <title>Using detkit on Docker &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -52,7 +62,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API Reference" href="api.html" />
-    <link rel="prev" title="2. Running Tests" href="tests.html" />
+    <link rel="prev" title="5. Test Package" href="install/test_package.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -109,20 +119,14 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="install.html">
-  1. Install
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="tests.html">
-  2. Test
+ <a class="reference internal nav-link" href="install/install.html">
+  Install
  </a>
 </li>
 
 <li class="toctree-l1 current active nav-item">
  <a class="current reference internal nav-link" href="#">
-  3. Docker
+  Docker
  </a>
 </li>
 
@@ -180,7 +184,7 @@
             <label class="sr-only">Docker Hub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb" rel="noopener" target="_blank" title="Lanuch Jupyter on Binder"><span><i class="fa fa-chart-line"></i></span>
+          <a class="nav-link" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb" rel="noopener" target="_blank" title="Lanuch Jupyter on Binder"><span><i class="fas fa-book-open"></i></span>
             <label class="sr-only">Lanuch Jupyter on Binder</label></a>
         </li>
       </ul>
@@ -227,12 +231,12 @@
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#install-docker">
-   3.1. Install Docker
+   Install Docker
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#get-project-docker-image">
-   3.2. Get
+   Get
    <span class="synco">
     detkit
    </span>
@@ -241,7 +245,7 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#examples-of-using-project-docker-container">
-   3.3. Examples of Using
+   Examples of Using
    <span class="synco">
     detkit
    </span>
@@ -250,7 +254,7 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#deploy-project-docker-container-on-gpu">
-   3.4. Deploy
+   Deploy
    <span class="synco">
     detkit
    </span>
@@ -259,12 +263,12 @@
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#install-nvidia-container-toolkit">
-     3.4.1. Install NVIDIA Container Toolkit
+     Install NVIDIA Container Toolkit
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#run-project-docker-container-on-gpu">
-     3.4.2. Run
+     Run
      <span class="synco">
       detkit
      </span>
@@ -300,7 +304,7 @@
               <article class="bd-article" role="main">
                 
   <section id="using-project-on-docker">
-<span id="detkit-docker"></span><h1><a class="toc-backref" href="#id1" role="doc-backlink"><span class="section-number">3. </span>Using <span class="synco">detkit</span> on Docker</a><a class="headerlink" href="#using-project-on-docker" title="Permalink to this heading">#</a></h1>
+<span id="detkit-docker"></span><h1><a class="toc-backref" href="#id1" role="doc-backlink">Using <span class="synco">detkit</span> on Docker</a><a class="headerlink" href="#using-project-on-docker" title="Permalink to this heading">#</a></h1>
 <nav class="contents" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -320,7 +324,7 @@
 </ul>
 </nav>
 <section id="install-docker">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink"><span class="section-number">3.1. </span>Install Docker</a><a class="headerlink" href="#install-docker" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Install Docker</a><a class="headerlink" href="#install-docker" title="Permalink to this heading">#</a></h2>
 <p>The followings are instructions to install docker on Linux. To install on other operating systems, see <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Install Docker Engine</a> from Docker documentation.</p>
 <p>Install docker by</p>
 <div class="sd-tab-set docutils">
@@ -369,7 +373,7 @@ RHEL 9</label><div class="sd-tab-content docutils">
 </pre></div></div><p>Then, log out and log back. If docker is installed on a <em>virtual machine</em>, restart the virtual machine for changes to take effect.</p>
 </section>
 <section id="get-project-docker-image">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">3.2. </span>Get <span class="synco">detkit</span> Docker Image</a><a class="headerlink" href="#get-project-docker-image" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Get <span class="synco">detkit</span> Docker Image</a><a class="headerlink" href="#get-project-docker-image" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://hub.docker.com/r/sameli/detkit"><img alt="docker-size" src="https://img.shields.io/docker/image-size/sameli/detkit" /></a></p>
 <p>Get the <span class="synco">detkit</span> docker image by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">docker<span class="w"> </span>pull<span class="w"> </span>sameli/detkit</span>
@@ -382,7 +386,7 @@ RHEL 9</label><div class="sd-tab-content docutils">
 </ul>
 </section>
 <section id="examples-of-using-project-docker-container">
-<span id="docker-examples"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">3.3. </span>Examples of Using <span class="synco">detkit</span> Docker Container</a><a class="headerlink" href="#examples-of-using-project-docker-container" title="Permalink to this heading">#</a></h2>
+<span id="docker-examples"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink">Examples of Using <span class="synco">detkit</span> Docker Container</a><a class="headerlink" href="#examples-of-using-project-docker-container" title="Permalink to this heading">#</a></h2>
 <p>The followings are some examples of using <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code> with various options:</p>
 <ul>
 <li><p>To check the host’s NVIDIA driver version, CUDA runtime library version, and list of available GPU devices, run <code class="docutils literal notranslate"><span class="pre">nvida-smi</span></code> command by:</p>
@@ -405,10 +409,10 @@ RHEL 9</label><div class="sd-tab-content docutils">
 </ul>
 </section>
 <section id="deploy-project-docker-container-on-gpu">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">3.4. </span>Deploy <span class="synco">detkit</span> Docker Container on GPU</a><a class="headerlink" href="#deploy-project-docker-container-on-gpu" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Deploy <span class="synco">detkit</span> Docker Container on GPU</a><a class="headerlink" href="#deploy-project-docker-container-on-gpu" title="Permalink to this heading">#</a></h2>
 <p>To access the host’s GPU device from inside the docker container, you should install NVIDIA Container Toolkit.</p>
 <section id="install-nvidia-container-toolkit">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">3.4.1. </span>Install NVIDIA Container Toolkit</a><a class="headerlink" href="#install-nvidia-container-toolkit" title="Permalink to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Install NVIDIA Container Toolkit</a><a class="headerlink" href="#install-nvidia-container-toolkit" title="Permalink to this heading">#</a></h3>
 <p>Install <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">NVIDIA Container Toolkit</a> as follows.</p>
 <p>Add the package to the repository:</p>
 <div class="sd-tab-set docutils">
@@ -453,7 +457,7 @@ RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker</span>
 </pre></div></div></section>
 <section id="run-project-docker-container-on-gpu">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">3.4.2. </span>Run <span class="synco">detkit</span> Docker Container on GPU</a><a class="headerlink" href="#run-project-docker-container-on-gpu" title="Permalink to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Run <span class="synco">detkit</span> Docker Container on GPU</a><a class="headerlink" href="#run-project-docker-container-on-gpu" title="Permalink to this heading">#</a></h3>
 <p>To use the host’s GPU from the docker container, simply add  <code class="docutils literal notranslate"><span class="pre">--gpus</span> <span class="pre">all</span></code> to any of the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code> commands <a class="reference internal" href="#docker-examples"><span class="std std-ref">described earlier</span></a>, such as by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>-it<span class="w"> </span>sameli/detkit</span>
 </pre></div></div></section>
@@ -468,11 +472,11 @@ RHEL 9</label><div class="sd-tab-content docutils">
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="tests.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="install/test_package.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title"><span class="section-number">2. </span>Running Tests</p>
+          <p class="prev-next-title"><span class="section-number">5. </span>Test Package</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="api.html" title="next page">

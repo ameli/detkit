@@ -7,6 +7,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="detkit Documentation" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://ameli.github.io/index.html" />
+<meta property="og:site_name" content="DetKit" />
+<meta property="og:description" content="license deploy-docs A python package to compute some common functions involving determinant of matrices used in machine learning. GitHub PyPI Anaconda Cloud Docker Hub Supported Platforms: Successful installation and tests have been performed on the following platforms and Python/PyPy versions sh..." />
+<meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
+<meta property="og:image:alt" content="DetKit" />
+<meta name="description" content="license deploy-docs A python package to compute some common functions involving determinant of matrices used in machine learning. GitHub PyPI Anaconda Cloud Docker Hub Supported Platforms: Successful installation and tests have been performed on the following platforms and Python/PyPy versions sh..." />
+<meta property="og:title" content="RestoreIO">
+<meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
     <title>detkit Documentation &#8212; detkit Manual</title>
 <script>
@@ -51,7 +61,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1. Install" href="install.html" />
+    <link rel="next" title="Install" href="install/install.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -108,20 +118,14 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="install.html">
-  1. Install
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="tests.html">
-  2. Test
+ <a class="reference internal nav-link" href="install/install.html">
+  Install
  </a>
 </li>
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="docker.html">
-  3. Docker
+  Docker
  </a>
 </li>
 
@@ -179,7 +183,7 @@
             <label class="sr-only">Docker Hub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb" rel="noopener" target="_blank" title="Lanuch Jupyter on Binder"><span><i class="fa fa-chart-line"></i></span>
+          <a class="nav-link" href="https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb" rel="noopener" target="_blank" title="Lanuch Jupyter on Binder"><span><i class="fas fa-book-open"></i></span>
             <label class="sr-only">Lanuch Jupyter on Binder</label></a>
         </li>
       </ul>
@@ -225,8 +229,8 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#list-of-functions">
-   List of Functions
+  <a class="reference internal nav-link" href="#supported-platforms">
+   Supported Platforms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -237,6 +241,11 @@
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#docker">
    Docker
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#list-of-functions">
+   List of Functions
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -335,22 +344,64 @@ Docker Hub</div>
 </div>
 </div>
 </div>
-<section id="list-of-functions">
-<h2>List of Functions<a class="headerlink" href="#list-of-functions" title="Permalink to this heading">#</a></h2>
-<table class="autosummary longtable table autosummary">
+<section id="supported-platforms">
+<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permalink to this heading">#</a></h2>
+<p>Successful installation and tests have been performed on the following platforms and Python/PyPy versions shown in the table below.</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head" rowspan="2"><p>Platform</p></th>
+<th class="head" rowspan="2"><p>Arch</p></th>
+<th class="head" colspan="5"><p>Python Version</p></th>
+<th class="head" colspan="2"><p>PyPy Version</p></th>
+<th class="head" rowspan="2"><p>Continuous
+Integration</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>3.7</p></th>
+<th class="head"><p>3.8</p></th>
+<th class="head"><p>3.9</p></th>
+<th class="head"><p>3.10</p></th>
+<th class="head"><p>3.11</p></th>
+<th class="head"><p>3.6</p></th>
+<th class="head"><p>3.7</p></th>
+</tr>
+</thead>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logdet.html#detkit.logdet" title="detkit.logdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logdet</span></code></a></p></td>
-<td><p>Computes the <cite>logdet</cite> of a matrix.</p></td>
+<tr class="row-odd"><td><p>Linux</p></td>
+<td><p>X86-64</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux"><img alt="build-linux" src="https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml" /></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.loggdet</span></code></a></p></td>
-<td><p>Computes the <cite>loggdet</cite> of a matrix.</p></td>
+<tr class="row-even"><td><p>macOS</p></td>
+<td><p>X86-64</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✖</p></td>
+<td><p>✖</p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-macos"><img alt="build-macos" src="https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-macos.yml" /></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logpdet.html#detkit.logpdet" title="detkit.logpdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logpdet</span></code></a></p></td>
-<td><p>Computes the <cite>logpdet</cite> of a matrix.</p></td>
+<tr class="row-odd"><td><p>Windows</p></td>
+<td><p>X86-64</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✔</p></td>
+<td><p>✖</p></td>
+<td><p>✖</p></td>
+<td><p><a class="reference external" href="https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows"><img alt="build-windows" src="https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-windows.yml" /></a></p></td>
 </tr>
 </tbody>
 </table>
-<p>See <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> for a list of all functions.</p>
+<p>Python wheels for <span class="synco">detkit</span> for all supported platforms and versions in the above are available through <a class="reference external" href="https://pypi.org/project/detkit/">PyPI</a> and <a class="reference external" href="https://anaconda.org/s-ameli/detkit">Anaconda Cloud</a>. If you need <span class="synco">detkit</span> on other platforms, architectures, and Python or PyPy versions, <a class="reference external" href="https://github.com/ameli/detkit/issues">raise an issue</a> on GitHub and we build its Python Wheel for you.</p>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
@@ -382,18 +433,12 @@ span.prompt1:before {
 <p>For complete installation guide, see:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">1. Install</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#supported-platforms">1.1. Supported Platforms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#install-project-from-wheels">1.2. Install <span class="synco">detkit</span> From Wheels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#dependencies">1.3. Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#install-project-in-virtual-environments">1.4. Install <span class="synco">detkit</span> in Virtual Environments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#compile-from-source">1.5. Compile from Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#generate-documentation">1.6. Generate Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">2. Test</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#running-tests-with-pytest">2.1. Running Tests with <cite>pytest</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#running-tests-with-tox">2.2. Running Tests with <cite>tox</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install/install_wheels.html">1. Install from Wheels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/virtual_env.html">2. Install in Virtual Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/compile_source.html">3. Compile from Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/gen_documentation.html">4. Generate Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install/test_package.html">5. Test Package</a></li>
 </ul>
 </li>
 </ul>
@@ -418,15 +463,32 @@ span.prompt1:before {
 <p>For a complete guide, see:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="docker.html">3. Docker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docker.html#install-docker">3.1. Install Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html#get-project-docker-image">3.2. Get <span class="synco">detkit</span> Docker Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html#examples-of-using-project-docker-container">3.3. Examples of Using <span class="synco">detkit</span> Docker Container</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html#deploy-project-docker-container-on-gpu">3.4. Deploy <span class="synco">detkit</span> Docker Container on GPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docker.html#install-docker">Install Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html#get-project-docker-image">Get <span class="synco">detkit</span> Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html#examples-of-using-project-docker-container">Examples of Using <span class="synco">detkit</span> Docker Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html#deploy-project-docker-container-on-gpu">Deploy <span class="synco">detkit</span> Docker Container on GPU</a></li>
 </ul>
 </li>
 </ul>
 </div>
+</section>
+<section id="list-of-functions">
+<h2>List of Functions<a class="headerlink" href="#list-of-functions" title="Permalink to this heading">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logdet.html#detkit.logdet" title="detkit.logdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logdet</span></code></a></p></td>
+<td><p>Computes the <cite>logdet</cite> of a matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.loggdet</span></code></a></p></td>
+<td><p>Computes the <cite>loggdet</cite> of a matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logpdet.html#detkit.logpdet" title="detkit.logpdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logpdet</span></code></a></p></td>
+<td><p>Computes the <cite>logpdet</cite> of a matrix.</p></td>
+</tr>
+</tbody>
+</table>
+<p>See <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> for a list of all functions.</p>
 </section>
 <section id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this heading">#</a></h2>
@@ -445,7 +507,7 @@ span.prompt1:before {
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://github.com/ameli/detkit"><img alt="tokei-2" src="https://img.shields.io/badge/code%20lines-12.9k-blue" /></a> <a class="reference external" href="https://github.com/ameli/detkit"><img alt="languages" src="https://img.shields.io/github/languages/count/ameli/detkit" /></a></p>
 <ul class="simple">
-<li><p>Functions are implemented with a novel algorithm described in <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></li>
+<li><p>Functions are implemented with a novel algorithm described in <a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></li>
 <li><p>The underlying library is implemented in C++ and wrapped in cython.</p></li>
 <li><p>An accurate count of computational FLOPs during the execution of functions can be measured.</p></li>
 </ul>
@@ -484,8 +546,8 @@ span.prompt1:before {
 <h2>How to Cite<a class="headerlink" href="#how-to-cite" title="Permalink to this heading">#</a></h2>
 <p>If you publish work that uses <span class="synco">detkit</span>, please consider citing the following manuscripts.</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id3" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
 <p>Ameli, S., and Shadden. S. C. (2023). <em>A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression</em>. Applied Mathematics and Computation 452, 128032. <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a> <a class="reference external" href="https://doi.org/10.48550/arXiv.2207.08038"><img alt="arXiv 2207.08038" src="https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg" /></a> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
     BibTeX
 </button> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF01">
@@ -506,7 +568,7 @@ span.prompt1:before {
 }</code></pre>
 </div>
 </div></aside>
-<aside class="footnote brackets" id="id3" role="note">
+<aside class="footnote brackets" id="id4" role="note">
 <span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
 <p>Ameli, S. (2022). <em>DetKit, a python package for determinant matrix functions</em>. <a class="reference external" href="https://doi.org/10.5281/zenodo.6395320"><img alt="doi: 10.5281/zenodo.6395320" src="https://zenodo.org/badge/DOI/10.5281/zenodo.6395320.svg" /></a> <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib2">
     BibTeX
@@ -534,10 +596,10 @@ span.prompt1:before {
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='right-next' id="next-link" href="install.html" title="next page">
+  <a class='right-next' id="next-link" href="install/install.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title"><span class="section-number">1. </span>Install</p>
+      <p class="prev-next-title">Install</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>
