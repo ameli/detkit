@@ -1503,7 +1503,7 @@ def main(argv):
     readme_file = join(directory, 'README.rst')
     long_description = open(readme_file, 'r').read()
 
-    # Cyhton cpp extensions
+    # Cython cpp extensions
     extensions = []
 
     extensions.append(create_extension(package_name, '_functions',

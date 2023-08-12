@@ -138,6 +138,7 @@ extensions = [
     'sphinx-prompt',
     'sphinx_copybutton',
     'nbsphinx',
+    "sphinxext.opengraph",
 ]
 
 # Copy button settings
@@ -230,8 +231,9 @@ html_theme_options = {
         },
         {
             "name": "Lanuch Jupyter on Binder",
-            "url": "https://mybinder.org/v2/gh/ameli/detkit/HEAD?filepath=notebooks%2FInterpolateTraceOfInverse.ipynb",
-            "icon": "fa fa-chart-line",
+            "url": "https://mybinder.org/v2/gh/ameli/detkit/HEAD?" +
+                   "filepath=notebooks%2FInterpolateTraceOfInverse.ipynb",
+            "icon": "fas fa-book-open",
             "type": "fontawesome",
         },
     ],
@@ -261,7 +263,6 @@ html_sidebars = {
 #     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 # ]
 
-
 html_title = f"{project} Manual"
 html_last_updated_fmt = '%b %d, %Y'
 # html_show_sourcelink = False
@@ -287,7 +288,6 @@ html_last_updated_fmt = '%b %d, %Y'
 # extensions.append('sphinxjp.themes.basicstrap')
 # html_theme = 'basicstrap'
 
-
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
@@ -300,6 +300,22 @@ html_static_path = ['_static']
 html_js_files = ["js/custom-pydata.css"]
 # html_logo = '_static/images/icons/logo-detkit-light.png'
 html_favicon = '_static/images/icons/favicon.ico'
+
+# Open Graph cards for sharing the documentation on social media
+ogp_site_url = 'https://ameli.github.io/detkit'
+ogp_image = 'https://raw.githubusercontent.com/ameli/detkit/main/docs/' + \
+            'source/_static/images/icons/logo-detkit-light.svg'
+ogp_site_name = 'DetKit'
+ogp_description_length = 300
+ogp_type = "website"
+ogp_enable_meta_description = True
+ogp_custom_meta_tags = [
+    '<meta property="og:title" content="RestoreIO">',
+    '<meta property="og:description" content="DetKit is a python package ' +
+    'to compute some common functions involving determinant of matrices ' +
+    'used in machine learning.">',
+]
+
 
 # =====
 # setup

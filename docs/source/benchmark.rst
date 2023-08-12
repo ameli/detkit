@@ -34,7 +34,7 @@ In the numerical test, we compare the numerical performance of the above three r
 
 The complexity of computing :math:`\mathrm{logdet}(\mathbf{A}, \mathbf{X})` using either of LD1, LD2, or LD3 relations for the above cases is shown in the figure below (see also Figure 1 of [1]_). 
 
-.. image:: _static/images/plots/loggdet-9-analytic-flops.svg
+.. image:: _static/images/plots/loggdet-9-analytic-flops.png
     :align: center
     :class: custom-dark
     :width: 63%
@@ -125,7 +125,7 @@ To configure the Gramian matrix multiplication, modify |definitions|_ file as fo
 * Set ``USE_SYMMETRY`` to ``1`` to enable symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = \frac{1}{2}` in Section 4 of [1]_.
 * Set ``USE_SYMMETRY`` to ``0`` to disable symmetric Gramian matrix multiplication. This setting corresponds to the parameter :math:`\gamma = 1` in Section 4 of [1]_.
 
-For each of the above cases, compile the package as described in :ref:`compile` and run the experiment as described next.
+For each of the above cases, compile the package as described in the :ref:`Compile from Source <compile-source>` section and run the experiment as described next.
 
 .. note::
 
@@ -233,7 +233,7 @@ Plot Results
 
 To reproduce the plots, run the notebook file |notebook_benchmark|_. The notebook stores the plots as `svg` and `pdf` files in |plots|_ directory. These plots correspond to Figure 2 of [1]_, which is also shown below. Note that in the figures, the processing time and FLOPs are normalized by :math:`n^3` (recall that here :math:`n = 2^9`). Such normalization is advantageous if :math:`n` is varied as the plot scale remains unchanged.
 
-.. image:: _static/images/plots/loggdet-9-exp-flops-proc-time.svg
+.. image:: _static/images/plots/loggdet-9-exp-flops-proc-time.png
     :align: center
     :class: custom-dark
 

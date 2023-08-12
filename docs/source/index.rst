@@ -27,19 +27,34 @@ A python package to compute some common functions involving determinant of matri
         :text-align: center
         :class-card: custom-card-link
 
-List of Functions
-=================
+Supported Platforms
+===================
 
-.. autosummary::
-    :recursive:
-    :nosignatures:
-    :template: autosummary/member.rst
+Successful installation and tests have been performed on the following platforms and Python/PyPy versions shown in the table below.
 
-    detkit.logdet
-    detkit.loggdet
-    detkit.logpdet
+.. |y| unicode:: U+2714
+.. |n| unicode:: U+2716
 
-See :ref:`api` for a list of all functions.
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| Platform | Arch   | Python Version                        | PyPy Version  | Continuous      |
++          |        +-------+-------+-------+-------+-------+-------+-------+ Integration     +
+|          |        |  3.7  |  3.8  |  3.9  |  3.10 |  3.11 |  3.6  |  3.7  |                 |
++==========+========+=======+=======+=======+=======+=======+=======+=======+=================+
+| Linux    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| macOS    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  | |build-macos|   |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+| Windows  | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  | |build-windows| |
++----------+--------+-------+-------+-------+-------+-------+-------+-------+-----------------+
+
+.. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux 
+.. |build-macos| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-macos.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-macos
+.. |build-windows| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-windows.yml
+   :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows
+
+Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`__ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
 
 Install
 =======
@@ -68,10 +83,8 @@ For complete installation guide, see:
 
 .. toctree::
     :maxdepth: 2
-    :numbered:
 
-    Install <install>
-    Test <tests>
+    Install <install/install>
 
 Docker
 ======
@@ -94,9 +107,22 @@ For a complete guide, see:
 
 .. toctree::
     :maxdepth: 2
-    :numbered:
 
     Docker <docker>
+    
+List of Functions
+=================
+
+.. autosummary::
+    :recursive:
+    :nosignatures:
+    :template: autosummary/member.rst
+
+    detkit.logdet
+    detkit.loggdet
+    detkit.logpdet
+
+See :ref:`api` for a list of all functions.
 
 Tutorials
 =========
@@ -117,7 +143,7 @@ Benchmarks
 See :ref:`benchmark test <benchmark>` for evaluating the numerical performance of the functions in real applications.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :hidden:
 
     Benchmark <benchmark>

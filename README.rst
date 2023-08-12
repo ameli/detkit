@@ -2,7 +2,7 @@
 |logo|
 ******
 
-``detKit``, is a Python package for computing determinant functions of matrices.
+``detKit`` is a Python package for computing determinant functions of matrices.
 
 Links
 =====
@@ -11,7 +11,6 @@ Links
 * `PyPI <https://pypi.org/project/detkit/>`_
 * `Anaconda <https://anaconda.org/s-ameli/detkit>`_
 * `Docker Hub <https://hub.docker.com/r/sameli/detkit>`_
-* `Git Hub <https://github.com/ameli/detkit>`_
 
 Install
 =======
