@@ -38,6 +38,7 @@ jobs:
             - name: Install prerequisites for Test
               run: |
                   sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+                  sudo apt-get install gfortran libopenblas-dev liblapack-dev
                   sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
 
             # Despite the package is built on both cpython and pypy, here we
