@@ -42,7 +42,6 @@ jobs:
                   ln -s /usr/local/opt/libomp/lib/libomp.a /usr/local/lib/libomp.a
                   ln -s /usr/local/opt/libomp/lib/libomp.dylib /usr/local/lib/libomp.dylib
 
-
             - name: Install package and dependencies
               run: |
                   python -m pip install --upgrade pip
