@@ -11,6 +11,7 @@ Links
 * `PyPI <https://pypi.org/project/detkit/>`_
 * `Anaconda <https://anaconda.org/s-ameli/detkit>`_
 * `Docker Hub <https://hub.docker.com/r/sameli/detkit>`_
+* `Github <https://github.com/ameli/detkit>`_
 
 Install
 =======
@@ -50,17 +51,17 @@ Successful installation and tests performed on the following operating systems, 
 .. |y| unicode:: U+2714
 .. |n| unicode:: U+2716
 
-+----------+--------+-------+-------+-------+-------+-------+-----------------+
-| Platform | Arch   | Python Version                        | Continuous      |
-+          |        +-------+-------+-------+-------+-------+ Integration     +
-|          |        |  3.7  |  3.8  |  3.9  |  3.10 |  3.11 |                 |
-+==========+========+=======+=======+=======+=======+=======+=================+
-| Linux    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
-+----------+--------+-------+-------+-------+-------+-------+-----------------+
-| macOS    | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-macos|   |
-+----------+--------+-------+-------+-------+-------+-------+-----------------+
-| Windows  | X86-64 |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-windows| |
-+----------+--------+-------+-------+-------+-------+-------+-----------------+
++----------+--------+-------+-------+-------+-----------------+
+| Platform | Arch   | Python Version        | Continuous      |
++          |        +-------+-------+-------+ Integration     +
+|          |        |  3.9  |  3.10 |  3.11 |                 |
++==========+========+=======+=======+=======+=================+
+| Linux    | X86-64 |  |y|  |  |y|  |  |y|  | |build-linux|   |
++----------+--------+-------+-------+-------+-----------------+
+| macOS    | X86-64 |  |y|  |  |y|  |  |y|  | |build-macos|   |
++----------+--------+-------+-------+-------+-----------------+
+| Windows  | X86-64 |  |y|  |  |y|  |  |y|  | |build-windows| |
++----------+--------+-------+-------+-------+-----------------+
 
 .. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-linux 

@@ -21,6 +21,7 @@ For more advanced usage, there may be cases where you need to compile the packag
     Compile from Source <compile_source>
     Generate Documentation <gen_documentation>
     Test Package <test_package>
+    Troubleshooting <troubleshooting>
 
 .. |implementation| image:: https://img.shields.io/pypi/implementation/detkit
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/detkit
