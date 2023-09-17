@@ -55,6 +55,11 @@ jobs:
                   # brew install lapack
                   # pip3 install numpy
 
+            # Without this, installing cuda give error: no much space left on device
+            - name: Clear Cache
+              if: matrix.os != 'windows-latest'
+              run: rm -rf /opt/hostedtoolcache 
+
             # Build wheel for windows with CUDA enabled. Note that cibuildwheel
             # does not need manylinux docker, thuns, CUDA can be installed in
             # the github action's virtual machine using the Jimver's action
@@ -74,12 +79,14 @@ jobs:
             # longer supports CUDA in the macos.
             - name: Build wheels in mac without CUDA support
               if: matrix.os == 'macos-latest'
-              run: python -m cibuildwheel --output-dir wheelhouse
+              uses: pypa/cibuildwheel@v2.15.0
               env:
                   CIBW_BUILD: "*-manylinux_x86_64 *-macosx_x86_64 *-win_amd64"
                   CIBW_SKIP: "pp* cp36-* cp37-* cp38-* cp312-*"
                   CIBW_BUILD_VERBOSITY: 1
                   CIBW_ENVIRONMENT: "USE_CBLAS=0 USE_CUDA=0"
+              with:
+                output-dir: wheelhouse
 
             # Enable compiling with CUDA, only for linux. Note that cuda must
             # be installed "inside" the manylinux docker image, not in the main
