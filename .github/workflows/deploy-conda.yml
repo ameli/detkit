@@ -72,7 +72,7 @@ jobs:
             # does not need manylinux docker, thuns, CUDA can be installed in
             # the github action's virtual machine using the Jimver's action
             # in the previous action (see above).
-            - name: Build wheels in windows with CUDA support
+            - name: Build wheels in windows with CUDA support (x86_64 and arm64)
               if: matrix.os == 'windows-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
@@ -86,7 +86,7 @@ jobs:
            
             # Do not enable compiling with CUDA for macos since NIVDIA no
             # longer supports CUDA in the macos.
-            - name: Build wheels in mac without CUDA support
+            - name: Build wheels in mac without CUDA support (x86_64 and arm64)
               if: matrix.os == 'macos-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
@@ -118,13 +118,29 @@ jobs:
                   # CIBW_MANYLINUX_X86_64_IMAGE: sameli/manylinux2014_x86_64_cuda_12.2
                   CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
                   # CIBW_BEFORE_ALL_LINUX: chmod +x .github/scripts/install_cuda.sh && .github/scripts/install_cuda.sh
-                  CIBW_ARCHS_LINUX: "x86_64 aarch64"
-                  CIBW_BUILD: "*-manylinux_x86_64 *-manylinux_aarch64"
+                  CIBW_ARCHS_LINUX: "x86_64"
+                  CIBW_BUILD: "*-manylinux_x86_64"
                   CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
                   CIBW_BUILD_VERBOSITY: 1
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0 USE_CUDA=0 CUDA_DYNAMIC_LOADING=0 CUDA_HOME=/usr/local/cuda"
               with:
                 output-dir: wheelhouse
+
+            # This does not work, the compilation takes several hours, then fails
+            # - name: Build wheels in linux with CUDA support
+            #   if: matrix.os == 'ubuntu-latest'
+            #   uses: pypa/cibuildwheel@v2.15.0
+            #   env:
+            #       # CIBW_MANYLINUX_X86_64_IMAGE: sameli/manylinux2014_x86_64_cuda_12.2
+            #       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+            #       # CIBW_BEFORE_ALL_LINUX: chmod +x .github/scripts/install_cuda.sh && .github/scripts/install_cuda.sh
+            #       CIBW_ARCHS_LINUX: "aarch64"
+            #       CIBW_BUILD: "*-manylinux_aarch64"
+            #       CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
+            #       CIBW_BUILD_VERBOSITY: 1
+            #       CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0 USE_CUDA=0 CUDA_DYNAMIC_LOADING=0 CUDA_HOME=/usr/local/cuda"
+            #   with:
+            #     output-dir: wheelhouse
             
             - name: Upload artifacts
               uses: actions/upload-artifact@v3
