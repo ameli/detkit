@@ -3,6 +3,22 @@
 Troubleshooting
 ***************
 
+Cannot load ``libomp``
+======================
+
+Upon importing |project|, you may encounter this error:
+
+::
+
+    ImportError: dlopen(.../site-packages/detkit/_functions/logdet.cpython-311-darwin.so, 2):
+    Library not loaded: @loader_path/../.dylibs/libomp.dylib
+    Referenced from: .../site-packages/imate/_functions/logdet.cpython-311-darwin.so
+    Reason: no suitable image found.  Did find:
+	.../site-packages/detkit/_functions/logdet/../.dylibs/libomp.dylib:
+	cannot load 'libomp.dylib' (load command 0x80000034 is unknown)
+
+This message indicates that OpenMP is not installed on your system, a requirement for the |project|. To resolve this issue, refer to :ref:`OpenMP installation instructions <dependencies_openmp>`.
+
 Issue of Initializing ``libomp``
 ================================
 
