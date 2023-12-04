@@ -257,7 +257,7 @@ To compile and install, run
 
 .. prompt:: bash
 
-    python setup.py install
+    python -m pip install .
 
 The above command may need ``sudo`` privilege. 
 
@@ -273,7 +273,7 @@ If you are using ``sudo`` for the above command, add ``-E`` option to ``sudo`` t
         .. code-block:: Bash
 
             export CYTHON_BUILD_FOR_DOC=1
-            sudo -E python setup.py install
+            sudo -E python -m pip install .
 
     .. tab-item:: Windows (Powershell)
         :sync: win
