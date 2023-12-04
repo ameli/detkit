@@ -530,7 +530,7 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ameli/detkit.git</span>
 <span class="prompt1"><span class="nb">cd</span><span class="w"> </span>detkit</span>
 </pre></div></div><p>To compile and install, run</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python<span class="w"> </span>setup.py<span class="w"> </span>install</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.</span>
 </pre></div></div><p>The above command may need <code class="docutils literal notranslate"><span class="pre">sudo</span></code> privilege.</p>
 <p class="rubric">A Note on Using <code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
 <p>If you are using <code class="docutils literal notranslate"><span class="pre">sudo</span></code> for the above command, add <code class="docutils literal notranslate"><span class="pre">-E</span></code> option to <code class="docutils literal notranslate"><span class="pre">sudo</span></code> to make sure the environment variables (if you have set any) are accessible to the root user. For instance</p>
@@ -539,7 +539,7 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 </input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-18">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span>
-sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install
+sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
