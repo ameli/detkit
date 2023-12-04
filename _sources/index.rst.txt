@@ -42,15 +42,15 @@ Successful installation and tests have been performed on the following platforms
 +==========+===================+=======+=======+=======+=======+=======+=======+=======+=================+
 | Linux    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | AARCH-64          |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |                 |
+|          | AARCH-64 :sup:`*` |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | macOS    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-macos|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64 :sup:`1`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | Windows  | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-windows| |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 
 .. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
@@ -62,7 +62,7 @@ Successful installation and tests have been performed on the following platforms
 
 Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`__ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
 
-:sup:`1. Wheels for ARM-64 architecture, tailored for Apple Silicon M1 machines, can only be installed using pip and are not available for installation via conda.`
+:sup:`* Wheels compatible with the ARM-64 (also known as AARCH-64) architecture, including those for Apple Silicon M1 machines, are exclusively available for installation through pip and cannot be installed using conda.`
 
 Install
 =======
