@@ -51,59 +51,6 @@ Alternatively, you can install |project| via ``conda``. To do so, you may refer 
 
 .. _dependencies:
 
-Dependencies
-------------
-
-|project| can count the FLOPs of the computations, if the argument ``flops=True`` is used in the functions (see :ref:`API Reference <api>`). To this end, the `Linux Performance Counter tool <https://perf.wiki.kernel.org/index.php/Main_Page>`_, known as ``perf`` should be installed.
-
-.. tab-set::
-
-    .. tab-item:: Ubuntu/Debian
-        :sync: ubuntu
-
-        .. prompt:: bash
-
-            sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
-
-    .. tab-item:: CentOS 7
-        :sync: centos
-
-        .. prompt:: bash
-
-            sudo yum group install perf
-
-    .. tab-item:: RHEL 9
-        :sync: rhel
-
-        .. prompt:: bash
-
-            sudo dnf group install perf
-
-.. attention::
-
-    The ``perf`` tool is not available in macOS and Windows.
-
-Grant permissions to the user to be able to run the perf tool:
-
-.. prompt:: bash
-
-    sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
-    
-Test if the `perf` tool works by
-
-.. prompt::
-
-    perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=100000
-
-Alternatively, you may also test `perf` tool with |project| by
-
-.. code-block:: python
-
-    >>> import detkit
-    >>> detkit..get_instructions_per_task()
-
-If the installed `perf` tool is configured properly, the output of either of the above commands should not be empty.
-
 .. |pypi| image:: https://img.shields.io/pypi/v/detkit
    :target: https://pypi.org/project/detkit
 .. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/detkit

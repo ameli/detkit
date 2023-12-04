@@ -7,18 +7,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="5. Generate Documentation" />
+<meta property="og:title" content="3. Runtime Dependencies" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ameli.github.io/install/gen_documentation.html" />
+<meta property="og:url" content="https://ameli.github.io/install/dependencies.html" />
 <meta property="og:site_name" content="DetKit" />
-<meta property="og:description" content="Before generating the Sphinx documentation, you should compile the package. First, get the source code from the GitHub repository. If you already had the source code, clean it from any previous build (especially if you built in-source): Compile Package: Set CYTHON_BUILD_FOR_DOC to 1(see Configure..." />
+<meta property="og:description" content="The followings are dependencies used during the runtime of detkit. Note that, among these dependencies, OpenMP is required, while the rest of the dependencies are optional. OpenMP ( Required): detkit requires OpenMP, which is typically included with most C++ compilers. For Linux users:, By instal..." />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
-<meta name="description" content="Before generating the Sphinx documentation, you should compile the package. First, get the source code from the GitHub repository. If you already had the source code, clean it from any previous build (especially if you built in-source): Compile Package: Set CYTHON_BUILD_FOR_DOC to 1(see Configure..." />
+<meta name="description" content="The followings are dependencies used during the runtime of detkit. Note that, among these dependencies, OpenMP is required, while the rest of the dependencies are optional. OpenMP ( Required): detkit requires OpenMP, which is typically included with most C++ compilers. For Linux users:, By instal..." />
 <meta property="og:title" content="RestoreIO">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>5. Generate Documentation &#8212; detkit Manual</title>
+    <title>3. Runtime Dependencies &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -61,8 +61,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="6. Test Package" href="test_package.html" />
-    <link rel="prev" title="4. Compile from Source" href="compile_source.html" />
+    <link rel="next" title="4. Compile from Source" href="compile_source.html" />
+    <link rel="prev" title="2. Install in Virtual Environments" href="virtual_env.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -223,8 +223,8 @@
    2. Install in Virtual Environment
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="dependencies.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    3. Runtime Dependencies
   </a>
  </li>
@@ -233,8 +233,8 @@
    4. Compile from Source
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="gen_documentation.html">
    5. Generate Documentation
   </a>
  </li>
@@ -274,13 +274,21 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#compile-package">
-   5.1. Compile Package
+  <a class="reference internal nav-link" href="#openmp-required">
+   3.1. OpenMP (
+   <cite>
+    Required
+   </cite>
+   )
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#generate-sphinx-documentation">
-   5.2. Generate Sphinx Documentation
+  <a class="reference internal nav-link" href="#perf-tool-optional">
+   3.2. Perf Tool (
+   <cite>
+    Optional
+   </cite>
+   )
   </a>
  </li>
 </ul>
@@ -292,7 +300,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/ameli/detkit/edit/main/docs/source/install/gen_documentation.rst">
+    <a href="https://github.com/ameli/detkit/edit/main/docs/source/install/dependencies.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -309,101 +317,95 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="generate-documentation">
-<span id="gen-documentation"></span><h1><span class="section-number">5. </span>Generate Documentation<a class="headerlink" href="#generate-documentation" title="Permalink to this heading">#</a></h1>
-<p>Before generating the Sphinx documentation, you should compile the package. First, get the source code from the GitHub repository.</p>
+  <section id="runtime-dependencies">
+<span id="dependencies"></span><h1><span class="section-number">3. </span>Runtime Dependencies<a class="headerlink" href="#runtime-dependencies" title="Permalink to this heading">#</a></h1>
+<p>The followings are dependencies used during the runtime of <span class="synco">detkit</span>. Note that, among these dependencies, <cite>OpenMP</cite> is <strong>required</strong>, while the rest of the dependencies are optional.</p>
+<section id="openmp-required">
+<span id="dependencies-openmp"></span><h2><span class="section-number">3.1. </span>OpenMP (<cite>Required</cite>)<a class="headerlink" href="#openmp-required" title="Permalink to this heading">#</a></h2>
+<p><span class="synco">detkit</span> requires OpenMP, which is typically included with most C++ compilers.</p>
+<dl class="simple glossary">
+<dt id="term-For-Linux-users">For <strong>Linux</strong> users:<a class="headerlink" href="#term-For-Linux-users" title="Permalink to this term">#</a></dt><dd><p>By installing a C++ compiler such as GCC, Clang, or Intel, you also obtain OpenMP as well. You may alternatively install <code class="docutils literal notranslate"><span class="pre">libomp</span></code> (see below) without the need to install a full compiler.</p>
+</dd>
+<dt id="term-For-macOS-users">For <strong>macOS</strong> users:<a class="headerlink" href="#term-For-macOS-users" title="Permalink to this term">#</a></dt><dd><p>It’s crucial to note that OpenMP is not part of the default Apple Xcode’s LLVM compiler. Even if you have Apple Xcode LLVM compiler readily installed on macOS, you will still need to install OpenMP separately via <code class="docutils literal notranslate"><span class="pre">libomp</span></code> Homebrew package (see below) or as part of the <em>open source</em> <a class="reference external" href="https://llvm.org/">LLVM compiler</a>, via <code class="docutils literal notranslate"><span class="pre">llvm</span></code> Homebrew package.</p>
+</dd>
+<dt id="term-For-Windows-users">For <strong>Windows</strong> users:<a class="headerlink" href="#term-For-Windows-users" title="Permalink to this term">#</a></dt><dd><p>OpenMP support depends on the compiler you choose; Microsoft Visual C++ supports OpenMP, but you may need to enable it explicitly.</p>
+</dd>
+</dl>
+<p>Below are the specific installation for each operating system:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-0">
+Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
   content: "$ ";
 }
-</style><span class="prompt1">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ameli/detkit.git</span>
-<span class="prompt1"><span class="nb">cd</span><span class="w"> </span>detkit</span>
-</pre></div></div><p>If you already had the source code, clean it from any previous build (especially if you built <cite>in-source</cite>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python<span class="w"> </span>setup.py<span class="w"> </span>clean</span>
-</pre></div></div><section id="compile-package">
-<h2><span class="section-number">5.1. </span>Compile Package<a class="headerlink" href="#compile-package" title="Permalink to this heading">#</a></h2>
-<p>Set <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code> to <cite>1</cite> (see <a class="reference internal" href="compile_source.html#config-env-variables"><span class="std std-ref">Configure Compile-Time Environment variables</span></a>). Compile and install the package by</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-0">
-UNIX</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span></span>
-<span class="prompt1">sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install</span>
+</style><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libgomp1<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-1">
-Windows (Powershell)</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
-span.prompt2:before {
-  content: "PS C:\\> ";
-}
-</style><span class="prompt2"><span class="nv">$env:export</span> <span class="n">CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
-<span class="prompt2"><span class="n">sudo</span> <span class="n">-E</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span></span>
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-1">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-2">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
+</pre></div></div></div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-3">
+macOS</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>libomp</span>
 </pre></div></div></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In <em>macOS</em>, starting from <code class="docutils literal notranslate"><span class="pre">libomp</span></code> with version <code class="docutils literal notranslate"><span class="pre">15</span></code> and above, Homebrew installs OpenMP as <em>keg-only</em>. To be able to use the OpenMP installation, create the following symbolic links :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/libomp/include/omp-tools.h<span class="w"> </span>/usr/local/include/omp-tools.h</span>
+<span class="prompt1">ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/libomp/include/omp.h<span class="w"> </span>/usr/local/include/omp.h</span>
+<span class="prompt1">ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/libomp/include/ompt.h<span class="w"> </span>/usr/local/include/ompt.h</span>
+<span class="prompt1">ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/libomp/lib/libomp.a<span class="w"> </span>/usr/local/lib/libomp.a</span>
+<span class="prompt1">ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/libomp/lib/libomp.dylib<span class="w"> </span>/usr/local/lib/libomp.dylib</span>
+</pre></div></div></div>
 </section>
-<section id="generate-sphinx-documentation">
-<h2><span class="section-number">5.2. </span>Generate Sphinx Documentation<a class="headerlink" href="#generate-sphinx-documentation" title="Permalink to this heading">#</a></h2>
-<p>Install <a class="reference external" href="https://pandoc.org/">Pandoc</a> by</p>
+<section id="perf-tool-optional">
+<h2><span class="section-number">3.2. </span>Perf Tool (<cite>Optional</cite>)<a class="headerlink" href="#perf-tool-optional" title="Permalink to this heading">#</a></h2>
+<p><span class="synco">detkit</span> can count the FLOPs of the computations, if the argument <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> is used in the functions (see <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>). To this end, the <a class="reference external" href="https://perf.wiki.kernel.org/index.php/Main_Page">Linux Performance Counter tool</a>, known as <code class="docutils literal notranslate"><span class="pre">perf</span></code> should be installed.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-2">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-4">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
-</pre></div></div></div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-3">
-CentOS 7</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
-</pre></div></div></div>
-<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-4">
-RHEL 9</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>linux-tools-common<span class="w"> </span>linux-tools-generic<span class="w"> </span>linux-tools-<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-5">
-macOS</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
+</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-5">
+CentOS 7</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-6">
-Windows (Powershell)</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="n">scoop</span> <span class="n">install</span> <span class="n">pandoc</span></span>
+</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-6">
+RHEL 9</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
 </div>
-<p>Install the requirements for the Sphinx documentation by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt</span>
-</pre></div></div><p>The above command installs the required packages in Python’s path directory. Make sure python’s directory is on the <cite>PATH</cite>, for instance, by</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-7">
-UNIX</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="sb">`</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="sb">`</span></span>
-<span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PYTHON_PATH</span><span class="si">}</span>:<span class="nv">$PATH</span></span>
-</pre></div></div></div>
-<input id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-8">
-Windows (Powershell)</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$PYTHON_PATH</span> <span class="p">=</span> <span class="p">(</span><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="p">)</span></span>
-<span class="prompt2"><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;$PYTHON_PATH&quot;</span></span>
-</pre></div></div></div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is not available in macOS and Windows.</p>
 </div>
-<p>Now, build the documentation:</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-9">
-UNIX</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make<span class="w"> </span>clean<span class="w"> </span>html<span class="w"> </span>--directory<span class="o">=</span>docs</span>
-</pre></div></div></div>
-<input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-10">
-Windows (Powershell)</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nb">cd </span><span class="n">docs</span></span>
-<span class="prompt2"><span class="n">make</span><span class="p">.</span><span class="n">bat</span> <span class="n">clean</span> <span class="n">html</span></span>
-</pre></div></div></div>
+<p>Grant permissions to the user to be able to run the perf tool:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo -1 &gt;/proc/sys/kernel/perf_event_paranoid&#39;</span></span>
+</pre></div></div><p>Test if the <cite>perf</cite> tool works by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt2:before {
+  content: " ";
+}
+</style><span class="prompt2">perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=100000</span>
+</pre></div></div><p>Alternatively, you may also test <cite>perf</cite> tool with <span class="synco">detkit</span> by</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">detkit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">..</span><span class="n">get_instructions_per_task</span><span class="p">()</span>
+</pre></div>
 </div>
-<p>The main page of the documentation can be found in <code class="docutils literal notranslate"><span class="pre">/docs/build/html/index.html</span></code>.</p>
+<p>If the installed <cite>perf</cite> tool is configured properly, the output of either of the above commands should not be empty.</p>
 </section>
 </section>
 
@@ -415,17 +417,17 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="compile_source.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="virtual_env.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title"><span class="section-number">4. </span>Compile from Source</p>
+          <p class="prev-next-title"><span class="section-number">2. </span>Install in Virtual Environments</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="test_package.html" title="next page">
+  <a class='right-next' id="next-link" href="compile_source.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title"><span class="section-number">6. </span>Test Package</p>
+      <p class="prev-next-title"><span class="section-number">4. </span>Compile from Source</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>

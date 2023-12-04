@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="5. Test Package" />
+<meta property="og:title" content="6. Test Package" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ameli.github.io/install/test_package.html" />
 <meta property="og:site_name" content="DetKit" />
@@ -18,7 +18,7 @@
 <meta property="og:title" content="RestoreIO">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>5. Test Package &#8212; detkit Manual</title>
+    <title>6. Test Package &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -61,8 +61,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="6. Troubleshooting" href="troubleshooting.html" />
-    <link rel="prev" title="4. Generate Documentation" href="gen_documentation.html" />
+    <link rel="next" title="7. Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="5. Generate Documentation" href="gen_documentation.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -224,23 +224,28 @@
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="dependencies.html">
+   3. Runtime Dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="compile_source.html">
-   3. Compile from Source
+   4. Compile from Source
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="gen_documentation.html">
-   4. Generate Documentation
+   5. Generate Documentation
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   5. Test Package
+   6. Test Package
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="troubleshooting.html">
-   6. Troubleshooting
+   7. Troubleshooting
   </a>
  </li>
 </ul>
@@ -270,7 +275,7 @@
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#test-with-pytest">
-   5.1. Test with
+   6.1. Test with
    <code class="docutils literal notranslate">
     <span class="pre">
      pytest
@@ -280,7 +285,7 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#test-with-tox">
-   5.2. Test with
+   6.2. Test with
    <code class="docutils literal notranslate">
     <span class="pre">
      tox
@@ -315,10 +320,10 @@
               <article class="bd-article" role="main">
                 
   <section id="test-package">
-<span id="id1"></span><h1><span class="section-number">5. </span>Test Package<a class="headerlink" href="#test-package" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1><span class="section-number">6. </span>Test Package<a class="headerlink" href="#test-package" title="Permalink to this heading">#</a></h1>
 <p>You can test the package using either <a class="reference external" href="https://docs.pytest.org/">pytest</a> or <a class="reference external" href="https://tox.wiki/en/4.7.0/">tox</a>.</p>
 <section id="test-with-pytest">
-<h2><span class="section-number">5.1. </span>Test with <code class="docutils literal notranslate"><span class="pre">pytest</span></code><a class="headerlink" href="#test-with-pytest" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">6.1. </span>Test with <code class="docutils literal notranslate"><span class="pre">pytest</span></code><a class="headerlink" href="#test-with-pytest" title="Permalink to this heading">#</a></h2>
 <p><a class="reference external" href="https://codecov.io/gh/ameli/detkit"><img alt="codecov-devel" src="https://img.shields.io/codecov/c/github/ameli/detkit" /></a></p>
 <p>The package can be tested by running several <a class="reference external" href="https://github.com/ameli/detkit/tree/main/tests">test scripts</a>, which test all <a class="reference external" href="https://github.com/ameli/detkit/tree/main/detkit">sub-packages</a> and <a class="reference external" href="https://github.com/ameli/detkit/tree/main/examples">examples</a>.</p>
 <p>Clone the source code from the repository and install the required test packages by</p>
@@ -339,7 +344,7 @@ span.prompt1:before {
 </div>
 </section>
 <section id="test-with-tox">
-<h2><span class="section-number">5.2. </span>Test with <code class="docutils literal notranslate"><span class="pre">tox</span></code><a class="headerlink" href="#test-with-tox" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">6.2. </span>Test with <code class="docutils literal notranslate"><span class="pre">tox</span></code><a class="headerlink" href="#test-with-tox" title="Permalink to this heading">#</a></h2>
 <p>To run a test in a virtual environment, use <code class="docutils literal notranslate"><span class="pre">tox</span></code> as follows:</p>
 <ol class="arabic">
 <li><p>Clone the source code from the repository:</p>
@@ -368,13 +373,13 @@ span.prompt1:before {
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title"><span class="section-number">4. </span>Generate Documentation</p>
+          <p class="prev-next-title"><span class="section-number">5. </span>Generate Documentation</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="troubleshooting.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title"><span class="section-number">6. </span>Troubleshooting</p>
+      <p class="prev-next-title"><span class="section-number">7. </span>Troubleshooting</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>
