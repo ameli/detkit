@@ -34,6 +34,7 @@ requirements:
         - suitesparse
         - matplotlib
         - seaborn
+        - pooch
         - llvm-openmp  # [osx]
 
 test:
