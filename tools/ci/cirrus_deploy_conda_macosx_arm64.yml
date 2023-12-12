@@ -49,6 +49,10 @@ conda_build_wheels_macosx_arm64_task:
     CIBW_ENVIRONMENT_MACOS: >
       SDKROOT=/Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
       LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+      CFLAGS="-I/opt/homebrew/opt/libomp/include $CFLAGS"
+      CXXFLAGS="-I/opt/homebrew/opt/libomp/include $CXXFLAGS"
+      LDFLAGS="-L/opt/homebrew/opt/libomp/lib $LDFLAGS"
+      LIBRARY_PATH="/opt/homebrew/opt/libomp/lib:$LIBRARY_PATH"
       USE_LONG_INT=0
       USE_UNSIGNED_LONG_INT=0
       USE_CBLAS=0
@@ -82,7 +86,7 @@ conda_build_upload_conda_macosx_arm64_task:
   depends_on:
     - conda_build_wheels_macosx_arm64
   env:
-    ANACONDA_API_TOKEN: ENCRYPTED[46301c55bb8947383f5ada690555715865045dc694dacfba2182fa482892e8ac2b1c846dc022e85ba74d8ddd8816bbca]
+    ANACONDA_API_TOKEN: ENCRYPTED[!f177322643cd551d0cf3749cb4f6549ce7f7be107a0394385e5b5c8b7edd62aa4ac478cc0fa53564890549449dc2dce8!]
 
   build_script:
     # The name of the zip file is derived from the `wheels_artifact` line.

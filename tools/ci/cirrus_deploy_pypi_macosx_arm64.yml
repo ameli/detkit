@@ -49,6 +49,10 @@ pypi_build_wheels_macosx_arm64_task:
     CIBW_ENVIRONMENT_MACOS: >
       SDKROOT=/Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
       LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+      CFLAGS="-I/opt/homebrew/opt/libomp/include $CFLAGS"
+      CXXFLAGS="-I/opt/homebrew/opt/libomp/include $CXXFLAGS"
+      LDFLAGS="-L/opt/homebrew/opt/libomp/lib $LDFLAGS"
+      LIBRARY_PATH="/opt/homebrew/opt/libomp/lib:$LIBRARY_PATH"
       USE_CBLAS=0
     CIBW_ARCHS: "arm64"
     # CIBW_BUILD: "*-macosx_arm64"
@@ -87,7 +91,7 @@ pypi_upload_wheels_macosx_arm64_task:
     memory: 4G
 
   env:
-    PYPI_PASSWORD: ENCRYPTED[485f574e94e67a6d00e46a2490863b7b67059cccaf723e09c1f56af3e8b806627d3391d0a501ef7135a52590a902f7b5]
+    PYPI_PASSWORD: ENCRYPTED[!fd3bceb1c585064d6a6803ba64d3c76c83434af2fbe9b6002f3018c8e5c42344c702f1e8093bbc4dd6a6aaea464dae61!]
 
   upload_script: |
     apt-get update

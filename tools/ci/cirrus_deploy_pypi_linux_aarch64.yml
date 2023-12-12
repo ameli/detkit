@@ -83,7 +83,7 @@ pypi_upload_wheels_linux_aarch64_task:
     memory: 4G
 
   env:
-    PYPI_PASSWORD: ENCRYPTED[485f574e94e67a6d00e46a2490863b7b67059cccaf723e09c1f56af3e8b806627d3391d0a501ef7135a52590a902f7b5]
+    PYPI_PASSWORD: ENCRYPTED[!fd3bceb1c585064d6a6803ba64d3c76c83434af2fbe9b6002f3018c8e5c42344c702f1e8093bbc4dd6a6aaea464dae61!]
 
   upload_script: |
     apt-get update

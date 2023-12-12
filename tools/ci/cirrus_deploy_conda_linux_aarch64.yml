@@ -80,7 +80,7 @@ conda_build_upload_conda_linux_aarch64_task:
   depends_on:
     - conda_build_wheels_linux_aarch64
   env:
-    ANACONDA_API_TOKEN: ENCRYPTED[46301c55bb8947383f5ada690555715865045dc694dacfba2182fa482892e8ac2b1c846dc022e85ba74d8ddd8816bbca]
+    ANACONDA_API_TOKEN: ENCRYPTED[!f177322643cd551d0cf3749cb4f6549ce7f7be107a0394385e5b5c8b7edd62aa4ac478cc0fa53564890549449dc2dce8!]
 
   build_script: |
     # The name of the zip file is derived from the `wheels_artifact` line.
