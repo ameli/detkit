@@ -4,7 +4,6 @@ global-include *.pxi
 global-include *.h
 global-include *.cpp
 global-include *.cu
-global-include meson.build
 
 global-exclude *.py[cod] __pycache__
 global-exclude *.so *.dll *.dylib

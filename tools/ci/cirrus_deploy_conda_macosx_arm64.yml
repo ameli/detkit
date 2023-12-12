@@ -56,7 +56,7 @@ conda_build_wheels_macosx_arm64_task:
     # CIBW_BUILD: "*-macosx_arm64"
     CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
     CIBW_BUILD_VERBOSITY: "3"
-    CIBW_BEFORE_BUILD: "pip install delocate"
+    CIBW_BEFORE_BUILD: "pip install delocate; brew install libomp"
     CIBW_TEST_SKIP: "*_universal2:arm64"
 
   build_script:

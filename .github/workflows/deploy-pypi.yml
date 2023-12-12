@@ -196,7 +196,7 @@ jobs:
                   python -m pip install --upgrade pip
                   python -m pip install pytest-cov
                   python -m pip install cython
-                  python -m pip install --upgrade detkit
+                  python -m pip install --prefer-binary --upgrade detkit
 
             # This does not install plot packages (matplotlib, seaborn) when
             # using pypy, since on pypy37, the kiwisolver (a dependency of
