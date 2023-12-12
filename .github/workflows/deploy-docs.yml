@@ -15,10 +15,10 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Setup Python 
+            - name: Setup Python
               uses: actions/setup-python@v4
               with:
-                python-version: '3.11'
+                python-version: '3.12'
 
             # Compile package with in-source build
             - name: Install

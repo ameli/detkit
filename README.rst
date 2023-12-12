@@ -7,11 +7,11 @@
 Links
 =====
 
-* `Documentation <https://ameli.github.io/detkit>`_
-* `PyPI <https://pypi.org/project/detkit/>`_
-* `Anaconda <https://anaconda.org/s-ameli/detkit>`_
-* `Docker Hub <https://hub.docker.com/r/sameli/detkit>`_
-* `Github <https://github.com/ameli/detkit>`_
+* `Documentation <https://ameli.github.io/detkit>`__
+* `PyPI <https://pypi.org/project/detkit/>`__
+* `Anaconda <https://anaconda.org/s-ameli/detkit>`__
+* `Docker Hub <https://hub.docker.com/r/sameli/detkit>`__
+* `Github <https://github.com/ameli/detkit>`__
 
 Install
 =======
@@ -46,27 +46,27 @@ Docker Image
 Supported Platforms
 ===================
 
-Successful installation and tests performed on the following operating systems, architectures, and Python and `PyPy <https://www.pypy.org/>`_ versions:
+Successful installation and tests performed on the following operating systems, architectures, and Python and `PyPy <https://www.pypy.org/>`__ versions:
 
 .. |y| unicode:: U+2714
 .. |n| unicode:: U+2716
 
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
-| Platform | Arch              | Python Version                | PyPy Version          | Continuous      |
+| Platform | Arch              | Python Version                | PyPy Version :sup:`1` | Continuous      |
 +          |                   +-------+-------+-------+-------+-------+-------+-------+ Integration     +
 |          |                   |  3.9  |  3.10 |  3.11 |  3.12 |  3.8  |  3.9  |  3.10 |                 |
 +==========+===================+=======+=======+=======+=======+=======+=======+=======+=================+
 | Linux    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | AARCH-64 :sup:`*` |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |                 |
+|          | AARCH-64          |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | macOS    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-macos|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | Windows  | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-windows| |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64 :sup:`2`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 
 .. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
@@ -76,9 +76,12 @@ Successful installation and tests performed on the following operating systems, 
 .. |build-windows| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-windows.yml
    :target: https://github.com/ameli/detkit/actions?query=workflow%3Abuild-windows
 
-Python wheels for ``detkit`` for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`_ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need ``detkit`` on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
+Python wheels for ``detkit`` for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`__ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`__. If you need ``detkit`` on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`__ on GitHub and we build its Python Wheel for you.
 
-:sup:`* Wheels compatible with the ARM-64 (also known as AARCH-64) architecture, including those for Apple Silicon M1 machines, are exclusively available for installation through pip and cannot be installed using conda.`
+.. line-block::
+
+    :sup:`1. Wheels for PyPy are exclusively available for installation through pip and cannot be installed using conda.`
+    :sup:`2. Wheels for Windows on ARM-64 architecture are exclusively available for installation through pip and cannot be installed using conda.`
 
 Documentation
 =============
@@ -95,19 +98,19 @@ Read about the `benchmark test <https://ameli.github.io/detkit/benchmark.html>`_
 How to Contribute
 =================
 
-We welcome contributions via `GitHub's pull request <https://github.com/ameli/detkit/pulls>`_. If you do not feel comfortable modifying the code, we also welcome feature requests and bug reports as `GitHub issues <https://github.com/ameli/detkit/issues>`_.
+We welcome contributions via `GitHub's pull request <https://github.com/ameli/detkit/pulls>`__. If you do not feel comfortable modifying the code, we also welcome feature requests and bug reports as `GitHub issues <https://github.com/ameli/detkit/issues>`__.
 
 How to Cite
 ===========
 
-If you publish work that uses ``detkit``, please consider citing the manuscripts available `here <https://ameli.github.io/detkit/cite.html>`_.
+If you publish work that uses ``detkit``, please consider citing the manuscripts available `here <https://ameli.github.io/detkit/cite.html>`__.
 
 License
 =======
 
 |license|
 
-This project uses a `BSD 3-clause license <https://github.com/ameli/detkit/blob/main/LICENSE.txt>`_, in hopes that it will be accessible to most projects. If you require a different license, please raise an `issue <https://github.com/ameli/detkit/issues>`_ and we will consider a dual license.
+This project uses a `BSD 3-clause license <https://github.com/ameli/detkit/blob/main/LICENSE.txt>`__, in hopes that it will be accessible to most projects. If you require a different license, please raise an `issue <https://github.com/ameli/detkit/issues>`__ and we will consider a dual license.
 
 .. |logo| image:: https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg
    :width: 160
