@@ -1436,7 +1436,7 @@ def cythonize_extensions(extensions):
         compiler_derivatives['binding'] = True
 
         # Line trace
-        compiler_derivatives['linetrace'] = True
+        # compiler_derivatives['linetrace'] = True
 
     # Cythonize
     cythonized_extensions = cythonize(
