@@ -36,21 +36,21 @@ Successful installation and tests have been performed on the following platforms
 .. |n| unicode:: U+2716
 
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
-| Platform | Arch              | Python Version                | PyPy Version          | Continuous      |
+| Platform | Arch              | Python Version                | PyPy Version :sup:`1` | Continuous      |
 +          |                   +-------+-------+-------+-------+-------+-------+-------+ Integration     +
 |          |                   |  3.9  |  3.10 |  3.11 |  3.12 |  3.8  |  3.9  |  3.10 |                 |
 +==========+===================+=======+=======+=======+=======+=======+=======+=======+=================+
 | Linux    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  |  |y|  | |build-linux|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | AARCH-64 :sup:`*` |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |  |n|  |                 |
+|          | AARCH-64          |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | macOS    | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-macos|   |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 | Windows  | X86-64            |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  | |build-windows| |
 +          +-------------------+-------+-------+-------+-------+-------+-------+-------+                 +
-|          | ARM-64 :sup:`*`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
+|          | ARM-64 :sup:`2`   |  |y|  |  |y|  |  |y|  |  |y|  |  |n|  |  |n|  |  |n|  |                 |
 +----------+-------------------+-------+-------+-------+-------+-------+-------+-------+-----------------+
 
 .. |build-linux| image:: https://img.shields.io/github/actions/workflow/status/ameli/detkit/build-linux.yml
@@ -62,7 +62,10 @@ Successful installation and tests have been performed on the following platforms
 
 Python wheels for |project| for all supported platforms and versions in the above are available through `PyPI <https://pypi.org/project/detkit/>`__ and `Anaconda Cloud <https://anaconda.org/s-ameli/detkit>`_. If you need |project| on other platforms, architectures, and Python or PyPy versions, `raise an issue <https://github.com/ameli/detkit/issues>`_ on GitHub and we build its Python Wheel for you.
 
-:sup:`* Wheels compatible with the ARM-64 (also known as AARCH-64) architecture, including those for Apple Silicon M1 machines, are exclusively available for installation through pip and cannot be installed using conda.`
+.. line-block::
+
+    :sup:`1. Wheels for PyPy are exclusively available for installation through pip and cannot be installed using conda.`
+    :sup:`2. Wheels for Windows on ARM-64 architecture are exclusively available for installation through pip and cannot be installed using conda.`
 
 Install
 =======
