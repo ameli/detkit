@@ -86,6 +86,8 @@ conda_build_upload_conda_macosx_arm64_task:
   depends_on:
     - conda_build_wheels_macosx_arm64
   env:
+    # see setup.py. Avoids a bug when building with multiple python variants
+    CYTHON_BUILD_IN_SOURCE: '1'
     ANACONDA_API_TOKEN: ENCRYPTED[!f177322643cd551d0cf3749cb4f6549ce7f7be107a0394385e5b5c8b7edd62aa4ac478cc0fa53564890549449dc2dce8!]
 
   build_script:
