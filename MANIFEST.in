@@ -52,13 +52,14 @@ include .coveragerc
 include tox.ini
 include environment.yml
 include .dockerignore
-include .tokeignore
 include docker/Dockerfile
 
 exclude TODO.rst
 exclude .coverage
 exclude .gitattributes
+exclude .tokeignore
 
+prune docs/source/_static/images
 prune docs/build
 prune .git
 prune tmp

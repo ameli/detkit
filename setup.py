@@ -106,7 +106,7 @@ except ImportError:
   cuda's dynamic library files (``libcudart.so``, ``libcublas.so``,
   ``libcusparse.so``) will not bundle to the package, hence the size of the
   wheel remain low. Without the cuda dynamic loading option, the size of the
-  wheel package increases to 450MB and cannot be uploaded to PyPi. When the
+  wheel package increases to 450MB and cannot be uploaded to PyPI. When the
   cuda dynamic loading is enabled, the end user should install cuda toolkit,
   since the cuda library files are not included in the package anymore, rather,
   they are loaded dynamically at the run time. The downside with the dynamic
@@ -1594,7 +1594,7 @@ def main(argv):
         ext_modules=external_modules,
         include_dirs=[numpy.get_include()],
         install_requires=requirements,
-        python_requires='>=3.7',
+        python_requires='>=3.9',
         setup_requires=[
             'setuptools',
             'wheel',
@@ -1619,11 +1619,10 @@ def main(argv):
             'Programming Language :: C++',
             'Programming Language :: Cython',
             'Programming Language :: Python',
-            'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10',
             'Programming Language :: Python :: 3.11',
+            'Programming Language :: Python :: 3.12',
             'Programming Language :: Python :: Implementation :: CPython',
             'Programming Language :: Python :: Implementation :: PyPy',
             'License :: OSI Approved :: BSD License',
