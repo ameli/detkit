@@ -1,22 +1,29 @@
 name: deploy-pypi
 
 on:
-    # push:
-    #     branches:
-    #         - main
+    push:
+        branches:
+            - main
     release:
         types:
             - published
 
 jobs:
     build_wheels:
-        name: Build wheels on ${{ matrix.os }}
+        name: Build wheels, ${{ matrix.os }}, ${{ matrix.python-version }}
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
-                
+                python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'pp38', 'pp39', 'pp310']
+                exclude:
+                    - os: windows-latest
+                      python-version: 'pp38'
+                    - os: windows-latest
+                      python-version: 'pp39'
+                    - os: windows-latest
+                      python-version: 'pp310'
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -26,12 +33,7 @@ jobs:
               with:
                 python-version: '3.12'
 
-            - name: Install numpy
-              run: |
-                  python -m pip install --upgrade pip
-                  python -m pip install --upgrade numpy
-
-            - name: Install OpenMP and numpy for mac
+            - name: Install OpenMP for mac
               if: runner.os == 'macos'
               run: |
                   # brew install libomp
@@ -61,29 +63,29 @@ jobs:
               run: rm -rf /opt/hostedtoolcache 
 
             # Build wheel for windows X86_64 and ARM64
-            - name: Build wheels in windows (X86_64, ARM64)
+            - name: Build wheels in windows (X86_64, ARM64) Python ${{ matrix.python-version }}
               if: matrix.os == 'windows-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
                   CIBW_ARCHS_WINDOWS: "AMD64 x86 ARM64"
-                  CIBW_BUILD: "*-win_amd64 *-win_arm64"
+                  CIBW_BUILD: "${{ matrix.python-version }}-win_amd64 ${{ matrix.python-version }}-win_arm64"
                   CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
                   CIBW_BUILD_VERBOSITY: 3
+                  CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
                   CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
                   CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
-                  CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
               with:
                 output-dir: wheelhouse
            
             # Build wheel for macos X86_64.
             # Note that wheels for macos ARM64 will be built on cirrus ci (see /tools/ci)
-            - name: Build wheels in mac (X86_64)
+            - name: Build wheels in mac (X86_64) Python ${{ matrix.python-version }}
               if: matrix.os == 'macos-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
                   CIBW_ARCHS_MACOS: "x86_64"
-                  CIBW_BUILD: "*-macosx_x86_64"
-                  CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
+                  CIBW_BUILD: "${{ matrix.python-version }}-macosx_x86_64"
+                  CIBW_SKIP: "pp37-* cp36-* cp37-* cp38-*"
                   CIBW_BUILD_VERBOSITY: 3
                   CIBW_ENVIRONMENT: "USE_CBLAS=0"
               with:
@@ -91,15 +93,15 @@ jobs:
 
             # Build wheel for linux X86_64.
             # Note that wheels for linux AARCH64 will be built on cirrus ci (see /tools/ci)
-            - name: Build wheels in linux (X86_64)
+            - name: Build wheels in linux (X86_64) Python ${{ matrix.python-version }}
               if: matrix.os == 'ubuntu-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
                   CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
                   CIBW_ARCHS_LINUX: "x86_64"
-                  CIBW_BUILD: "*-manylinux_x86_64"
-                  CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
-                  CIBW_BUILD_VERBOSITY: 3
+                  CIBW_BUILD: "${{ matrix.python-version }}-manylinux_x86_64"
+                  CIBW_SKIP: "pp37-* cp36-* cp37-* cp38-*"
+                  CIBW_BUILD_VERBOSITY: 1
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
               with:
                 output-dir: wheelhouse
@@ -123,11 +125,6 @@ jobs:
               with:
                 python-version: '3.12'
 
-            - name: Install numpy
-              run: |
-                  python -m pip install --upgrade pip
-                  python -m pip install --upgrade numpy
-            
             - name: Build sdist
               run: |
                 python -m pip install build

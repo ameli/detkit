@@ -133,7 +133,7 @@ conda_test_linux_aarch64_task:
     which python
     set -x
     python -c "import platform;print(platform.python_version());print(platform.system());print(platform.machine())"
-    mv detkit detkit_do_dot_import
+    mv detkit detkit_do_not_import
     conda install -c s-ameli detkit -y
     python -m pip install --upgrade pip
     python -m pip install numpy
