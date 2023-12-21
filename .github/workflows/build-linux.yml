@@ -26,9 +26,15 @@ jobs:
               with:
                   python-version: ${{ matrix.python-version }}
 
-            # Install BLAS, since pypy compiles numpy and scipy from source and requires BLAS.
-            # - name: Install prerequisites
-            #   run: sudo apt-get install gfortran libopenblas-dev liblapack-dev
+            # Install OpenBLAS when PyPy is used as PyPy builds numpy from source.
+            # This is not needed for building wheels of this package (so no
+            # installation of OpenBLAS in deploy-pypi), but it is needed for "install"ing
+            # this package. This is because this package does not need numpy to build this
+            # package's wheel, but it needs numpy at runtime. Hence, PyPy does not build numpy
+            # when building this package's wheel, but PyPy needs numpy when installing the
+            # package.
+            - name: Install prerequisites
+              run: sudo apt-get install gfortran libopenblas-dev liblapack-dev
 
             - name: Install package and dependencies (CPython)
               run: |
