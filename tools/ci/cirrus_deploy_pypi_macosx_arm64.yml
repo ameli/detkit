@@ -60,6 +60,12 @@ pypi_build_wheels_macosx_arm64_task:
       LDFLAGS="-L/opt/homebrew/opt/libomp/lib $LDFLAGS"
       LIBRARY_PATH="/opt/homebrew/opt/libomp/lib:$LIBRARY_PATH"
       USE_CBLAS=0
+      USE_LONG_INT=0
+      USE_UNSIGNED_LONG_INT=0
+      USE_OPENMP=0
+      COUNT_PERF=1
+      CHUNK_TASKS=1
+      USE_SYMMETRY=1
     CIBW_ARCHS: "arm64"
     # CIBW_BUILD: "*-macosx_arm64"
     CIBW_SKIP: "pp37-* cp36-* cp37-* cp38-*"

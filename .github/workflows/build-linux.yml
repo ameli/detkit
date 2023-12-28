@@ -1,9 +1,9 @@
 name: build-linux
 
 on:
-    # push:
-    #     branches:
-    #         - main
+    push:
+        branches:
+            - main
     release:
         types: 
             - published
@@ -34,6 +34,7 @@ jobs:
             # when building this package's wheel, but PyPy needs numpy when installing the
             # package.
             - name: Install prerequisites
+              if: (contains(matrix.python-version, 'pypy'))
               run: sudo apt-get install gfortran libopenblas-dev liblapack-dev
 
             - name: Install package and dependencies (CPython)
@@ -43,6 +44,10 @@ jobs:
               env:
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 1
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
 
             - name: Install prerequisites for Test
               run: |

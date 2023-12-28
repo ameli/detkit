@@ -1,9 +1,9 @@
 name: deploy-conda
 
 on:
-    # push:
-    #     branches:
-    #         - main
+    push:
+        branches:
+            - main
     release:
         types:
             - published
@@ -60,6 +60,12 @@ jobs:
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
                   CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
                   CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
+                  USE_LONG_INT: 0
+                  USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 0
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
               with:
                 output-dir: wheelhouse
            
@@ -75,6 +81,12 @@ jobs:
                   CIBW_BUILD_VERBOSITY: 3
                   CIBW_BEFORE_BUILD: brew reinstall gcc
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
+                  USE_LONG_INT: 0
+                  USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 0
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
               with:
                 output-dir: wheelhouse
 
@@ -90,6 +102,12 @@ jobs:
                   CIBW_SKIP: "pp* cp36-* cp37-* cp38-*"
                   CIBW_BUILD_VERBOSITY: 1
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
+                  USE_LONG_INT: 0
+                  USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 1
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
               with:
                 output-dir: wheelhouse
 

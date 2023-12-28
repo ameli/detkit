@@ -16,8 +16,6 @@ from __future__ import print_function
 import os
 from os.path import join
 import sys
-import json
-import platform
 from glob import glob
 import subprocess
 import codecs
@@ -25,7 +23,6 @@ import tempfile
 import shutil
 import textwrap
 import multiprocessing
-import re
 import errno
 
 
@@ -65,7 +62,7 @@ except ImportError:
 
 from setuptools import Command
 from setuptools.extension import Extension
-from setuptools.errors import CompileError, LinkError, ExecError
+from setuptools.errors import CompileError, LinkError
 from setuptools.command.build_ext import build_ext
 
 # Import Cython (to convert pyx to C code)
@@ -84,18 +81,6 @@ except ImportError:
 """
 * To build cython files in source, set ``CYTHON_BUILD_IN_SOURCE`` to ``1``.
 * To build for documentation, set ``CYTHON_BUILD_FOR_DOC`` to ``1``.
-* To compile with cuda, set ``USE_CUDA`` environment variable.
-* To load cuda library at runtime dynamically, set ``CUDA_DYNAMIC_LOADING`` to
-  ``1``. When this package wheel is created in *manylinux* environment, the
-  cuda's dynamic library files (``libcudart.so``, ``libcublas.so``,
-  ``libcusparse.so``) will not bundle to the package, hence the size of the
-  wheel remain low. Without the cuda dynamic loading option, the size of the
-  wheel package increases to 450MB and cannot be uploaded to PyPI. When the
-  cuda dynamic loading is enabled, the end user should install cuda toolkit,
-  since the cuda library files are not included in the package anymore, rather,
-  they are loaded dynamically at the run time. The downside with the dynamic
-  loading is that the user should install the same CUDA major version that the
-  package was compiled with.
 * To compile for debugging, set ``DEBUG_MODE`` environment variable. This will
   increase the executable size.
 
@@ -105,17 +90,13 @@ except ImportError:
     export CYTHON_BUILD_IN_SOURCE=1
     export CYTHON_BUILD_FOR_DOC=1
     export USE_CBLAS=0
-    export USE_CUDA=1
     export DEBUG_MODE=1
-    export CUDA_DYNAMIC_LOADING=1
 
     # In Windows
     $env:CYTHON_BUILD_IN_SOURCE = "1"
     $env:CYTHON_BUILD_FOR_DOC = "1"
     $env:USE_CBLAS = "0"
-    $env:USE_CUDA = "1"
     $env:DEBUG_MODE = "1"
-    $env:CUDA_DYNAMIC_LOADDING= "1"
 
     python setup.py install
 
@@ -126,17 +107,6 @@ If you are using ``sudo``, to pass the environment variable, use ``-E`` option:
     sudo -E python setup.py install
 
 """
-
-# If USE_CUDA is set to "1", the package is compiled with cuda lib using nvcc.
-use_cuda = False
-if 'USE_CUDA' in os.environ and os.environ.get('USE_CUDA') == '1':
-    use_cuda = True
-
-# If CUDA_DYNAMIC_LOADING is set to "1", the cuda library is loaded dynamically
-cuda_dynamic_loading = False
-if 'CUDA_DYNAMIC_LOADING' in os.environ and \
-   os.environ.get('CUDA_DYNAMIC_LOADING') == '1':
-    cuda_dynamic_loading = True
 
 # If DEBUG_MODE is set to "1", the package is compiled with debug mode.
 debug_mode = False
@@ -167,17 +137,60 @@ if 'USE_CBLAS' in os.environ and os.environ.get('USE_CBLAS') == '1':
 
 # If USE_LONG_INT is set to 1, 64-bit integers are used for LongIndexType.
 # Otherwise, 32-bit integers are used.
-use_long_int = False
-if 'USE_LONG_INT' in os.environ and os.environ.get('USE_LONG_INT') == '1':
-    use_long_int = True
+use_long_int = None
+if 'USE_LONG_INT' in os.environ:
+    if os.environ.get('USE_LONG_INT') == '0':
+        use_long_int = '0'
+    elif os.environ.get('USE_LONG_INT') == '1':
+        use_long_int = '1'
 
 # If USE_UNSIGNED_LONG_INT is set to 1, unsigned integers are used for the type
 # LongIndexType, which doubles the maximum limit of integers. Otherwise, signed
 # integers are used.
-use_unsigned_long_int = False
-if 'USE_UNSIGNED_LONG_INT' in os.environ and \
-        os.environ.get('USE_UNSIGNED_LONG_INT') == '1':
-    use_unsigned_long_int = True
+use_unsigned_long_int = None
+if 'USE_UNSIGNED_LONG_INT' in os.environ:
+    if os.environ.get('USE_UNSIGNED_LONG_INT') == '0':
+        use_unsigned_long_int = '0'
+    elif os.environ.get('USE_UNSIGNED_LONG_INT') == '1':
+        use_unsigned_long_int = '1'
+
+# Is USE_OPENMP is set to 1, the matrix and vector multiplicatons are performed
+# on shared memry in parallel using openmp.
+use_openmp = None
+if 'USE_OPENMP' in os.environ:
+    if os.environ.get('USE_OPENMP') == '0':
+        use_openmp = '0'
+    elif os.environ.get('USE_OPENMP') == '1':
+        use_openmp = '1'
+
+# If COUNT_PERF set to 1, the functions will count the hardware instructions
+# used to compute a task. This functionality is only available on Linux and
+# requires perf_tool to be installed.
+count_perf = None
+if 'COUNT_PERF' in os.environ:
+    if os.environ.get('COUNT_PERF') == '0':
+        count_perf = '0'
+    elif os.environ.get('COUNT_PERF') == '1':
+        count_perf = '1'
+
+# If CHUNK_TASKS is set to 1, the matrix-matrix multiplications are performed
+# in chinks of 5 consecutive additions, similar to BLAS.
+chunk_tasks = None
+if 'CHUNK_TASKS' in os.environ:
+    if os.environ.get('CHUNK_TASKS') == '0':
+        chunk_tasks = '0'
+    elif os.environ.get('CHUNK_TASKS') == '1':
+        chunk_tasks = '1'
+
+# If USE_SYMMETRY is set to 1, the computation of Gramian matrices is performed
+# by only half of the matrix multiplication and the other half is obtained by
+# Gramian matrix symmetry.
+use_symmetry = None
+if 'USE_SYMMETRY' in os.environ:
+    if os.environ.get('USE_SYMMETRY') == '0':
+        use_symmetry = '0'
+    elif os.environ.get('USE_SYMMETRY') == '1':
+        use_symmetry = '1'
 
 
 # ================
@@ -297,421 +310,6 @@ def clean_extensions(extensions):
                         if found_lib:
                             print('Removes: %s' % lib_file)
                         print('')
-
-
-# ============
-# find in path
-# ============
-
-def _find_in_path(executable_name, path):
-    """
-    Recursively searches the executable ``executable_name`` in all of the
-    directories in the given path, and returns the full path of the executable
-    once its first occurrence is found.. If no executable is found, ``None`` is
-    returned. This is used to find CUDA's directories.
-    """
-
-    for dir in path.split(os.pathsep):
-        executable_path = join(dir, executable_name)
-        if os.path.exists(executable_path):
-            return os.path.abspath(executable_path)
-    return None
-
-
-# ===========
-# locate cuda
-# ===========
-
-def locate_cuda():
-    """
-    Finds the executable ``nvcc`` (or ``nvcc.exe`` if windows). If found,
-    creates a dictionary of cuda's executable path, include and lib directories
-    and home directory. This is used for GPU.
-    """
-
-    if not use_cuda:
-        raise EnvironmentError('This function should not be called when '
-                               '"USE_CUDA" is not set to "1".')
-
-    # List of environment variables to search for cuda
-    environs = ['CUDA_HOME', 'CUDA_ROOT', 'CUDA_PATH']
-    cuda_found = False
-
-    # nvcc binary
-    nvcc_binary_name = 'nvcc'
-    if sys.platform == 'win32':
-        nvcc_binary_name = nvcc_binary_name + '.exe'
-
-    # Search in each of the possible environment variables, if they exist
-    for env in environs:
-        if env in os.environ:
-
-            # Home
-            home = os.environ[env]
-            if not os.path.exists(home):
-                continue
-
-            # nvcc binary
-            nvcc = join(home, 'bin', nvcc_binary_name)
-            if not os.path.exists(nvcc):
-                continue
-            else:
-                cuda_found = True
-                break
-
-    # Brute-force search in all path to find nvcc binary
-    if not cuda_found:
-        nvcc = _find_in_path(nvcc_binary_name, os.environ['PATH'])
-        if nvcc is None:
-            raise EnvironmentError('The "nvcc" binary could not be located '
-                                   'in $PATH. Either add it to the PATH or '
-                                   'set either of $CUDA_HOME, ' +
-                                   '$CUDA_ROOT, or $CUDA_PATH.')
-
-        home = os.path.dirname(os.path.dirname(nvcc))
-
-    # Include directory
-    include = join(home, 'include')
-    if not os.path.exists(include):
-        raise EnvironmentError("The CUDA's include directory could not be " +
-                               "located in %s." % include)
-
-    # Library directory
-    lib = join(home, 'lib')
-    if not os.path.exists(lib):
-        lib64 = join(home, 'lib64')
-        if not os.path.exists(lib64):
-            raise EnvironmentError("The CUDA's lib directory could not be " +
-                                   "located in %s or %s." % (lib, lib64))
-        lib = lib64
-
-    # For windows, add "x64" or "x86" to the end of lib path
-    if sys.platform == "win32":
-
-        # Detect architecture is 64bit or 32bit
-        if platform.machine().endswith('64'):
-            lib = join(lib, 'x64')
-        else:
-            lib = join(lib, 'x86')
-
-        if not os.path.exists(lib):
-            raise EnvironmentError("The CUDA's lib sub-directory could not " +
-                                   "be located in %s." % lib)
-
-    # Get a dictionary of cuda version with keys 'major', 'minor', and 'patch'.
-    version = get_cuda_version(home)
-
-    # Output dictionary of set of paths
-    cuda = {
-        'home': home,
-        'nvcc': nvcc,
-        'include': include,
-        'lib': lib,
-        'version': version
-    }
-
-    return cuda
-
-
-# ================
-# get cuda version
-# ================
-
-def get_cuda_version(cuda_home):
-    """
-    Gets the version of CUDA library.
-
-    :param cuda_home: The CUDA home paths.
-    :type cuda_home: str
-
-    :return: A dictionary with version info containing the keys 'major',
-        'minor', and 'patch'.
-    :rtype: dict
-    """
-
-    version_txt_file = join(cuda_home, 'version.txt')
-    version_json_file = join(cuda_home, 'version.json')
-    if os.path.isfile(version_txt_file):
-
-        # txt version file is used in CUDA 10 and earlier.
-        with open(version_txt_file, 'r') as file:
-
-            # Version_string is like "11.3.1"
-            version_string = file.read()
-
-    elif os.path.isfile(version_json_file):
-
-        # json version file is used in CUDA 11 and newer
-        with open(version_json_file, 'r') as file:
-            info = json.load(file)
-
-            # Version_string is like "11.3.1"
-            version_string = info['cuda']['version']
-
-    else:
-        # Find cuda version directly by grep-ing include/cuda.h file
-        cuda_filename = join(cuda_home, 'include', 'cuda.h')
-
-        # Regex pattern finds a match like "#define CUDA_VERSION 11030"
-        regex_pattern = r'^#define CUDA_VERSION.\d+$'
-        match = ''
-
-        with open(cuda_filename, 'r') as file:
-            for line in file:
-                if re.match(regex_pattern, line):
-                    match = line
-                    break
-
-        if match != '':
-
-            # version_string is like "11030"
-            version_string = match.split()[-1]
-
-            # Place a dot to separate major and minor version to parse them
-            # later. Here, version_string becomes something like "11.03.0"
-            version_string = version_string[:-3] + "." + version_string[-3:]
-            version_string = version_string[:-1] + "." + version_string[-1:]
-
-        else:
-            error_message_1 = 'Cannot find CUDA "version.txt" or ' + \
-                              '"version.json" file in %s. ' % cuda_home
-            error_message_2 = 'Cannot find "CUDA_VERSION" in header file %s.' \
-                              % cuda_filename
-            raise FileNotFoundError(error_message_1 + error_message_2)
-
-    # Convert string to a list of int
-    version_string_list = version_string.split(' ')[-1].split('.')
-    version_int = [int(v) for v in version_string_list]
-
-    # Output dictionary
-    version = {
-        'major': None,
-        'minor': None,
-        'patch': None
-    }
-
-    # Fill output dictionary
-    if len(version_int) == 0:
-        raise ValueError('Cannot detect CUDA major version.')
-    else:
-        version['major'] = version_int[0]
-    if len(version_int) > 1:
-        version['minor'] = version_int[1]
-    if len(version_int) > 2:
-        version['patch'] = version_int[2]
-
-    return version
-
-
-# ================================
-# customize unix compiler for nvcc
-# ================================
-
-def customize_unix_compiler_for_nvcc(self, cuda):
-    """
-    Sets compiler to treat 'cpp' and 'cu' file extensions differently. Namely:
-    1. A 'cpp' file is treated as usual with the default compiler and the same
-       compiler and linker flags as before.
-    2. For a 'cu' file, the compiler is switched to 'nvcc' with other compiler
-       flags that suites GPU machine.
-
-    This function only should be called for 'unix' compiler (``gcc``, `clang``
-    or similar). For windows ``msvc`` compiler, this function does not apply.
-
-    .. note::
-
-        This function should be called when ``USE_CUDA`` is enabled.
-    """
-
-    self.src_extensions.append('.cu')
-
-    # Backup default compiler to call them later
-    default_compiler_so = self.compiler_so
-    super = self._compile
-
-    # =======
-    # compile
-    # =======
-
-    def _compile(obj, src, ext, cc_args, extra_compile_args, pp_opts):
-        """
-        Define ``_compile`` method to be called before the original
-        ``self.compile`` method. This function modifies the dispatch of the
-        compiler depend on the source file extension ('cu', or non 'cu' file),
-        then calls the original (backed up) compile function.
-
-        Note: ``extra_compile_args_dict`` is a dictionary with two keys
-        ``"nvcc"`` and ``"gcc"``. Respectively, the values of each are lists of
-        extra_compile_args for nvcc (to compile .cu files) and other compile
-        args to compile other files. This dictionary was created in the
-        extra_compile_args when each extension is created (see later in this
-        script).
-        """
-
-        if os.path.splitext(src)[1] == '.cu':
-
-            # Use nvcc for *.cu files.
-            self.set_executable('compiler_so', cuda['nvcc'])
-
-            # Use only a part of extra_postargs dictionary with the key "nvcc"
-            _extra_compile_args = extra_compile_args['nvcc']
-
-        else:
-            # for any other file extension, use the defaukt compiler. Also, for
-            # the extra compile args, use args in "gcc" key of extra_postargs
-            _extra_compile_args = extra_compile_args['not_nvcc']
-
-        # Pass back to the default compiler
-        super(obj, src, ext, cc_args, _extra_compile_args, pp_opts)
-
-        # Return back the previous default compiler to self.compiler_so
-        self.compiler_so = default_compiler_so
-
-    self._compile = _compile
-
-
-# ===================================
-# customize windows compiler for nvcc
-# ===================================
-
-def customize_windows_compiler_for_nvcc(self, cuda):
-    """
-    Sets compiler to treat 'cpp' and 'cu' file extensions differently. Namely:
-    1. A 'cpp' file is treated as usual with the default compiler and the same
-       compiler and linker flags as before.
-    2. For a 'cu' file, the compiler is switched to 'nvcc' with other compiler
-       flags that suites GPU machine.
-
-    This function only should be called for 'msvc' compiler.
-
-    .. note::
-
-        This function should be called when ``USE_CUDA`` is enabled.
-    """
-
-    self.src_extensions.append('.cu')
-
-    # =======
-    # compile
-    # =======
-
-    def compile(sources, output_dir=None, macros=None, include_dirs=None,
-                debug=0, extra_preargs=None, extra_postargs=None,
-                depends=None):
-        """
-        This method is copied from ``cpython/Lib/distutils/msvccompiler.py``.
-        See: github.com/python/cpython/blob/main/Lib/distutils/msvccompiler.py
-
-        This compile method is modified below to allow the ``.cu`` files to be
-        compiled with the cuda's nvcc compiler.
-        """
-
-        # We altered extra_compile_args (or here, extra_postargs) to be a dict
-        # of two keys: 'nvcc' and 'not_nvcc'. Here we extract them.
-        extra_postargs_nvcc = extra_postargs['nvcc']
-        extra_postargs = extra_postargs['not_nvcc']   # keeping the same name
-
-        if not self.initialized:
-            self.initialize()
-        compile_info = self._setup_compile(output_dir, macros, include_dirs,
-                                           sources, depends, extra_postargs)
-        macros, objects, extra_postargs, pp_opts, build = compile_info
-
-        compile_opts = extra_preargs or []
-        compile_opts.append('/c')
-        if debug:
-            compile_opts.extend(self.compile_options_debug)
-        else:
-            compile_opts.extend(self.compile_options)
-
-        for obj in objects:
-            try:
-                src, ext = build[obj]
-            except KeyError:
-                continue
-            if debug:
-                # pass the full pathname to MSVC in debug mode,
-                # this allows the debugger to find the source file
-                # without asking the user to browse for it
-                src = os.path.abspath(src)
-
-            if ext in self._c_extensions:
-                input_opt = "/Tc" + src
-            elif ext in self._cpp_extensions:
-                input_opt = "/Tp" + src
-            elif ext in self._rc_extensions:
-                # compile .RC to .RES file
-                input_opt = src
-                output_opt = "/fo" + obj
-                try:
-                    self.spawn([self.rc] + pp_opts +
-                               [output_opt] + [input_opt])
-                except ExecError as msg:
-                    raise CompileError(msg)
-                continue
-            elif ext in self._mc_extensions:
-                # Compile .MC to .RC file to .RES file.
-                #   * '-h dir' specifies the directory for the
-                #     generated include file
-                #   * '-r dir' specifies the target directory of the
-                #     generated RC file and the binary message resource
-                #     it includes
-                #
-                # For now (since there are no options to change this),
-                # we use the source-directory for the include file and
-                # the build directory for the RC file and message
-                # resources. This works at least for win32all.
-                h_dir = os.path.dirname(src)
-                rc_dir = os.path.dirname(obj)
-                try:
-                    # first compile .MC to .RC and .H file
-                    self.spawn([self.mc] +
-                               ['-h', h_dir, '-r', rc_dir] + [src])
-                    base, _ = os.path.splitext(os.path.basename(src))
-                    rc_file = os.path.join(rc_dir, base + '.rc')
-                    # then compile .RC to .RES file
-                    self.spawn([self.rc] +
-                               ["/fo" + obj] + [rc_file])
-
-                except ExecError as msg:
-                    raise CompileError(msg)
-                continue
-            elif ext in ['.cu']:
-                # Adding this elif condition to avoid the else statement below
-                pass
-            else:
-                # how to handle this file?
-                raise CompileError("Don't know how to compile %s to %s"
-                                   % (src, obj))
-
-            try:
-                if ext == '.cu':
-                    # Compile with nvcc
-                    input_opt = ['-c', src]
-                    output_opt = ['-o', obj]
-
-                    # Note: the compile_opts is removed below. All necessary
-                    # options for nvcc compiler is in extra_postargs_nvcc
-                    self.spawn([cuda['nvcc']] + pp_opts +
-                               input_opt + output_opt +
-                               extra_postargs_nvcc)
-                else:
-                    # Compile with msvc
-                    output_opt = "/Fo" + obj
-                    self.spawn([self.cc] + compile_opts + pp_opts +
-                               [input_opt, output_opt] +
-                               extra_postargs)
-
-            except ExecError as msg:
-                raise CompileError(msg)
-
-        return objects
-
-    # Replace the previous compile function of distutils.ccompiler with the
-    # above modified function. Here, the object ``self`` is ``MVSCCompiler``
-    # which is a derived class from ``CCompiler`` in the ``distutils`` package
-    # in ``cpython`` package.
-    self.compile = compile
 
 
 # =======================
@@ -876,27 +474,30 @@ class CustomBuildExtension(build_ext):
 
         if compiler_type == 'msvc':
 
-            # This is Microsoft Windows Visual C++ compiler
-            msvc_compile_args = ['/O2', '/Wall', '/openmp']
-            msvc_link_args = []
-            msvc_has_openmp_flag = check_compiler_has_flag(
-                self.compiler,
-                msvc_compile_args,
-                msvc_link_args)
+            # Adding openmp
+            if use_openmp is True:
 
-            if msvc_has_openmp_flag:
+                # This is Microsoft Windows Visual C++ compiler
+                msvc_compile_args = ['/O2', '/Wall', '/openmp']
+                msvc_link_args = []
+                msvc_has_openmp_flag = check_compiler_has_flag(
+                    self.compiler,
+                    msvc_compile_args,
+                    msvc_link_args)
 
-                # Add flags
-                extra_compile_args += msvc_compile_args
-                extra_link_args += msvc_link_args
+                if msvc_has_openmp_flag:
 
-            else:
+                    # Add flags
+                    extra_compile_args += msvc_compile_args
+                    extra_link_args += msvc_link_args
 
-                # It does not seem msvc accept -fopenmp flag.
-                raise RuntimeError(textwrap.dedent(
-                    """
-                    OpenMP does not seem to be available on %s compiler.
-                    """ % compiler_type))
+                else:
+
+                    # It does not seem msvc accept -fopenmp flag.
+                    raise RuntimeError(textwrap.dedent(
+                        """
+                        OpenMP does not seem to be available on %s compiler.
+                        """ % compiler_type))
 
         else:
 
@@ -915,104 +516,54 @@ class CustomBuildExtension(build_ext):
             if not debug_mode:
                 extra_compile_args += ['-g0', '-Wl, --strip-all']
 
-            # Assume compiler is gcc (we do not know yet). Check if the
-            # compiler accepts '-fopenmp' flag. Note: clang in mac does not
-            # accept this flag alone, but gcc does.
-            gcc_compile_args = ['-fopenmp']
-            gcc_link_args = ['-fopenmp']
-            gcc_has_openmp_flag = check_compiler_has_flag(
-                self.compiler,
-                gcc_compile_args,
-                gcc_link_args)
+            # Add openmp
+            if use_openmp is True:
 
-            if gcc_has_openmp_flag:
-
-                # Assuming this is gcc. Add '-fopenmp' safely.
-                extra_compile_args += gcc_compile_args
-                extra_link_args += gcc_link_args
-
-            else:
-
-                # Assume compiler is clang (we do not know yet). Check if
-                # -fopenmp can be passed through preprocessor. This is how
-                # clang compiler accepts -fopenmp.
-                clang_compile_args = ['-Xpreprocessor', '-fopenmp']
-                clang_link_args = ['-Xpreprocessor', '-fopenmp', '-lomp',
-                                   '-headerpad_max_install_names']
-                clang_has_openmp_flag = check_compiler_has_flag(
+                # Assume compiler is gcc (we do not know yet). Check if the
+                # compiler accepts '-fopenmp' flag. Note: clang in mac does not
+                # accept this flag alone, but gcc does.
+                gcc_compile_args = ['-fopenmp']
+                gcc_link_args = ['-fopenmp']
+                gcc_has_openmp_flag = check_compiler_has_flag(
                     self.compiler,
-                    clang_compile_args,
-                    clang_link_args)
+                    gcc_compile_args,
+                    gcc_link_args)
 
-                if clang_has_openmp_flag:
+                if gcc_has_openmp_flag:
 
-                    # Assuming this is mac's clang. Add '-fopenmp' through
-                    # preprocessor
-                    extra_compile_args += clang_compile_args
-                    extra_link_args += clang_link_args
+                    # Assuming this is gcc. Add '-fopenmp' safely.
+                    extra_compile_args += gcc_compile_args
+                    extra_link_args += gcc_link_args
 
                 else:
 
-                    # It doesn't seem either gcc or clang accept -fopenmp flag.
-                    raise RuntimeError(textwrap.dedent(
-                        """
-                        OpenMP does not seem to be available on %s compiler.
-                        """ % compiler_type))
+                    # Assume compiler is clang (we do not know yet). Check if
+                    # -fopenmp can be passed through preprocessor. This is how
+                    # clang compiler accepts -fopenmp.
+                    clang_compile_args = ['-Xpreprocessor', '-fopenmp']
+                    clang_link_args = ['-Xpreprocessor', '-fopenmp', '-lomp',
+                                       '-headerpad_max_install_names']
+                    clang_has_openmp_flag = check_compiler_has_flag(
+                        self.compiler,
+                        clang_compile_args,
+                        clang_link_args)
 
-        # Modify compiler flags for cuda
-        if use_cuda:
-            cuda = locate_cuda()
+                    if clang_has_openmp_flag:
 
-            # Code generations for various device architectures
-            gencodes = []
+                        # Assuming this is mac's clang. Add '-fopenmp' through
+                        # preprocessor
+                        extra_compile_args += clang_compile_args
+                        extra_link_args += clang_link_args
 
-            if cuda['version']['major'] < 12:
-                gencodes += ['-gencode', 'arch=compute_35,code=sm_35']
+                    else:
 
-            gencodes += ['-gencode', 'arch=compute_50,code=sm_50',
-                         '-gencode', 'arch=compute_52,code=sm_52',
-                         '-gencode', 'arch=compute_60,code=sm_60',
-                         '-gencode', 'arch=compute_61,code=sm_61',
-                         '-gencode', 'arch=compute_70,code=sm_70',
-                         '-gencode', 'arch=compute_75,code=sm_75']
-
-            if cuda['version']['major'] < 11:
-                gencodes += \
-                    ['-gencode', 'arch=compute_75,code=compute_75']
-            else:
-                gencodes += \
-                    ['-gencode', 'arch=compute_80,code=sm_80',
-                     '-gencode', 'arch=compute_86,code=sm_86',
-                     '-gencode', 'arch=compute_86,code=compute_86']
-
-            extra_compile_args_nvcc = gencodes + ['--ptxas-options=-v', '-c',
-                                                  '--verbose', '--shared',
-                                                  '-O3']
-
-            # Adding compiler options
-            if sys.platform == 'win32':
-                extra_compile_args_nvcc += [
-                    '--compiler-options', '-MD',  # Creates shared library
-                    '--compiler-options', '-openmp']
-            else:
-                # There are for linux (macos is not supported in CUDA)
-                extra_compile_args_nvcc += [
-                    '--compiler-options', '-fPIC',  # only for gcc
-                    '--compiler-options', '-fopenmp',
-                    '--linker-options', '-lgomp']
-
-            # The option '-Wl, ..' will send arguments to the linker. Here,
-            # '--strip-all' will remove all symbols from the shared library.
-            if debug_mode:
-                extra_compile_args_nvcc += ['-g', '-G']
-            else:
-                extra_compile_args_nvcc += ['--linker-options', '--strip-all']
-
-            # Redefine extra_compile_args list to be a dictionary
-            extra_compile_args = {
-                'not_nvcc': extra_compile_args,
-                'nvcc': extra_compile_args_nvcc
-            }
+                        # It doesn't seem either gcc or clang accept -fopenmp
+                        # flag.
+                        raise RuntimeError(textwrap.dedent(
+                            """
+                            OpenMP does not seem to be available on %s
+                            compiler.
+                            """ % compiler_type))
 
         # Add the flags to all extensions
         for ext in self.extensions:
@@ -1024,13 +575,6 @@ class CustomBuildExtension(build_ext):
         # files are accessed by race condition.
         # if sys.platform != 'win32':
         #     self.parallel = multiprocessing.cpu_count()
-
-        # Modify compiler for cuda
-        if use_cuda:
-            if sys.platform == 'win32':
-                customize_windows_compiler_for_nvcc(self.compiler, cuda)
-            else:
-                customize_unix_compiler_for_nvcc(self.compiler, cuda)
 
         # Remove warning: command line option '-Wstrict-prototypes' is valid
         # for C/ObjC but not for C++
@@ -1082,29 +626,6 @@ def read_file_to_rst(filename):
         return read_file(filename)
 
 
-# ======================
-# does cuda source exist
-# ======================
-
-def does_cuda_source_exist(sources):
-    """
-    Checks files extensions in a list of files in the ``sources``. If a file
-    extension ``.cu`` is found, returns ``True``, otherwise returns ``False``.
-
-    :param sources: A list of file names.
-    :type sources: list
-    """
-
-    has_cuda_source = False
-    for source in sources:
-        file_extension = os.path.splitext(source)[1]
-        if file_extension == '.cu':
-            has_cuda_source = True
-            break
-
-    return has_cuda_source
-
-
 # ================
 # create Extension
 # ================
@@ -1141,10 +662,9 @@ def create_extension(
 
     :param subpackage_name: Name of the subpackage to build its extension.
         In the package_name/subpackage_name directory, all ``pyx``, ``c``,
-        ``cpp``, and ``cu`` files (if use_cuda is True) will be added to the
-        extension. If there are additional ``c``, ``cpp`` and ``cu`` source
-        files in other directories beside the soubpackage directory, use
-        ``other_source_dirs`` argument.
+        ``cpp``, will be added to the extension. If there are additional ``c``,
+        ``cpp`` source files in other directories beside the soubpackage
+        directory, use ``other_source_dirs`` argument.
     :type subpackage_name: string
 
     :param other_source_dirs: To add any other source files (only ``c``,
@@ -1192,9 +712,6 @@ def create_extension(
         sources = []
 
     sources += glob(join('.', package_name, subpackage_name, '*.cpp'))
-
-    if use_cuda:
-        sources += glob(join('.', package_name, subpackage_name, '*.cu'))
 
     include_dirs = [join('.', package_name, subpackage_name)]
     extra_compile_args = []  # will be filled by CustomBuildExtension class
@@ -1247,55 +764,25 @@ def create_extension(
             sources += glob(join(other_source_dirname, '*.cpp'))
             include_dirs += join(other_source_dirname)
 
-            if use_cuda:
-                sources += \
-                    glob(join(other_source_dirname, '*.cu'))
-
     # Using OpenBlas
     if use_cblas:
         libraries += ['openblas']
         define_macros += [('USE_CBLAS', '1')]
 
-    # Add cuda info
-    if use_cuda:
-        cuda = locate_cuda()
-
-        # Check if any '*.cu' files exists in the sources
-        has_cuda_source = does_cuda_source_exist(sources)
-
-        # Add cuda libraries only if a cuda source exists. This is necessary
-        # to run the non-cuda modules on machines without cuda installed.
-        if has_cuda_source:
-            include_dirs += [cuda['include']]
-            library_dirs += [cuda['lib']]
-
-            if cuda_dynamic_loading:
-
-                # Link with dl library (dlopen and dlsym). MSVC doesn't need it
-                if sys.platform != 'win32':
-                    libraries += ['dl']
-
-                # Use source code that uses "extern C" to externally define
-                # cuda's API that will be loaded dynamically at the runtime.
-                sources += glob(join('.', package_name,
-                                     '_cuda_dynamic_loading', '*.cpp'))
-                include_dirs += glob(join('.', package_name,
-                                          '_cuda_dynamic_loading'))
-            else:
-                # Do not load cuda dynamically. Rather, bind cuda library so
-                # files with the package wheel in manylinux platform.
-                libraries += ['cudart', 'cublas', 'cusparse']
-
-            # msvc compiler does not know what to do with the runtime library
-            if sys.platform != 'win32':
-                runtime_library_dirs += [cuda['lib']]
-
     # Define macros if they are set as environment variables (see the header
     # file ./detkit/_definitions/definitions.h)
-    if use_long_int:
-        define_macros += [('LONG_INT', '1')]
-    if use_unsigned_long_int:
-        define_macros += [('UNSIGNED_LONG_INT', '1')]
+    if use_long_int is not None:
+        define_macros += [('LONG_INT', use_long_int)]
+    if use_unsigned_long_int is not None:
+        define_macros += [('UNSIGNED_LONG_INT', use_unsigned_long_int)]
+    if use_openmp is not None:
+        define_macros += [('USE_OPENMP', use_openmp)]
+    if count_perf is not None:
+        define_macros += [('COUNT_PERF', count_perf)]
+    if chunk_tasks is not None:
+        define_macros += [('CHUNK_TASKS', chunk_tasks)]
+    if use_symmetry is not None:
+        define_macros += [('USE_SYMMETRY', use_symmetry)]
 
     # Create an extension
     extension = Extension(

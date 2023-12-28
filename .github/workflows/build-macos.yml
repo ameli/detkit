@@ -1,9 +1,9 @@
 name: build-macos
 
 on:
-    # push:
-    #     branches:
-    #         - main
+    push:
+        branches:
+            - main
     release:
         types: 
             - published
@@ -15,7 +15,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                # # PyPy works, but takes a long time to build, this commented out only for reducing the runner time
+                # PyPy works, but takes a long time to build, this commented out only for reducing the runner time
                 # python-version: ['3.9', '3.10', '3.11', '3.12', 'pypy3.8', 'pypy3.9', 'pypy3.10']
                 python-version: ['3.9', '3.10', '3.11', '3.12']
 
@@ -61,6 +61,10 @@ jobs:
               env:
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 0
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
 
             # For PyPy, export OpenBLAS pkgconfig file, when pypy tries to build scipy from source
             # which needs OpenBLAS
@@ -73,6 +77,10 @@ jobs:
                   PKG_CONFIG_PATH: /usr/local/opt/openblas/lib/pkgconfig
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
+                  USE_OPENMP: 0
+                  COUNT_PERF: 0
+                  CHUNK_TASKS: 1
+                  USE_SYMMETRY: 1
 
             - name: Test
               if: (!contains(matrix.python-version, 'pypy'))

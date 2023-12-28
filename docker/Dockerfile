@@ -37,6 +37,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3-dev \
         python3-pip \
+        python3-venv \
         build-essential \
         libgomp1 \
         wget \
@@ -54,7 +55,9 @@ RUN rm -rf build dist
 
 # Note: run setup.py clean to remove in-source cpp build files (if there are any)
 RUN /usr/bin/python3 setup.py clean
-RUN /usr/bin/python3 setup.py bdist_wheel
+RUN /usr/bin/python3 -m pip install --upgrade pip
+RUN /usr/bin/python3 -m pip install build
+RUN /usr/bin/python3 -m build --wheel --outdir dist
 
 # -------
 # Runtime
