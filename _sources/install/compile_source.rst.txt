@@ -241,6 +241,119 @@ Set the following environment variables as desired to configure the compilation 
 
             With the debugging mode enabled, the size of the package will be larger and its performance may be slower, which is not suitable for `production`.
 
+    ``LONG_INT``
+
+        When set to `1`, long integers are used. By default, this variable is set to `0`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export LONG_INT=1
+
+            .. tab-item:: Windows (Powershell)
+                :sync: win
+
+                .. prompt:: powershell
+
+                    $env:LONG_INT = "1"
+
+    ``UNSIGNED_LONG_INT``
+
+        When set to `1`, unsigned long integers are used. By default, this variable is set to `0`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export UNSIGNED_LONG_INT=1
+
+            .. tab-item:: Windows (Powershell)
+                :sync: win
+
+                .. prompt:: powershell
+
+                    $env:UNSIGNED_LONG_INT = "1"
+
+    ``USE_OPENMP``
+
+        When set to `1`, matrix and vector multiplications are performed by parallel processing on shared memory using OpenMP. By default, this variable is set to `0`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export USE_OPENMP=1
+
+            .. tab-item:: Windows (Powershell)
+                :sync: win
+
+                .. prompt:: powershell
+
+                    $env:USE_OPENMP = "1"
+
+    ``COUNT_PERF``
+
+        When set to `1`, the processor instructions are counted and returned by each function This functionalit is only available on Linux and requires that ``perf_tool`` is installed. By default, this variable is set to `1`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export COUNT_PERF=1
+
+    ``CHUNK_TASKS``
+
+        When set to `1`, matrix and vector multiplications are peroformed in chunks of 5 conseqqutive addition-multiplication operations. By default, this variable is set to `1`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export CHUNK_TASKS=1
+
+            .. tab-item:: Windows (Powershell)
+                :sync: win
+
+                .. prompt:: powershell
+
+                    $env:CHUNK_TASKS = "1"
+
+    ``USE_SYMMETRY``
+
+        When set to `1`, Gramian matrices are computed using symmetry of the Gamian matrix. By default, this variable is set to `1`.
+
+        .. tab-set::
+
+            .. tab-item:: UNIX
+                :sync: unix
+
+                .. prompt:: bash
+
+                    export USE_SYMMETRY=1
+
+            .. tab-item:: Windows (Powershell)
+                :sync: win
+
+                .. prompt:: powershell
+
+                    $env:USE_SYMMETRY = "1"
+
 Compile and Install
 -------------------
 

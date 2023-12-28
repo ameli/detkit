@@ -521,6 +521,85 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p>With the debugging mode enabled, the size of the package will be larger and its performance may be slower, which is not suitable for <cite>production</cite>.</p>
 </div>
 </dd>
+<dt id="term-LONG_INT"><code class="docutils literal notranslate"><span class="pre">LONG_INT</span></code><a class="headerlink" href="#term-LONG_INT" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, long integers are used. By default, this variable is set to <cite>0</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-18">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">LONG_INT</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-19" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-19">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:LONG_INT</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+</dd>
+<dt id="term-UNSIGNED_LONG_INT"><code class="docutils literal notranslate"><span class="pre">UNSIGNED_LONG_INT</span></code><a class="headerlink" href="#term-UNSIGNED_LONG_INT" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, unsigned long integers are used. By default, this variable is set to <cite>0</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-20" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-20">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">UNSIGNED_LONG_INT</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-21" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-21">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:UNSIGNED_LONG_INT</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+</dd>
+<dt id="term-USE_OPENMP"><code class="docutils literal notranslate"><span class="pre">USE_OPENMP</span></code><a class="headerlink" href="#term-USE_OPENMP" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, matrix and vector multiplications are performed by parallel processing on shared memory using OpenMP. By default, this variable is set to <cite>0</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-22">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">USE_OPENMP</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-23" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-23">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:USE_OPENMP</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+</dd>
+<dt id="term-COUNT_PERF"><code class="docutils literal notranslate"><span class="pre">COUNT_PERF</span></code><a class="headerlink" href="#term-COUNT_PERF" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, the processor instructions are counted and returned by each function This functionalit is only available on Linux and requires that <code class="docutils literal notranslate"><span class="pre">perf_tool</span></code> is installed. By default, this variable is set to <cite>1</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-24">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">COUNT_PERF</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+</div>
+</dd>
+<dt id="term-CHUNK_TASKS"><code class="docutils literal notranslate"><span class="pre">CHUNK_TASKS</span></code><a class="headerlink" href="#term-CHUNK_TASKS" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, matrix and vector multiplications are peroformed in chunks of 5 conseqqutive addition-multiplication operations. By default, this variable is set to <cite>1</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-25" name="sd-tab-set-10" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-25">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">CHUNK_TASKS</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-26" name="sd-tab-set-10" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-26">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:CHUNK_TASKS</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+</dd>
+<dt id="term-USE_SYMMETRY"><code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code><a class="headerlink" href="#term-USE_SYMMETRY" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, Gramian matrices are computed using symmetry of the Gamian matrix. By default, this variable is set to <cite>1</cite>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-27" name="sd-tab-set-11" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-27">
+UNIX</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">USE_SYMMETRY</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div></div>
+<input id="sd-tab-item-28" name="sd-tab-set-11" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-28">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:USE_SYMMETRY</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
+</pre></div></div></div>
+</div>
+</dd>
 </dl>
 </section>
 <section id="compile-and-install">
@@ -535,16 +614,16 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p class="rubric">A Note on Using <code class="docutils literal notranslate"><span class="pre">sudo</span></code></p>
 <p>If you are using <code class="docutils literal notranslate"><span class="pre">sudo</span></code> for the above command, add <code class="docutils literal notranslate"><span class="pre">-E</span></code> option to <code class="docutils literal notranslate"><span class="pre">sudo</span></code> to make sure the environment variables (if you have set any) are accessible to the root user. For instance</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-18">
+<input checked="checked" id="sd-tab-item-29" name="sd-tab-set-12" type="radio">
+</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-29">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span>
 sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-19" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-19">
+<input id="sd-tab-item-30" name="sd-tab-set-12" type="radio">
+</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-30">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-PowerShell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span>
 <span class="n">sudo</span> <span class="n">-E</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span>
