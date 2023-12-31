@@ -1068,8 +1068,7 @@ def main(argv):
         setup_requires=[
             'setuptools',
             'wheel',
-            'cython',
-            'pytest-runner'],
+            'cython'],
         tests_require=[
             'pytest',
             'pytest-cov'],
