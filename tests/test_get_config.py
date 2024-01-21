@@ -16,6 +16,10 @@
 from detkit import get_config
 from pprint import pprint
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ===============
 # test get config

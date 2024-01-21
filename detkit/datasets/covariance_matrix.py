@@ -14,9 +14,9 @@
 import numpy
 import scipy
 from .electrocardiogram import electrocardiogram
-from ._plot_utilities import plt, load_plot_settings, save_plot, \
-        make_axes_locatable
-from ._display_utilities import is_notebook
+from .._utilities.plot_utilities import plt, matplotlib, get_custom_theme, \
+        save_plot
+from .._utilities.display_utilities import is_notebook
 
 
 # =================
@@ -204,6 +204,7 @@ def covariance_matrix(
 # Plot
 # ====
 
+@matplotlib.rc_context(get_custom_theme(font_scale=1))
 def _plot(
         signal,
         var,
@@ -218,15 +219,13 @@ def _plot(
     Plots the ECG signal.
     """
 
-    load_plot_settings()
-
     # Sample time from the lag time of the autocorrelation
 
     # Eigenvalues of the autocorrelation function
     eig = scipy.linalg.eigh(matrix, eigvals_only=True)[::-1]
 
     # fig, ax = plt.subplots(ncols=2, figsize=(7.4, 3.6))
-    fig, ax = plt.subplots(ncols=3, figsize=(9.8, 3))
+    fig, ax = plt.subplots(ncols=3, figsize=(9.8, 3), layout='constrained')
 
     # Settings
     title_fontsize = 11
@@ -256,12 +255,11 @@ def _plot(
 
     # Plot correlation matrix
     cmap = plt.cm.seismic
-    divider = make_axes_locatable(ax[1])
-    cax = divider.append_axes("right", size="5%", pad=0.09)
     mat = ax[1].matshow(matrix, cmap=cmap,
                         extent=[0, lag_time[-1], lag_time[-1], 0],
                         aspect=1, vmin=-limit, vmax=limit)
-    cb = fig.colorbar(mat, cax=cax, ticks=numpy.array([-limit, 0, limit]))
+    cb = fig.colorbar(mat, ax=ax[1], ticks=numpy.array([-limit, 0, limit]),
+                      orientation='vertical', pad=0.03, aspect=20)
     cb.solids.set_rasterized(True)
     cb.ax.tick_params(labelsize=tick_fontsize)
     ax[1].xaxis.set_label_position('top')
@@ -292,20 +290,19 @@ def _plot(
     x_range = 2**numpy.arange(0, base_2+1)
     ax[2].set_xticks(x_range)
     ax[2].set_xticklabels([r'$2^{%d}$' % y for y in numpy.arange(0, base_2+1)])
+    ax[2].yaxis.set_major_locator(matplotlib.ticker.LogLocator(numticks=4))
     ax[2].tick_params(axis='x', which='minor', length=0)
+    ax[2].tick_params(axis='y', which='minor', length=0)
     ax[2].tick_params(axis='both', labelsize=tick_fontsize)
     ax[2].set_xlim([1, size+1])
     ax[2].yaxis.tick_right()
     ax[2].yaxis.set_label_position('right')
     ax[2].grid(which='major')
 
-    plt.tight_layout()
-    plt.subplots_adjust(wspace=0.12)
-
     # Save plot
     if save:
         filename = 'covariance'
-        save_plot(filename, transparent_background=True, pdf=True,
+        save_plot(plt, filename, transparent_background=True, pdf=True,
                   bbox_extra_artists=None, verbose=True)
     else:
         plt.show()

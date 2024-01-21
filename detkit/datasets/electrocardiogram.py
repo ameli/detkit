@@ -14,8 +14,9 @@
 import numpy
 import scipy
 import scipy.signal
-from ._plot_utilities import plt, load_plot_settings, save_plot
-from ._display_utilities import is_notebook
+from .._utilities.plot_utilities import plt, matplotlib, get_custom_theme, \
+        save_plot
+from .._utilities.display_utilities import is_notebook
 from pkgutil import iter_modules
 
 __all__ = ['electrocardiogram']
@@ -299,6 +300,7 @@ def _remove_noise(
 # plot
 # ====
 
+@matplotlib.rc_context(get_custom_theme(font_scale=1))
 def _plot(
         time,
         ecg,
@@ -312,8 +314,6 @@ def _plot(
     Parameters
     ----------
     """
-
-    load_plot_settings()
 
     # Settings
     title_fontsize = 11
@@ -364,7 +364,7 @@ def _plot(
     # Save plot
     if save:
         filename = 'electrocardiogram'
-        save_plot(filename, transparent_background=True, pdf=True,
+        save_plot(plt, filename, transparent_background=True, pdf=True,
                   bbox_extra_artists=None, verbose=True)
     else:
         plt.show()

@@ -17,6 +17,10 @@ import numpy
 import numpy.linalg
 from detkit import logdet
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ===========
 # test logdet

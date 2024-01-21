@@ -18,6 +18,10 @@ import numpy.linalg
 from detkit import loggdet, orthogonalize, ortho_complement, \
         get_instructions_per_task
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ============
 # test loggdet

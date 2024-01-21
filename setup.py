@@ -8,6 +8,7 @@
 # under the terms of the license found in the LICENSE.txt file in the root
 # directory of this source tree.
 
+
 # =======
 # Imports
 # =======
@@ -572,9 +573,13 @@ class CustomBuildExtension(build_ext):
 
         # Parallel compilation (can also be set via build_ext -j or --parallel)
         # Note: parallel build often fails (especially in windows) since object
-        # files are accessed by race condition.
-        # if sys.platform != 'win32':
-        #     self.parallel = multiprocessing.cpu_count()
+        # files are accessed by race condition. In MSVC, this usually ends up
+        # with C1083 error code: "Cannot open compiler generated code", since
+        # due to race condition, one threads locks an object file, preventing
+        # other threads to link the object file. On gcc and clang, so far, the
+        # parallel compilation seems to be fine.
+        if sys.platform != 'win32':
+            self.parallel = multiprocessing.cpu_count()
 
         # Remove warning: command line option '-Wstrict-prototypes' is valid
         # for C/ObjC but not for C++
@@ -1060,7 +1065,11 @@ def main(argv):
             'tests.*',
             'tests',
             'examples.*',
-            'examples']
+            'examples',
+            'benchmark.*',
+            'benchmark',
+            'docs.*',
+            'docs']
         ),
         ext_modules=external_modules,
         install_requires=requirements,

@@ -16,6 +16,10 @@
 from detkit import orthogonalize
 import numpy
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ==================
 # test orthogonalize

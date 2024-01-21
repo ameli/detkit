@@ -31,7 +31,6 @@ requirements:
         - scipy>=1.5
         - suitesparse
         - matplotlib
-        - seaborn
         - pooch
         - llvm-openmp  # [osx]
 

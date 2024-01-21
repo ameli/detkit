@@ -15,6 +15,10 @@
 
 from detkit.datasets import design_matrix
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ==================
 # test design matrix

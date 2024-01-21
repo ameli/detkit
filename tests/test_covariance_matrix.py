@@ -17,6 +17,10 @@ from detkit.datasets import covariance_matrix
 import os
 import sys
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ===========
 # remove file

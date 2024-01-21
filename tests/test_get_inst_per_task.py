@@ -15,6 +15,10 @@
 
 from detkit import get_instructions_per_task
 
+import warnings
+warnings.resetwarnings()
+warnings.filterwarnings("error")
+
 
 # ======================
 # test get inst per task
