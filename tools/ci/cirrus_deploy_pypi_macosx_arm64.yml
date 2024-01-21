@@ -31,22 +31,23 @@ pypi_build_wheels_macosx_arm64_task:
     cpu: 1
     memory: 4G
   matrix:
-    - env:
-        CIBW_BUILD: "cp39-macosx_arm64"
-    - env:
-        CIBW_BUILD: "cp310-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "cp39-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "cp310-macosx_arm64"
     - env:
         CIBW_BUILD: "cp311-macosx_arm64"
-    - env:
-        CIBW_BUILD: "cp312-macosx_arm64"
-    - env:
-        CIBW_BUILD: "pp38-macosx_arm64"
-    - env:
-        CIBW_BUILD: "pp39-macosx_arm64"
-    - env:
-        CIBW_BUILD: "pp310-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "cp312-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "pp38-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "pp39-macosx_arm64"
+    # - env:
+    #     CIBW_BUILD: "pp310-macosx_arm64"
   env:
     PATH: /opt/homebrew/opt/python@3.10/bin:/usr/local/lib:/usr/local/include:$PATH
+    SDKROOT: $(xcrun --sdk macosx --show-sdk-path)
     # Specifying CIBW_ENVIRONMENT_MACOS overrides pyproject.toml, so include
     # all the settings from there, otherwise they're lost.
     # SDKROOT needs to be set for repackaged conda-forge gfortran compilers
@@ -54,7 +55,6 @@ pypi_build_wheels_macosx_arm64_task:
     # Find out SDKROOT via `xcrun --sdk macosx --show-sdk-path`
     CIBW_ENVIRONMENT_MACOS: >
       # SDKROOT=/Applications/Xcode-15.1.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk
-      SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
       LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
       CFLAGS="-I/opt/homebrew/opt/libomp/include $CFLAGS"
       CXXFLAGS="-I/opt/homebrew/opt/libomp/include $CXXFLAGS"
