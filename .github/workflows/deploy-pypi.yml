@@ -53,8 +53,8 @@ jobs:
               if: matrix.os == 'windows-latest'
               uses: pypa/cibuildwheel@v2.15.0
               env:
-                  CIBW_ARCHS_WINDOWS: "AMD64 x86 ARM64"
-                  CIBW_BUILD: "${{ matrix.python-version }}-win_amd64 ${{ matrix.python-version }}-win_arm64"
+                  CIBW_ARCHS_WINDOWS: "AMD64 x86"
+                  CIBW_BUILD: "${{ matrix.python-version }}-win_amd64"
                   CIBW_SKIP: "pp37-* cp36-* cp37-* cp38-*"
                   CIBW_BUILD_VERBOSITY: 3
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
