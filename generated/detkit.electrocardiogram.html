@@ -344,7 +344,7 @@
 <h1>electrocardiogram<a class="headerlink" href="#electrocardiogram" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.electrocardiogram">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">electrocardiogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bw_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.electrocardiogram" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">electrocardiogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bw_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.electrocardiogram" title="Permalink to this definition">#</a></dt>
 <dd><p>Load an electrocardiogram signal as an example for a 1D signal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -360,11 +360,19 @@ removed.</p>
 <dt><strong>freq_cut</strong><span class="classifier">float, default=45</span></dt><dd><p>Frequencies (in Hz) above this limit will be cut by low-pass filter. If
 <cite>numpy.inf</cite>, no filtering is performed.</p>
 </dd>
-<dt><strong>plot</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the signal is plotted.</p>
+<dt><strong>plot</strong><span class="classifier">bool or str, default=False</span></dt><dd><p>If <cite>True</cite>, the ECG signal and its autocorrelation function, the
+covariance (or correlation) matrix and its eigenvalues are plotted.
+If <code class="docutils literal notranslate"><span class="pre">plot</span></code> is a string, the plot is not shown, rather saved with a
+filename as the given string. If the filename does not contain file
+extension, the plot is saved in both <code class="docutils literal notranslate"><span class="pre">svg</span></code> and <code class="docutils literal notranslate"><span class="pre">pdf</span></code> formats. If
+the filename does not have directory path, the plot is saved in the
+current directory.</p>
 </dd>
 <dt><strong>plot_bw</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, plots the baseline wander and the original signal along with
-the filtered signal. This option is effective only if <code class="docutils literal notranslate"><span class="pre">plot=True</span></code> is
-set.</p>
+the filtered signal. This option is effective only if <code class="docutils literal notranslate"><span class="pre">plot</span></code> is not
+<cite>False</cite>.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool, default=False</span></dt><dd><p>if <cite>True</cite>, the saved plot filename is printed.</p>
 </dd>
 </dl>
 </dd>
