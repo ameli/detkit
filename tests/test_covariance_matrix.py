@@ -16,23 +16,36 @@
 from detkit.datasets import covariance_matrix
 import os
 import sys
+import glob
 
 import warnings
 warnings.resetwarnings()
 warnings.filterwarnings("error")
 
 
-# ===========
-# remove file
-# ===========
+# =================
+# remove saved plot
+# =================
 
-def remove_file(filename):
+def _remove_saved_plot(filenames):
     """
-    Remove file.
+    Deletes image files produced during the test.
     """
 
-    if os.path.exists(filename):
-        os.remove(filename)
+    directory = os.getcwd()
+    fullpath_filenames = os.path.join(directory, filenames)
+
+    # Get a list of all files matching wildcard
+    files_list = glob.glob(fullpath_filenames)
+
+    # Iterate over files
+    for file in files_list:
+        try:
+            os.remove(file)
+            print('File %s is deleted.' % file)
+        except BaseException as error:
+            print('An exception occurred: {}'.format(error))
+            print("Error while removing file : ", file)
 
 
 # ======================
@@ -55,14 +68,14 @@ def test_covariance_matrix():
         return
 
     covariance_matrix(size=2**9, sample=2, cor=False, ecg_start=0.0,
-                      ecg_end=30.0, ecg_wrap=False, plot=True)
+                      ecg_end=30.0, ecg_wrap=False, plot='cov1')
     covariance_matrix(size=2**9, sample=2, cor=False, ecg_start=0.0,
-                      ecg_end=30.0, ecg_wrap=True, plot=True)
+                      ecg_end=30.0, ecg_wrap=True, plot='cov2')
     covariance_matrix(size=2**9, sample=2, cor=True, ecg_start=0.0,
-                      ecg_end=30.0, ecg_wrap=False, plot=True)
+                      ecg_end=30.0, ecg_wrap=False, plot='cov3')
 
-    remove_file('covariance_matrix.svg')
-    remove_file('covariance_matrix.pdf')
+    _remove_saved_plot('cov*.svg')
+    _remove_saved_plot('cov*.pdf')
 
 
 # ===========

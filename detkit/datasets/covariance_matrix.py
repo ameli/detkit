@@ -14,9 +14,8 @@
 import numpy
 import scipy
 from .electrocardiogram import electrocardiogram
-from .._utilities.plot_utilities import plt, matplotlib, get_custom_theme, \
-        save_plot
-from .._utilities.display_utilities import is_notebook
+from .._utilities.plot_utilities import plt, matplotlib, get_theme, \
+        show_or_save_plot
 
 
 # =================
@@ -30,7 +29,8 @@ def covariance_matrix(
         ecg_start=0.0,
         ecg_end=30.0,
         ecg_wrap=True,
-        plot=False):
+        plot=False,
+        verbose=False):
     """
     Create covariance matrix based on the autocorrelation of electrocardiogram
     signal.
@@ -58,8 +58,14 @@ def covariance_matrix(
         If `True`, the electrocardiogram signal is assumed to be wrapped.
 
     plot : bool, default=False
-        If `True`, the ECG signal and its autocorrelation function, the
-        covariance (or correlation) matrix and its eigenvalues are plotted.
+        If `True`, the covariance matrix is plotted. If ``plot`` is a string,
+        the plot is not shown, rather saved with a filename as the given
+        string. If the filename does not contain file extension, the plot is
+        saved in both ``svg`` and ``pdf`` formats. If the filename does not
+        have directory path, the plot is saved in the current directory.
+
+    verbose : bool, default=False
+        if `True`, the saved plot filename is printed.
 
     Returns
     -------
@@ -189,13 +195,9 @@ def covariance_matrix(
         acf = acf / var
 
     # Plot
-    if plot:
-        if is_notebook():
-            save = False
-        else:
-            save = True
-
-        _plot(signal, var, lag_time, acf, matrix, cor, size, sample, save)
+    if plot is not False:
+        _plot(signal, var, lag_time, acf, matrix, cor, size, sample,
+              filename=plot, verbose=verbose)
 
     return matrix
 
@@ -204,7 +206,7 @@ def covariance_matrix(
 # Plot
 # ====
 
-@matplotlib.rc_context(get_custom_theme(font_scale=1))
+@matplotlib.rc_context(get_theme(font_scale=1))
 def _plot(
         signal,
         var,
@@ -214,7 +216,8 @@ def _plot(
         cor,
         size,
         sample,
-        save=True):
+        filename=None,
+        verbose=False):
     """
     Plots the ECG signal.
     """
@@ -300,9 +303,6 @@ def _plot(
     ax[2].grid(which='major')
 
     # Save plot
-    if save:
-        filename = 'covariance'
-        save_plot(plt, filename, transparent_background=True, pdf=True,
-                  bbox_extra_artists=None, verbose=True)
-    else:
-        plt.show()
+    show_or_save_plot(plt, filename=filename, default_filename='covariance',
+                      transparent_background=True, bbox_extra_artists=None,
+                      verbose=verbose)

@@ -1076,7 +1076,6 @@ def main(argv):
         python_requires='>=3.8',
         setup_requires=[
             'setuptools',
-            'wheel',
             'cython'],
         tests_require=[
             'pytest',

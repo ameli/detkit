@@ -16,23 +16,36 @@
 from detkit.datasets import electrocardiogram
 import os
 import sys
+import glob
 
 import warnings
 warnings.resetwarnings()
 warnings.filterwarnings("error")
 
 
-# ===========
-# remove file
-# ===========
+# =================
+# remove saved plot
+# =================
 
-def remove_file(filename):
+def _remove_saved_plot(filenames):
     """
-    Remove file.
+    Deletes image files produced during the test.
     """
 
-    if os.path.exists(filename):
-        os.remove(filename)
+    directory = os.getcwd()
+    fullpath_filenames = os.path.join(directory, filenames)
+
+    # Get a list of all files matching wildcard
+    files_list = glob.glob(fullpath_filenames)
+
+    # Iterate over files
+    for file in files_list:
+        try:
+            os.remove(file)
+            print('File %s is deleted.' % file)
+        except BaseException as error:
+            print('An exception occurred: {}'.format(error))
+            print("Error while removing file : ", file)
 
 
 # ======================
@@ -55,12 +68,12 @@ def test_electrocardiogram():
         return
 
     electrocardiogram(start=0.0, end=10.0, bw_window=0.5, freq_cut=45,
-                      plot=True, plot_bw=False)
+                      plot='ecg1', plot_bw=False)
     electrocardiogram(start=0.0, end=10.0, bw_window=0.5, freq_cut=45,
-                      plot=True, plot_bw=True)
+                      plot='ecg2', plot_bw=True)
 
-    remove_file('electrocardiogram.svg')
-    remove_file('electrocardiogram.pdf')
+    _remove_saved_plot('ecg*.svg')
+    _remove_saved_plot('ecg*.pdf')
 
 
 # ===========

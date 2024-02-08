@@ -14,9 +14,8 @@
 import numpy
 import scipy
 import scipy.signal
-from .._utilities.plot_utilities import plt, matplotlib, get_custom_theme, \
-        save_plot
-from .._utilities.display_utilities import is_notebook
+from .._utilities.plot_utilities import plt, matplotlib, get_theme, \
+        show_or_save_plot
 from pkgutil import iter_modules
 
 __all__ = ['electrocardiogram']
@@ -67,7 +66,8 @@ def electrocardiogram(
         bw_window=0.5,
         freq_cut=45,
         plot=False,
-        plot_bw=False):
+        plot_bw=False,
+        verbose=False):
     """
     Load an electrocardiogram signal as an example for a 1D signal.
 
@@ -89,13 +89,22 @@ def electrocardiogram(
         Frequencies (in Hz) above this limit will be cut by low-pass filter. If
         `numpy.inf`, no filtering is performed.
 
-    plot : bool, default=False
-        If `True`, the signal is plotted.
+    plot : bool or str, default=False
+        If `True`, the ECG signal and its autocorrelation function, the
+        covariance (or correlation) matrix and its eigenvalues are plotted.
+        If ``plot`` is a string, the plot is not shown, rather saved with a
+        filename as the given string. If the filename does not contain file
+        extension, the plot is saved in both ``svg`` and ``pdf`` formats. If
+        the filename does not have directory path, the plot is saved in the
+        current directory.
 
     plot_bw : bool, default=False
         If `True`, plots the baseline wander and the original signal along with
-        the filtered signal. This option is effective only if ``plot=True`` is
-        set.
+        the filtered signal. This option is effective only if ``plot`` is not
+        `False`.
+
+    verbose : bool, default=False
+        if `True`, the saved plot filename is printed.
 
     Returns
     -------
@@ -187,13 +196,9 @@ def electrocardiogram(
     ecg_filtered = ecg_filtered[start_index:end_index + 1]
 
     # Plot
-    if plot:
-        if is_notebook():
-            save = False
-        else:
-            save = True
-
-        _plot(time, ecg, ecg_bw, ecg_filtered, plot_bw, save=save)
+    if plot is not False:
+        _plot(time, ecg, ecg_bw, ecg_filtered, plot_bw=plot_bw, filename=plot,
+              verbose=verbose)
 
     return time, ecg_filtered
 
@@ -300,14 +305,15 @@ def _remove_noise(
 # plot
 # ====
 
-@matplotlib.rc_context(get_custom_theme(font_scale=1))
+@matplotlib.rc_context(get_theme(font_scale=1))
 def _plot(
         time,
         ecg,
         ecg_bw,
         ecg_filtered,
-        plot_bw,
-        save=True):
+        plot_bw=False,
+        filename=None,
+        verbose=False):
     """
     Plots the ECG signal.
 
@@ -361,10 +367,8 @@ def _plot(
     plt.tight_layout()
     plt.subplots_adjust(hspace=0)
 
-    # Save plot
-    if save:
-        filename = 'electrocardiogram'
-        save_plot(plt, filename, transparent_background=True, pdf=True,
-                  bbox_extra_artists=None, verbose=True)
-    else:
-        plt.show()
+    # Show or save plot
+    show_or_save_plot(plt, filename=filename,
+                      default_filename='electrocardiogram',
+                      transparent_background=True,
+                      bbox_extra_artists=None, verbose=verbose)
