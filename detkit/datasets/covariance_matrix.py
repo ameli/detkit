@@ -57,7 +57,7 @@ def covariance_matrix(
     ecg_wrap : bool, default=True
         If `True`, the electrocardiogram signal is assumed to be wrapped.
 
-    plot : bool, default=False
+    plot : bool or str, default=False
         If `True`, the covariance matrix is plotted. If ``plot`` is a string,
         the plot is not shown, rather saved with a filename as the given
         string. If the filename does not contain file extension, the plot is
