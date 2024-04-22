@@ -12,9 +12,7 @@
 # =======
 
 import numpy
-import numpy.linalg
 import scipy
-import scipy.linalg
 
 __all__ = ['sy_logdet']
 

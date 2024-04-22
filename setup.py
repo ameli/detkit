@@ -516,6 +516,12 @@ def _get_compiler_kind(compiler_cxx=None):
         compiler_kind = 'xlc'
     elif re.search(r'gcc|g\+\+|cc|c\+\+', compiler_cxx, re.IGNORECASE):
         compiler_kind = 'gcc'
+
+        # On macOS, gcc is actually an alias for clang.
+        proc = subprocess.Popen(['gcc', '--version'], stdout=subprocess.PIPE)
+            output = proc.communicate()[0]
+            if b'clang' in output:
+                compiler_kind = 'clang'
     else:
         compiler_kind = None
 
@@ -590,9 +596,12 @@ class CustomBuildExtension(build_ext):
         compiler_type = self.compiler.compiler_type
 
         # Get c++ compiler name obtained from CXX flag (such as "icpx"')
-        compiler_cxx = self.compiler.compiler_cxx
-        if isinstance(compiler_cxx, list):
-            compiler_cxx = compiler_cxx[0]
+        if hasattr(self.compiler, 'compiler_cxx'):
+            compiler_cxx = self.compiler.compiler_cxx
+            if isinstance(compiler_cxx, list):
+                compiler_cxx = compiler_cxx[0]
+        else:
+            compiler_cxx = None
 
         # Kind of compiler (such as "intel" when compiler_cxx is "icpx")
         compiler_kind = _get_compiler_kind(compiler_cxx)
