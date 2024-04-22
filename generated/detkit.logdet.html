@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="DetKit" />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
-<meta property="og:title" content="RestoreIO">
+<meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
     <title>logdet &#8212; detkit Manual</title>
@@ -346,7 +346,7 @@
 <h1>logdet<a class="headerlink" href="#logdet" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.logdet">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">logdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.logdet" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">logdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.logdet" title="Permalink to this definition">#</a></dt>
 <dd><p>Computes the <cite>logdet</cite> of a matrix.</p>
 <p>The <cite>logdet</cite> function is defined by</p>
 <div class="math notranslate nohighlight">
@@ -367,6 +367,10 @@ when the matrix is not SPD. This function does not verify whether
 <dt><strong>overwrite_A</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the input matrix <cite>A</cite> will be overwritten during the
 computation. It uses less memory and could potentially be slightly
 faster.</p>
+</dd>
+<dt><strong>use_scipy</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, it uses scipy functions which are the wrappers around
+Fortran routines in BLAS and LAPACK. If <cite>False</cite>, it uses a C++
+library developed in this package.</p>
 </dd>
 </dl>
 </dd>
