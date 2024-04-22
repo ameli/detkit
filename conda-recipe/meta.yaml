@@ -22,7 +22,7 @@ requirements:
     host:
         - python {{ python }}
         - setuptools
-        - cython>=0.29,<3.0
+        - cython>=0.29
         - pip
         - llvm-openmp  # [osx]
     run:

@@ -1,9 +1,9 @@
 name: build-macos
 
 on:
-    # push:
-    #     branches:
-    #         - main
+    push:
+        branches:
+            - main
     release:
         types: 
             - published
@@ -63,7 +63,7 @@ jobs:
                   USE_UNSIGNED_LONG_INT: 0
                   USE_OPENMP: 0
                   COUNT_PERF: 0
-                  CHUNK_TASKS: 1
+                  USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
 
             # For PyPy, export OpenBLAS pkgconfig file, when pypy tries to build scipy from source
@@ -79,7 +79,7 @@ jobs:
                   USE_UNSIGNED_LONG_INT: 0
                   USE_OPENMP: 0
                   COUNT_PERF: 0
-                  CHUNK_TASKS: 1
+                  USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
 
             - name: Test

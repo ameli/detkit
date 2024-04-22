@@ -13,21 +13,19 @@
 #define _DEFINITIONS_C_GET_CONFIG_H_
 
 
-// =======
-// Headers
-// =======
-
-#include "./types.h"  // FlagType
-
-
 // ============
 // Declarations
 // ============
 
-FlagType is_use_symmetry();
-FlagType is_use_openmp();
-FlagType is_count_perf();
-FlagType is_chunk_tasks();
+bool is_use_symmetry();
+bool is_use_openmp();
+bool is_count_perf();
+bool is_use_loop_unrolling();
+bool is_debug_mode();
+bool is_cython_build_in_source();
+bool is_cython_build_for_doc();
+bool is_use_long_int();
+bool is_use_unsigned_long_int();
 
 
 #endif  // _DEFINITIONS_C_GET_CONFIG_H_

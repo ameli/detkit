@@ -18,7 +18,7 @@
 #include <cstddef>  // NULL
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
 #include "./c_matrix_decompositions.h"  // cMatrixDecompositions
-#include "./c_matrix_solvers.h"  // cMatrixSolver
+#include "./c_matrix_solvers.h"  // cMatrixSolvers
 #include "../_device/instructions_counter.h"  // InstructionsCounter
 #include "../_utilities/array_util.h"  // ArrayUtil
 #include "../_definitions/definitions.h"

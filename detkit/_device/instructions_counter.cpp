@@ -114,7 +114,11 @@ void InstructionsCounter::stop()
         if (this->fd != -1)
         {
             ioctl(this->fd, PERF_EVENT_IOC_DISABLE, 0);
-            read(this->fd, &this->count, sizeof(long long));
+            ssize_t bytes = read(this->fd, &this->count, sizeof(long long));
+            if (bytes < 0)
+            {
+                std::cerr << "Error reading file." << std::endl;
+            }
         }
     #endif
 }

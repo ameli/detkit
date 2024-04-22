@@ -392,7 +392,7 @@ cdef float pyc_loggdet_float(
         const FlagType method,
         const FlagType X_orth,
         FlagType* sign,
-        long long& flops) except *:
+        long long& flops) noexcept nogil:
     """
     """
 
@@ -407,7 +407,9 @@ cdef float pyc_loggdet_float(
         c_Xp = &Xp[0, 0]
 
     # Compute loggdet
-    cdef float loggdet_ = cMatrixFunctions[float].loggdet(
+    cdef float loggdet_
+    with nogil:
+        loggdet_ = cMatrixFunctions[float].loggdet(
             c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
             X_orth, sign[0], flops)
 
@@ -429,7 +431,7 @@ cdef double pyc_loggdet_double(
         const FlagType method,
         const FlagType X_orth,
         FlagType* sign,
-        long long& flops) except *:
+        long long& flops) noexcept nogil:
     """
     """
 
@@ -444,7 +446,9 @@ cdef double pyc_loggdet_double(
         c_Xp = &Xp[0, 0]
 
     # Compute loggdet
-    cdef double loggdet_ = cMatrixFunctions[double].loggdet(
+    cdef double loggdet_
+    with nogil:
+        loggdet_ = cMatrixFunctions[double].loggdet(
             c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
             X_orth, sign[0], flops)
 
@@ -466,7 +470,7 @@ cdef long double pyc_loggdet_long_double(
         const FlagType method,
         const FlagType X_orth,
         FlagType* sign,
-        long long& flops) except *:
+        long long& flops) noexcept nogil:
     """
     """
 
@@ -481,7 +485,9 @@ cdef long double pyc_loggdet_long_double(
         c_Xp = &Xp[0, 0]
 
     # Compute loggdet
-    cdef long double loggdet_ = cMatrixFunctions[long_double].loggdet(
+    cdef long double loggdet_
+    with nogil:
+        loggdet_ = cMatrixFunctions[long_double].loggdet(
             c_A, c_X, c_Xp, use_Xp, num_rows, num_columns, sym_pos, method,
             X_orth, sign[0], flops)
 

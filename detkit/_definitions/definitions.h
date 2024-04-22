@@ -71,8 +71,8 @@
 
 // If enabled, the matrix-matrix multiplications are performed in chinks of 5
 // consecutive additions, similar to BLAS.
-#ifndef CHUNK_TASKS
-    #define CHUNK_TASKS 1
+#ifndef USE_LOOP_UNROLLING
+    #define USE_LOOP_UNROLLING 1
 #endif
 
 // If enabled, to compute Gramian matrices as transpose of matrix multiplied

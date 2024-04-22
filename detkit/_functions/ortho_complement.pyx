@@ -164,7 +164,7 @@ cdef void _pyc_ortho_complement_float(
         const LongIndexType num_rows,
         const LongIndexType num_columns_Xp,
         const LongIndexType num_columns_X,
-        const FlagType X_orth,) except *:
+        const FlagType X_orth,) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     float type.
@@ -174,8 +174,9 @@ cdef void _pyc_ortho_complement_float(
     cdef float* c_Xp = &Xp[0, 0]
     cdef float* c_X = &X[0, 0]
 
-    cMatrixDecompositions[float].ortho_complement(
-            c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)
+    with nogil:
+        cMatrixDecompositions[float].ortho_complement(
+                c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)
 
 
 # ===========================
@@ -188,7 +189,7 @@ cdef void _pyc_ortho_complement_double(
         const LongIndexType num_rows,
         const LongIndexType num_columns_Xp,
         const LongIndexType num_columns_X,
-        const FlagType X_orth) except *:
+        const FlagType X_orth) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     double type.
@@ -198,8 +199,9 @@ cdef void _pyc_ortho_complement_double(
     cdef double* c_Xp = &Xp[0, 0]
     cdef double* c_X = &X[0, 0]
 
-    cMatrixDecompositions[double].ortho_complement(
-            c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)
+    with nogil:
+        cMatrixDecompositions[double].ortho_complement(
+                c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)
 
 
 # ================================
@@ -212,7 +214,7 @@ cdef void _pyc_ortho_complement_long_double(
         const LongIndexType num_rows,
         const LongIndexType num_columns_Xp,
         const LongIndexType num_columns_X,
-        const FlagType X_orth) except *:
+        const FlagType X_orth) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     long double type.
@@ -222,5 +224,6 @@ cdef void _pyc_ortho_complement_long_double(
     cdef long double* c_Xp = &Xp[0, 0]
     cdef long double* c_X = &X[0, 0]
 
-    cMatrixDecompositions[long_double].ortho_complement(
-            c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)
+    with nogil:
+        cMatrixDecompositions[long_double].ortho_complement(
+                c_Xp, c_X, num_rows, num_columns_Xp, num_columns_X, X_orth)

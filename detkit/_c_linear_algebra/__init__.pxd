@@ -10,5 +10,7 @@
 from detkit._c_linear_algebra.c_matrix_functions cimport cMatrixFunctions
 from detkit._c_linear_algebra.c_matrix_decompositions cimport \
         cMatrixDecompositions
+from detkit._c_linear_algebra.c_matrix_solvers cimport \
+        cMatrixSolvers
 
-__all__ = ['cMatrixFunctions', 'cMatrixDecompositions']
+__all__ = ['cMatrixFunctions', 'cMatrixDecompositions', 'cMatrixSolvers']

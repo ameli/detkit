@@ -17,13 +17,14 @@ from __future__ import print_function
 import os
 from os.path import join
 import sys
+import platform
 from glob import glob
 import subprocess
 import codecs
 import tempfile
 import shutil
-import textwrap
 import multiprocessing
+import re
 import errno
 
 
@@ -71,7 +72,7 @@ try:
     from Cython.Build import cythonize
 except ImportError:
     # Install Cython
-    install_package('cython>=0.29,<3.0')
+    install_package('cython>=0.29')
     from Cython.Build import cythonize
 
 
@@ -111,14 +112,14 @@ If you are using ``sudo``, to pass the environment variable, use ``-E`` option:
 
 # If DEBUG_MODE is set to "1", the package is compiled with debug mode.
 debug_mode = False
-if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == '1':
+if ('DEBUG_MODE' in os.environ) and (os.environ.get('DEBUG_MODE') == '1'):
     debug_mode = True
 
 # If environment var "CYTHON_BUILD_IN_SOURCE" exists, cython builds *.c files
 # in the source code, otherwise in "/build" directory
 cython_build_in_source = False
-if 'CYTHON_BUILD_IN_SOURCE' in os.environ and \
-   os.environ.get('CYTHON_BUILD_IN_SOURCE') == '1':
+if ('CYTHON_BUILD_IN_SOURCE' in os.environ) and \
+   (os.environ.get('CYTHON_BUILD_IN_SOURCE') == '1'):
     cython_build_in_source = True
 
 # If this package is build for the documentation, define the environment
@@ -126,14 +127,14 @@ if 'CYTHON_BUILD_IN_SOURCE' in os.environ and \
 # 1. The cython source will be generated in source (not in build directory)
 # 2. The "linetrace" is added to the cython's compiler derivatives.
 cython_build_for_doc = False
-if 'CYTHON_BUILD_FOR_DOC' in os.environ and \
-   os.environ.get('CYTHON_BUILD_FOR_DOC') == '1':
+if ('CYTHON_BUILD_FOR_DOC' in os.environ) and \
+   (os.environ.get('CYTHON_BUILD_FOR_DOC') == '1'):
     cython_build_for_doc = True
 
 # If USE_CBLAS is defined and set to 1, it uses OpenBlas library for dense
 # vector and matrix operations. In this case, openblas-dev sld be installed.
 use_cblas = False
-if 'USE_CBLAS' in os.environ and os.environ.get('USE_CBLAS') == '1':
+if ('USE_CBLAS' in os.environ) and (os.environ.get('USE_CBLAS') == '1'):
     use_cblas = True
 
 # If USE_LONG_INT is set to 1, 64-bit integers are used for LongIndexType.
@@ -155,8 +156,8 @@ if 'USE_UNSIGNED_LONG_INT' in os.environ:
     elif os.environ.get('USE_UNSIGNED_LONG_INT') == '1':
         use_unsigned_long_int = '1'
 
-# Is USE_OPENMP is set to 1, the matrix and vector multiplicatons are performed
-# on shared memry in parallel using openmp.
+# Is USE_OPENMP is set to 1, the matrix and vector multiplications are
+# performed on shared memory in parallel using openmp.
 use_openmp = None
 if 'USE_OPENMP' in os.environ:
     if os.environ.get('USE_OPENMP') == '0':
@@ -174,14 +175,14 @@ if 'COUNT_PERF' in os.environ:
     elif os.environ.get('COUNT_PERF') == '1':
         count_perf = '1'
 
-# If CHUNK_TASKS is set to 1, the matrix-matrix multiplications are performed
-# in chinks of 5 consecutive additions, similar to BLAS.
-chunk_tasks = None
-if 'CHUNK_TASKS' in os.environ:
-    if os.environ.get('CHUNK_TASKS') == '0':
-        chunk_tasks = '0'
-    elif os.environ.get('CHUNK_TASKS') == '1':
-        chunk_tasks = '1'
+# If USE_LOOP_UNROLLING is set to 1, the matrix-matrix multiplications are
+# performed in chinks of 5 consecutive additions, similar to BLAS.
+use_loop_unrolling = None
+if 'USE_LOOP_UNROLLING' in os.environ:
+    if os.environ.get('USE_LOOP_UNROLLING') == '0':
+        use_loop_unrolling = '0'
+    elif os.environ.get('USE_LOOP_UNROLLING') == '1':
+        use_loop_unrolling = '1'
 
 # If USE_SYMMETRY is set to 1, the computation of Gramian matrices is performed
 # by only half of the matrix multiplication and the other half is obtained by
@@ -192,6 +193,89 @@ if 'USE_SYMMETRY' in os.environ:
         use_symmetry = '0'
     elif os.environ.get('USE_SYMMETRY') == '1':
         use_symmetry = '1'
+
+
+# =====================
+# get avail num threads
+# =====================
+
+def get_avail_num_threads():
+    """
+    Finds the number of CPU threads that is granted to the current user. This
+    may not be all CPU threads on the machine, for instance, when the user
+    requested a certain number of threads when submitting jobs to SLURM or
+    Torque workload managers.
+
+    Suppose on a machine with 8 threads, a SLURM job with --cpus-per-task=5
+    is submitted.
+
+    This function finds these quantities:
+
+        a  = multiprocessing.cpu_count()  (here 8)    (all os)
+        b  = $(nproc)                     (here 5)    (unix only)
+        c  = num affinity                 (here 5)    (unit only)
+        s1 = SLURM_CPUS_PER_TASK          (here 5)    (slurm only)
+        s2 = SLURM_CPUS_ON_NODE           (here 5)    (slurm only)
+        t1 = PBS_NUM_PPN                  (here 0)    (torque only)
+
+    We define avail num thread as: min(a, b, c, max(1, s1, s2, t1)).
+    """
+
+    avail_num_threads = multiprocessing.cpu_count()
+
+    # Num processors (unix only)
+    try:
+        # nproc might need to be installed on macos
+        if platform.system() in ["Linux", "Darwin"]:
+            nproc_output = subprocess.check_output(['nproc'], text=True)
+            nproc = int(nproc_output.strip())
+            if nproc < avail_num_threads:
+                avail_num_threads = nproc
+    except Exception:
+        pass
+
+    # Check number of available processors using affinity
+    if hasattr(os, 'sched_getaffinity'):
+        num_affinity = len(os.sched_getaffinity(0))
+        if num_affinity < avail_num_threads:
+            avail_num_threads = num_affinity
+
+    # Query whether the number of threads are limited by SLURM, Torque, etc.
+    querying_num_threads = []
+
+    # SLURM CPUs per task
+    slurm_cpus_per_task = os.getenv('SLURM_CPUS_PER_TASK')
+    if slurm_cpus_per_task is not None:
+        # For heterogeneous computing the number of cpu is a list
+        slurm_cpus_per_task_list = \
+            [int(cpu) for cpu in slurm_cpus_per_task.split(',')]
+        querying_num_threads += slurm_cpus_per_task_list
+
+    # SLURM CPUs on node
+    slurm_cpus_on_node = os.getenv('SLURM_CPUS_ON_NODE')
+    if slurm_cpus_on_node is not None:
+        # For heterogeneous computing the number of cpu is a list
+        slurm_cpus_on_node_list = \
+            [int(cpu) for cpu in slurm_cpus_on_node.split(',')]
+        querying_num_threads += slurm_cpus_on_node_list
+
+    # Torque number of processes per task
+    pbs_num_ppn = os.getenv('PBS_NUM_PPN')
+    if pbs_num_ppn is not None:
+        querying_num_threads.append(int(pbs_num_ppn))
+
+    # Find maximum of the query
+    if len(querying_num_threads) > 0:
+        max_querying_num_threads = max(querying_num_threads)
+
+        # The max of query can be a candidate if it is more than one thread
+        if ((max_querying_num_threads > 0) and
+                (max_querying_num_threads < avail_num_threads)):
+
+            # Max of query should not be more than the actual number of threads
+            avail_num_threads = max_querying_num_threads
+
+    return avail_num_threads
 
 
 # ================
@@ -365,7 +449,7 @@ def check_compiler_has_flag(compiler, compile_flags, link_flags):
     compile_success = True
     current_working_dir = os.getcwd()
     temp_dir = tempfile.mkdtemp()
-    filename = 'test.c'
+    filename = 'test.cpp'
     code = "#include <omp.h>\nint main(int argc, char** argv) { return(0); }"
 
     # Considerations for Microsoft visual C++ compiler
@@ -388,18 +472,54 @@ def check_compiler_has_flag(compiler, compile_flags, link_flags):
                 "testlib",
                 extra_postargs=link_flags)
 
-        except (LinkError, TypeError):
+        except (LinkError, TypeError) as error:
             # Linker was not successful
+            print(error)
             compile_success = False
 
-    except CompileError:
+    except CompileError as error:
         # Compile was not successful
+        print(error)
         compile_success = False
 
     os.chdir(current_working_dir)
     shutil.rmtree(temp_dir)
 
     return compile_success
+
+
+# =================
+# get compiler kind
+# =================
+
+def _get_compiler_kind(compiler_cxx=None):
+    """
+    Determines the compiler from the ``CC`` and ``CXX`` environment variables.
+    """
+
+    # Get CC or CXX environment variable
+    if compiler_cxx is None:
+        compiler_cxx = os.getenv('CXX', os.getenv('CC'))
+
+    # Detect compiler
+    if compiler_cxx is None:
+        compiler_kind = None
+    elif re.search(r'msvc', compiler_cxx):
+        compiler_kind = 'msvc'
+    elif re.search(r'icc|icpc|icpx|icl|icx|icx\-cc|icx\-cl', compiler_cxx):
+        compiler_kind = 'intel'
+    elif re.search(r'cl(?:\.exe)?$', compiler_cxx, re.IGNORECASE):
+        compiler_kind = 'msvc'
+    elif re.search(r'clang(?:\+\+)?(?:-\d+(\.\d+){0,2})?$', compiler_cxx):
+        compiler_kind = 'clang'
+    elif re.search(r'xlc|xlC|xlcpp|bgxlC', compiler_cxx):
+        compiler_kind = 'xlc'
+    elif re.search(r'gcc|g\+\+|cc|c\+\+', compiler_cxx, re.IGNORECASE):
+        compiler_kind = 'gcc'
+    else:
+        compiler_kind = None
+
+    return compiler_kind
 
 
 # ======================
@@ -469,102 +589,184 @@ class CustomBuildExtension(build_ext):
         # Get compiler type. This is "unix" (linux, mac) or "msvc" (windows)
         compiler_type = self.compiler.compiler_type
 
+        # Get c++ compiler name obtained from CXX flag (such as "icpx"')
+        compiler_cxx = self.compiler.compiler_cxx
+        if isinstance(compiler_cxx, list):
+            compiler_cxx = compiler_cxx[0]
+
+        # Kind of compiler (such as "intel" when compiler_cxx is "icpx")
+        compiler_kind = _get_compiler_kind(compiler_cxx)
+
         # Initialize flags
         extra_compile_args = []
         extra_link_args = []
 
         if compiler_type == 'msvc':
 
-            # Adding openmp
-            if use_openmp is True:
+            # This is Microsoft Windows Visual C++ compiler
+            msvc_compile_args = ['/O2', '/Wall']
+            msvc_link_args = []
 
-                # This is Microsoft Windows Visual C++ compiler
-                msvc_compile_args = ['/O2', '/Wall', '/openmp']
-                msvc_link_args = []
+            # Adding openmp flags
+            if use_openmp:
+
+                msvc_compile_args += ['/openmp']
                 msvc_has_openmp_flag = check_compiler_has_flag(
                     self.compiler,
                     msvc_compile_args,
                     msvc_link_args)
 
-                if msvc_has_openmp_flag:
+                if not msvc_has_openmp_flag:
 
-                    # Add flags
-                    extra_compile_args += msvc_compile_args
-                    extra_link_args += msvc_link_args
+                    # It does not seem msvc accept /openmp flag.
+                    raise RuntimeError(
+                        "OpenMP isn't available on %s compiler."
+                        % compiler_type)
 
-                else:
+            # Add all flags
+            extra_compile_args += msvc_compile_args
+            extra_link_args += msvc_link_args
 
-                    # It does not seem msvc accept -fopenmp flag.
-                    raise RuntimeError(textwrap.dedent(
-                        """
-                        OpenMP does not seem to be available on %s compiler.
-                        """ % compiler_type))
+        elif (compiler_kind == 'intel') and (sys.platform == 'win32'):
+
+            # This is Intel OneAPI compiler on Windows
+            icx_compile_args = ['/O2', '/Wall']
+            icx_link_args = []
+
+            # Adding openmp flags
+            if use_openmp:
+
+                icx_compile_args += ['/Qiopenmp']
+                icx_has_qopenmp_flag = check_compiler_has_flag(
+                    self.compiler,
+                    icx_compile_args,
+                    icx_link_args)
+
+                if not icx_has_qopenmp_flag:
+
+                    # It does not seem icx accept /Qopenmp flag.
+                    raise RuntimeError(
+                        "OpenMP isn't available on %s compiler."
+                        % compiler_kind)
+
+            # Add all flags
+            extra_compile_args += icx_compile_args
+            extra_link_args += icx_link_args
 
         else:
 
             # The compile_type is 'unix'. This is either linux or mac.
-            # We add common flags that work both for gcc and clang
-            extra_compile_args += ['-O3', '-fno-stack-protector', '-Wall',
-                                   '-Wextra', '-Wundef', '-Wcast-align',
-                                   '-Wunreachable-code', '-Wswitch-enum',
-                                   '-Wpointer-arith', '-Wcast-align',
+            # We add common flags that work both for intel, gcc, and clang
+            extra_compile_args += ['-O3', '-funroll-loops', '-fno-common',
+                                   '-fno-stack-protector', '-fno-wrapv',
+                                   '-pedantic', '-Wall', '-Wextra', '-Wundef',
+                                   '-Wcast-align', '-Wunreachable-code',
+                                   '-Wswitch-enum', '-Wpointer-arith',
                                    '-Wwrite-strings', '-Wsign-compare',
-                                   '-Wundef', '-pedantic', '-fno-common',
-                                   '-fno-wrapv']
+                                   '-Wformat=2', '-Wstrict-overflow=2',
+                                   '-Winit-self', '-Woverflow', '-Wpacked',
+                                   '-Wmissing-declarations',
+                                   '-Wstack-protector',
+                                   '-Wvolatile-register-var', '-Wfatal-errors']
 
-            # The option '-Wl, ..' will send arguments to the linker. Here,
-            # '--strip-all' will remove all symbols from the shared library.
-            if not debug_mode:
-                extra_compile_args += ['-g0', '-Wl, --strip-all']
+            # Add optimization to linker to avoid intel's
+            # "-Rno-debug-disables-optimization" remark.
+            extra_link_args += ['-O3']
 
-            # Add openmp
-            if use_openmp is True:
+            # Verbose output
+            # extra_compile_args += ['--verbose']
+            # extra_link_args += ['--verbose']
 
-                # Assume compiler is gcc (we do not know yet). Check if the
-                # compiler accepts '-fopenmp' flag. Note: clang in mac does not
-                # accept this flag alone, but gcc does.
-                gcc_compile_args = ['-fopenmp']
-                gcc_link_args = ['-fopenmp']
-                gcc_has_openmp_flag = check_compiler_has_flag(
+            # Interprocedural pointer analysis optimizations
+            if compiler_kind == 'gcc':
+                extra_compile_args += ['-fipa-pta']
+
+            # Adding openmp flags
+            if use_openmp:
+
+                # Assume compiler is intel (we do not know yet). Check if the
+                # compiler accepts '-fiopenmp' flag. Note: gcc does not accept
+                # this flag alone, but icpx does.
+                icpx_compile_args = ['-fiopenmp']
+                icpx_link_args = ['-fiopenmp']
+                icpx_has_fiopenmp_flag = check_compiler_has_flag(
                     self.compiler,
-                    gcc_compile_args,
-                    gcc_link_args)
+                    icpx_compile_args,
+                    icpx_link_args)
 
-                if gcc_has_openmp_flag:
+                if icpx_has_fiopenmp_flag:
 
-                    # Assuming this is gcc. Add '-fopenmp' safely.
-                    extra_compile_args += gcc_compile_args
-                    extra_link_args += gcc_link_args
+                    # Assuming this is gcc. Add '-fiopenmp' safely.
+                    extra_compile_args += icpx_compile_args
+                    extra_link_args += icpx_link_args
 
                 else:
 
-                    # Assume compiler is clang (we do not know yet). Check if
-                    # -fopenmp can be passed through preprocessor. This is how
-                    # clang compiler accepts -fopenmp.
-                    clang_compile_args = ['-Xpreprocessor', '-fopenmp']
-                    clang_link_args = ['-Xpreprocessor', '-fopenmp', '-lomp',
-                                       '-headerpad_max_install_names']
-                    clang_has_openmp_flag = check_compiler_has_flag(
+                    # Assume compiler is gcc or llvm clang, not apple clang (we
+                    # do not know yet). Check if the compiler accepts
+                    # '-fopenmp' flag. Note: apple clang in mac (not llvm
+                    # clang) does not accept this flag alone but gcc and llvm
+                    # clang do.
+                    gcc_or_clang_compile_args = ['-fopenmp']
+                    gcc_or_clang_link_args = ['-fopenmp']
+                    gcc_or_clang_has_fopenmp_flag = check_compiler_has_flag(
                         self.compiler,
-                        clang_compile_args,
-                        clang_link_args)
+                        gcc_or_clang_compile_args,
+                        gcc_or_clang_link_args)
 
-                    if clang_has_openmp_flag:
+                    if gcc_or_clang_has_fopenmp_flag:
 
-                        # Assuming this is mac's clang. Add '-fopenmp' through
-                        # preprocessor
-                        extra_compile_args += clang_compile_args
-                        extra_link_args += clang_link_args
+                        # Assuming this is gcc. Add '-fopenmp' safely.
+                        extra_compile_args += gcc_or_clang_compile_args
+                        extra_link_args += gcc_or_clang_link_args
 
                     else:
 
-                        # It doesn't seem either gcc or clang accept -fopenmp
-                        # flag.
-                        raise RuntimeError(textwrap.dedent(
-                            """
-                            OpenMP does not seem to be available on %s
-                            compiler.
-                            """ % compiler_type))
+                        # Assume compiler is apple clang, not llvm clang, (but
+                        # we do not know yet). Check if -fopenmp can be passed
+                        # through preprocessor. This is how clang compiler
+                        # accepts -fopenmp argument
+                        apple_clang_compile_args = [
+                            '-Xpreprocessor', '-fopenmp']
+                        apple_clang_link_args = [
+                            '-Xpreprocessor', '-fopenmp', '-lomp',
+                            '-headerpad_max_install_names']
+                        apple_clang_has_fopenmp_flag = check_compiler_has_flag(
+                            self.compiler,
+                            apple_clang_compile_args,
+                            apple_clang_link_args)
+
+                        if apple_clang_has_fopenmp_flag:
+
+                            # Assuming this is mac's clang. Add '-fopenmp'
+                            # through preprocessor
+                            extra_compile_args += apple_clang_compile_args
+                            extra_link_args += apple_clang_link_args
+
+                        else:
+
+                            # It doesn't seem either intel, gcc, or clang
+                            # accept any openmp flag.
+                            raise RuntimeError(
+                                "OpenMP isn't available on %s compiler."
+                                % compiler_kind)
+
+        # Debugging flags should come after all other flags
+        if debug_mode:
+            # Use -g for all compilers except msvc
+            if compiler_type == 'msvc':
+                extra_compile_args += ['/Zi']
+            else:
+                extra_compile_args += ['-g']
+                extra_link_args += ['-g']
+        else:
+            extra_compile_args += ['-g0']
+            extra_link_args += ['-g0']
+
+            # The option '-Wl, ..' will send arguments to the linker. Here,
+            # '--strip-all' removes all symbols from the shared library.
+            if compiler_kind == 'gcc':
+                extra_compile_args += ['-Wl, --strip-all']
 
         # Add the flags to all extensions
         for ext in self.extensions:
@@ -579,7 +781,7 @@ class CustomBuildExtension(build_ext):
         # other threads to link the object file. On gcc and clang, so far, the
         # parallel compilation seems to be fine.
         if sys.platform != 'win32':
-            self.parallel = multiprocessing.cpu_count()
+            self.parallel = get_avail_num_threads()
 
         # Remove warning: command line option '-Wstrict-prototypes' is valid
         # for C/ObjC but not for C++
@@ -597,12 +799,12 @@ class CustomBuildExtension(build_ext):
 # Read File
 # =========
 
-def read_file(Filename):
+def read_file(filename):
     """
-    Reads a file with latin codec.
+    Reads a file with Latin codec.
     """
 
-    with codecs.open(Filename, 'r', 'latin') as file_obj:
+    with codecs.open(filename, 'r', 'latin') as file_obj:
         return file_obj.read()
 
 
@@ -641,7 +843,10 @@ def create_extension(
         other_source_dirs=None,
         other_source_files=None,
         other_include_dirs=None,
-        define_macros=[]):
+        library_dirs=None,
+        runtime_library_dirs=None,
+        libraries=None,
+        define_macros=None):
     """
     Creates an extension for each of the sub-packages that contain
     ``.pyx`` files.
@@ -693,7 +898,23 @@ def create_extension(
         directories of ``subpackage_name`` and ``other_source_dirs`` arguments.
     :type other_include_dirs: list(string)
 
-    :return: Cythonized extensions object
+    :param library_dirs: A list of other library directories to be added to the
+        linker's -L option at compile time.
+    :type library_dirs: list(string)
+
+    :param runtime_library_dirs: A list of library directories to be used at
+        the runtime.
+    :type runtime_library_dirs: list(string)
+
+    :param libraries: A list of library names to be added to the linker's -l
+        flag at the link time.
+    :type libraries: list(string)
+
+    :param define_macros: A list of macro definitions to be added to the
+        compiler's -D flag at the compile time.
+    :type define_macros: list(string)
+
+    :return: Cythonized extension object
     :rtype: dict
     """
 
@@ -721,11 +942,18 @@ def create_extension(
     include_dirs = [join('.', package_name, subpackage_name)]
     extra_compile_args = []  # will be filled by CustomBuildExtension class
     extra_link_args = []     # will be filled by CustomBuildExtension class
-    library_dirs = []
-    runtime_library_dirs = []
-    libraries = []
     language = 'c++'
-    define_macros += [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')]
+
+    # Note: do not set the default value for these input arguments to []. This
+    # leads to an issue known as "default mutable function argument".
+    if library_dirs is None:
+        library_dirs = []
+    if runtime_library_dirs is None:
+        runtime_library_dirs = []
+    if libraries is None:
+        libraries = []
+    if define_macros is None:
+        define_macros = []
 
     # When compiled with Cython>=3.0.1, all externs are defined as
     # "extern C++", however, Cython<=0.29.36 uses "extern C". To avoid this
@@ -749,10 +977,12 @@ def create_extension(
 
         # Check if directories exist
         for include_dir in other_include_dirs:
-            if not os.path.isdir(include_dir):
-                raise ValueError('Directory %s does not exists.' % include_dir)
+            package_include_dir = join(package_name, include_dir)
+            if not os.path.isdir(package_include_dir):
+                raise ValueError('Directory %s does not exists.'
+                                 % package_include_dir)
 
-        include_dirs += other_include_dirs
+            include_dirs.append(package_include_dir)
 
     # Glob entire source c, cpp and cu files in other source directories
     if other_source_dirs is not None:
@@ -767,7 +997,7 @@ def create_extension(
 
             sources += glob(join(other_source_dirname, '*.c'))
             sources += glob(join(other_source_dirname, '*.cpp'))
-            include_dirs += join(other_source_dirname)
+            include_dirs += [join(other_source_dirname)]
 
     # Using OpenBlas
     if use_cblas:
@@ -784,8 +1014,8 @@ def create_extension(
         define_macros += [('USE_OPENMP', use_openmp)]
     if count_perf is not None:
         define_macros += [('COUNT_PERF', count_perf)]
-    if chunk_tasks is not None:
-        define_macros += [('CHUNK_TASKS', chunk_tasks)]
+    if use_loop_unrolling is not None:
+        define_macros += [('USE_LOOP_UNROLLING', use_loop_unrolling)]
     if use_symmetry is not None:
         define_macros += [('USE_SYMMETRY', use_symmetry)]
 
@@ -892,7 +1122,7 @@ def cythonize_extensions(extensions):
         cython_build_dir = 'build'
 
     # Compiler derivatives
-    compiler_derivatives = {
+    compiler_directives = {
         'boundscheck': False,
         'cdivision': True,
         'wraparound': False,
@@ -909,10 +1139,16 @@ def cythonize_extensions(extensions):
             extension.cython_directives = {"embedsignature": True}
 
         # Bind cython files with python objects
-        compiler_derivatives['binding'] = True
+        compiler_directives['binding'] = True
 
         # Line trace
-        # compiler_derivatives['linetrace'] = True
+        # compiler_directives['linetrace'] = True
+
+    # Debugging
+    if debug_mode:
+        gdb_debug = True
+    else:
+        gdb_debug = False
 
     # Cythonize
     cythonized_extensions = cythonize(
@@ -920,8 +1156,9 @@ def cythonize_extensions(extensions):
         build_dir=cython_build_dir,
         include_path=["."],
         language_level="3",
-        nthreads=multiprocessing.cpu_count(),
-        compiler_directives=compiler_derivatives
+        nthreads=get_avail_num_threads(),
+        compiler_directives=compiler_directives,
+        gdb_debug=gdb_debug,
     )
 
     return cythonized_extensions
@@ -1076,7 +1313,7 @@ def main(argv):
         python_requires='>=3.8',
         setup_requires=[
             'setuptools',
-            'cython'],
+            'cython>=0.29'],
         tests_require=[
             'pytest',
             'pytest-cov'],

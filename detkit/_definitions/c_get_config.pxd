@@ -8,19 +8,17 @@
 
 
 # =======
-# Imports
-# =======
-
-from .._definitions.types cimport FlagType
-
-
-# =======
 # Externs
 # =======
 
 cdef extern from "c_get_config.h":
 
-    cdef FlagType is_use_symmetry() nogil
-    cdef FlagType is_use_openmp() nogil
-    cdef FlagType is_count_perf() nogil
-    cdef FlagType is_chunk_tasks() nogil
+    cdef bint is_use_symmetry() nogil
+    cdef bint is_use_openmp() nogil
+    cdef bint is_count_perf() nogil
+    cdef bint is_use_loop_unrolling() nogil
+    cdef bint is_debug_mode() nogil
+    cdef bint is_cython_build_in_source() nogil
+    cdef bint is_cython_build_for_doc() nogil
+    cdef bint is_use_long_int() nogil
+    cdef bint is_use_unsigned_long_int() nogil

@@ -105,7 +105,7 @@ cpdef orthogonalize(A):
 cdef void _pyc_gram_schmidt_float(
         float[:, ::1] A,
         const LongIndexType num_rows,
-        const LongIndexType num_columns) except *:
+        const LongIndexType num_columns) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     float type.
@@ -114,7 +114,8 @@ cdef void _pyc_gram_schmidt_float(
     # Get c-pointer from memoryviews
     cdef float* c_A = &A[0, 0]
 
-    cMatrixDecompositions[float].gram_schmidt(c_A, num_rows, num_columns)
+    with nogil:
+        cMatrixDecompositions[float].gram_schmidt(c_A, num_rows, num_columns)
 
 
 # =======================
@@ -124,7 +125,7 @@ cdef void _pyc_gram_schmidt_float(
 cdef void _pyc_gram_schmidt_double(
         double[:, ::1] A,
         const LongIndexType num_rows,
-        const LongIndexType num_columns) except *:
+        const LongIndexType num_columns) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     double type.
@@ -133,7 +134,8 @@ cdef void _pyc_gram_schmidt_double(
     # Get c-pointer from memoryviews
     cdef double* c_A = &A[0, 0]
 
-    cMatrixDecompositions[double].gram_schmidt(c_A, num_rows, num_columns)
+    with nogil:
+        cMatrixDecompositions[double].gram_schmidt(c_A, num_rows, num_columns)
 
 
 # ============================
@@ -143,7 +145,7 @@ cdef void _pyc_gram_schmidt_double(
 cdef void _pyc_gram_schmidt_long_double(
         long double[:, ::1] A,
         const LongIndexType num_rows,
-        const LongIndexType num_columns) except *:
+        const LongIndexType num_columns) noexcept nogil:
     """
     Gram-Schmidt orthogonalization of the columns of a matrix, specialized for
     long double type.
@@ -152,4 +154,5 @@ cdef void _pyc_gram_schmidt_long_double(
     # Get c-pointer from memoryviews
     cdef long double* c_A = &A[0, 0]
 
-    cMatrixDecompositions[long_double].gram_schmidt(c_A, num_rows, num_columns)
+    with nogil:
+        cMatrixDecompositions[long_double].gram_schmidt(c_A, num_rows, num_columns)

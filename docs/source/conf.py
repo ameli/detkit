@@ -310,7 +310,7 @@ ogp_description_length = 300
 ogp_type = "website"
 ogp_enable_meta_description = True
 ogp_custom_meta_tags = [
-    '<meta property="og:title" content="RestoreIO">',
+    '<meta property="og:title" content="DetKit">',
     '<meta property="og:description" content="DetKit is a python package ' +
     'to compute some common functions involving determinant of matrices ' +
     'used in machine learning.">',

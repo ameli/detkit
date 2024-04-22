@@ -14,8 +14,9 @@
 // =======
 
 #include "./c_matrix_operations.h"
-#include "../_definitions/definitions.h"  // USE_SYMMETRY, CHUNK_TASKS, USE_...
-#if USE_OPENMP == 1
+#include "../_definitions/definitions.h"  // USE_SYMMETRY, USE_OPENMP
+                                          // USE_LOOP_UNROLLING
+#if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #include <omp.h>
 #endif
 
@@ -63,14 +64,14 @@ void cMatrixOperations<DataType>::add(
 {
     LongIndexType j;
 
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType num_columns_chunked = num_columns - (num_columns % chunk);
     #endif
 
     for (LongIndexType i=0; i < num_rows; ++i)
     {
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j=0; j < num_columns_chunked; j+=chunk)
         {
             C[i*num_columns + j] = \
@@ -86,7 +87,7 @@ void cMatrixOperations<DataType>::add(
         }
         #endif
 
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j= num_columns_chunked; j < num_columns; ++j)
         #else
         for (j=0; j < num_columns; ++j)
@@ -133,14 +134,14 @@ void cMatrixOperations<DataType>::add_inplace(
         const LongIndexType num_columns)
 {
     LongIndexType j;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType num_columns_chunked = num_columns - (num_columns % chunk);
     #endif
 
     for (LongIndexType i=0; i < num_rows; ++i)
     {
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j=0; j < num_columns_chunked; j+=chunk)
         {
             A[i*num_columns + j] += B[i*num_columns + j];
@@ -151,7 +152,7 @@ void cMatrixOperations<DataType>::add_inplace(
         }
         #endif
 
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j=num_columns_chunked; j < num_columns; ++j)
         #else
         for (j=0; j < num_columns; ++j)
@@ -178,14 +179,14 @@ void cMatrixOperations<DataType>::subtract_inplace(
         const LongIndexType num_columns)
 {
     LongIndexType j;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType num_columns_chunked = num_columns - (num_columns % chunk);
     #endif
 
     for (LongIndexType i=0; i < num_rows; ++i)
     {
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j=0; j < num_columns_chunked; j+=chunk)
         {
             A[i*num_columns + j] -= B[i*num_columns + j];
@@ -196,7 +197,7 @@ void cMatrixOperations<DataType>::subtract_inplace(
         }
         #endif
 
-        #if CHUNK_TASKS
+        #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
         for (j=num_columns_chunked; j < num_columns; ++j)
         #else
         for (j=0; j < num_columns; ++j)
@@ -228,12 +229,12 @@ void cMatrixOperations<DataType>::matmat(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType m_chunked = m - (m % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < n; ++i)
@@ -241,7 +242,7 @@ void cMatrixOperations<DataType>::matmat(
         for (j=0; j < p; ++j)
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < m_chunked; k+= chunk)
             {
                 sum += A[i*m + k] * B[k*p + j] +
@@ -252,7 +253,7 @@ void cMatrixOperations<DataType>::matmat(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=m_chunked; k < m; ++k)
             #else
             for (k=0; k < m; ++k)
@@ -294,12 +295,12 @@ void cMatrixOperations<DataType>::matmat_transpose(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType n_chunked = n - (n % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < m; ++i)
@@ -307,7 +308,7 @@ void cMatrixOperations<DataType>::matmat_transpose(
         for (j=0; j < p; ++j)
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < n_chunked; k+= chunk)
             {
                 sum += A[k*m + i] * B[k*p + j] +
@@ -318,7 +319,7 @@ void cMatrixOperations<DataType>::matmat_transpose(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=n_chunked; k < n; ++k)
             #else
             for (k=0; k < n; ++k)
@@ -361,24 +362,24 @@ void cMatrixOperations<DataType>::gramian_matmat_transpose(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType n_chunked = n - (n % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < m; ++i)
     {
-        #if USE_SYMMETRY
+        #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
         for (j=0; j <= i; ++j)
         #else
         for (j=0; j < m; ++j)
         #endif
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < n_chunked; k+= chunk)
             {
                 sum += A[k*m + i] * B[k*m + j] +
@@ -389,7 +390,7 @@ void cMatrixOperations<DataType>::gramian_matmat_transpose(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=n_chunked; k < n; ++k)
             #else
             for (k=0; k < n; ++k)
@@ -407,7 +408,7 @@ void cMatrixOperations<DataType>::gramian_matmat_transpose(
                 C[i*m + j] += c * static_cast<DataType>(sum);
             }
 
-            #if USE_SYMMETRY
+            #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
             // Symmetric matrix
             if (i != j)
             {
@@ -437,24 +438,24 @@ void cMatrixOperations<DataType>::gramian(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType n_chunked = n - (n % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < m; ++i)
     {
-        #if USE_SYMMETRY
+        #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
         for (j=i; j < m; ++j)
         #else
         for (j=0; j < m; ++j)
         #endif
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < n_chunked; k+= chunk)
             {
                 sum += A[k*m + i] * A[k*m + j] +
@@ -465,7 +466,7 @@ void cMatrixOperations<DataType>::gramian(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=n_chunked; k < n; ++k)
             #else
             for (k=0; k < n; ++k)
@@ -484,7 +485,7 @@ void cMatrixOperations<DataType>::gramian(
             }
 
             // Symmetry of Gramian matrix
-            #if USE_SYMMETRY
+            #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
             if (i != j)
             {
                 if (c == 0)
@@ -521,12 +522,12 @@ void cMatrixOperations<DataType>::inner_prod(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType n_chunked = n - (n % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < m; ++i)
@@ -534,7 +535,7 @@ void cMatrixOperations<DataType>::inner_prod(
         for (j=0; j < m; ++j)
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < n_chunked; k+= chunk)
             {
                 sum += A[k*m + i] * B[k*m + j] +
@@ -545,7 +546,7 @@ void cMatrixOperations<DataType>::inner_prod(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=n_chunked; k < n; ++k)
             #else
             for (k=0; k < n; ++k)
@@ -586,12 +587,12 @@ void cMatrixOperations<DataType>::outer_prod(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType m_chunked = m - (m % chunk);
     #endif
 
-    #if USE_OPENMP == 1
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
     #endif
     for (LongIndexType i=0; i < n; ++i)
@@ -599,7 +600,7 @@ void cMatrixOperations<DataType>::outer_prod(
         for (j=0; j < n; ++j)
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < m_chunked; k+= chunk)
             {
                 sum += A[i*m + k] * B[j*m + k] +
@@ -610,7 +611,7 @@ void cMatrixOperations<DataType>::outer_prod(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=m_chunked; k < m; ++k)
             #else
             for (k=0; k < m; ++k)
@@ -650,24 +651,24 @@ void cMatrixOperations<DataType>::self_outer_prod(
     LongIndexType j;
     LongIndexType k;
     long double sum;
-    #if CHUNK_TASKS
+    #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
     LongIndexType chunk = 5;
     LongIndexType m_chunked = m - (m % chunk);
     #endif
 
-    #if USE_OPENMP == 1
-    #endif
+    #if defined(USE_OPENMP) && (USE_OPENMP == 1)
     #pragma omp parallel for private(j, k, sum)
+    #endif
     for (LongIndexType i=0; i < n; ++i)
     {
-        #if USE_SYMMETRY
+        #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
         for (j=i; j < n; ++j)
         #else
         for (j=0; j < n; ++j)
         #endif
         {
             sum = 0.0;
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=0; k < m_chunked; k+= chunk)
             {
                 sum += A[i*m + k] * A[j*m + k] +
@@ -678,7 +679,7 @@ void cMatrixOperations<DataType>::self_outer_prod(
             }
             #endif
 
-            #if CHUNK_TASKS
+            #if defined(USE_LOOP_UNROLLING) && (USE_LOOP_UNROLLING == 1)
             for (k=m_chunked; k < m; ++k)
             #else
             for (k=0; k < m; ++k)
@@ -697,7 +698,7 @@ void cMatrixOperations<DataType>::self_outer_prod(
             }
 
             // Symmetry of outer product
-            #if USE_SYMMETRY
+            #if defined(USE_SYMMETRY) && (USE_SYMMETRY == 1)
             if (i != j)
             {
                 if (c == 0)

@@ -40,9 +40,15 @@ def test_logdet():
         A = A.T @ A
 
     print(numpy.linalg.slogdet(A))
-    logdet_, sign = logdet(A, sym_pos=sym_pos)
-    print(logdet_)
-    print(sign)
+    logdet_1, sign_1 = logdet(A, sym_pos=True, use_scipy=False)
+    logdet_2, sign_2 = logdet(A, sym_pos=False, use_scipy=False)
+    logdet_3, sign_3 = logdet(A, sym_pos=True, use_scipy=True)
+    logdet_4, sign_4 = logdet(A, sym_pos=False, use_scipy=True)
+
+    print("%16.8f, %+d" % (logdet_1, sign_1))
+    print("%16.8f, %+d" % (logdet_2, sign_2))
+    print("%16.8f, %+d" % (logdet_3, sign_3))
+    print("%16.8f, %+d" % (logdet_4, sign_4))
 
 
 # ===========

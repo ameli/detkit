@@ -13,6 +13,7 @@
 
 import numpy
 from ._utilities import get_data_type_name
+from .sy_logdet import sy_logdet
 from .._definitions.types cimport DataType, LongIndexType, FlagType, \
         MemoryViewIndexType, MemoryViewFlagType
 from .._c_linear_algebra.c_matrix_functions cimport cMatrixFunctions
@@ -27,7 +28,11 @@ __all__ = ['logdet']
 # logdet
 # ======
 
-def logdet(A, sym_pos=False, overwrite_A=False):
+def logdet(
+        A,
+        sym_pos=False,
+        overwrite_A=False,
+        use_scipy=True):
     """
     Computes the `logdet` of a matrix.
 
@@ -55,6 +60,11 @@ def logdet(A, sym_pos=False, overwrite_A=False):
             If `True`, the input matrix `A` will be overwritten during the
             computation. It uses less memory and could potentially be slightly
             faster.
+            
+        use_scipy : bool, default=False
+            If `True`, it uses scipy functions which are the wrappers around
+            Fortran routines in BLAS and LAPACK. If `False`, it uses a C++
+            library developed in this package.
 
     Returns
     -------
@@ -115,7 +125,10 @@ def logdet(A, sym_pos=False, overwrite_A=False):
         (-inf, 0)
     """
 
-    # A_ will be overwritten by PLU and cholesky decompositions
+    if use_scipy:
+        return sy_logdet(A, sym_pos=sym_pos, overwrite_A=overwrite_A)
+
+    # A_ will be overwritten by PLU and Cholesky decompositions
     if overwrite_A:
         # Input A will be overwritten
         A_ = A
@@ -189,7 +202,7 @@ cdef float pyc_logdet_float(
         float[:, ::1] A,
         const LongIndexType num_rows,
         const FlagType sym_pos,
-        FlagType* sign) except *:
+        FlagType* sign) noexcept nogil:
     """
     Dispatches to C++ function with 32-bit float type.
     """
@@ -198,7 +211,9 @@ cdef float pyc_logdet_float(
     cdef float* c_A = &A[0, 0]
 
     # Compute logdet
-    cdef float logdet_ = cMatrixFunctions[float].logdet(
+    cdef float logdet_
+    with nogil:
+        logdet_ = cMatrixFunctions[float].logdet(
             c_A, num_rows, sym_pos, sign[0])
 
     return logdet_
@@ -212,7 +227,7 @@ cdef double pyc_logdet_double(
         double[:, ::1] A,
         const LongIndexType num_rows,
         const FlagType sym_pos,
-        FlagType* sign) except *:
+        FlagType* sign) noexcept nogil:
     """
     Dispatches to C++ function with 64-bit float type.
     """
@@ -221,7 +236,9 @@ cdef double pyc_logdet_double(
     cdef double* c_A = &A[0, 0]
 
     # Compute logdet
-    cdef double logdet_ = cMatrixFunctions[double].logdet(
+    cdef double logdet_
+    with nogil:
+        logdet_ = cMatrixFunctions[double].logdet(
             c_A, num_rows, sym_pos, sign[0])
 
     return logdet_
@@ -235,7 +252,7 @@ cdef long double pyc_logdet_long_double(
         long double[:, ::1] A,
         const LongIndexType num_rows,
         const FlagType sym_pos,
-        FlagType* sign) except *:
+        FlagType* sign) noexcept nogil:
     """
     Dispatches to C++ function with 128-bit float type.
     """
@@ -244,7 +261,9 @@ cdef long double pyc_logdet_long_double(
     cdef long double* c_A = &A[0, 0]
 
     # Compute logdet
-    cdef long double logdet_ = cMatrixFunctions[long_double].logdet(
+    cdef long double logdet_
+    with nogil:
+        logdet_ = cMatrixFunctions[long_double].logdet(
             c_A, num_rows, sym_pos, sign[0])
 
     return logdet_
