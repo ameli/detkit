@@ -516,22 +516,6 @@ def _get_compiler_kind(compiler_cxx=None):
         compiler_kind = 'xlc'
     elif re.search(r'gcc|g\+\+|cc|c\+\+', compiler_cxx, re.IGNORECASE):
         compiler_kind = 'gcc'
-
-        # On macOS, gcc is actually an alias for clang.
-        try:
-            with subprocess.Popen(
-                    [compiler_cxx, '--version'],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                    text=True) as proc:
-                stdout, stderr = proc.communicate()
-
-                if proc.returncode == 0:
-                    if b'clang' in stdout:
-                        compiler_kind = 'clang'
-                else:
-                    print(f"Error: {stderr}")
-        except Exception as e:
-            print(f"ERROR: Exception occurred: {str(e)}")
     else:
         compiler_kind = None
 
@@ -697,7 +681,9 @@ class CustomBuildExtension(build_ext):
             # extra_link_args += ['--verbose']
 
             # Interprocedural pointer analysis optimizations
-            if compiler_kind == 'gcc':
+            # Note: on macOS, gcc is actually an alias for clang, which does
+            # not accept this flag.
+            if (compiler_kind == 'gcc') and (platform.system() != 'Darwin'):
                 extra_compile_args += ['-fipa-pta']
 
             # Adding openmp flags
