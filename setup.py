@@ -518,10 +518,20 @@ def _get_compiler_kind(compiler_cxx=None):
         compiler_kind = 'gcc'
 
         # On macOS, gcc is actually an alias for clang.
-        proc = subprocess.Popen(['gcc', '--version'], stdout=subprocess.PIPE)
-            output = proc.communicate()[0]
-            if b'clang' in output:
-                compiler_kind = 'clang'
+        try:
+            with subprocess.Popen(
+                    [compiler_cxx, '--version'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True) as proc:
+                stdout, stderr = proc.communicate()
+
+                if proc.returncode == 0:
+                    if b'clang' in stdout:
+                        compiler_kind = 'clang'
+                else:
+                    print(f"Error: {stderr}")
+        except Exception as e:
+            print(f"ERROR: Exception occurred: {str(e)}")
     else:
         compiler_kind = None
 
