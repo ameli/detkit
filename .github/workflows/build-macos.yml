@@ -37,12 +37,12 @@ jobs:
                   # links are created. Without these, the installation will fail with the error
                   # of "fatal error: omp.h file found"
                   brew install libomp
-                  libomp_dir=$(brew --prefix libomp)
-                  ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
-                  ln -sf ${libomp_dir}/include/omp.h        /usr/local/include/omp.h
-                  ln -sf ${libomp_dir}/include/ompt.h       /usr/local/include/ompt.h
-                  ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
-                  ln -sf ${libomp_dir}/lib/libomp.dylib     /usr/local/lib/libomp.dylib
+                  # libomp_dir=$(brew --prefix libomp)
+                  # ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
+                  # ln -sf ${libomp_dir}/include/omp.h        /usr/local/include/omp.h
+                  # ln -sf ${libomp_dir}/include/ompt.h       /usr/local/include/ompt.h
+                  # ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
+                  # ln -sf ${libomp_dir}/lib/libomp.dylib     /usr/local/lib/libomp.dylib
 
             # Install OpenBLAS when PyPy is used, since it tries to compile numpy and scipt from
             # source, whic needs OpenBLAS
@@ -56,6 +56,8 @@ jobs:
             - name: Install package and dependencies (not PyPy)
               if: (!contains(matrix.python-version, 'pypy'))
               run: |
+                  export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+                  export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
                   python -m pip install --upgrade pip
                   python -m pip install . -vvv
               env:
