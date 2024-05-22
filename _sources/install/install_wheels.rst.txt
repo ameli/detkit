@@ -47,7 +47,7 @@ Alternatively, you can install |project| via ``conda``. To do so, you may refer 
 
 .. prompt:: bash
 
-    conda install -c s-ameli -c conda-forge detkit -y
+    conda install s-ameli::detkit
 
 .. _dependencies:
 
