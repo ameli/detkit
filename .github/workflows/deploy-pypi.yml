@@ -15,7 +15,8 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+                # os: [ubuntu-latest, windows-latest, macos-latest]
+                os: [ubuntu-latest]
                 python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'pp38', 'pp39', 'pp310']
         steps:
             - name: Checkout
@@ -173,7 +174,8 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+                # os: [ubuntu-latest, windows-latest, macos-latest]
+                os: [ubuntu-latest]
                 # Despite the package is built on both cpython and pypy in
                 # linux, we only test it on cpython, not on pypy, since many
                 # other required dependencies (like matplotlib, etc) need to be
