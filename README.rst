@@ -32,7 +32,7 @@ Install with ``conda``
 
 ::
 
-    conda install -c s-ameli detkit
+    conda install s-ameli::detkit
 
 Docker Image
 ------------

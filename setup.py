@@ -878,7 +878,7 @@ def create_extension(
     :param subpackage_name: Name of the subpackage to build its extension.
         In the package_name/subpackage_name directory, all ``pyx``, ``c``,
         ``cpp``, will be added to the extension. If there are additional ``c``,
-        ``cpp`` source files in other directories beside the soubpackage
+        ``cpp`` source files in other directories beside the subpackage
         directory, use ``other_source_dirs`` argument.
     :type subpackage_name: string
 
@@ -1242,7 +1242,8 @@ def main(argv):
                                            '_c_basic_algebra',
                                            '_c_linear_algebra',
                                            '_utilities',
-                                           '_device']))
+                                           '_device',
+                                           '_openmp']))
 
     extensions.append(create_extension(package_name, '_benchmark',
                                        other_source_dirs=[

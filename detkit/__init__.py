@@ -67,8 +67,10 @@ def _check_import():
 
 try:
     # Import sub-packages
-    from ._functions import logdet, loggdet, logpdet               # noqa: E402
-    from ._functions import orthogonalize, ortho_complement        # noqa: E402
+    from ._functions import logdet, loggdet, logpdet, memdet       # noqa: E402
+    from ._functions import memdet_sym                             # noqa: E402
+    from ._functions import orthogonalize, ortho_complement, ldl   # noqa: E402
+    from ._functions import load, store, Memory                    # noqa: E402
     from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
     from .datasets import electrocardiogram                        # noqa: E402
@@ -83,8 +85,9 @@ except Exception as e:
     # error.
     raise e
 
-__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'ortho_complement',
-           'get_config', 'get_instructions_per_task', 'electrocardiogram',
+__all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'load', 'store', 'Memory',
+           'orthogonalize', 'ortho_complement', 'ldl', 'get_config',
+           'get_instructions_per_task', 'electrocardiogram', 'memdet_sym',
            'covariance_matrix', 'design_matrix']
 
 from .__version__ import __version__                          # noqa: F401 E402

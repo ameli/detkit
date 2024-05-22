@@ -60,8 +60,8 @@ def logdet(
             If `True`, the input matrix `A` will be overwritten during the
             computation. It uses less memory and could potentially be slightly
             faster.
-            
-        use_scipy : bool, default=False
+
+        use_scipy : bool, default=True
             If `True`, it uses scipy functions which are the wrappers around
             Fortran routines in BLAS and LAPACK. If `False`, it uses a C++
             library developed in this package.

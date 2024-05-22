@@ -9,7 +9,14 @@
 from .logdet import logdet
 from .loggdet import loggdet
 from .logpdet import logpdet
+from .memdet import memdet
+from .memdet_sym import memdet_sym
+from .memory import Memory
+from .parallel_io import load, store
 from .orthogonalize import orthogonalize
 from .ortho_complement import ortho_complement
+from .ldl import ldl
 
-__all__ = ['logdet', 'loggdet', 'logpdet', 'orthogonalize', 'ortho_complement']
+__all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'memdet_sym',
+           'orthogonalize', 'ldl', 'ortho_complement', 'load', 'store',
+           'Memory']
