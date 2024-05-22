@@ -1242,8 +1242,7 @@ def main(argv):
                                            '_c_basic_algebra',
                                            '_c_linear_algebra',
                                            '_utilities',
-                                           '_device',
-                                           '_openmp']))
+                                           '_device']))
 
     extensions.append(create_extension(package_name, '_benchmark',
                                        other_source_dirs=[

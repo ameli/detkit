@@ -62,7 +62,7 @@ jobs:
                   CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
-                  USE_OPENMP: 1
+                  USE_OPENMP: 0
                   COUNT_PERF: 0
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
@@ -83,7 +83,7 @@ jobs:
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
-                  USE_OPENMP: 1
+                  USE_OPENMP: 0
                   COUNT_PERF: 0
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
@@ -104,7 +104,7 @@ jobs:
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
-                  USE_OPENMP: 1
+                  USE_OPENMP: 0
                   COUNT_PERF: 1
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
