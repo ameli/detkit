@@ -44,7 +44,7 @@ jobs:
               env:
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
-                  USE_OPENMP: 0
+                  USE_OPENMP: 1
                   COUNT_PERF: 1
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
