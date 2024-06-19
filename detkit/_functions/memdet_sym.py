@@ -19,7 +19,7 @@ from .memory import Memory
 from ._parallel_io import load, store
 from multiprocessing import shared_memory
 import inspect
-from ._fill_triangle import fill_triangle
+from .._cy_linear_algebra import fill_triangle
 from .._openmp import get_avail_num_threads
 import time
 import shutil
