@@ -16,7 +16,7 @@ import numpy
 import scipy
 import tempfile
 from .memory import Memory
-from .parallel_io import load, store
+from ._parallel_io import load, store
 from multiprocessing import shared_memory
 import inspect
 from ._fill_triangle import fill_triangle
