@@ -69,8 +69,12 @@ try:
     # Import sub-packages
     from ._functions import logdet, loggdet, logpdet, memdet       # noqa: E402
     from ._functions import memdet_sym                             # noqa: E402
-    from ._functions import orthogonalize, ortho_complement, ldl   # noqa: E402
-    from ._functions import load, store, Memory                    # noqa: E402
+    from ._functions import orthogonalize, ortho_complement        # noqa: E402
+    from ._functions import Memory                                 # noqa: E402
+    from ._cy_linear_algebra import lu_factor, lu_solve            # noqa: E402
+    from ._cy_linear_algebra import ldl_factor, ldl_solve          # noqa: E402
+    from ._cy_linear_algebra import cho_factor, cho_solve          # noqa: E402
+    from ._cy_linear_algebra import solve_triangular, matmul       # noqa: E402
     from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
     from .datasets import electrocardiogram                        # noqa: E402
@@ -86,8 +90,10 @@ except Exception as e:
     raise e
 
 __all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'load', 'store', 'Memory',
-           'orthogonalize', 'ortho_complement', 'ldl', 'get_config',
-           'get_instructions_per_task', 'electrocardiogram', 'memdet_sym',
-           'covariance_matrix', 'design_matrix']
+           'orthogonalize', 'ortho_complement', 'lu_factor', 'lu_solve',
+           'ldl_factor', 'ldl_solve', 'cho_factor', 'cho_solve', 'matmul',
+           'solve_triangular', 'get_config', 'get_instructions_per_task',
+           'electrocardiogram', 'memdet_sym', 'covariance_matrix',
+           'design_matrix']
 
 from .__version__ import __version__                          # noqa: F401 E402

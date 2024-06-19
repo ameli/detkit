@@ -1237,6 +1237,8 @@ def main(argv):
     # Cython cpp extensions
     extensions = []
 
+    extensions.append(create_extension(package_name, '_cy_linear_algebra'))
+
     extensions.append(create_extension(package_name, '_functions',
                                        other_source_dirs=[
                                            '_c_basic_algebra',

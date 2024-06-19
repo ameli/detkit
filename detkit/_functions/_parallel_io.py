@@ -30,6 +30,7 @@ def _transfer_slice(
         shared_mem_shape,
         order,
         trans,
+        perm_inv,
         operation,
         num_proc,
         proc_index):
@@ -51,18 +52,37 @@ def _transfer_slice(
                           buffer=existing_shared_mem.buf, order=order)
 
     if operation == 'r':
-        # Transfer from memmap to shared mem (reading from scratch space)
+        # Transfer from memmap to shared memory (reading from scratch space)
         if trans:
-            array[:, start_row:end_row] = memmap[
-                memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
-                memmap_col_range[0]:memmap_col_range[1]].T
+            if isinstance(perm_inv, numpy.ndarray):
+                # With row permutation
+                array[perm_inv, start_row:end_row] = memmap[
+                    memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
+                    memmap_col_range[0]:memmap_col_range[1]].T
+            else:
+                # No row permutation
+                array[:, start_row:end_row] = memmap[
+                    memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
+                    memmap_col_range[0]:memmap_col_range[1]].T
         else:
-            array[start_row:end_row, :] = memmap[
-                memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
-                memmap_col_range[0]:memmap_col_range[1]]
+            if isinstance(perm_inv, numpy.ndarray):
+                # With row permutation
+                array[perm_inv[start_row:end_row], :] = memmap[
+                    memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
+                    memmap_col_range[0]:memmap_col_range[1]]
+            else:
+                # No row permutation
+                array[start_row:end_row, :] = memmap[
+                    memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
+                    memmap_col_range[0]:memmap_col_range[1]]
 
     elif operation == 'w':
-        # Transfer from shared mem to memmap (writing to scrarch space)
+
+        if isinstance(perm_inv, numpy.ndarray):
+            raise RuntimeError('Permutation cannot be used for "write" ' +
+                               'operation.')
+
+        # Transfer from shared memory to memmap (writing to scratch space)
         if trans:
             memmap[
                 memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
@@ -93,6 +113,7 @@ def _parallel_io(
         shared_mem_shape,
         order,
         trans,
+        perm_inv,
         operation,
         num_proc=None):
     """
@@ -141,7 +162,8 @@ def _parallel_io(
         process = Process(target=_transfer_slice,
                           args=(memmap, memmap_row_range, memmap_col_range,
                                 shared_mem.name, shared_mem_shape, order,
-                                trans, operation, num_proc, proc_index))
+                                trans, perm_inv, operation, num_proc,
+                                proc_index))
 
         processes.append(process)
 
@@ -165,6 +187,7 @@ def load(
         shared_mem_shape,
         order,
         trans,
+        perm_inv,
         num_proc=None):
     """
     Load a slice of matrix to shared memory array in parallel.
@@ -172,7 +195,7 @@ def load(
 
     # Read operation
     _parallel_io(memmap, memmap_row_range, memmap_col_range, shared_mem,
-                 shared_mem_shape, order, trans, operation='r',
+                 shared_mem_shape, order, trans, perm_inv, operation='r',
                  num_proc=num_proc)
 
 
@@ -193,7 +216,10 @@ def store(
     Store a slice of matrix from shared memory array in parallel.
     """
 
+    # Performing no permutation for store operation
+    perm_inv = None
+
     # Write operation
     _parallel_io(memmap, memmap_row_range, memmap_col_range, shared_mem,
-                 shared_mem_shape, order, trans, operation='w',
+                 shared_mem_shape, order, trans, perm_inv, operation='w',
                  num_proc=num_proc)

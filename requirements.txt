@@ -5,3 +5,4 @@ pooch
 zarr
 dask
 distributed
+tensorstore

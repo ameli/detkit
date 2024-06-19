@@ -16,19 +16,18 @@ import numpy
 import scipy
 import tempfile
 from .memory import Memory
-from .parallel_io import load, store
+from ._parallel_io import load, store
 from multiprocessing import shared_memory
 import inspect
-from ._fill_triangle import fill_triangle
+from .._cy_linear_algebra import fill_triangle
 from .._openmp import get_avail_num_threads
 import time
 import shutil
 import zarr
 import dask
-import dask.array as da
-from dask.distributed import Client
 from ..__version__ import __version__
 from ._utilities import get_processor_name
+import tensorstore
 
 __all__ = ['memdet']
 
@@ -81,14 +80,17 @@ def _get_scratch_prefix():
 # get array
 # =========
 
-def _get_array(shared_mem, m, dtype, order):
+def _get_array(shared_mem, shape, dtype, order):
     """
     Get numpy array from shared memory buffer.
     """
 
+    if len(shape) != 2:
+        raise ValueError('"shape" should have length of two.')
+
     if isinstance(shared_mem, shared_memory.SharedMemory):
         # This is shared memory. Return its buffer.
-        return numpy.ndarray(shape=(m, m), dtype=dtype, order=order,
+        return numpy.ndarray(shape=shape, dtype=dtype, order=order,
                              buffer=shared_mem.buf)
 
     else:
@@ -150,36 +152,62 @@ def _permutation_parity(p_inv):
 # permute array
 # =============
 
-def _permute_array(array, perm, m, dtype, order):
+def _permute_array(array, perm_inv, shape, dtype, order):
     """
     Permutes rows of 2D array.
 
-    Note that this function overwrites the input array.
+    This function overwrites the input array. Note that this function creates
+    new memory, hence, is not memory efficient.
     """
 
     # Get buffer from shared memory
-    array_ = _get_array(array, m, dtype, order)
-
+    array_ = _get_array(array, shape, dtype, order)
     array_copy = numpy.copy(array_, order=order)
+    array_[perm_inv, :] = array_copy[:, :]
 
-    for i in range(len(perm)):
-        array_[i, :] = array_copy[perm[i], :]
+
+# =====
+# shift
+# =====
+
+def _shift(perm, shift):
+    """
+    Shifts a slice or permutation array.
+    """
+
+    if isinstance(perm, numpy.ndarray):
+        shifted_perm = perm + shift
+    elif isinstance(perm, slice):
+        start = perm.start + shift
+        stop = perm.stop + shift
+        step = perm.step
+        shifted_perm = slice(start, stop, step)
+    else:
+        raise ValueError('"perm" type is not recognized.')
+
+    return shifted_perm
 
 
 # =========
 # lu factor
 # =========
 
-def _lu_factor(A, m, dtype, order, overwrite):
+def _lu_factor(A, shape, dtype, order, overwrite, verbose=False):
     """
     Performs LU factorization of an input matrix.
     """
 
+    if verbose:
+        print('lu decompos ... ', end='', flush=True)
+
     # Get buffer from shared memory
-    A_ = _get_array(A, m, dtype, order)
+    A_ = _get_array(A, shape, dtype, order)
 
     lu, piv = scipy.linalg.lu_factor(A_, overwrite_a=overwrite,
                                      check_finite=False)
+
+    if verbose:
+        print('done', flush=True)
 
     return lu, piv
 
@@ -188,19 +216,28 @@ def _lu_factor(A, m, dtype, order, overwrite):
 # solve triangular
 # ================
 
-def _solve_triangular(lu, B, m, dtype, order, trans, lower, unit_diagonal,
-                      overwrite):
+def _solve_triangular(lu, B, shape, dtype, order, trans, lower, unit_diagonal,
+                      overwrite, verbose=False):
     """
     Solve triangular system of equations.
     """
 
+    if verbose:
+        if lower:
+            print('solve lotri ... ', end='', flush=True)
+        else:
+            print('solve uptri ... ', end='', flush=True)
+
     # Get buffer from shared memory
-    B_ = _get_array(B, m, dtype, order)
+    B_ = _get_array(B, shape, dtype, order)
 
     x = scipy.linalg.solve_triangular(lu, B_, trans=trans, lower=lower,
                                       unit_diagonal=unit_diagonal,
                                       check_finite=False,
                                       overwrite_b=overwrite)
+
+    if verbose:
+        print('done', flush=True)
 
     return x
 
@@ -209,7 +246,7 @@ def _solve_triangular(lu, B, m, dtype, order, trans, lower, unit_diagonal,
 # schur complement
 # ================
 
-def _schur_complement(L_t, U, S, m, dtype, order):
+def _schur_complement(L_t, U, S, shape, dtype, order, verbose=False):
     """
     Computes in-place Schur complement without allocating any intermediate
     memory. This method is parallel.
@@ -218,6 +255,9 @@ def _schur_complement(L_t, U, S, m, dtype, order):
     and S should be in Fortran ordering.
     """
 
+    if verbose:
+        print('schur compl ... ', end='', flush=True)
+
     alpha = -1
     beta = 1
     trans_a = 1
@@ -225,7 +265,7 @@ def _schur_complement(L_t, U, S, m, dtype, order):
     overwrite_c = 1
 
     # Get buffer from shared memory
-    S_ = _get_array(S, m, dtype, order)
+    S_ = _get_array(S, shape, dtype, order)
 
     # Check all matrices have Fortran ordering
     if not L_t.flags['F_CONTIGUOUS']:
@@ -243,6 +283,9 @@ def _schur_complement(L_t, U, S, m, dtype, order):
                                 overwrite_c)
     else:
         raise TypeError('dtype should be float64 or float32.')
+
+    if verbose:
+        print('done', flush=True)
 
 
 # ======
@@ -315,6 +358,10 @@ def memdet(
     Notes
     -----
 
+    for dask, make sure to use if-clause protection
+    https://pytorch.org/docs/stable/notes/windows.html
+    #multiprocessing-error-without-if-clause-protection
+
     Examples
     --------
 
@@ -343,6 +390,7 @@ def memdet(
     temp_dir = None
     scratch_file = ''
     scratch_nbytes = 0
+    num_scratch_blocks = 0
 
     # Keep time of load and store
     io = {
@@ -358,10 +406,10 @@ def memdet(
     m = (n + num_blocks - 1) // num_blocks
 
     if verbose:
-        print(f'matrix size: {n}')
-        print(f'num blocks: {num_blocks}')
-        print(f'block size: {m}')
-        print('dtype: %s' % str(dtype))
+        print(f'matrix size: {n}', flush=True)
+        print(f'num blocks: {num_blocks}', flush=True)
+        print(f'block size: {m}', flush=True)
+        print('dtype: %s' % str(dtype), flush=True)
 
     # Initialize time and set memory counter
     mem = Memory(chunk=n**2, dtype=dtype, unit='MB')
@@ -371,7 +419,9 @@ def memdet(
 
     # Start a Dask client to use multiple threads
     if (parallel_io == 'dask') and (num_blocks > 2):
-        client = Client()
+        client = dask.distributed.Client()
+        # lock = dask.utils.SerializableLock()
+        lock = False
 
     block_nbytes = numpy.dtype(dtype).itemsize * (m**2)
     if parallel_io == 'mp':
@@ -380,14 +430,40 @@ def memdet(
         A11 = numpy.empty((m, m), dtype=dtype, order=order)
 
     if verbose:
-        print('Allocated A11, %d bytes' % block_nbytes)
+        print('Allocated A11, %d bytes' % block_nbytes, flush=True)
+
+    # Context for tensorstore
+    if parallel_io == 'ts':
+        ts_context = tensorstore.Context({
+            'cache_pool': {
+                'total_bytes_limit': 1_000_000_000_000,
+            },
+            'data_copy_concurrency': {
+                'limit': get_avail_num_threads(),
+            }
+        })
 
     # Create dask for input data
     if parallel_io == 'dask':
         if isinstance(A, zarr.core.Array):
-            dask_A = da.from_zarr(A, chunks=(io_chunk, io_chunk))
+            dask_A = dask.array.from_zarr(A, chunks=(io_chunk, io_chunk))
         else:
-            dask_A = da.from_array(A, chunks=(io_chunk, io_chunk))
+            dask_A = dask.array.from_array(A, chunks=(io_chunk, io_chunk))
+    elif parallel_io == 'ts':
+
+        if isinstance(A, zarr.core.Array):
+            spec_1 = {
+                'driver': 'zarr',
+                'kvstore': {
+                    'driver': 'file',
+                    'path': A.store.path,
+                }
+            }
+
+            ts_A = tensorstore.open(spec_1, context=ts_context).result()
+        else:
+            raise RuntimeError('The "ts" parallel io can be used only for ' +
+                               'zarr arrays.')
 
     if num_blocks > 1:
 
@@ -399,10 +475,12 @@ def memdet(
             A21_t = numpy.empty((m, m), dtype=dtype, order=order)
 
         if verbose:
-            print('Allocated A12, %d bytes' % block_nbytes)
-            print('Allocated A21, %d bytes' % block_nbytes)
+            print('Allocated A12, %d bytes' % block_nbytes, flush=True)
+            print('Allocated A21, %d bytes' % block_nbytes, flush=True)
 
         if num_blocks > 2:
+
+            num_scratch_blocks = num_blocks * (num_blocks - 1) - 1
 
             if parallel_io == 'mp':
                 A22 = shared_memory.SharedMemory(create=True,
@@ -411,7 +489,7 @@ def memdet(
                 A22 = numpy.empty((m, m), dtype=dtype, order=order)
 
             if verbose:
-                print('Allocated A22, %d bytes' % block_nbytes)
+                print('Allocated A22, %d bytes' % block_nbytes, flush=True)
 
             # Scratch space to hold temporary intermediate blocks
             if parallel_io == 'mp':
@@ -436,11 +514,24 @@ def memdet(
                                     dtype=dtype, order=order)
 
                 if parallel_io == 'dask':
-                    dask_scratch = da.from_zarr(
+                    dask_scratch = dask.array.from_zarr(
                             scratch, chunks=(io_chunk, io_chunk))
+                elif parallel_io == 'ts':
+
+                    spec_2 = {
+                        'driver': 'zarr',
+                        'kvstore': {
+                            'driver': 'file',
+                            'path': scratch.store.path,
+                        }
+                    }
+
+                    # Open the Zarr array using tensorstore
+                    ts_scratch = tensorstore.open(
+                            spec_2, context=ts_context).result()
 
             if verbose:
-                print('created scratch space: %s.' % scratch_file)
+                print('created scratch space: %s.' % scratch_file, flush=True)
 
             # Cache table flagging which block is moved to scratch space. False
             # means the block is not yet on scratch space, True means it is
@@ -454,7 +545,7 @@ def memdet(
     # load block
     # ----------
 
-    def _load_block(array, i, j, trans=False):
+    def _load_block(array, i, j, trans=False, perm=None):
         """
         If triangle is 'l' or 'u', it replicates the other half of the
         triangle only if reading the original data from the input matrix. But
@@ -462,6 +553,13 @@ def memdet(
         half. This is because when data are stored to scratch space, all matrix
         is stored, not just a half triangle of it. Hence its loading should be
         full.
+
+        perm_inv is the inverse permutation of perm. The operation of
+        A[:, :] = B[perm, :] is equivalent to A[perm_inv, :] = B[:, :].
+        However, the latter creates additional memory of the same size as the
+        original matrix, and is much slower. This is because numpy copies a
+        slice and then permutes it. However, the first operation with perm_inv
+        does not create any additional memory and is very fast.
         """
 
         io['num_block_loads'] += 1
@@ -471,7 +569,7 @@ def memdet(
         init_load_proc_time = time.process_time()
 
         if verbose:
-            print('loading ... ', end='', flush=True)
+            print('loading blk ... ', end='', flush=True)
 
         if (num_blocks > 2) and (bool(cached[i, j]) is True):
             read_from_scratch = True
@@ -500,66 +598,152 @@ def memdet(
         else:
             j2 = m*(j_+1)
 
+        # Permutation of rows
+        if perm is not None:
+
+            # Row orders with permutation. perm_inv is the inverse of
+            # permutation to be applied on the target array, rather than the
+            # source array, while perm is applied to the source array. In the
+            # case of transpose, perm is applied to the columns of the source
+            # array, which is equivalent of taking the transpose first, then
+            # apply perm on the rows.
+            perm = numpy.array(perm)
+            perm_inv = numpy.argsort(perm)
+
+            if perm.ndim != 1:
+                raise ValueError('"perm" should be a 1D array.')
+            elif (((trans is False) and (perm.size != i2-i1)) or
+                  (trans is True) and (perm.size != j2-j1)):
+                raise ValueError('"perm" size does not match the slice size')
+
+            # When using perm on the source array, the indices should be
+            # shifted to start from the beginning of the block, but this is not
+            # necessary for perm_inv on target array.
+            if trans:
+                perm = _shift(perm, j1)
+            else:
+                perm = _shift(perm, i1)
+
+        else:
+            # Rows order with no permutation.
+            # Note: do not use numpy.arange(0, i2-i1) as this is much slower
+            # and takes much more memory than slice(0, i2-i1)
+            if trans:
+                perm = slice(j1, j2)
+                perm_inv = slice(0, j2-j1)
+            else:
+                perm = slice(i1, i2)
+                perm_inv = slice(0, i2-i1)
+
         if read_from_scratch:
 
             if parallel_io == 'mp':
-                # Read in parallel
+                # Read using multiprocessing
                 load(scratch, (i1, i2), (j1-m, j2-m), array, (m, m), order,
-                     trans, num_proc=None)
+                     trans, perm_inv, num_proc=None)
             else:
                 # Get buffer from shared memory
-                array_ = _get_array(array, m, dtype, order)
-
-                if parallel_io == 'dash':
-                    # Read from scratch
-                    if trans:
-                        with dask.config.set(scheduler='threads'):
-                            array_[:, :] = \
-                                da.store(dask_scratch[i1:i2, (j1-m):(j2-m)].T,
-                                         array_)
-                    else:
-                        with dask.config.set(scheduler='threads'):
-                            da.store(dask_scratch[i1:i2, (j1-m):(j2-m)],
-                                     array_)
-
-                else:
-                    # Read from scratch
-                    if trans:
-                        array_[:, :] = scratch[i1:i2, (j1-m):(j2-m)].T
-                    else:
-                        array_[:, :] = scratch[i1:i2, (j1-m):(j2-m)]
-        else:
-
-            if (parallel_io == 'mp') and isinstance(A, numpy.memmap):
-                # Read in parallel
-                load(A, (i1, i2), (j1, j2), array, (m, m), order, trans,
-                     num_proc=None)
-            else:
-
-                # Get buffer from shared memory
-                array_ = _get_array(array, m, dtype, order)
+                array_ = _get_array(array, (m, m), dtype, order)
 
                 if parallel_io == 'dask':
-                    # Read from original data
+                    # Read using dask
                     if trans:
                         with dask.config.set(scheduler='threads'):
-                            da.store(dask_A[i1:i2, j1:j2].T, array_)
+                            dask.array.store(
+                                    dask_scratch[i1:i2, (j1-m):(j2-m)].T,
+                                    array_, lock=lock)
                     else:
                         with dask.config.set(scheduler='threads'):
-                            da.store(dask_A[i1:i2, j1:j2], array_)
+                            dask.array.store(
+                                    dask_scratch[i1:i2, (j1-m):(j2-m)],
+                                    array_, lock=lock)
+
+                    # Dask cannot do permutation within store function. Do it
+                    # here manually
+                    if isinstance(perm, numpy.ndarray):
+                        _permute_array(array_, perm_inv, (m, m), dtype, order)
+
+                elif parallel_io == 'ts':
+                    # Read using tensorstore
+                    # For ts mode, when source is 'C' order and target is 'F'
+                    # order, using perm on source array is faster than
+                    # using perm_inv on target array. But, if source and target
+                    # have the same ordering, either perm or perm_inv have the
+                    # same performance. Here, array_ and scratch are both 'F'
+                    # ordering, so using either perm and perm_inv are fine.
+                    if trans:
+                        # Using perm in columns of source when transposing.
+                        array_[:, :] = \
+                            ts_scratch[i1:i2, _shift(perm, -m)].T.read(
+                                order=order).result()
+                    else:
+                        array_[:, :] = ts_scratch[perm, (j1-m):(j2-m)].read(
+                                order=order).result()
 
                 else:
-                    # Read from original data
+                    # Read using numpy. Here, using perm_inv on target array is
+                    # faster.
                     if trans:
-                        array_[:, :] = A[i1:i2, j1:j2].T
+                        array_[perm_inv, :] = scratch[i1:i2, (j1-m):(j2-m)].T
                     else:
-                        array_[:, :] = A[i1:i2, j1:j2]
+                        array_[perm_inv, :] = scratch[i1:i2, (j1-m):(j2-m)]
+
+        else:
+            # Reading from input array A (not from scratch)
+            if (parallel_io == 'mp') and isinstance(A, numpy.memmap):
+                # Read using multiprocessing
+                load(A, (i1, i2), (j1, j2), array, (m, m), order, trans,
+                     perm_inv, num_proc=None)
+            else:
+
+                # Get buffer from shared memory
+                array_ = _get_array(array, (m, m), dtype, order)
+
+                if parallel_io == 'dask':
+                    # Read using dask
+                    if trans:
+                        with dask.config.set(scheduler='threads'):
+                            dask.array.store(dask_A[i1:i2, j1:j2].T, array_,
+                                             lock=lock)
+                    else:
+                        with dask.config.set(scheduler='threads'):
+                            dask.array.store(dask_A[i1:i2, j1:j2], array_,
+                                             lock=lock)
+
+                    # Dask cannot do permutation within store function. Do it
+                    # here manually
+                    if isinstance(perm, numpy.ndarray):
+                        _permute_array(array_, perm_inv, (m, m), dtype, order)
+
+                elif parallel_io == 'ts':
+                    # Read using tensorstore
+                    # For ts mode, when source is 'C' order and target is 'F'
+                    # order, using perm on source array is faster than
+                    # using perm_inv on target array. But, if source and target
+                    # have the same ordering, either perm or perm_inv have the
+                    # same performance. Here, array_ is 'F' ordering while
+                    # ts_A is 'C' ordering, so using perm is preferred.
+                    if trans:
+                        # Using perm in columns of source when transposing.
+                        array_[:, :] = \
+                            ts_A[i1:i2, perm].T.read(order=order).result()
+                    else:
+                        array_[:, :] = ts_A[perm, j1:j2].read(
+                                order=order).result()
+
+                else:
+                    # Read using numpy. Here, using perm_inv on target array is
+                    # faster.
+                    if trans:
+                        array_[perm_inv, :] = A[i1:i2, j1:j2].T
+                    else:
+                        array_[perm_inv, :] = A[i1:i2, j1:j2]
 
         # Fill the other half of diagonal blocks (if input data is triangle)
         if (i == j) and (triangle is not None) and (not read_from_scratch):
 
             # Get buffer from shared memory
-            array_ = _get_array(array, m, dtype, order)
+            array_ = _get_array(array, (m, m), dtype, order)
 
             if (triangle == 'l'):
                 lower = True
@@ -591,7 +775,7 @@ def memdet(
         init_store_proc_time = time.process_time()
 
         if verbose:
-            print('storing ... ', end='', flush=True)
+            print('storing blk ... ', end='', flush=True)
 
         i1 = m*i
         if i == num_blocks-1:
@@ -612,13 +796,15 @@ def memdet(
                   num_proc=None)
         else:
             # Get buffer from shared memory
-            array_ = _get_array(array, m, dtype, order)
+            array_ = _get_array(array, (m, m), dtype, order)
 
             if parallel_io == 'dask':
                 with dask.config.set(scheduler='threads'):
-                    dask_array = da.from_array(
+                    dask_array = dask.array.from_array(
                             array_, chunks=(io_chunk, io_chunk))
                     scratch[i1:i2, (j1-m):(j2-m)] = dask_array.compute()
+            elif parallel_io == 'ts':
+                ts_scratch[i1:i2, (j1-m):(j2-m)].write(array_).result()
             else:
                 scratch[i1:i2, (j1-m):(j2-m)] = array_
 
@@ -654,7 +840,8 @@ def memdet(
             if k == 0:
                 _load_block(A11, k, k)
 
-            lu_11, piv = _lu_factor(A11, m, dtype, order, overwrite)
+            lu_11, piv = _lu_factor(A11, (m, m), dtype, order, overwrite,
+                                    verbose=verbose)
 
             # log-determinant
             diag_lu_11 = numpy.diag(lu_11)
@@ -674,10 +861,11 @@ def memdet(
                 _load_block(A21_t, i, k, trans=True)
 
                 # Solve upper-triangular system
-                l_21_t = _solve_triangular(lu_11, A21_t, m, dtype, order,
+                l_21_t = _solve_triangular(lu_11, A21_t, (m, m), dtype, order,
                                            trans='T', lower=False,
                                            unit_diagonal=False,
-                                           overwrite=overwrite)
+                                           overwrite=overwrite,
+                                           verbose=verbose)
 
                 if (i - k) % 2 == 0:
                     # Start space-filling curve in a forward direction in the
@@ -700,22 +888,27 @@ def memdet(
                     # loaded to memory
                     if ((i == num_blocks-1) or (j != j_start) or
                             (overwrite is False)):
-                        _load_block(A12, k, j)
+                        # _load_block(A12, k, j)
+                        if i == num_blocks-1:
+                            _load_block(A12, k, j, perm=perm)
+                        else:
+                            _load_block(A12, k, j, perm=None)
 
                     if i == num_blocks-1:
 
                         # Permute A12
-                        _permute_array(A12, perm, m, dtype, order)
+                        # _permute_array(A12, perm, (m, m), dtype, order)
 
                         # Solve lower-triangular system
                         u_12 = _solve_triangular(
-                                lu_11, A12, m, dtype, order, trans='N',
+                                lu_11, A12, (m, m), dtype, order, trans='N',
                                 lower=True, unit_diagonal=True,
-                                overwrite=overwrite)
+                                overwrite=overwrite,
+                                verbose=verbose)
 
                         # Check u_12 is actually overwritten to A12
                         if overwrite:
-                            A_12_array = _get_array(A12, m, dtype, order)
+                            A_12_array = _get_array(A12, (m, m), dtype, order)
                             if not numpy.may_share_memory(u_12, A_12_array):
                                 raise RuntimeError(
                                     '"A12" is not overwritten to "u_12".')
@@ -730,25 +923,29 @@ def memdet(
                             else:
                                 _store_block(u_12, k, j)
                     else:
-                        u_12 = _get_array(A12, m, dtype, order)
+                        u_12 = _get_array(A12, (m, m), dtype, order)
 
+                    # Compute Schur complement
                     if (i == k+1) and (j == k+1):
                         _load_block(A11, i, j)
-                        _schur_complement(l_21_t, u_12, A11, m, dtype, order)
+                        _schur_complement(l_21_t, u_12, A11, (m, m), dtype,
+                                          order, verbose=verbose)
                     else:
                         _load_block(A22, i, j)
-                        _schur_complement(l_21_t, u_12, A22, m, dtype, order)
+                        _schur_complement(l_21_t, u_12, A22, (m, m), dtype,
+                                          order, verbose=verbose)
                         _store_block(A22, i, j)
 
                     counter += 1
-                    print(f'progress: {counter:>3d}/{total_count:>3d}, ',
-                          end='', flush=True)
-                    print(f'diag: {k+1:>2d}, ', end='', flush=True)
-                    print(f'row: {i+1:>2d}, ', end='', flush=True)
-                    print(f'col: {j+1:>2d}', flush=True)
+                    if verbose:
+                        print(f'progress: {counter:>3d}/{total_count:>3d}, ',
+                              end='', flush=True)
+                        print(f'diag: {k+1:>2d}, ', end='', flush=True)
+                        print(f'row: {i+1:>2d}, ', end='', flush=True)
+                        print(f'col: {j+1:>2d}', flush=True)
 
         # concatenate diagonals of blocks of U
-        # diag = numpy.concatenate(diag)
+        diag = numpy.concatenate(diag)
 
         # record time
         tot_wall_time = time.time() - init_wall_time
@@ -792,7 +989,7 @@ def memdet(
         total_mem = mem.now()
         total_mem_peak = mem.peak()
 
-    # Shut down the Dask client
+    # Shut down Dask client
     if (parallel_io == 'dask') and (num_blocks > 2):
         client.close()
 
@@ -820,7 +1017,7 @@ def memdet(
                 'matrix_blocks': (num_blocks, num_blocks),
             },
             'scratch': {
-                'num_scratch_blocks': num_blocks * (num_blocks - 1) - 1,
+                'num_scratch_blocks': num_scratch_blocks,
                 'scratch_file': scratch_file,
                 'scratch_nbytes': scratch_nbytes,
                 'num_block_loads': io['num_block_loads'],

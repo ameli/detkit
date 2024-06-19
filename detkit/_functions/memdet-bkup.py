@@ -30,7 +30,7 @@ from dask.distributed import Client
 from ..__version__ import __version__
 from ._utilities import get_processor_name
 
-__all__ = ['memdet_sym']
+__all__ = ['memdet']
 
 
 # ============
@@ -184,44 +184,6 @@ def _lu_factor(A, m, dtype, order, overwrite):
     return lu, piv
 
 
-# ==========
-# ldl factor
-# ==========
-
-def _ldl_factor(A, m, dtype, order, overwrite):
-    """
-    Performs LDL factorization of an input matrix.
-    """
-
-    # Get buffer from shared memory
-    A_ = _get_array(A, m, dtype, order)
-
-    lu, d, perm = scipy.linalg.ldl(A_, overwrite_a=overwrite, lower=True,
-                                   check_finite=False)
-
-    return lu, d, perm
-
-
-# ==========
-# compute ld
-# ==========
-
-def _compute_ld(d):
-    """
-    Computes logdet from diagonals.
-    """
-
-    # TODO
-
-    # ld_ = 0
-    #
-    # for i in range(d.shape[0]):
-    #     if d[i, i] != 0:
-    #         ld_ += numpy.log(numpy.abs(d[i, i]))
-    #     if
-    #         ld_ = numpy.log
-
-
 # ================
 # solve triangular
 # ================
@@ -287,7 +249,7 @@ def _schur_complement(L_t, U, S, m, dtype, order):
 # memdet
 # ======
 
-def memdet_sym(
+def memdet(
         A,
         num_blocks=1,
         assume='gen',
@@ -695,20 +657,19 @@ def memdet_sym(
             if k == 0:
                 _load_block(A11, k, k)
 
-            # lu_11, piv = _lu_factor(A11, m, dtype, order, overwrite)
-            lu_11, d, perm = _ldl_factor(A11, m, dtype, order, overwrite)
+            lu_11, piv = _lu_factor(A11, m, dtype, order, overwrite)
 
             # log-determinant
-            diag_d_11 = numpy.diag(d)
-            ld += numpy.sum(numpy.log(numpy.abs(diag_d_11)))
+            diag_lu_11 = numpy.diag(lu_11)
+            ld += numpy.sum(numpy.log(numpy.abs(diag_lu_11)))
 
             # Sign of determinant
-            # perm = _pivot_to_permutation(piv)
+            perm = _pivot_to_permutation(piv)
             parity = _permutation_parity(perm)
-            sign *= numpy.prod(numpy.sign(diag_d_11)) * parity
+            sign *= numpy.prod(numpy.sign(diag_lu_11)) * parity
 
             # Save diagonals
-            diag.append(numpy.copy(diag_d_11))
+            diag.append(numpy.copy(diag_lu_11))
 
             # Row iterations
             for i in range(num_blocks-1, k, -1):
