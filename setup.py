@@ -1320,6 +1320,7 @@ def main(argv):
         python_requires='>=3.8',
         setup_requires=[
             'setuptools',
+            'scipy>=1.5',
             'cython>=0.29'],
         tests_require=[
             'pytest',
