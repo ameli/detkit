@@ -7,18 +7,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="Install" />
+<meta property="og:title" content="Memory" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ameli.github.io/install/install.html" />
+<meta property="og:url" content="https://ameli.github.io/generated/detkit.Memory.html" />
 <meta property="og:site_name" content="DetKit" />
-<meta property="og:description" content="For the majority of users, this package can be easily installed from Python wheels using either pip or conda. More information on installation can be found in the Install from Wheels or Install in Virtual Environment sections. Additionally, you can explore the Runtime Dependencies section to inst..." />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
-<meta name="description" content="For the majority of users, this package can be easily installed from Python wheels using either pip or conda. More information on installation can be found in the Install from Wheels or Install in Virtual Environment sections. Additionally, you can explore the Runtime Dependencies section to inst..." />
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>Install &#8212; detkit Manual</title>
+    <title>Memory &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -61,8 +59,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="1. Install from Wheels" href="install_wheels.html" />
-    <link rel="prev" title="detkit Documentation" href="../index.html" />
+    <link rel="next" title="Benchmark Test" href="../benchmark.html" />
+    <link rel="prev" title="get_instructions_per_task" href="detkit.get_instructions_per_task.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -118,8 +116,8 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../install/install.html">
   Install
  </a>
 </li>
@@ -130,7 +128,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 nav-item">
+<li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="../api.html">
   API Reference
  </a>
@@ -205,47 +203,131 @@
   <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
-    <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Install
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Main Functions
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.logdet.html">
+   logdet
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.loggdet.html">
+   loggdet
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.logpdet.html">
+   logpdet
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.memdet.html">
+   memdet
   </a>
  </li>
 </ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Supplementary
+ </span>
+</p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="install_wheels.html">
-   1. Install from Wheels
+  <a class="reference internal" href="detkit.orthogonalize.html">
+   orthogonalize
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="virtual_env.html">
-   2. Install in Virtual Environment
+  <a class="reference internal" href="detkit.ortho_complement.html">
+   ortho_complement
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="dependencies.html">
-   3. Runtime Dependencies
+  <a class="reference internal" href="detkit.lu_factor.html">
+   lu_factor
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="compile_source.html">
-   4. Compile from Source
+  <a class="reference internal" href="detkit.ldl_factor.html">
+   ldl_factor
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="gen_documentation.html">
-   5. Generate Documentation
+  <a class="reference internal" href="detkit.cho_factor.html">
+   cho_factor
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="test_package.html">
-   6. Test Package
+  <a class="reference internal" href="detkit.lu_solve.html">
+   lu_solve
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="troubleshooting.html">
-   7. Troubleshooting
+  <a class="reference internal" href="detkit.ldl_solve.html">
+   ldl_solve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.cho_solve.html">
+   cho_solve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.solve_triangular.html">
+   solve_triangular
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.matmul.html">
+   matmul
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Datasets
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.electrocardiogram.html">
+   electrocardiogram
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.covariance_matrix.html">
+   covariance_matrix
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.design_matrix.html">
+   design_matrix
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Utility Functions
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.get_config.html">
+   get_config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.get_instructions_per_task.html">
+   get_instructions_per_task
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Memory
   </a>
  </li>
 </ul>
@@ -267,9 +349,23 @@
     
     <div class="toc-item">
       
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#detkit.Memory">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     Memory
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
 </nav>
     </div>
     
@@ -277,7 +373,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/ameli/detkit/edit/main/docs/source/install/install.rst">
+    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.Memory.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -294,55 +390,29 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="install">
-<span id="id1"></span><h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h1>
-<p>For the majority of users, this package can be easily installed from Python wheels using either <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> or <a class="reference external" href="https://docs.conda.io/en/latest/">conda</a>. More information on installation can be found in the <a class="reference internal" href="install_wheels.html#install-wheels"><span class="std std-ref">Install from Wheels</span></a> or <a class="reference internal" href="virtual_env.html#virtual-env"><span class="std std-ref">Install in Virtual Environment</span></a> sections.</p>
-<p>Additionally, you can explore the <a class="reference internal" href="install_wheels.html#dependencies"><span class="std std-ref">Runtime Dependencies</span></a> section to install any required or optional runtime dependencies that might be necessary based on your specific requirements.</p>
-<p>For more advanced usage, there may be cases where you need to compile the package from its source code. Resources and instructions for compiling from source can be found in the <a class="reference internal" href="compile_source.html#compile-source"><span class="std std-ref">Compile from Source</span></a> and <a class="reference internal" href="gen_documentation.html#gen-documentation"><span class="std std-ref">Generate Documentation</span></a> sections. Instructions for testing the package are available in the <a class="reference internal" href="test_package.html#test-package"><span class="std std-ref">Test Package</span></a> section.</p>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="install_wheels.html">1. Install from Wheels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_wheels.html#install-with-pip">1.1. Install with <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_wheels.html#install-with-conda">1.2. Install with <code class="docutils literal notranslate"><span class="pre">conda</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="virtual_env.html">2. Install in Virtual Environment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="virtual_env.html#install-in-virtualenv-environment">2.1. Install in <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> Environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="virtual_env.html#install-in-conda-environment">2.2. Install in <code class="docutils literal notranslate"><span class="pre">conda</span></code> Environment</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dependencies.html">3. Runtime Dependencies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dependencies.html#openmp-required">3.1. OpenMP (<cite>Required</cite>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dependencies.html#perf-tool-optional">3.2. Perf Tool (<cite>Optional</cite>)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="compile_source.html">4. Compile from Source</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="compile_source.html#when-to-compile-project">4.1. When to Compile <span class="synco">detkit</span></a></li>
-<li class="toctree-l2"><a class="reference internal" href="compile_source.html#install-c-compiler-required">4.2. Install C++ Compiler (<cite>Required</cite>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compile_source.html#install-openmp-required">4.3. Install OpenMP (<cite>Required</cite>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compile_source.html#configure-compile-time-environment-variables-optional">4.4. Configure Compile-Time Environment Variables (<cite>Optional</cite>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compile_source.html#compile-and-install">4.5. Compile and Install</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gen_documentation.html">5. Generate Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_documentation.html#compile-package">5.1. Compile Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_documentation.html#generate-sphinx-documentation">5.2. Generate Sphinx Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="test_package.html">6. Test Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="test_package.html#test-with-pytest">6.1. Test with <code class="docutils literal notranslate"><span class="pre">pytest</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_package.html#test-with-tox">6.2. Test with <code class="docutils literal notranslate"><span class="pre">tox</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">7. Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#cannot-load-libomp">7.1. Cannot load <code class="docutils literal notranslate"><span class="pre">libomp</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#issue-of-initializing-libomp">7.2. Issue of Initializing <code class="docutils literal notranslate"><span class="pre">libomp</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <section id="memory">
+<h1>Memory<a class="headerlink" href="#memory" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="detkit.Memory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">Memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.Memory" title="Permalink to this definition">#</a></dt>
+<dd><p>Trace memory allocation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>unit</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'B'</span></code>, <code class="docutils literal notranslate"><span class="pre">'KB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'TB'</span></code>},             default=``’MB’``</span></dt><dd><p>Unit of the memory</p>
+</dd>
+<dt><strong>chunk</strong><span class="classifier">int, default=1</span></dt><dd><p>The reporting memory is divided by chunk. That ism, a chunk of memory
+is considered as one unit of memory. This is useful to compare the
+memory with the size of an array. For instance, for an array of size
+1000, if <code class="docutils literal notranslate"><span class="pre">chunk=100</span></code>, the reported memory becomes 1.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">str, default=’float64’</span></dt><dd><p>Data type</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -353,17 +423,17 @@
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="detkit.get_instructions_per_task.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title"><span class="synco">detkit</span> Documentation</p>
+          <p class="prev-next-title">get_instructions_per_task</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="install_wheels.html" title="next page">
+  <a class='right-next' id="next-link" href="../benchmark.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title"><span class="section-number">1. </span>Install from Wheels</p>
+      <p class="prev-next-title">Benchmark Test</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>

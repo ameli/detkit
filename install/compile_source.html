@@ -40,7 +40,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom-pydata.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
@@ -366,7 +366,7 @@
 <p class="rubric">Install GNU GCC Compiler</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-0">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-0">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
@@ -375,17 +375,17 @@ span.prompt1:before {
 </style><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>build-essential</span>
 </pre></div></div></div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-1">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-1">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;Development Tools&quot;</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-2">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-2">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;Development Tools&quot;</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-3">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="osx" for="sd-tab-item-3">
 macOS</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>gcc<span class="w"> </span>libomp</span>
 </pre></div></div></div>
@@ -396,12 +396,12 @@ macOS</label><div class="sd-tab-content docutils">
 </pre></div></div><p class="rubric">Install Clang/LLVN Compiler</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-4">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-4">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>clang<span class="w"> </span>libomp-dev</span>
 </pre></div></div></div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-5">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-5">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>yum-utils</span>
 <span class="prompt1">sudo<span class="w"> </span>yum-config-manager<span class="w"> </span>--enable<span class="w"> </span>extras</span>
@@ -409,7 +409,7 @@ CentOS 7</label><div class="sd-tab-content docutils">
 <span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>clang<span class="w"> </span>libomp-devel</span>
 </pre></div></div></div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-6">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-6">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>yum-utils</span>
 <span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>config-manager<span class="w"> </span>--enable<span class="w"> </span>extras</span>
@@ -417,7 +417,7 @@ RHEL 9</label><div class="sd-tab-content docutils">
 <span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>clang<span class="w"> </span>libomp-devel</span>
 </pre></div></div></div>
 <input id="sd-tab-item-7" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-7">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="osx" for="sd-tab-item-7">
 macOS</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>llvm<span class="w"> </span>libomp-dev</span>
 </pre></div></div></div>
@@ -429,12 +429,12 @@ macOS</label><div class="sd-tab-content docutils">
 <p>To install <cite>Intel Compiler</cite> see <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/overview.html">Intel oneAPI Base Toolkit</a>. Once installed, set the compiler’s required environment variables by</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-8">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-8">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">source</span><span class="w"> </span>/opt/intel/oneapi/setvars.sh</span>
 </pre></div></div></div>
 <input id="sd-tab-item-9" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-9">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-9">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt2:before {
@@ -452,22 +452,22 @@ span.prompt2:before {
 <p>OpenMP comes with the C++ compiler installed. However, you may alternatively install it directly on UNIX. Install <cite>OpenMP</cite> library on UNIX as follows:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-10">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-10">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libgomp1<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-11" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-11">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-11">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-12" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-12">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-12">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-13" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-13">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="osx" for="sd-tab-item-13">
 macOS</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>libomp</span>
 </pre></div></div></div>
@@ -490,12 +490,12 @@ macOS</label><div class="sd-tab-content docutils">
 <dt id="term-CYTHON_BUILD_IN_SOURCE"><code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_IN_SOURCE</span></code><a class="headerlink" href="#term-CYTHON_BUILD_IN_SOURCE" title="Permalink to this term">#</a></dt><dd><p>By default, this variable is set to <cite>0</cite>, in which the compilation process generates source files outside of the source directory, in <code class="docutils literal notranslate"><span class="pre">/build</span></code> directry. When it is set to <cite>1</cite>, the build files are generated in the source directory. To set this variable, run</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-14" name="sd-tab-set-4" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-14">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-14">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_IN_SOURCE</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-15" name="sd-tab-set-4" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-15">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-15">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:CYTHON_BUILD_IN_SOURCE</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -508,12 +508,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-CYTHON_BUILD_FOR_DOC"><code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code><a class="headerlink" href="#term-CYTHON_BUILD_FOR_DOC" title="Permalink to this term">#</a></dt><dd><p>Set this variable if you are building this documentation. By default, this variable is set to <cite>0</cite>. When it is set to <cite>1</cite>, the package will be built suitable for generating the documentation. To set this variable, run</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-16" name="sd-tab-set-5" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-16">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-16">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-17" name="sd-tab-set-5" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-17">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-17">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -530,12 +530,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-DEBUG_MODE"><code class="docutils literal notranslate"><span class="pre">DEBUG_MODE</span></code><a class="headerlink" href="#term-DEBUG_MODE" title="Permalink to this term">#</a></dt><dd><p>By default, this variable is set to <cite>0</cite>, meaning that <span class="synco">detkit</span> is compiled without debugging mode enabled. By enabling debug mode, you can debug the code with tools such as <code class="docutils literal notranslate"><span class="pre">gdb</span></code>. Set this variable to <cite>1</cite> to enable debugging mode by</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-18">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-18">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">DEBUG_MODE</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-19" name="sd-tab-set-6" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-19">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-19">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:DEBUG_MODE</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -548,12 +548,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-LONG_INT"><code class="docutils literal notranslate"><span class="pre">LONG_INT</span></code><a class="headerlink" href="#term-LONG_INT" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, long integers are used. By default, this variable is set to <cite>0</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-20" name="sd-tab-set-7" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-20">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-20">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">LONG_INT</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-21" name="sd-tab-set-7" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-21">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-21">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:LONG_INT</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -562,12 +562,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-UNSIGNED_LONG_INT"><code class="docutils literal notranslate"><span class="pre">UNSIGNED_LONG_INT</span></code><a class="headerlink" href="#term-UNSIGNED_LONG_INT" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, unsigned long integers are used. By default, this variable is set to <cite>0</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-22" name="sd-tab-set-8" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-22">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-22">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">UNSIGNED_LONG_INT</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-23" name="sd-tab-set-8" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-23">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-23">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:UNSIGNED_LONG_INT</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -576,12 +576,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-USE_OPENMP"><code class="docutils literal notranslate"><span class="pre">USE_OPENMP</span></code><a class="headerlink" href="#term-USE_OPENMP" title="Permalink to this term">#</a></dt><dd><p>To enable shared-memory parallelization uisng OpenMP, set this variable to <cite>1</cite> and make sure OpenMP is installed (see <a class="reference internal" href="#install-openmp"><span class="std std-ref">Install OpenMP</span></a>). Setting this variable to <cite>0</cite> disables this feature. By default, this variable is set to <cite>0</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-24" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-24">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-24">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">USE_OPENMP</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-25" name="sd-tab-set-9" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-25">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-25">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:USE_OPENMP</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -590,7 +590,7 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-COUNT_PERF"><code class="docutils literal notranslate"><span class="pre">COUNT_PERF</span></code><a class="headerlink" href="#term-COUNT_PERF" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, the processor instructions are counted and returned by each function This functionalit is only available on Linux and requires that <code class="docutils literal notranslate"><span class="pre">perf_tool</span></code> is installed. By default, this variable is set to <cite>1</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-26" name="sd-tab-set-10" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-26">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-26">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">COUNT_PERF</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
@@ -599,12 +599,12 @@ UNIX</label><div class="sd-tab-content docutils">
 <dt id="term-USE_LOOP_UNROLLING"><code class="docutils literal notranslate"><span class="pre">USE_LOOP_UNROLLING</span></code><a class="headerlink" href="#term-USE_LOOP_UNROLLING" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, matrix and vector multiplications are peroformed in chunks of 5 conseqqutive addition-multiplication operations. By default, this variable is set to <cite>1</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-27" name="sd-tab-set-11" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-27">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-27">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">USE_LOOP_UNROLLING</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-28" name="sd-tab-set-11" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-28">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-28">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:USE_LOOP_UNROLLING</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -613,12 +613,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <dt id="term-USE_SYMMETRY"><code class="docutils literal notranslate"><span class="pre">USE_SYMMETRY</span></code><a class="headerlink" href="#term-USE_SYMMETRY" title="Permalink to this term">#</a></dt><dd><p>When set to <cite>1</cite>, Gramian matrices are computed using symmetry of the Gamian matrix. By default, this variable is set to <cite>1</cite>.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-29" name="sd-tab-set-12" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-29">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-29">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">USE_SYMMETRY</span><span class="o">=</span><span class="m">1</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-30" name="sd-tab-set-12" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-30">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-30">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$env:USE_SYMMETRY</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span></span>
 </pre></div></div></div>
@@ -639,7 +639,7 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p>If you are using <code class="docutils literal notranslate"><span class="pre">sudo</span></code> for the above command, add <code class="docutils literal notranslate"><span class="pre">-E</span></code> option to <code class="docutils literal notranslate"><span class="pre">sudo</span></code> to make sure the environment variables (if you have set any) are accessible to the root user. For instance</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-31" name="sd-tab-set-13" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-31">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-31">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span>
 sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
@@ -647,7 +647,7 @@ sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </s
 </div>
 </div>
 <input id="sd-tab-item-32" name="sd-tab-set-13" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-32">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-32">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-PowerShell notranslate"><div class="highlight"><pre><span></span><span class="nv">$env:CYTHON_BUILD_FOR_DOC</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span>
 <span class="n">sudo</span> <span class="n">-E</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span>

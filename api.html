@@ -11,10 +11,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ameli.github.io/api.html" />
 <meta property="og:site_name" content="DetKit" />
-<meta property="og:description" content="Main functions Orthogonalization Datasets Utilities" />
+<meta property="og:description" content="Main functions Functions for computing determinant and related quantities of matrices. Supplementary functions Functions for level-3 matrix operations and matrix factorizations. Datasets Functions to create sample dataset to be used for test and benchmarking purposes. Utilities Utility functions ..." />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
-<meta name="description" content="Main functions Orthogonalization Datasets Utilities" />
+<meta name="description" content="Main functions Functions for computing determinant and related quantities of matrices. Supplementary functions Functions for level-3 matrix operations and matrix factorizations. Datasets Functions to create sample dataset to be used for test and benchmarking purposes. Utilities Utility functions ..." />
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
@@ -40,7 +40,7 @@
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom-pydata.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
@@ -226,10 +226,15 @@
    logpdet
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.memdet.html">
+   memdet
+  </a>
+ </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Orthogonalization
+  Supplementary
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -241,6 +246,46 @@
  <li class="toctree-l1">
   <a class="reference internal" href="generated/detkit.ortho_complement.html">
    ortho_complement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.lu_factor.html">
+   lu_factor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.ldl_factor.html">
+   ldl_factor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.cho_factor.html">
+   cho_factor
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.lu_solve.html">
+   lu_solve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.ldl_solve.html">
+   ldl_solve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.cho_solve.html">
+   cho_solve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.solve_triangular.html">
+   solve_triangular
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.matmul.html">
+   matmul
   </a>
  </li>
 </ul>
@@ -280,6 +325,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="generated/detkit.get_instructions_per_task.html">
    get_instructions_per_task
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.Memory.html">
+   Memory
   </a>
  </li>
 </ul>
@@ -331,6 +381,7 @@
   <section id="api-reference">
 <span id="api"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this heading">#</a></h1>
 <p class="rubric">Main functions</p>
+<p>Functions for computing determinant and related quantities of matrices.</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logdet.html#detkit.logdet" title="detkit.logdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logdet</span></code></a>(A[, sym_pos, overwrite_A, ...])</p></td>
@@ -342,9 +393,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.logpdet.html#detkit.logpdet" title="detkit.logpdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.logpdet</span></code></a>(A, X[, Xp, method, sym_pos, ...])</p></td>
 <td><p>Computes the <cite>logpdet</cite> of a matrix.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.memdet.html#detkit.memdet" title="detkit.memdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.memdet</span></code></a>(A[, num_blocks, assume, ...])</p></td>
+<td><p>Compute log-determinant on contained memory.</p></td>
+</tr>
 </tbody>
 </table>
-<p class="rubric">Orthogonalization</p>
+<p class="rubric">Supplementary functions</p>
+<p>Functions for level-3 matrix operations and matrix factorizations.</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.orthogonalize.html#detkit.orthogonalize" title="detkit.orthogonalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.orthogonalize</span></code></a>(A)</p></td>
@@ -353,9 +408,34 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.ortho_complement.html#detkit.ortho_complement" title="detkit.ortho_complement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.ortho_complement</span></code></a>(Xp, X[, X_orth])</p></td>
 <td><p>Orthogonalizes the columns of matrix <cite>Xp</cite> against <cite>X</cite>.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.lu_factor.html#detkit.lu_factor" title="detkit.lu_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.lu_factor</span></code></a>(A[, shape, overwrite])</p></td>
+<td><p>LU decomposition of a sub-matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.ldl_factor.html#detkit.ldl_factor" title="detkit.ldl_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.ldl_factor</span></code></a>(A[, m, lower, overwrite, ...])</p></td>
+<td><p>LDL decomposition of a sub-matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.cho_factor.html#detkit.cho_factor" title="detkit.cho_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.cho_factor</span></code></a>(A[, m, lower, overwrite])</p></td>
+<td><p>Cholesky decomposition of a sub-matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.lu_solve.html#detkit.lu_solve" title="detkit.lu_solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.lu_solve</span></code></a>(lu, perm, B[, shape, trans, ...])</p></td>
+<td><p>Solve linear system given a sub-matrix output of LU decomposition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.ldl_solve.html#detkit.ldl_solve" title="detkit.ldl_solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.ldl_solve</span></code></a>(ldu, piv, B[, shape, ...])</p></td>
+<td><p>Solve symmetric positive-definite linear system given a sub-matrix of Cholesky decomposition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.cho_solve.html#detkit.cho_solve" title="detkit.cho_solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.cho_solve</span></code></a>(cho, B[, shape, lower, ...])</p></td>
+<td><p>Solve symmetric positive-definite linear system given a sub-matrix output of Cholesky decomposition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.solve_triangular.html#detkit.solve_triangular" title="detkit.solve_triangular"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.solve_triangular</span></code></a>(A, B[, shape, ...])</p></td>
+<td><p>Solve triangular linear system given a sub-matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.matmul.html#detkit.matmul" title="detkit.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.matmul</span></code></a>(A, B, C[, shape, trans_a, ...])</p></td>
+<td><p>Matrix-matrix multiplication for sub-matrices.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Datasets</p>
+<p>Functions to create sample dataset to be used for test and benchmarking purposes.</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.electrocardiogram.html#detkit.electrocardiogram" title="detkit.electrocardiogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.electrocardiogram</span></code></a>([start, end, ...])</p></td>
@@ -370,6 +450,7 @@
 </tbody>
 </table>
 <p class="rubric">Utilities</p>
+<p>Utility functions for profiling memory and process.</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.get_config.html#detkit.get_config" title="detkit.get_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_config</span></code></a>([key])</p></td>
@@ -377,6 +458,9 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.get_instructions_per_task.html#detkit.get_instructions_per_task" title="detkit.get_instructions_per_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_instructions_per_task</span></code></a>([task, dtype])</p></td>
 <td><p>Counts the hardware instructions of computing a single FLOP of a benchmark task on the current processor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.Memory.html#detkit.Memory" title="detkit.Memory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Memory</span></code></a>([unit, chunk, dtype])</p></td>
+<td><p>Trace memory allocation.</p></td>
 </tr>
 </tbody>
 </table>

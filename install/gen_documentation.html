@@ -40,7 +40,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom-pydata.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
@@ -325,13 +325,13 @@ span.prompt1:before {
 <p>Set <code class="docutils literal notranslate"><span class="pre">CYTHON_BUILD_FOR_DOC</span></code> to <cite>1</cite> (see <a class="reference internal" href="compile_source.html#config-env-variables"><span class="std std-ref">Configure Compile-Time Environment variables</span></a>). Compile and install the package by</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-0">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-0">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">CYTHON_BUILD_FOR_DOC</span><span class="o">=</span><span class="m">1</span></span>
 <span class="prompt1">sudo<span class="w"> </span>-E<span class="w"> </span>python<span class="w"> </span>setup.py<span class="w"> </span>install</span>
 </pre></div></div></div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-1">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-1">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt2:before {
@@ -347,27 +347,27 @@ span.prompt2:before {
 <p>Install <a class="reference external" href="https://pandoc.org/">Pandoc</a> by</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-2">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-2">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-3">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-3">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-4">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-4">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-5">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="osx" for="sd-tab-item-5">
 macOS</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>pandoc<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-6">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-6">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="n">scoop</span> <span class="n">install</span> <span class="n">pandoc</span></span>
 </pre></div></div></div>
@@ -377,13 +377,13 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 </pre></div></div><p>The above command installs the required packages in Python’s path directory. Make sure python’s directory is on the <cite>PATH</cite>, for instance, by</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-7">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-7">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTHON_PATH</span><span class="o">=</span><span class="sb">`</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="sb">`</span></span>
 <span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PYTHON_PATH</span><span class="si">}</span>:<span class="nv">$PATH</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-8">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-8">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nv">$PYTHON_PATH</span> <span class="p">=</span> <span class="p">(</span><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import os, sys; print(os.path.dirname(sys.executable))&quot;</span><span class="p">)</span></span>
 <span class="prompt2"><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;$PYTHON_PATH&quot;</span></span>
@@ -392,12 +392,12 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p>Now, build the documentation:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="unix" for="sd-tab-item-9">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="unix" for="sd-tab-item-9">
 UNIX</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">make<span class="w"> </span>clean<span class="w"> </span>html<span class="w"> </span>--directory<span class="o">=</span>docs</span>
 </pre></div></div></div>
 <input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
-</input><label class="sd-tab-label" data-sync-id="win" for="sd-tab-item-10">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="win" for="sd-tab-item-10">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt2"><span class="nb">cd </span><span class="n">docs</span></span>
 <span class="prompt2"><span class="n">make</span><span class="p">.</span><span class="n">bat</span> <span class="n">clean</span> <span class="n">html</span></span>

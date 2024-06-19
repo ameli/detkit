@@ -40,7 +40,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom-pydata.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" />
 
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
@@ -334,7 +334,7 @@
 <p>Below are the specific installation for each operating system:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-0">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-0">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
 span.prompt1:before {
@@ -343,17 +343,17 @@ span.prompt1:before {
 </style><span class="prompt1">sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libgomp1<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-1">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-1">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-2">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-2">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>libgomp<span class="w"> </span>-y</span>
 </pre></div></div></div>
 <input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
-</input><label class="sd-tab-label" data-sync-id="osx" for="sd-tab-item-3">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="osx" for="sd-tab-item-3">
 macOS</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>libomp</span>
 </pre></div></div></div>
@@ -374,17 +374,17 @@ macOS</label><div class="sd-tab-content docutils">
 <p><span class="synco">detkit</span> can count the FLOPs of the computations, if the argument <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> is used in the functions (see <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>). To this end, the <a class="reference external" href="https://perf.wiki.kernel.org/index.php/Main_Page">Linux Performance Counter tool</a>, known as <code class="docutils literal notranslate"><span class="pre">perf</span></code> should be installed.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="ubuntu" for="sd-tab-item-4">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-4">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>linux-tools-common<span class="w"> </span>linux-tools-generic<span class="w"> </span>linux-tools-<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="centos" for="sd-tab-item-5">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-5">
 CentOS 7</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
-</input><label class="sd-tab-label" data-sync-id="rhel" for="sd-tab-item-6">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-6">
 RHEL 9</label><div class="sd-tab-content docutils">
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
