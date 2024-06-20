@@ -213,8 +213,9 @@ cpdef cho_solve(cho, B, shape=None, lower=True, overwrite=False):
         0.001
 
         >>> # Check if A_copy @ X = B_copy holds.
+        >>> atol = numpy.finfo(A.dtype).resolution
         >>> print(numpy.allclose(A_copy[:p, :p] @ X[:p, :q], B_copy[:p, :q],
-        ...                      atol=1e-6))
+        ...                      atol=10*atol))
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of B

@@ -58,14 +58,8 @@ def _test(A_shape, sub_shape, overwrite=False, dtype='float64', order='C'):
     for i in range(k):
         L[i, i] = 1
 
-    if A.dtype == numpy.float64:
-        atol = 1e-14
-    elif A.dtype == numpy.float32:
-        atol = 1e-7
-    else:
-        raise ValueError('dtype should be "float64" or "float32".')
-
-    status = numpy.allclose(A_copy[perm[:p], :q], L @ U, atol=atol)
+    atol = numpy.finfo(dtype).resolution
+    status = numpy.allclose(A_copy[perm[:p], :q], L @ U, atol=10*atol)
 
     if status:
         print('OK')

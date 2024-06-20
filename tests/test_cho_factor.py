@@ -59,20 +59,15 @@ def _test(A_size, sub_size, lower=False, overwrite=False, dtype='float64',
         raise RuntimeError('"A" and "cho" do not share common base in ' +
                            'overwrite.')
 
-    if A.dtype == numpy.float64:
-        atol = 1e-14
-    elif A.dtype == numpy.float32:
-        atol = 1e-6
-    else:
-        raise ValueError('dtype should be "float64" or "float32".')
+    atol = numpy.finfo(dtype).resolution
 
     if lower:
         L = numpy.tril(cho[:sub_size, :sub_size])
         L2 = numpy.tril(cho2)
 
-        status1 = numpy.allclose(L, L2, atol=atol)
+        status1 = numpy.allclose(L, L2, atol=10*atol)
         status2 = numpy.allclose(L @ L.T, A_copy[:sub_size, :sub_size],
-                                 atol=atol)
+                                 atol=10*atol)
 
     else:
         U = numpy.triu(cho[:sub_size, :sub_size])

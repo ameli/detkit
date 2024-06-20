@@ -17,6 +17,11 @@
 // Definitions
 // ===========
 
+// To suppress warning: __STDC_VERSION__" is not defined, evaluates to 0
+// #ifndef __STDC_VERSION__
+//     #define __STDC_VERSION__ 0
+// #endif
+
 // If set to 0, the LongIndexType is declared as 32-bit integer. Whereas if set
 // to 1, the LongIndexType is declared as 64-bit integer. The long integer will
 // slow down the performance on reading array if integers. Note that in C++,
@@ -57,9 +62,11 @@
     #define UNSIGNED_LONG_INT 0
 #endif
 
-// If enabled, it uses openmp to parallelize matrix-matrix multiplications.
-#ifndef USE_OPENMP
-    #define USE_OPENMP 0
+// If USE_LOOP_UNROLLING is set to 1, the for loops in dense matrix-vector
+// multiplications and vector-vector multiplications use loop unrolling.
+// Otherwise set to 0. Default is 1.
+#ifndef USE_LOOP_UNROLLING
+    #define USE_LOOP_UNROLLING 1
 #endif
 
 // If set to 1, the InstructionCounter class will count the hardware
@@ -69,10 +76,11 @@
     #define COUNT_PERF 1
 #endif
 
-// If enabled, the matrix-matrix multiplications are performed in chinks of 5
-// consecutive additions, similar to BLAS.
-#ifndef USE_LOOP_UNROLLING
-    #define USE_LOOP_UNROLLING 1
+// If USE_OPENMP is set to 1, the OpenMP for shared-memory parallelization will
+// be enabled. Otherwise, set this to 0. You can also set this as an
+// environment variable, or in setup.py script.
+#ifndef USE_OPENMP
+    #define USE_OPENMP 0
 #endif
 
 // If enabled, to compute Gramian matrices as transpose of matrix multiplied

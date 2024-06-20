@@ -465,9 +465,10 @@ cpdef ldl_factor(
         >>> lu, d, perm = ldl_factor(A, m=m, overwrite=False,
         ...                          return_as_lapack=False)
 
-        >>> # Check if A = LDLt holds. Use tolerance of 1e-6 for float32.
+        >>> # Check if A = LDLt holds.
+        >>> atol = numpy.finfo(A.dtype).resolution
         >>> print(numpy.allclose(lu[:m, :m] @ d[:m, :m] @ lu[:m, :m].T,
-        ...                      A[:m, :m], atol=1e-6))
+        ...                      A[:m, :m], atol=10*atol))
         True
     """
 

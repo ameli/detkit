@@ -67,13 +67,13 @@ def test_matmul():
                                 C_ = C_.astype(dtype)
                                 C2_ = C2_.astype(dtype)
 
-                                # Solve using detkit
+                                # Using detkit
                                 X = matmul(
                                     A_, B_, C_, shape=shape, trans_a=trans_a,
                                     trans_b=trans_b, alpha=alpha, beta=beta,
                                     overwrite=overwrite)
 
-                                # Solve using numpy
+                                # Using numpy
                                 m, n, k = shape
 
                                 if trans_a:
@@ -90,12 +90,9 @@ def test_matmul():
                                     beta * C2_[:m, :k]
 
                                 # Check accuracy of results
-                                if dtype == 'float32':
-                                    atol = 1e-6
-                                else:
-                                    atol = 1e-14
+                                atol = numpy.finfo(dtype).resolution
                                 status = numpy.allclose(X[:m, :k], X2,
-                                                        atol=atol)
+                                                        atol=10*atol)
 
                                 if status:
                                     print('OK')

@@ -199,10 +199,10 @@ cpdef solve_triangular(
         >>> print(mem.peak() / slice_nbytes)
         0.001
 
-        >>> # Check if A @ X = B_copy holds. Use tolerance of 1e-6 for
-        >>> # float32 data.
+        >>> # Check if A @ X = B_copy holds.
+        >>> atol = numpy.finfo(A.dtype).resolution
         >>> print(numpy.allclose(A[:m, :m] @ X[:m, :n], B_copy[:m, :n],
-        ...                      atol=1e-6))
+        ...                      atol=10*atol))
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of B

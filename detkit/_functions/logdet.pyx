@@ -14,8 +14,7 @@
 import numpy
 from ._utilities import get_data_type_name
 from .sy_logdet import sy_logdet
-from .._definitions.types cimport DataType, LongIndexType, FlagType, \
-        MemoryViewIndexType, MemoryViewFlagType
+from .._definitions.types cimport DataType, LongIndexType, FlagType
 from .._c_linear_algebra.c_matrix_functions cimport cMatrixFunctions
 
 # To avoid cython's bug that does not recognizes "long double" in template []

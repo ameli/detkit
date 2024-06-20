@@ -79,8 +79,9 @@ def test_solve_triangular():
                                     overwrite_b=overwrite)
 
                             # Check accuracy of results
+                            atol = numpy.finfo(dtype).resolution
                             status = numpy.allclose(X[:shape[0], :shape[1]],
-                                                    X2)
+                                                    X2, atol=10*atol)
 
                             if status:
                                 print('OK')

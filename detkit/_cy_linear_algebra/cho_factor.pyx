@@ -171,8 +171,9 @@ cpdef cho_factor(A, m=None, lower=True, overwrite=False):
         >>> for i in range(k):
         ...    L[i, i] = 1.0
 
-        >>> # Check if A_copy = PLU holds. Use tolerance of 1e-6 for float32.
-        >>> print(numpy.allclose(A_copy[perm[:p], :q], L @ U, atol=1e-6))
+        >>> # Check if A_copy = PLU holds.
+        >>> atol = numpy.finfo(A.dtype).resolution
+        >>> print(numpy.allclose(A_copy[perm[:p], :q], L @ U, atol=10*atol))
         True
 
         >>> # When overwrite is set to True, check if lu is indeed a view of A

@@ -70,6 +70,10 @@ document.addEventListener("adobe_dc_view_sdk.ready", function () {
     });
 
     document.getElementById("showPDF02").addEventListener("click", function () {
+        showPDF("https://arxiv.org/pdf/2207.08038.pdf")
+    });
+
+    document.getElementById("showPDF03").addEventListener("click", function () {
         showPDF("https://arxiv.org/pdf/2206.09976.pdf")
     });
 });

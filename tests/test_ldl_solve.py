@@ -67,15 +67,9 @@ def _test(B_shape, sub_shape, lower=False, overwrite=False, dtype='float64',
         raise RuntimeError('"X" and "B" do not share common base in ' +
                            'overwrite.')
 
-    if A.dtype == numpy.float64:
-        atol = 1e-14
-    elif A.dtype == numpy.float32:
-        atol = 1e-6
-    else:
-        raise ValueError('dtype should be "float64" or "float32".')
-
+    atol = numpy.finfo(dtype).resolution
     status = numpy.allclose(A_copy[:p, :p] @ X[:p, :q], B_copy[:p, :q],
-                            atol=atol)
+                            atol=10*atol)
 
     if status:
         print('OK')

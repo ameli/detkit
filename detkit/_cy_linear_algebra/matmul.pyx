@@ -217,10 +217,10 @@ cpdef matmul(
         >>> print(mem.peak() / slice_nbytes)
         0.001
 
-        >>> # Check if alpha * A @ B + beta * C_copy = X holds. Use tolerance
-        >>> # of 1e-6 for float32 data.
+        >>> # Check if alpha * A @ B + beta * C_copy = X holds.
+        >>> atol = numpy.finfo(A.dtype).resolution
         >>> print(numpy.allclose(alpha * A[:m, :n] @ B[:n, :k] +
-        ...                beta * C_copy[:m, :k], X[:m, :k], atol=1e-6*m))
+        ...                beta * C_copy[:m, :k], X[:m, :k], atol=10*tol))
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of C

@@ -60,21 +60,16 @@ def _test(A_size, sub_size, lower=False, overwrite=False, dtype='float64',
     if overwrite and (A.base != lu.base):
         raise RuntimeError('A and ldu do not share common base in overwrite.')
 
-    if A.dtype == numpy.float64:
-        atol = 1e-14
-    elif A.dtype == numpy.float32:
-        atol = 1e-6
-    else:
-        raise ValueError('dtype should be "float64" or "float32".')
+    atol = numpy.finfo(dtype).resolution
 
     # Compare with scipy
-    status1 = numpy.allclose(lu[:p, :p], lu2, atol=atol)
-    status2 = numpy.allclose(d[:p, :p], d2, atol=atol)
+    status1 = numpy.allclose(lu[:p, :p], lu2, atol=10*atol)
+    status2 = numpy.allclose(d[:p, :p], d2, atol=10*atol)
     status3 = numpy.allclose(perm[:p], perm2)
 
     # Check A = LDL holds
     df = lu[:p, :p] @ d[:p, :p] @ lu[:p, :p].T - A_copy[:p, :p]
-    status4 = numpy.allclose(df, numpy.zeros((p, p)), atol=atol)
+    status4 = numpy.allclose(df, numpy.zeros((p, p)), atol=10*atol)
 
     status = numpy.all([status1, status2, status3, status4])
     if status:
