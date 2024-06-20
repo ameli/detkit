@@ -2,7 +2,7 @@ numpy>1.11
 scipy>=1.5
 matplotlib>=2.0
 pooch
-zarr
-dask
-distributed
-tensorstore
+zarr; platform_python_implementation == "CPython"
+dask; platform_python_implementation == "CPython"
+distributed; platform_python_implementation == "CPython"
+tensorstore; platform_python_implementation == "CPython"

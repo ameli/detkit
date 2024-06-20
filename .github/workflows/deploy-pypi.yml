@@ -87,6 +87,8 @@ jobs:
                   COUNT_PERF: 0
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
+                  # The gcc below installs gfortran. gfortran and openblas are only needed for pypy as it compiles scipy from source.
+                  CIBW_BEFORE_BUILD: brew install libomp; brew reinstall gcc; bash ./tools/wheels/install_openblas.sh "${{ matrix.python-version }}"
               with:
                 output-dir: wheelhouse
 
@@ -108,6 +110,7 @@ jobs:
                   COUNT_PERF: 1
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
+                  CIBW_BEFORE_BUILD: bash ./tools/wheels/install_openblas.sh "${{ matrix.python-version }}"
               with:
                 output-dir: wheelhouse
 
