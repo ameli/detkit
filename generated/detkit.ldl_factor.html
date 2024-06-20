@@ -207,7 +207,7 @@
     
     <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Main Functions
+  Matrix Determinant
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -263,6 +263,13 @@
    cho_factor
   </a>
  </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Solving Linear Systems
+ </span>
+</p>
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detkit.lu_solve.html">
    lu_solve
@@ -283,6 +290,13 @@
    solve_triangular
   </a>
  </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  BLAS Operations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detkit.matmul.html">
    matmul
@@ -580,9 +594,10 @@ during the operation.</p>
 <span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">lu</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">perm</span> <span class="o">=</span> <span class="n">ldl_factor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                         <span class="n">return_as_lapack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check if A = LDLt holds. Use tolerance of 1e-6 for float32.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check if A = LDLt holds.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atol</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">resolution</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lu</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">]</span> <span class="o">@</span> <span class="n">d</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">]</span> <span class="o">@</span> <span class="n">lu</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-<span class="gp">... </span>                     <span class="n">A</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">))</span>
+<span class="gp">... </span>                     <span class="n">A</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:</span><span class="n">m</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">atol</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>

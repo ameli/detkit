@@ -3,7 +3,7 @@
 
 |license| |deploy-docs|
 
-A python package to compute some common functions involving determinant of matrices used in machine learning.
+A python package to compute common functions involving determinant of matrices used in machine learning.
 
 .. grid:: 4
 
@@ -132,8 +132,9 @@ List of Functions
     detkit.logdet
     detkit.loggdet
     detkit.logpdet
+    detkit.memdet
 
-See :ref:`api` for a list of all functions.
+See :ref:`api` for the full list of functions.
 
 Tutorials
 =========

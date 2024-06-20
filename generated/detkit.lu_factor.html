@@ -207,7 +207,7 @@
     
     <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Main Functions
+  Matrix Determinant
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -263,6 +263,13 @@
    cho_factor
   </a>
  </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Solving Linear Systems
+ </span>
+</p>
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detkit.lu_solve.html">
    lu_solve
@@ -283,6 +290,13 @@
    solve_triangular
   </a>
  </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  BLAS Operations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detkit.matmul.html">
    matmul
@@ -525,8 +539,9 @@ computation of matrix determinant under memory constraint.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check if A_copy = PLU holds. Use tolerance of 1e-6 for float32.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">A_copy</span><span class="p">[</span><span class="n">perm</span><span class="p">[:</span><span class="n">p</span><span class="p">],</span> <span class="p">:</span><span class="n">q</span><span class="p">],</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check if A_copy = PLU holds.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atol</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">resolution</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">A_copy</span><span class="p">[</span><span class="n">perm</span><span class="p">[:</span><span class="n">p</span><span class="p">],</span> <span class="p">:</span><span class="n">q</span><span class="p">],</span> <span class="n">L</span> <span class="o">@</span> <span class="n">U</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">atol</span><span class="p">))</span>
 <span class="go">True</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if lu is indeed a view of A</span>

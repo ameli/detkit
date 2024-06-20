@@ -4,13 +4,13 @@
 API Reference
 =============
 
-.. rubric:: Main functions
+.. rubric:: Matrix Determinant
 
 Functions for computing determinant and related quantities of matrices.
 
 .. autosummary::
     :toctree: generated
-    :caption: Main Functions
+    :caption: Matrix Determinant
     :recursive:
     :template: autosummary/member.rst
 
@@ -19,9 +19,9 @@ Functions for computing determinant and related quantities of matrices.
     detkit.logpdet
     detkit.memdet
 
-.. rubric:: Supplementary functions
+.. rubric:: Matrix Decompositions
 
-Functions for level-3 matrix operations and matrix factorizations.
+LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations.
 
 .. autosummary::
     :toctree: generated
@@ -34,10 +34,32 @@ Functions for level-3 matrix operations and matrix factorizations.
     detkit.lu_factor
     detkit.ldl_factor
     detkit.cho_factor
+
+.. rubric:: Solving Linear Systems
+
+Solving linear systems for sub-matrices based on LU, LDL and Cholesky decompositions.
+
+.. autosummary::
+    :toctree: generated
+    :caption: Solving Linear Systems
+    :recursive:
+    :template: autosummary/member.rst
+
     detkit.lu_solve
     detkit.ldl_solve
     detkit.cho_solve
     detkit.solve_triangular
+
+.. rubric:: BLAS Operations
+
+BLAS operations for sub-matrices.
+
+.. autosummary::
+    :toctree: generated
+    :caption: BLAS Operations
+    :recursive:
+    :template: autosummary/member.rst
+
     detkit.matmul
 
 .. rubric:: Datasets

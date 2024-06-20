@@ -23,7 +23,27 @@ If you publish work that uses |project|, please consider citing the following ma
         </div>
         </div>
 
-.. [2] Ameli, S. (2022). *DetKit, a python package for determinant matrix functions*. |detkit-zenodo| |btn-bib-2|
+.. [2] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2024). *Determinant Estimation under Memory Constraints and Neural Scaling Laws* |btn-nip-doi| |ameli-nip| |btn-bib-2| |btn-view-pdf-2|
+
+   .. raw:: html
+
+        <div class="highlight-BibTeX notranslate collapse" id="collapse-bib1">
+        <div class="highlight">
+        <pre class="language-bib">
+        <code class="language-bib">@article{nip-2024,
+            title = {Determinant Estimation under Memory Constraints and Neural Scaling Laws},
+            journal = {},
+            volume = {},
+            pages = {},
+            year = {},
+            issn = {},
+            doi = {},
+            author = {Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney},
+        }</code></pre>
+        </div>
+        </div>
+
+.. [3] Ameli, S. (2022). *DetKit, a python package for matrix determinant*. |detkit-zenodo| |btn-bib-3|
 
    .. raw:: html
 
@@ -31,7 +51,7 @@ If you publish work that uses |project|, please consider citing the following ma
         <div class="highlight">
         <pre class="language-bib">
         <code class="language-bib">@misc{zenodo.6395320,
-            title = {{DetKit}, a python package for determinant matrix functions},
+            title = {{DetKit}, a python package for matrix determinant},
             author = {Ameli, S.},
             year = {2022},
             howpublished = {\url{https://pypi.org/project/detkit/}}
@@ -43,13 +63,23 @@ If you publish work that uses |project|, please consider citing the following ma
 
     <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a>
 
+.. |btn-nip-doi| raw:: html
+
+    <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a>
+
 .. |btn-bib-1| raw:: html
 
     <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
         BibTeX
     </button>
-    
+
 .. |btn-bib-2| raw:: html
+
+    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
+        BibTeX
+    </button>
+    
+.. |btn-bib-3| raw:: html
 
     <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib2">
         BibTeX
@@ -60,8 +90,18 @@ If you publish work that uses |project|, please consider citing the following ma
     <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF01">
         PDF
     </button>
+
+.. |btn-view-pdf-2| raw:: html
+
+    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" id="showPDF02">
+        PDF
+    </button>
     
 .. |ameli-amc| image:: https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg
+   :target: https://doi.org/10.48550/arXiv.2207.08038
+   :alt: arXiv 2207.08038
+
+.. |ameli-nip| image:: https://img.shields.io/badge/arXiv-2207.08038-b31b1b.svg
    :target: https://doi.org/10.48550/arXiv.2207.08038
    :alt: arXiv 2207.08038
 
