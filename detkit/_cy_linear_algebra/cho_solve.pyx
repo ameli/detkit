@@ -97,16 +97,7 @@ cpdef cho_solve(cho, B, shape=None, lower=True, overwrite=False):
 
     .. math::
 
-        \\mathbf{A}_{[:m, :m]} \\mathbf{X}_{[:m, :n]} = \\mathbf{B}_{[:m, :n]},
-
-    if ``trans`` is `False`, or
-
-    .. math::
-
-        \\mathbf{A}_{[:m, :m]}^{\\intercal} \\mathbf{X}_{[:m, :n]} =
-        \\mathbf{B}_{[:m, :n]},
-
-    if ``trans`` is `True`.
+        \\mathbf{A}_{[:m, :m]} \\mathbf{X}_{[:m, :n]} = \\mathbf{B}_{[:m, :n]}.
 
     **Cholesky Factor Input Argument:**
 
@@ -138,16 +129,9 @@ cpdef cho_solve(cho, B, shape=None, lower=True, overwrite=False):
     if a smaller sub-matrix is considered. Regardless, only the corresponding
     upper-left sub-matrix of `X` has meaningful data. Namely, if
     ``shape=(m, n)``, the slice ``X[:m, :n]`` should be considered as the
-    referenced. As such, the relation
+    referenced. As such, the following relation should hold:
 
         ``A[:m, :m] @ X[:m, :n] = B[:m, :n]``
-
-    or
-        
-        ``A[:m, :m].T @ X[:m, :n] = B[:m, :n]``
-
-    (when ``trans`` is `True`) should hold.
-
 
     **Comparison with scipy.linalg.cho_solve:**
 

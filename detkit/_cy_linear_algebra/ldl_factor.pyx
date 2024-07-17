@@ -114,7 +114,7 @@ def _sanitize_piv(a, lower=True):
 # get d and l
 # ===========
 
-def _get_d_and_l(ldu, pivs, lower=True, hermitian=True):
+def _get_d_and_l(ldu, pivs, lower=True, hermitian=False):
     """
     Taken from scipy.linalg.decomp_ldl.py
 
@@ -140,7 +140,7 @@ def _get_d_and_l(ldu, pivs, lower=True, hermitian=True):
     lu : ndarray
         The upper/lower triangular matrix
     """
-    
+
     is_c = numpy.iscomplexobj(ldu)
     d = numpy.diag(numpy.diag(ldu))
     n = d.shape[0]
@@ -551,7 +551,7 @@ cpdef ldl_factor(
     else:
 
         swap_arr, pivot_arr = _sanitize_piv(piv, lower=lower)
-        d, lu = _get_d_and_l(ldu, pivot_arr, lower=lower)
+        d, lu = _get_d_and_l(ldu, pivot_arr, lower=lower, hermitian=False)
         lu, perm = _construct_tri_factor(lu, swap_arr, pivot_arr, lower=lower)
 
         return lu, d, perm

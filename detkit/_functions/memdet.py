@@ -11,91 +11,25 @@
 # Imports
 # =======
 
-import os
+import signal
 import numpy
-import scipy
-import tempfile
 from .memory import Memory
-from ._parallel_io import load, store
-from multiprocessing import shared_memory
-import inspect
-from .._cy_linear_algebra import fill_triangle
+from ._memdet_util import signal_handler
+from ._memdet_io import initialize_io, cleanup_mem
+from ._ansi import ANSI
 from .._openmp import get_avail_num_threads
 import time
-import shutil
-import zarr
-import dask
 from ..__version__ import __version__
 from ._utilities import get_processor_name
-import tensorstore
+from ._memdet_gen import memdet_gen
+from ._memdet_sym import memdet_sym
+from ._memdet_spd import memdet_spd
 
 __all__ = ['memdet']
 
-
-# ============
-# get dir size
-# ============
-
-def _get_dir_size(path):
-    """
-    get the size of a director.
-    """
-
-    total_size = 0
-    for dirpath, dirnames, filenames in os.walk(path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            total_size += os.path.getsize(fp)
-
-    return total_size
-
-
-# ==================
-# get scratch prefix
-# ==================
-
-def _get_scratch_prefix():
-    """
-    Prefix for filename of scratch space. The prefix is the combination of
-    package name and function name.
-    """
-
-    # Get the name of caller function
-    stack = inspect.stack()
-    caller_frame = stack[1]
-    caller_function_name = caller_frame.function
-
-    # Get the name of package
-    frame = inspect.currentframe()
-    module_name = frame.f_globals['__name__']
-    package_name = module_name.split('.')[0]
-
-    # scratch space filename prefix
-    prefix = '.' + package_name + '-' + caller_function_name + '-'
-
-    return prefix
-
-
-# =========
-# get array
-# =========
-
-def _get_array(shared_mem, shape, dtype, order):
-    """
-    Get numpy array from shared memory buffer.
-    """
-
-    if len(shape) != 2:
-        raise ValueError('"shape" should have length of two.')
-
-    if isinstance(shared_mem, shared_memory.SharedMemory):
-        # This is shared memory. Return its buffer.
-        return numpy.ndarray(shape=shape, dtype=dtype, order=order,
-                             buffer=shared_mem.buf)
-
-    else:
-        # This is already numpy array. Return itself.
-        return shared_mem
+# Register signal handler for SIGINT (Ctrl+C) and SIGTSTP (Ctrl+Z)
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTSTP, signal_handler)
 
 
 # ====================
@@ -114,180 +48,6 @@ def _pivot_to_permutation(piv):
     return perm
 
 
-# ==================
-# permutation parity
-# ==================
-
-def _permutation_parity(p_inv):
-    """
-    Compute the parity of a permutation represented by the pivot array `piv`.
-
-    Parameters
-    ----------
-
-    piv (array_like): The pivot array returned by `scipy.linalg.lu_factor`.
-
-    Returns
-    -------
-    int: The parity of the permutation (+1 or -1).
-    """
-
-    n = len(p_inv)
-    visited = numpy.zeros(n, dtype=bool)
-    parity = 1
-
-    for i in range(n):
-        if not visited[i]:
-            j = i
-            while not visited[j]:
-                visited[j] = True
-                j = p_inv[j]
-                if j != i:
-                    parity = -parity
-
-    return parity
-
-
-# =============
-# permute array
-# =============
-
-def _permute_array(array, perm_inv, shape, dtype, order):
-    """
-    Permutes rows of 2D array.
-
-    This function overwrites the input array. Note that this function creates
-    new memory, hence, is not memory efficient.
-    """
-
-    # Get buffer from shared memory
-    array_ = _get_array(array, shape, dtype, order)
-    array_copy = numpy.copy(array_, order=order)
-    array_[perm_inv, :] = array_copy[:, :]
-
-
-# =====
-# shift
-# =====
-
-def _shift(perm, shift):
-    """
-    Shifts a slice or permutation array.
-    """
-
-    if isinstance(perm, numpy.ndarray):
-        shifted_perm = perm + shift
-    elif isinstance(perm, slice):
-        start = perm.start + shift
-        stop = perm.stop + shift
-        step = perm.step
-        shifted_perm = slice(start, stop, step)
-    else:
-        raise ValueError('"perm" type is not recognized.')
-
-    return shifted_perm
-
-
-# =========
-# lu factor
-# =========
-
-def _lu_factor(A, shape, dtype, order, overwrite, verbose=False):
-    """
-    Performs LU factorization of an input matrix.
-    """
-
-    if verbose:
-        print('lu decompos ... ', end='', flush=True)
-
-    # Get buffer from shared memory
-    A_ = _get_array(A, shape, dtype, order)
-
-    lu, piv = scipy.linalg.lu_factor(A_, overwrite_a=overwrite,
-                                     check_finite=False)
-
-    if verbose:
-        print('done', flush=True)
-
-    return lu, piv
-
-
-# ================
-# solve triangular
-# ================
-
-def _solve_triangular(lu, B, shape, dtype, order, trans, lower, unit_diagonal,
-                      overwrite, verbose=False):
-    """
-    Solve triangular system of equations.
-    """
-
-    if verbose:
-        if lower:
-            print('solve lotri ... ', end='', flush=True)
-        else:
-            print('solve uptri ... ', end='', flush=True)
-
-    # Get buffer from shared memory
-    B_ = _get_array(B, shape, dtype, order)
-
-    x = scipy.linalg.solve_triangular(lu, B_, trans=trans, lower=lower,
-                                      unit_diagonal=unit_diagonal,
-                                      check_finite=False,
-                                      overwrite_b=overwrite)
-
-    if verbose:
-        print('done', flush=True)
-
-    return x
-
-
-# ================
-# schur complement
-# ================
-
-def _schur_complement(L_t, U, S, shape, dtype, order, verbose=False):
-    """
-    Computes in-place Schur complement without allocating any intermediate
-    memory. This method is parallel.
-
-    For this function to not allocate any new memory, all matrices, L, U,
-    and S should be in Fortran ordering.
-    """
-
-    if verbose:
-        print('schur compl ... ', end='', flush=True)
-
-    alpha = -1
-    beta = 1
-    trans_a = 1
-    trans_b = 0
-    overwrite_c = 1
-
-    # Get buffer from shared memory
-    S_ = _get_array(S, shape, dtype, order)
-
-    # Check all matrices have Fortran ordering
-    if not L_t.flags['F_CONTIGUOUS']:
-        raise TypeError('Matrix "L" should have column-ordering.')
-    if not U.flags['F_CONTIGUOUS']:
-        raise TypeError('Matrix "U" should have column-ordering.')
-    if not S_.flags['F_CONTIGUOUS']:
-        raise TypeError('Matrix "S" should have column-ordering.')
-
-    if numpy.dtype(dtype) == numpy.float64:
-        scipy.linalg.blas.dgemm(alpha, L_t, U, beta, S_, trans_a, trans_b,
-                                overwrite_c)
-    elif numpy.dtype(dtype) == numpy.float32:
-        scipy.linalg.blas.sgemm(alpha, L_t, U, beta, S_, trans_a, trans_b,
-                                overwrite_c)
-    else:
-        raise TypeError('dtype should be float64 or float32.')
-
-    if verbose:
-        print('done', flush=True)
-
-
 # ======
 # memdet
 # ======
@@ -297,42 +57,102 @@ def memdet(
         num_blocks=1,
         assume='gen',
         triangle=None,
-        overwrite=False,
         mixed_precision='float64',
         parallel_io=None,
-        io_chunk=5000,
         scratch_dir=None,
+        overwrite=False,
         return_info=False,
         verbose=False):
     """
-    Compute log-determinant on contained memory.
+    Compute log-determinant under memory constraint.
 
     Parameters
     ----------
 
-    A : numpy.ndarray or numpy.memmap or zarr
+    A : numpy.ndarray or numpy.memmap or zarr.core.Array
         Square non-singular matrix.
 
     num_blocks : int, default=1
-        Number of blocks
+        Number of memory blocks along rows and columns.
+
+        * If `=1`:  the whole matrix is loaded to memory as one block. No
+          scratchpad disk space is needed as all data is on memory.
+        * If `=2`:  matrix is decomposed to 2 by 2 memory blocks (four blocks),
+          but three of these blocks will be loaded concurrently to memory. No
+          scratchpad disk space is needed.
+        * If `>2`: matrix is decomposed to a grid of (``num_blocks``,
+          ``num_blocks``) blocks, but only `4` of these blocks will be loaded
+          concurrently. Scratchpad disk space will be created (see
+          ``scratch_dir`` option).
+
+        The number of blocks  may or may not be a divisor of the matrix size.
+        If the number of blocks is not a divisor of the matrix size, the blocks
+        on the last row-block and column-block will have smaller size.
 
     triangle : ``'l'``, ``'u'``, or None, default=None
-        Indicates the  matrix symmetric, but only half triangle part of the
-        matrix is given. ``'l'`` assumes the lower-triangle part of the
-        matrix is given, and ``'u'`` assumes the upper-triangle part of the
-        matrix is given. `None` indicates all the matrix is given.
+        When the  matrix is symmetric, this option indicates whether the full
+        matrix is stored or only half triangle part of the matrix is given.
+
+        * ``'l'``: assumes the lower-triangle part of the matrix is given.
+        * ``'u'``: assumes the upper-triangle part of the matrix is given.
+        * ``None``: indicates full matrix is given.
 
     assume : str {``'gen'``, ``'sym'``, ``'spd'``}, default=``'gen'``
-        Assumption on the matrix `A`. Matrix is assumed to be generic if
-        ``'gen'``, symmetric if ``'sym'``, and symmetric positive-definite if
-        ``'psd'``.
+        Assumption on the input matrix `A`:
 
-    parallel_io : str {'mp', 'dask'} or None, default=None
-        Parallel load and store from memory to scratchpad.
+        * ``'gen'``: generic square matrix
+        * ``'sym'``: symmetric matrix
+        * ``'spd'``: symmetric positive-definite matrix
+
+    mixed_precision : str {``'float32'``, ``'float64'``}, or numpy.dtype,\
+            default= ``'float64'``
+        The precision at which the computations are performed. This may be
+        different than the data type of the input  matrix. It is recommended
+        to set a precision higher than the dtype of the input matrix. For
+        instance, if the input matrix has ``float32`` data type, you may
+        set this option to ``float64``.
+
+    parallel_io : str {``'mp'``, ``'dask'``, ``'ts'``} or None, default=None
+        Parallel data transfer (load and store operations) from memory to
+        scratchpad on the disk and vice-versa:
+
+        * ``'mp'``: utilizes Python's built-in multiprocessing.
+        * ``'dask'``: utilizes Dask's multiprocessing. For this to work,
+          the package `dask <https://www.dask.org/>`__ should be installed.
+        * ``'ts'``: utilizes TensorStore's multiprocessing. For this to work,
+          the packages
+          `tensorstore <https://google.github.io/tensorstore/>`__ and
+          `zarr <https://zarr.readthedocs.io/>`__ should be installed.
+        * ``None``: no parallel processing is performed. All data transfer is
+          performed on a single CPU thread.
+
+        .. note::
+
+            The option ``'ts'`` can only be used when the input matrix `A` is
+            a `zarr` array. See `zarr <https://zarr.readthedocs.io/>`__
+            package.
+
+    scratch_dir : str, default=None
+        When ``num_blocks`` is greater than `2`, the computations are performed
+        on a scratchpad space on disk. This option determines the directory
+        where memdet should create a temporary scratch file. If ``None``, the
+        default OS's tmp directory will be used. For instance, in UNIX, this is
+        almost always ``'/tmp'`` directory.
+
+        .. note::
+
+            This directory should have enough space as much as the size of the
+            input matrix (or half of the input matrix size if ``triangle``
+            option is set).
 
     overwrite : boolean, default=True
-        Overwrites intermediate computations. May increase performance and
-        memory consumption.
+        Uses the input matrix storage as scratchpad space. The overwrites the
+        input matrix.
+
+    return_info : bool, default=False
+        Returns a dictionary containing profiling information such as wall and
+        process time, memory allocation, disk usage, etc. See ``info`` variable
+        in the return section below.
 
     verbose : bool, default=False
         Prints verbose output during computation.
@@ -341,12 +161,120 @@ def memdet(
     -------
 
     ld : float
-        Log-determinant
+        :math:`\\mathrm{logabsdet}(\\mathbf{A})`, which is the natural
+        logarithm of the absolute value of the determinant of the input matrix.
     sign : int
         Sign of determinant
+    diag : numpy.array
+        An array of the size of the number rows (or columns) of the matrix,
+        containing the diagonal elements of the matrix decomposition as
+        follows:
 
-    Raises
-    ------
+        * For genetic matrix (when ``assume='gen'``), this is the diagonal
+          entries of the matrix :math:`\\mathbf{U}` in the LU decomposition
+          :math:`\\mathbf{P} \\mathbf{A} = \\mathbf{L} \\mathbf{U}`.
+        * For symmetric matrix (when ``assume='sym'``), this is the diagonal
+          entries of the matrix :math:`\\mathbf{D}` in the LDL decomposition
+          :math:`\\mathbf{P} \\mathbf{A} = \\mathbf{U}^{\\intercal}
+          \\mathbf{D} \\mathbf{U}` where :math:`\\mathbf{U}` is
+          upper-triangular.
+        * For symmetric positive-definite matrix (when ``assume='spd'``), this
+          is the diagonal entries of the matrix :math:`\\mathbf{L}` in the
+          Cholesky decomposition :math:`\\mathbf{A} = \\mathbf{U}^{\\intercal}
+          \\mathbf{U}` where :math:`\\mathbf{U}` is upper-triangular.
+
+    if ``return_info=True``:
+
+        info : dict
+            A dictionary containing the following key-values:
+
+            * ``'matrix'``: info about input matrix
+                * ``'dtype'``: the data type of the input matrix.
+                * ``'matrix_shape'``: shape of the input matrix.
+                * ``'triangle'``: in case of symmetric matrix, whether upper
+                  or lower triangle part of matrix is given (based on
+                  ``triangle`` option).
+                * ``'assume'``: whether matrix is generic, symmetric, or
+                  symmetric and positive-definite (based on ``assume`` option).
+            * ``'process'``: info about the computation process and profiling
+                * ``'processor'``: name of the CPU processor
+                * ``'tot_wall_time'``: total wall time of the process.
+                * ``'tot_proc_time'``: total process time of all CPU threads
+                  combined.
+                * ``'load_wall_time'``: wall time for only the load operation,
+                  which is the data transfer from disk to memory. This is
+                  relevant only if scratchpad space was used during the
+                  computation.
+                * ``'load_proc_time'``: process time of all CPU threads for
+                  only the load operation, which is the data transfer from disk
+                  to memory. This is relevant only if scratchpad space was
+                  used during the computation.
+                * ``'store_wall_time'``: wall time for only the store
+                  operation, which is the data transfer from memory to disk.
+                  This is relevant only if scratchpad space was used during the
+                  computation.
+                * ``'store_proc_time'``: process time of all CPU threads for
+                  only the store operation, which is the data transfer from
+                  memory to disk. This is relevant only if scratchpad space was
+                  used during the computation.
+            * ``'block'``: info about matrix blocks
+                * ``'block_nbytes'``: number of bytes of each block allocated
+                  on the memory. When the number of blocks along row-block (or
+                  column-block) is not a divisor of the matrix size, some
+                  blocks may be smaller, however, this quantity reports the
+                  size of the largest block.
+                * ``'block_shape'``: shape of each memory block in array size.
+                  When the number of blocks along row-block (or column-block)
+                  is not a divisor of the matrix size, some blocks may be
+                  smaller, however, this quantity reports the size of the
+                  largest block.
+                * ``'matrix_blocks'``: the shape of the grid of blocks that
+                  decomposes the input matrix, which is (``num_blocks``,
+                  ``num_blocks``).
+            * ``'scratch'``: info about scratchpad space (relevant if used)
+                * ``'io_chunk'``: the size of data chunks for for input/output
+                  data transfer operations between disk and memory. This size
+                  is almost always equal to the size of number of rows/columns
+                  of each block (see ``block_shape`` above).
+                * ``'num_scratch_blocks'``: number of blocks stored to the
+                  scratchpad space. Note that not all memory blocks are
+                  stored, hence, this quantity is smaller than
+                  ``num_blocks * num_blocks``.
+                * ``'scratch_file'``: the scratch file that was created, and
+                  later deleted after termination of the algorithm. This file
+                  was in the ``scratch_dir`` and it was a hidden file (for
+                  instance, in UNIX, it has a dot prefix).
+                * ``'scratch_nbytes'``: the size of scratchpad file in bytes.
+                * ``'num_block_loads'``: a counter of the number of times
+                  that blocks were read from disk to memory.
+                * ``'num_block_stores'``: a counter of the number of times
+                  that blocks were written from memory to disk.
+            * ``'memory'``: info about memory allocation
+                * ``'alloc_mem'``: block memory allocated in bytes divided by
+                  ``mem_unit``.
+                * ``'alloc_mem_peak'``: block peak memory allocated in bytes
+                  divided by ``mem_unit``.
+                * ``'total_mem'``: total memory allocated in bytes divided by
+                  ``mem_unit``. This includes the memory of blocks and any
+                  extra memory required by the algorithm.
+                * ``'total_mem_peak'``: total peak memory allocated in bytes
+                  divided by ``mem_unit``. This includes the memory of blocks
+                  and any extra memory required by the algorithm.
+                * ``'mem_unit'``: the unit in which the above memory are
+                  reported with. This is usually the memory (in bytes) of one
+                  block, so it makes the above memory memory sizes relative
+                  to the memory size of one block.
+            * ``'solver'``: info about the solver
+                * ``'version'``: version of detkit package
+                * ``'method'``: method of computation, such as LU decomposition
+                  , LDL decomposition, or Cholesky decomposition, respectively
+                  for generic, symmetric, or symmetric positive-definite
+                  matrices.
+                * ``'dtype'``: the data type used during computation (see
+                  ``'mixed_precision'`` option).
+                * ``'order'``: order of array, such as ``C`` for contiguous
+                  (row-major) ordering or ``F`` for Fortran (column-major)
+                  ordering during computation.
 
     See also
     --------
@@ -365,635 +293,127 @@ def memdet(
     Examples
     --------
 
-    .. code-block:: python
-        :emphasize-lines: 9
+    **Using a zarr array:**
 
-        >>> # Open a memmmap matrix
+    .. code-block:: python
+        :emphasize-lines: 15, 16, 17
+
+        >>> # Create a symmetric matrix
         >>> import numpy
         >>> n = 10000
-        >>> A = numpy.memmap('matrix.npy', shape=(n, n), mode='r',
-        ...                  dtype=numpy.float32, order='C')
+        >>> A = numpy.random.randn(n, n)
+        >>> A = A.T @ A
+
+        >>> # Store matrix as a zarr array on disk (optional)
+        >>> import zarr
+        >>> z_path = 'my_matrix.zarr'
+        >>> z = zarr.open(z_path, mode='w', shape=(n, n), dtype=A.dtype)
+        >>> z[:, :] = A
 
         >>> # Compute log-determinant
-        >>> from detkit import  memdet
-        >>> ld = memdet(A, mem=64)
+        >>> from detkit import memdet
+        >>> ld, sign, diag, info = memdet(
+        ...         z, num_blocks=3, assume='sym', parallel_io='ts',
+        ...         verbose=True, return_info=True)
+
+        >>> # print log-determinant and sign
+        >>> print(f'log-abs-determinant: {ld}, sign-determinant: {sign}')
+        82104.567748, -1
+
+    The above code also produces the following verbose output:
+
+    .. image:: ../_static/images/plots/memdet_verbose.png
+        :align: center
+        :class: custom-dark
+
+    Printing the ``info`` variable
+
+    .. code-block:: python
+
+        >>> # Print info results
+        >>> from pprint import pprint
+        >>> print('%f, %d' % (ld, sign))
+        >>> pprint(info)
+
+    .. literalinclude:: ../_static/data/memdet_return_info.txt
+        :language: python
     """
 
-    n = A.shape[0]
-    if mixed_precision is not None:
-        dtype = mixed_precision
-    else:
-        dtype = A.dtype
-    order = 'F'
-
-    temp_file = None
-    temp_dir = None
-    scratch_file = ''
-    scratch_nbytes = 0
-    num_scratch_blocks = 0
-
-    # Keep time of load and store
-    io = {
-        'load_wall_time': 0,
-        'load_proc_time': 0,
-        'store_wall_time': 0,
-        'store_proc_time': 0,
-        'num_block_loads': 0,
-        'num_block_stores': 0,
-    }
-
-    # Block size
-    m = (n + num_blocks - 1) // num_blocks
-
-    if verbose:
-        print(f'matrix size: {n}', flush=True)
-        print(f'num blocks: {num_blocks}', flush=True)
-        print(f'block size: {m}', flush=True)
-        print('dtype: %s' % str(dtype), flush=True)
-
     # Initialize time and set memory counter
-    mem = Memory(chunk=n**2, dtype=dtype, unit='MB')
+    mem = Memory()
     mem.set()
     init_wall_time = time.time()
     init_proc_time = time.process_time()
 
-    # Start a Dask client to use multiple threads
-    if (parallel_io == 'dask') and (num_blocks > 2):
-        client = dask.distributed.Client()
-        # lock = dask.utils.SerializableLock()
-        lock = False
+    io = initialize_io(A, num_blocks, assume, triangle, mixed_precision,
+                       parallel_io, scratch_dir, verbose=verbose)
 
-    block_nbytes = numpy.dtype(dtype).itemsize * (m**2)
-    if parallel_io == 'mp':
-        A11 = shared_memory.SharedMemory(create=True, size=block_nbytes)
-    else:
-        A11 = numpy.empty((m, m), dtype=dtype, order=order)
-
-    if verbose:
-        print('Allocated A11, %d bytes' % block_nbytes, flush=True)
-
-    # Context for tensorstore
-    if parallel_io == 'ts':
-        ts_context = tensorstore.Context({
-            'cache_pool': {
-                'total_bytes_limit': 1_000_000_000_000,
-            },
-            'data_copy_concurrency': {
-                'limit': get_avail_num_threads(),
-            }
-        })
-
-    # Create dask for input data
-    if parallel_io == 'dask':
-        if isinstance(A, zarr.core.Array):
-            dask_A = dask.array.from_zarr(A, chunks=(io_chunk, io_chunk))
-        else:
-            dask_A = dask.array.from_array(A, chunks=(io_chunk, io_chunk))
-    elif parallel_io == 'ts':
-
-        if isinstance(A, zarr.core.Array):
-            spec_1 = {
-                'driver': 'zarr',
-                'kvstore': {
-                    'driver': 'file',
-                    'path': A.store.path,
-                }
-            }
-
-            ts_A = tensorstore.open(spec_1, context=ts_context).result()
-        else:
-            raise RuntimeError('The "ts" parallel io can be used only for ' +
-                               'zarr arrays.')
-
-    if num_blocks > 1:
-
-        if parallel_io == 'mp':
-            A12 = shared_memory.SharedMemory(create=True, size=block_nbytes)
-            A21_t = shared_memory.SharedMemory(create=True, size=block_nbytes)
-        else:
-            A12 = numpy.empty((m, m), dtype=dtype, order=order)
-            A21_t = numpy.empty((m, m), dtype=dtype, order=order)
-
-        if verbose:
-            print('Allocated A12, %d bytes' % block_nbytes, flush=True)
-            print('Allocated A21, %d bytes' % block_nbytes, flush=True)
-
-        if num_blocks > 2:
-
-            num_scratch_blocks = num_blocks * (num_blocks - 1) - 1
-
-            if parallel_io == 'mp':
-                A22 = shared_memory.SharedMemory(create=True,
-                                                 size=block_nbytes)
-            else:
-                A22 = numpy.empty((m, m), dtype=dtype, order=order)
-
-            if verbose:
-                print('Allocated A22, %d bytes' % block_nbytes, flush=True)
-
-            # Scratch space to hold temporary intermediate blocks
-            if parallel_io == 'mp':
-
-                # Temporary file as scratch space
-                temp_file = tempfile.NamedTemporaryFile(
-                        prefix=_get_scratch_prefix(), suffix='.npy',
-                        delete=True, dir=scratch_dir)
-                scratch_file = temp_file.name
-
-                scratch = numpy.memmap(temp_file.name, dtype=dtype, mode='w+',
-                                       shape=(n, n-m), order=order)
-
-            else:
-                # Temporary directory as scratch space
-                temp_dir = tempfile.mkdtemp(prefix=_get_scratch_prefix(),
-                                            suffix='.zarr', dir=scratch_dir)
-
-                scratch_file = temp_dir
-
-                scratch = zarr.open(temp_dir, mode='w', shape=(n, n-m),
-                                    dtype=dtype, order=order)
-
-                if parallel_io == 'dask':
-                    dask_scratch = dask.array.from_zarr(
-                            scratch, chunks=(io_chunk, io_chunk))
-                elif parallel_io == 'ts':
-
-                    spec_2 = {
-                        'driver': 'zarr',
-                        'kvstore': {
-                            'driver': 'file',
-                            'path': scratch.store.path,
-                        }
-                    }
-
-                    # Open the Zarr array using tensorstore
-                    ts_scratch = tensorstore.open(
-                            spec_2, context=ts_context).result()
-
-            if verbose:
-                print('created scratch space: %s.' % scratch_file, flush=True)
-
-            # Cache table flagging which block is moved to scratch space. False
-            # means the block is not yet on scratch space, True means it is
-            # cached in the scratch space
-            cached = numpy.zeros((num_blocks, num_blocks), dtype=bool)
-
+    # Track memory up to this point
     alloc_mem = mem.now()
     alloc_mem_peak = mem.peak()
 
-    # ----------
-    # load block
-    # ----------
-
-    def _load_block(array, i, j, trans=False, perm=None):
-        """
-        If triangle is 'l' or 'u', it replicates the other half of the
-        triangle only if reading the original data from the input matrix. But
-        when loading from the scratch space, it does not replicate the other
-        half. This is because when data are stored to scratch space, all matrix
-        is stored, not just a half triangle of it. Hence its loading should be
-        full.
-
-        perm_inv is the inverse permutation of perm. The operation of
-        A[:, :] = B[perm, :] is equivalent to A[perm_inv, :] = B[:, :].
-        However, the latter creates additional memory of the same size as the
-        original matrix, and is much slower. This is because numpy copies a
-        slice and then permutes it. However, the first operation with perm_inv
-        does not create any additional memory and is very fast.
-        """
-
-        io['num_block_loads'] += 1
-
-        # Initialize load times
-        init_load_wall_time = time.time()
-        init_load_proc_time = time.process_time()
-
-        if verbose:
-            print('loading blk ... ', end='', flush=True)
-
-        if (num_blocks > 2) and (bool(cached[i, j]) is True):
-            read_from_scratch = True
-        else:
-            read_from_scratch = False
-
-        if ((not read_from_scratch) and
-            (((triangle == 'l') and (i < j)) or
-             ((triangle == 'u') and (i > j)))):
-            i_ = j
-            j_ = i
-            trans = numpy.logical_not(trans)
-        else:
-            i_ = i
-            j_ = j
-
-        i1 = m*i_
-        if i_ == num_blocks-1:
-            i2 = n
-        else:
-            i2 = m*(i_+1)
-
-        j1 = m*j_
-        if j_ == num_blocks-1:
-            j2 = n
-        else:
-            j2 = m*(j_+1)
-
-        # Permutation of rows
-        if perm is not None:
-
-            # Row orders with permutation. perm_inv is the inverse of
-            # permutation to be applied on the target array, rather than the
-            # source array, while perm is applied to the source array. In the
-            # case of transpose, perm is applied to the columns of the source
-            # array, which is equivalent of taking the transpose first, then
-            # apply perm on the rows.
-            perm = numpy.array(perm)
-            perm_inv = numpy.argsort(perm)
-
-            if perm.ndim != 1:
-                raise ValueError('"perm" should be a 1D array.')
-            elif (((trans is False) and (perm.size != i2-i1)) or
-                  (trans is True) and (perm.size != j2-j1)):
-                raise ValueError('"perm" size does not match the slice size')
-
-            # When using perm on the source array, the indices should be
-            # shifted to start from the beginning of the block, but this is not
-            # necessary for perm_inv on target array.
-            if trans:
-                perm = _shift(perm, j1)
-            else:
-                perm = _shift(perm, i1)
-
-        else:
-            # Rows order with no permutation.
-            # Note: do not use numpy.arange(0, i2-i1) as this is much slower
-            # and takes much more memory than slice(0, i2-i1)
-            if trans:
-                perm = slice(j1, j2)
-                perm_inv = slice(0, j2-j1)
-            else:
-                perm = slice(i1, i2)
-                perm_inv = slice(0, i2-i1)
-
-        if read_from_scratch:
-
-            if parallel_io == 'mp':
-                # Read using multiprocessing
-                load(scratch, (i1, i2), (j1-m, j2-m), array, (m, m), order,
-                     trans, perm_inv, num_proc=None)
-            else:
-                # Get buffer from shared memory
-                array_ = _get_array(array, (m, m), dtype, order)
-
-                if parallel_io == 'dask':
-                    # Read using dask
-                    if trans:
-                        with dask.config.set(scheduler='threads'):
-                            dask.array.store(
-                                    dask_scratch[i1:i2, (j1-m):(j2-m)].T,
-                                    array_, lock=lock)
-                    else:
-                        with dask.config.set(scheduler='threads'):
-                            dask.array.store(
-                                    dask_scratch[i1:i2, (j1-m):(j2-m)],
-                                    array_, lock=lock)
-
-                    # Dask cannot do permutation within store function. Do it
-                    # here manually
-                    if isinstance(perm, numpy.ndarray):
-                        _permute_array(array_, perm_inv, (m, m), dtype, order)
-
-                elif parallel_io == 'ts':
-                    # Read using tensorstore
-                    # For ts mode, when source is 'C' order and target is 'F'
-                    # order, using perm on source array is faster than
-                    # using perm_inv on target array. But, if source and target
-                    # have the same ordering, either perm or perm_inv have the
-                    # same performance. Here, array_ and scratch are both 'F'
-                    # ordering, so using either perm and perm_inv are fine.
-                    if trans:
-                        # Using perm in columns of source when transposing.
-                        array_[:, :] = \
-                            ts_scratch[i1:i2, _shift(perm, -m)].T.read(
-                                order=order).result()
-                    else:
-                        array_[:, :] = ts_scratch[perm, (j1-m):(j2-m)].read(
-                                order=order).result()
-
-                else:
-                    # Read using numpy. Here, using perm_inv on target array is
-                    # faster.
-                    if trans:
-                        array_[perm_inv, :] = scratch[i1:i2, (j1-m):(j2-m)].T
-                    else:
-                        array_[perm_inv, :] = scratch[i1:i2, (j1-m):(j2-m)]
-
-        else:
-            # Reading from input array A (not from scratch)
-            if (parallel_io == 'mp') and isinstance(A, numpy.memmap):
-                # Read using multiprocessing
-                load(A, (i1, i2), (j1, j2), array, (m, m), order, trans,
-                     perm_inv, num_proc=None)
-            else:
-
-                # Get buffer from shared memory
-                array_ = _get_array(array, (m, m), dtype, order)
-
-                if parallel_io == 'dask':
-                    # Read using dask
-                    if trans:
-                        with dask.config.set(scheduler='threads'):
-                            dask.array.store(dask_A[i1:i2, j1:j2].T, array_,
-                                             lock=lock)
-                    else:
-                        with dask.config.set(scheduler='threads'):
-                            dask.array.store(dask_A[i1:i2, j1:j2], array_,
-                                             lock=lock)
-
-                    # Dask cannot do permutation within store function. Do it
-                    # here manually
-                    if isinstance(perm, numpy.ndarray):
-                        _permute_array(array_, perm_inv, (m, m), dtype, order)
-
-                elif parallel_io == 'ts':
-                    # Read using tensorstore
-                    # For ts mode, when source is 'C' order and target is 'F'
-                    # order, using perm on source array is faster than
-                    # using perm_inv on target array. But, if source and target
-                    # have the same ordering, either perm or perm_inv have the
-                    # same performance. Here, array_ is 'F' ordering while
-                    # ts_A is 'C' ordering, so using perm is preferred.
-                    if trans:
-                        # Using perm in columns of source when transposing.
-                        array_[:, :] = \
-                            ts_A[i1:i2, perm].T.read(order=order).result()
-                    else:
-                        array_[:, :] = ts_A[perm, j1:j2].read(
-                                order=order).result()
-
-                else:
-                    # Read using numpy. Here, using perm_inv on target array is
-                    # faster.
-                    if trans:
-                        array_[perm_inv, :] = A[i1:i2, j1:j2].T
-                    else:
-                        array_[perm_inv, :] = A[i1:i2, j1:j2]
-
-        # Fill the other half of diagonal blocks (if input data is triangle)
-        if (i == j) and (triangle is not None) and (not read_from_scratch):
-
-            # Get buffer from shared memory
-            array_ = _get_array(array, (m, m), dtype, order)
-
-            if (triangle == 'l'):
-                lower = True
-            else:
-                lower = False
-
-            fill_triangle(array_, lower)
-
-        # load times
-        io['load_wall_time'] += time.time() - init_load_wall_time
-        io['load_proc_time'] += time.process_time() - init_load_proc_time
-
-        if verbose:
-            print('done', flush=True)
-
-    # -----------
-    # store block
-    # -----------
-
-    def _store_block(array, i, j, flush=True):
-        """
-        Store array to scratch space.
-        """
-
-        io['num_block_stores'] += 1
-
-        # Initialize store times
-        init_store_wall_time = time.time()
-        init_store_proc_time = time.process_time()
-
-        if verbose:
-            print('storing blk ... ', end='', flush=True)
-
-        i1 = m*i
-        if i == num_blocks-1:
-            i2 = n
-        else:
-            i2 = m*(i+1)
-
-        j1 = m*j
-        if j == num_blocks-1:
-            j2 = n
-        else:
-            j2 = m*(j+1)
-
-        if parallel_io == 'mp':
-            # Write in parallel
-            trans = False
-            store(scratch, (i1, i2), (j1-m, j2-m), array, (m, m), order, trans,
-                  num_proc=None)
-        else:
-            # Get buffer from shared memory
-            array_ = _get_array(array, (m, m), dtype, order)
-
-            if parallel_io == 'dask':
-                with dask.config.set(scheduler='threads'):
-                    dask_array = dask.array.from_array(
-                            array_, chunks=(io_chunk, io_chunk))
-                    scratch[i1:i2, (j1-m):(j2-m)] = dask_array.compute()
-            elif parallel_io == 'ts':
-                ts_scratch[i1:i2, (j1-m):(j2-m)].write(array_).result()
-            else:
-                scratch[i1:i2, (j1-m):(j2-m)] = array_
-
-        # Cache table to flag the block is now written to scratch space, so
-        # next time, in order to access the block, scratch space should be
-        # read, rather than the input matrix.
-        cached[i, j] = True
-
-        if flush and isinstance(scratch, numpy.memmap):
-            scratch.flush()
-
-        # store times
-        io['store_wall_time'] += time.time() - init_store_wall_time
-        io['store_proc_time'] += time.process_time() - init_store_proc_time
-
-        if verbose:
-            print('done', flush=True)
-
-    # ------
-
+    # Main algorithm
     try:
 
-        # Output, this will accumulate logdet of each diagonal block
-        ld = 0
-        sign = 1
-        diag = []
-        counter = 0
-        total_count = (num_blocks-1) * num_blocks * (2*num_blocks+-1) // 6
+        # Main log-determinant computation
+        if assume == 'gen':
+            # Generic matrix, using LU decomposition
+            ld, sign, diag = memdet_gen(io, verbose)
 
-        # Diagonal iterations
-        for k in range(num_blocks):
+        elif assume == 'sym':
+            # Symmetric matrix, using LDL decomposition
+            ld, sign, diag = memdet_sym(io, verbose)
 
-            if k == 0:
-                _load_block(A11, k, k)
+        elif assume == 'spd':
+            # Symmetric positive-definite matrix, using Cholesky decomposition
+            ld, sign, diag = memdet_spd(io, verbose)
 
-            lu_11, piv = _lu_factor(A11, (m, m), dtype, order, overwrite,
-                                    verbose=verbose)
-
-            # log-determinant
-            diag_lu_11 = numpy.diag(lu_11)
-            ld += numpy.sum(numpy.log(numpy.abs(diag_lu_11)))
-
-            # Sign of determinant
-            perm = _pivot_to_permutation(piv)
-            parity = _permutation_parity(perm)
-            sign *= numpy.prod(numpy.sign(diag_lu_11)) * parity
-
-            # Save diagonals
-            diag.append(numpy.copy(diag_lu_11))
-
-            # Row iterations
-            for i in range(num_blocks-1, k, -1):
-
-                _load_block(A21_t, i, k, trans=True)
-
-                # Solve upper-triangular system
-                l_21_t = _solve_triangular(lu_11, A21_t, (m, m), dtype, order,
-                                           trans='T', lower=False,
-                                           unit_diagonal=False,
-                                           overwrite=overwrite,
-                                           verbose=verbose)
-
-                if (i - k) % 2 == 0:
-                    # Start space-filling curve in a forward direction in the
-                    # last row
-                    j_start = k+1
-                    j_end = num_blocks
-                    j_step = +1
-                else:
-                    # start space-filling curve in a backward direction in the
-                    # last row
-                    j_start = num_blocks-1
-                    j_end = k
-                    j_step = -1
-
-                # Column iterations
-                for j in range(j_start, j_end, j_step):
-
-                    # When the space-filling curve changes direction, do not
-                    # read new A12, rather use the previous matrix already
-                    # loaded to memory
-                    if ((i == num_blocks-1) or (j != j_start) or
-                            (overwrite is False)):
-                        # _load_block(A12, k, j)
-                        if i == num_blocks-1:
-                            _load_block(A12, k, j, perm=perm)
-                        else:
-                            _load_block(A12, k, j, perm=None)
-
-                    if i == num_blocks-1:
-
-                        # Permute A12
-                        # _permute_array(A12, perm, (m, m), dtype, order)
-
-                        # Solve lower-triangular system
-                        u_12 = _solve_triangular(
-                                lu_11, A12, (m, m), dtype, order, trans='N',
-                                lower=True, unit_diagonal=True,
-                                overwrite=overwrite,
-                                verbose=verbose)
-
-                        # Check u_12 is actually overwritten to A12
-                        if overwrite:
-                            A_12_array = _get_array(A12, (m, m), dtype, order)
-                            if not numpy.may_share_memory(u_12, A_12_array):
-                                raise RuntimeError(
-                                    '"A12" is not overwritten to "u_12".')
-
-                        if num_blocks > 2:
-                            # Store u_12, which is the same as A12 since u_12
-                            # is overwritten to A_12. For this to always be the
-                            # case, make sure overwrite is set to True in
-                            # computing u_12.
-                            if overwrite is True:
-                                _store_block(A12, k, j)
-                            else:
-                                _store_block(u_12, k, j)
-                    else:
-                        u_12 = _get_array(A12, (m, m), dtype, order)
-
-                    # Compute Schur complement
-                    if (i == k+1) and (j == k+1):
-                        _load_block(A11, i, j)
-                        _schur_complement(l_21_t, u_12, A11, (m, m), dtype,
-                                          order, verbose=verbose)
-                    else:
-                        _load_block(A22, i, j)
-                        _schur_complement(l_21_t, u_12, A22, (m, m), dtype,
-                                          order, verbose=verbose)
-                        _store_block(A22, i, j)
-
-                    counter += 1
-                    if verbose:
-                        print(f'progress: {counter:>3d}/{total_count:>3d}, ',
-                              end='', flush=True)
-                        print(f'diag: {k+1:>2d}, ', end='', flush=True)
-                        print(f'row: {i+1:>2d}, ', end='', flush=True)
-                        print(f'col: {j+1:>2d}', flush=True)
-
-        # concatenate diagonals of blocks of U
-        diag = numpy.concatenate(diag)
-
-        # record time
-        tot_wall_time = time.time() - init_wall_time
-        tot_proc_time = time.process_time() - init_proc_time
+        else:
+            raise ValueError('"assume" should be either "gen", "sym", or ' +
+                             '"spd".')
 
     except Exception as e:
-        print('failed')
+        print(f'{ANSI.RESET}{ANSI.BR_RED}{ANSI.BOLD}failed{ANSI.RESET}',
+              flush=True)
+        raise e
+
+    except KeyboardInterrupt as e:
+        print(f'{ANSI.RESET}', flush=True)
         raise e
 
     finally:
 
-        if temp_file is not None:
-            scratch_nbytes = os.path.getsize(scratch_file)
-            temp_file.close()
-        elif temp_dir is not None:
-            scratch_nbytes = _get_dir_size(temp_dir)
-            shutil.rmtree(temp_dir)
+        # Record time
+        tot_wall_time = time.time() - init_wall_time
+        tot_proc_time = time.process_time() - init_proc_time
 
-            if verbose:
-                print('removed scratch space: %s.' % scratch_file)
-
-        # Free memory
-        if ('A11' in locals()) and isinstance(A11, shared_memory.SharedMemory):
-            A11.close()
-            A11.unlink
-
-        if ('A12' in locals()) and isinstance(A12, shared_memory.SharedMemory):
-            A12.close()
-            A12.unlink
-
-        if ('A21_t' in locals()) and \
-                isinstance(A21_t, shared_memory.SharedMemory):
-            A21_t.close()
-            A21_t.unlink
-
-        if ('A22' in locals()) and isinstance(A22, shared_memory.SharedMemory):
-            A22.close()
-            A22.unlink
+        # Clean allocated memory blocks
+        cleanup_mem(io, verbose)
 
         # Record total memory consumption since start
         total_mem = mem.now()
         total_mem_peak = mem.peak()
 
-    # Shut down Dask client
-    if (parallel_io == 'dask') and (num_blocks > 2):
-        client.close()
-
     if return_info:
+
+        # method
+        if assume == 'gen':
+            method = 'lu decomposition'
+        elif assume == 'sym':
+            method = 'ldl decomposition'
+        elif assume == 'spd':
+            method = 'cholesky decomposition'
+        else:
+            raise ValueError('"assume" is invalid.')
+
+        # Get config for info dictionary
+        dtype = io['config']['dtype']
+        order = io['config']['order']
+        n = io['config']['n']
+        m = io['config']['m']
+        block_nbytes = io['config']['block_nbytes']
+
+        # Info dictionary
         info = {
             'matrix': {
                 'dtype': str(A.dtype),
@@ -1006,10 +426,10 @@ def memdet(
                 'num_proc': get_avail_num_threads(),
                 'tot_wall_time': tot_wall_time,
                 'tot_proc_time': tot_proc_time,
-                'load_wall_time': io['load_wall_time'],
-                'load_proc_time': io['load_proc_time'],
-                'store_wall_time': io['store_wall_time'],
-                'store_proc_time': io['store_proc_time'],
+                'load_wall_time': io['profile']['load_wall_time'],
+                'load_proc_time': io['profile']['load_proc_time'],
+                'store_wall_time': io['profile']['store_wall_time'],
+                'store_proc_time': io['profile']['store_proc_time'],
             },
             'block': {
                 'block_nbytes': block_nbytes,
@@ -1017,22 +437,23 @@ def memdet(
                 'matrix_blocks': (num_blocks, num_blocks),
             },
             'scratch': {
-                'num_scratch_blocks': num_scratch_blocks,
-                'scratch_file': scratch_file,
-                'scratch_nbytes': scratch_nbytes,
-                'num_block_loads': io['num_block_loads'],
-                'num_block_stores': io['num_block_stores'],
+                'io_chunk': io['data']['io_chunk'],
+                'num_scratch_blocks': io['config']['num_scratch_blocks'],
+                'scratch_file': io['dir']['scratch_file'],
+                'scratch_nbytes': io['dir']['scratch_nbytes'],
+                'num_block_loads': io['profile']['num_block_loads'],
+                'num_block_stores': io['profile']['num_block_stores'],
             },
             'memory': {
-                'alloc_mem': alloc_mem,
-                'alloc_mem_peak': alloc_mem_peak,
-                'total_mem': total_mem,
-                'total_mem_peak': total_mem_peak,
+                'alloc_mem': alloc_mem / block_nbytes,
+                'alloc_mem_peak': alloc_mem_peak / block_nbytes,
+                'total_mem': total_mem / block_nbytes,
+                'total_mem_peak': total_mem_peak / block_nbytes,
                 'mem_unit': '%d bytes' % block_nbytes,
             },
             'solver': {
                 'version': __version__,
-                'method': 'lu',
+                'method': method,
                 'dtype': str(dtype),
                 'order': order,
             }
@@ -1041,5 +462,4 @@ def memdet(
         return ld, sign, diag, info
 
     else:
-
         return ld, sign, diag

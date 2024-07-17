@@ -32,6 +32,7 @@ requirements:
         - scipy>=1.5
         - matplotlib
         - pooch
+        - psutil
         - llvm-openmp  # [osx]
 
 test:

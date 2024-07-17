@@ -12,6 +12,10 @@
 # =======
 
 import tracemalloc
+import numpy
+import psutil
+
+__all__ = ['Memory']
 
 
 # ======
@@ -25,25 +29,65 @@ class Memory(object):
     Parameters
     ----------
 
-    unit : str {``'B'``, ``'KB'``, ``'MB'``, ``'GB'``, ``'TB'``}, \
-            default=``'MB'``
-        Unit of the memory
+    unit : int or str {``'B'``, ``'KB'``, ``'MB'``, ``'GB'``, ``'TB'``}, \
+            default=``1``
+        Unit of memory either as a string, such as ``'KB'``, representing
+        1024 bytes, or directly specify the number of bytes as an integer.
 
-    chunk : int, default=1
-        The reporting memory is divided by chunk. That ism, a chunk of memory
-        is considered as one unit of memory. This is useful to compare the
-        memory with the size of an array. For instance, for an array of size
-        1000, if ``chunk=100``, the reported memory becomes 1.
+    See Also
+    --------
 
-    dtype : str, default='float64'
-        Data type
+    detkit.Disk
+    detkit.Profile
+
+    Methods
+    -------
+
+    set
+    now
+    peak
+    info
+
+    Examples
+    --------
+
+    .. code-block:: python
+        :emphasize-lines: 11, 21
+
+        >>> from detkit import Memory, memdet
+        >>> import numpy
+
+        >>> # Create a random matrix
+        >>> A = numpy.random.randn(10000, 10000)
+
+        >>> # Initialize with MB unit
+        >>> mem = Memory(unit='MB')
+
+        >>> # Set the starting point of memory inquiry
+        >>> mem.set()
+
+        >>> # Perform a memory-intensive operation
+        >>> ld = memdet(A)
+
+        >>> # Inquiry current allocated memory in MB unit
+        >>> print(mem.now())
+        82.3
+
+        >>> # Inquiry the peak allocated memory in MB unit
+        >>> print(mem.peak())
+        82.3
+
+        >>> # Reset the memory counter and inquiry again
+        >>> mem.set()
+        >>> print(mem.now())
+        0.0
     """
 
     # ====
     # init
     # ====
 
-    def __init__(self, unit='MB', chunk=1, dtype='float64'):
+    def __init__(self, unit=1):
         """
         Initialization.
         """
@@ -52,38 +96,29 @@ class Memory(object):
         self._peak = 0
         self._init_mem = 0
         self._init_peak = 0
-        self.chunk = chunk
 
         # Set unit size
-        if unit == 'B':
-            self.unit_size = 1
-        elif unit == 'KB':
-            self.unit_size = 1024
-        elif unit == 'MB':
-            self.unit_size = 1024**2
-        elif unit == 'GB':
-            self.unit_size = 1024**3
-        elif unit == 'TB':
-            self.unit_size = 1024**4
-        else:
-            raise ValueError('"unit" is invalid.')
+        if isinstance(unit, str):
+            if unit == 'B':
+                self.unit_size = 1
+            elif unit == 'KB':
+                self.unit_size = 1024
+            elif unit == 'MB':
+                self.unit_size = 1024**2
+            elif unit == 'GB':
+                self.unit_size = 1024**3
+            elif unit == 'TB':
+                self.unit_size = 1024**4
+            else:
+                raise ValueError('"unit" is invalid.')
 
-        # Set itemsize from dtype
-        if dtype is None:
-            self.itemsize = 1
-        elif dtype == 'float16':
-            self.itemsize = 2
-        elif dtype == 'float32':
-            self.itemsize = 4
-        elif dtype == 'float64':
-            self.itemsize = 8
-        elif dtype == 'float128':
-            self.itemsize = 16
-        else:
-            raise ValueError('"dtype" is invalid.')
+        elif isinstance(unit, (int, numpy.int8, numpy.int16, numpy.int32,
+                               numpy.int64, numpy.uint8, numpy.uint16,
+                               numpy.uint32, numpy.uint64)):
+            self.unit_size = numpy.int64(unit)
 
-        # Memory size of an array of the size "chunk" of data type "dtype"
-        self.scale = self.itemsize * self.chunk
+        else:
+            raise ValueError('"unit" should be integer or string.')
 
         self.set()
 
@@ -94,6 +129,42 @@ class Memory(object):
     def set(self):
         """
         Set or reset tracing allocated memory.
+
+        See Also
+        --------
+
+        now
+        peak
+
+        Examples
+        --------
+
+        .. code-block:: python
+            :emphasize-lines: 11, 21
+
+            >>> from detkit import Memory, memdet
+            >>> import numpy
+
+            >>> # Create a random matrix
+            >>> A = numpy.random.randn(10000, 10000)
+
+            >>> # Initialize with KB unit
+            >>> mem = Memory(unit='KB')
+
+            >>> # Set the starting point of memory inquiry
+            >>> mem.set()
+
+            >>> # Perform a memory-intensive operation
+            >>> ld = memdet(A)
+
+            >>> # Inquiry current allocated memory in KB unit
+            >>> print(mem.now())
+            781489.4
+
+            >>> # Reset the memory counter and inquiry again
+            >>> mem.set()
+            >>> print(mem.now())
+            0.1
         """
 
         tracemalloc.start()
@@ -101,8 +172,8 @@ class Memory(object):
         tracemalloc.reset_peak()
 
         mem, peak = tracemalloc.get_traced_memory()
-        self._init_mem = mem / self.scale
-        self._init_peak = peak / self.scale
+        self._init_mem = mem
+        self._init_peak = peak
         self._mem = 0
         self._peak = 0
 
@@ -112,12 +183,12 @@ class Memory(object):
 
     def _read(self):
         """
-        Returns current and peak memory allocation.
+        Inquiries current and peak memory allocation.
         """
 
         mem, peak = tracemalloc.get_traced_memory()
-        self._mem = (mem / self.scale) - self._init_mem
-        self._peak = (peak / self.scale) - self._init_peak
+        self._mem = mem - self._init_mem
+        self._peak = peak - self._init_peak
 
     # ===
     # now
@@ -125,11 +196,49 @@ class Memory(object):
 
     def now(self):
         """
-        Returns current memory allocation.
+        Inquiry current memory allocation.
+
+        Returns
+        -------
+
+        current_mem : float
+            The net memory allocation and deallocation since calling
+            :func:`detkit.Memory.set` divided by the specified unit of memory.
+
+        See Also
+        --------
+
+        set
+        peak
+
+        Examples
+        --------
+
+        .. code-block:: python
+            :emphasize-lines: 17
+
+            >>> from detkit import Memory, memdet
+            >>> import numpy
+
+            >>> # Create a random matrix
+            >>> A = numpy.random.randn(10000, 10000)
+
+            >>> # Initialize with KB unit
+            >>> mem = Memory(unit='KB')
+
+            >>> # Set the starting point of memory inquiry
+            >>> mem.set()
+
+            >>> # Perform a memory-intensive operation
+            >>> ld = memdet(A)
+
+            >>> # Inquiry current allocated memory in KB unit
+            >>> print(mem.now())
+            781489.4
         """
 
         self._read()
-        return self._mem
+        return self._mem / self.unit_size
 
     # ====
     # peak
@@ -137,8 +246,103 @@ class Memory(object):
 
     def peak(self):
         """
-        Returns peak memory allocation since memory is set.
+        Inquiry peak memory allocation since memory is set.
+
+        Returns
+        -------
+
+        peak_mem : float
+            The peak memory allocation since calling :func:`detkit.Memory.set`
+            divided by the specified unit of memory.
+
+        See Also
+        --------
+
+        set
+        now
+
+        Examples
+        --------
+
+        .. code-block:: python
+            :emphasize-lines: 17
+
+            >>> from detkit import Memory, memdet
+            >>> import numpy
+
+            >>> # Create a random matrix
+            >>> A = numpy.random.randn(10000, 10000)
+
+            >>> # Initialize with KB unit
+            >>> mem = Memory(unit='KB')
+
+            >>> # Set the starting point of memory inquiry
+            >>> mem.set()
+
+            >>> # Perform a memory-intensive operation
+            >>> ld = memdet(A)
+
+            >>> # Inquiry the peak allocated memory in KB unit
+            >>> print(mem.peak())
+            781489.4
         """
 
         self._read()
-        return self._peak
+        return self._peak / self.unit_size
+
+    # ====
+    # info
+    # ====
+
+    @staticmethod
+    def info():
+        """
+        Inquiry memory information.
+
+        Returns
+        -------
+
+        mem_info
+            An object containing the following attributes:
+
+            * ``'total'``: total memory in bytes
+            * ``'available'``: available memory in bytes
+            * ``'used'``: used memory in bytes
+            * ``'free'``: free memory in bytes
+            * ``'inactive'``: inactive memory in bytes
+            * ``'buffer'``: buffer memory in bytes
+            * ``'cached'``: cached memory in bytes
+            * ``'shared'``: shared memory in bytes
+            * ``'percent'``: percent of one minus available over total memory
+            * ``'slab'``: slab memory in bytes
+
+        See Also
+        --------
+
+        detkit.Disk.partition_info
+        detkit.get_processor_name
+
+        Examples
+        --------
+
+        .. code-block:: python
+
+            >>> from detkit import Memory, human_readable_mem
+            >>> mem_info = Memory.info()
+
+            >>> # total memory
+            >>> print(human_readable_mem(mem_info.total))
+            15.6 (GB)
+
+            >>> # used memory
+            >>> print(human_readable_mem(mem_info.used))
+            4.28 (GB)
+
+            >>> # available memory
+            >>> print(human_readable_mem(mem_info.available))
+            9.24 (GB)
+        """
+
+        mem_info_ = psutil.virtual_memory()
+
+        return mem_info_

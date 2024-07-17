@@ -52,23 +52,34 @@ cpdef matmul(
     shape : tuple, default=None
         A tuple of size three, determining the shape of an upper-left
         sub-matrices of `A`, `B`, and `C` to be referenced. Namely, if
-        ``shape`` is given as the tuple ``(m, n, k)``, the sub-matrices
-        ``A[:m, :n]`` (or ``A[:n, :m]`` when ``trans_a=True``),
-        ``B[:n, :k]`` (or ``B[:k, :n]`` when ``trans_b=True``), and
-        ``C[:n, :k]`` are used. If `None`, the full shape of ``A[:, :]``,
-        ``B[:, :]``, and ``C[:, :]`` are considered.
+        ``shape`` is given as the tuple ``(m, n, k)``, then
+
+        * ``m`` is the number of rows of :math:`\\mathrm{op}(\mathbf{A})`.
+        * ``n`` is the number of columns of :math:`\\mathrm{op}(\mathbf{A})`,
+          which is also the number of rows of :math:`\\mathrm{op}(\mathbf{B})`.
+        * ``k`` is the number of columns of :math:`\\mathrm{op}(\mathbf{C})`.
+
+        As such the following sub-matrices are used:
+        
+        * ``A[:m, :n]`` (or ``A[:n, :m]`` when ``trans_a=True``)
+        * ``B[:n, :k]`` (or ``B[:k, :n]`` when ``trans_b=True``)
+        * ``C[:m, :k]``
+        
+        If ``shape`` is `None`, the full shape of ``A[:, :]``,
+        ``B[:, :]``, and ``C[:, :]`` are considered provided that their shapes
+        are compatible for the matrix product.
 
     trans_a : bool, default=False
         If `False`, the operator :math:`\\operatorname{op}(\\mathbf{A}) =
         \\mathbf{A}` is used. If `True`, the operator
-        :math:`\\operatorname{op}(\\mathbf{A}) =
-        \\mathbf{A}^{\\intercal}` is used.
+        :math:`\\operatorname{op}(\\mathbf{A}) = \\mathbf{A}^{\\intercal}` is
+        used.
 
     trans_ab : bool, default=False
         If `False`, the operator :math:`\\operatorname{op}(\\mathbf{B}) =
         \\mathbf{B}` is used. If `True`, the operator
-        :math:`\\operatorname{op}(\\mathbf{B}) =
-        \\mathbf{B}^{\\intercal}` is used.
+        :math:`\\operatorname{op}(\\mathbf{B}) = \\mathbf{B}^{\\intercal}` is
+        used.
 
     alpha : float, default=1
         The parameter :math:`\\alpha`.
@@ -249,7 +260,10 @@ cpdef matmul(
         elif len(shape) != 3:
             raise ValueError('"shape" should be a tuple of size three.')
 
-        # Shape of sub-matrix of A is n by n
+        # Shape of sub-matrices in the product as follows:
+        # m is the number of rows of op(A)
+        # n is the number of columns of op(A) and number or rows of op(B)
+        # k is the number of columns of C
         m, n, k = shape
 
         # Check m with number of rows of op(A)

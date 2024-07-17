@@ -68,9 +68,11 @@ def _check_import():
 try:
     # Import sub-packages
     from ._functions import logdet, loggdet, logpdet, memdet       # noqa: E402
-    from ._functions import memdet_sym                             # noqa: E402
     from ._functions import orthogonalize, ortho_complement        # noqa: E402
-    from ._functions import Memory                                 # noqa: E402
+    from ._functions import Memory, Disk, Profile                  # noqa: E402
+    from ._functions import human_readable_mem                     # noqa: E402
+    from ._functions import human_readable_time                    # noqa: E402
+    from ._functions import get_processor_name                     # noqa: E402
     from ._cy_linear_algebra import lu_factor, lu_solve            # noqa: E402
     from ._cy_linear_algebra import ldl_factor, ldl_solve          # noqa: E402
     from ._cy_linear_algebra import cho_factor, cho_solve          # noqa: E402
@@ -90,10 +92,11 @@ except Exception as e:
     raise e
 
 __all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'load', 'store', 'Memory',
-           'orthogonalize', 'ortho_complement', 'lu_factor', 'lu_solve',
-           'ldl_factor', 'ldl_solve', 'cho_factor', 'cho_solve', 'matmul',
-           'solve_triangular', 'get_config', 'get_instructions_per_task',
-           'electrocardiogram', 'memdet_sym', 'covariance_matrix',
-           'design_matrix']
+           'Disk', 'Profile', 'human_readable_time', 'human_readable_mem',
+           'get_processor_name', 'orthogonalize', 'ortho_complement',
+           'lu_factor', 'lu_solve', 'ldl_factor', 'ldl_solve', 'cho_factor',
+           'cho_solve', 'matmul', 'solve_triangular', 'get_config',
+           'get_instructions_per_task', 'electrocardiogram',
+           'covariance_matrix', 'design_matrix']
 
 from .__version__ import __version__                          # noqa: F401 E402

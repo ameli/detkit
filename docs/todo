@@ -1,0 +1,1 @@
+use shutil.disk_usage('/tmp').free to find avail scratch space

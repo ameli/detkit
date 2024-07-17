@@ -27,7 +27,7 @@ def _transfer_slice(
         memmap_row_range,
         memmap_col_range,
         shared_mem_name,
-        shared_mem_shape,
+        shared_mem_shape_on_mem,
         order,
         trans,
         perm_inv,
@@ -38,6 +38,7 @@ def _transfer_slice(
     """
 
     num_rows = memmap_row_range[1] - memmap_row_range[0]
+    num_cols = memmap_col_range[1] - memmap_col_range[0]
 
     # Calculate rows per core
     num_rows_per_proc = (num_rows // num_proc) + (num_rows % num_proc > 0)
@@ -48,7 +49,7 @@ def _transfer_slice(
 
     # Access the existing shared memory
     existing_shared_mem = shared_memory.SharedMemory(name=shared_mem_name)
-    array = numpy.ndarray(shared_mem_shape, dtype=memmap.dtype,
+    array = numpy.ndarray(shared_mem_shape_on_mem, dtype=memmap.dtype,
                           buffer=existing_shared_mem.buf, order=order)
 
     if operation == 'r':
@@ -56,23 +57,23 @@ def _transfer_slice(
         if trans:
             if isinstance(perm_inv, numpy.ndarray):
                 # With row permutation
-                array[perm_inv, start_row:end_row] = memmap[
+                array[:num_cols, perm_inv[start_row:end_row]] = memmap[
                     memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                     memmap_col_range[0]:memmap_col_range[1]].T
             else:
                 # No row permutation
-                array[:, start_row:end_row] = memmap[
+                array[:num_cols, start_row:end_row] = memmap[
                     memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                     memmap_col_range[0]:memmap_col_range[1]].T
         else:
             if isinstance(perm_inv, numpy.ndarray):
                 # With row permutation
-                array[perm_inv[start_row:end_row], :] = memmap[
+                array[perm_inv[start_row:end_row], :num_cols] = memmap[
                     memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                     memmap_col_range[0]:memmap_col_range[1]]
             else:
                 # No row permutation
-                array[start_row:end_row, :] = memmap[
+                array[start_row:end_row, :num_cols] = memmap[
                     memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                     memmap_col_range[0]:memmap_col_range[1]]
 
@@ -87,12 +88,14 @@ def _transfer_slice(
             memmap[
                 memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                 memmap_col_range[0]:memmap_col_range[1]] = \
-                        array[:, start_row:end_row].T
+                        array[:num_cols, start_row:end_row].T
         else:
             memmap[
                 memmap_row_range[0]+start_row:memmap_row_range[0]+end_row,
                 memmap_col_range[0]:memmap_col_range[1]] = \
-                        array[start_row:end_row, :]
+                        array[start_row:end_row, :num_cols]
+
+        memmap.flush()
 
     else:
         raise ValueError('Operation should be "r" or "w".')
@@ -111,6 +114,7 @@ def _parallel_io(
         memmap_col_range,
         shared_mem,
         shared_mem_shape,
+        shared_mem_shape_on_mem,
         order,
         trans,
         perm_inv,
@@ -135,10 +139,12 @@ def _parallel_io(
     num_rows = memmap_row_range[1] - memmap_row_range[0]
     num_columns = memmap_col_range[1] - memmap_col_range[0]
 
-    if (trans is False) and ((num_rows, num_columns) != shared_mem_shape):
+    if ((trans is False) and ((num_rows != shared_mem_shape[0]) or
+                              (num_columns != shared_mem_shape[1]))):
         raise ValueError('Source array rows and column ranges do not match ' +
                          'with the shape of shared memory array.')
-    elif (trans is True) and ((num_columns, num_rows) != shared_mem_shape):
+    elif ((trans is True) and ((num_rows != shared_mem_shape[1]) or
+                               (num_columns != shared_mem_shape[0]))):
         raise ValueError('Source array rows and column ranges do not match ' +
                          'with the shape of transposed shared memory array.')
 
@@ -146,9 +152,9 @@ def _parallel_io(
     itemsize = numpy.dtype(memmap.dtype).itemsize
     memmap_slice_nbytes = num_rows * num_columns * itemsize
 
-    if memmap_slice_nbytes != shared_mem.size:
+    if memmap_slice_nbytes > shared_mem.size:
         raise RuntimeError('Size of shared memory (%d) ' % (shared_mem.size) +
-                           'does not match the size of memory map slice (%d).'
+                           'is larger then the size of memory map slice (%d).'
                            % (memmap_slice_nbytes))
 
     # When number of processor is not specified, use all available cores
@@ -161,8 +167,8 @@ def _parallel_io(
     for proc_index in range(num_proc):
         process = Process(target=_transfer_slice,
                           args=(memmap, memmap_row_range, memmap_col_range,
-                                shared_mem.name, shared_mem_shape, order,
-                                trans, perm_inv, operation, num_proc,
+                                shared_mem.name, shared_mem_shape_on_mem,
+                                order, trans, perm_inv, operation, num_proc,
                                 proc_index))
 
         processes.append(process)
@@ -185,6 +191,7 @@ def load(
         memmap_col_range,
         shared_mem,
         shared_mem_shape,
+        shared_mem_shape_on_mem,
         order,
         trans,
         perm_inv,
@@ -195,8 +202,8 @@ def load(
 
     # Read operation
     _parallel_io(memmap, memmap_row_range, memmap_col_range, shared_mem,
-                 shared_mem_shape, order, trans, perm_inv, operation='r',
-                 num_proc=num_proc)
+                 shared_mem_shape, shared_mem_shape_on_mem, order, trans,
+                 perm_inv, operation='r', num_proc=num_proc)
 
 
 # =====
@@ -209,6 +216,7 @@ def store(
         memmap_col_range,
         shared_mem,
         shared_mem_shape,
+        shared_mem_shape_on_mem,
         order,
         trans,
         num_proc=None):
@@ -221,5 +229,5 @@ def store(
 
     # Write operation
     _parallel_io(memmap, memmap_row_range, memmap_col_range, shared_mem,
-                 shared_mem_shape, order, trans, perm_inv, operation='w',
-                 num_proc=num_proc)
+                 shared_mem_shape, shared_mem_shape_on_mem, order, trans,
+                 perm_inv, operation='w', num_proc=num_proc)

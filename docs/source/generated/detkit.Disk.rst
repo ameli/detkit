@@ -1,9 +1,9 @@
-﻿detkit.Memory
-=============
+﻿detkit.Disk
+===========
 
 .. currentmodule:: detkit
 
-.. autoclass:: Memory
+.. autoclass:: Disk
    :no-members:
    :no-inherited-members:
    :no-special-members:
@@ -13,10 +13,10 @@
       .. autosummary::
          :toctree:
       
-         Memory.info
-         Memory.now
-         Memory.peak
-         Memory.set
+         Disk.partition_info
+         Disk.read
+         Disk.set
+         Disk.write
       
   
 

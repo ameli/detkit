@@ -76,16 +76,32 @@ Functions to create sample dataset to be used for test and benchmarking purposes
     detkit.covariance_matrix
     detkit.design_matrix
 
-.. rubric:: Utilities
+.. rubric:: Profiling
+
+Utility classes for profiling memory and process.
+
+.. autosummary::
+    :toctree: generated
+    :caption: Profiling
+    :recursive:
+    :template: autosummary/class.rst
+
+    detkit.Memory
+    detkit.Disk
+    detkit.Profile
+
+.. rubric:: Profiling Utilities
 
 Utility functions for profiling memory and process.
    
 .. autosummary::
     :toctree: generated
-    :caption: Utility Functions
+    :caption: Profiling Utilities
     :recursive:
     :template: autosummary/member.rst
 
     detkit.get_config
     detkit.get_instructions_per_task
-    detkit.Memory
+    detkit.get_processor_name
+    detkit.human_readable_time
+    detkit.human_readable_mem
