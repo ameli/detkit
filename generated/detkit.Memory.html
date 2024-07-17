@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="Memory" />
+<meta property="og:title" content="detkit.Memory" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ameli.github.io/generated/detkit.Memory.html" />
 <meta property="og:site_name" content="DetKit" />
@@ -16,7 +16,7 @@
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>Memory &#8212; detkit Manual</title>
+    <title>detkit.Memory &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -59,8 +59,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Benchmark Test" href="../benchmark.html" />
-    <link rel="prev" title="get_instructions_per_task" href="detkit.get_instructions_per_task.html" />
+    <link rel="next" title="detkit.Memory.set" href="detkit.Memory.set.html" />
+    <link rel="prev" title="design_matrix" href="detkit.design_matrix.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -325,10 +325,59 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Utility Functions
+  Profiling
  </span>
 </p>
 <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
+   detkit.Memory
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.Memory.set.html">
+     detkit.Memory.set
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.Memory.now.html">
+     detkit.Memory.now
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.Memory.peak.html">
+     detkit.Memory.peak
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.Memory.info.html">
+     detkit.Memory.info
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.Disk.html">
+   detkit.Disk
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.Profile.html">
+   detkit.Profile
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Profiling Utilities
+ </span>
+</p>
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="detkit.get_config.html">
    get_config
@@ -339,9 +388,19 @@
    get_instructions_per_task
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Memory
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.get_processor_name.html">
+   get_processor_name
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.human_readable_time.html">
+   human_readable_time
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.human_readable_mem.html">
+   human_readable_mem
   </a>
  </li>
 </ul>
@@ -404,27 +463,75 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="memory">
-<h1>Memory<a class="headerlink" href="#memory" title="Permalink to this heading">#</a></h1>
+  <section id="detkit-memory">
+<h1>detkit.Memory<a class="headerlink" href="#detkit-memory" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="detkit.Memory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">Memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.Memory" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">Memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.Memory" title="Permalink to this definition">#</a></dt>
 <dd><p>Trace memory allocation.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>unit</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'B'</span></code>, <code class="docutils literal notranslate"><span class="pre">'KB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'TB'</span></code>},             default=``’MB’``</span></dt><dd><p>Unit of the memory</p>
-</dd>
-<dt><strong>chunk</strong><span class="classifier">int, default=1</span></dt><dd><p>The reporting memory is divided by chunk. That ism, a chunk of memory
-is considered as one unit of memory. This is useful to compare the
-memory with the size of an array. For instance, for an array of size
-1000, if <code class="docutils literal notranslate"><span class="pre">chunk=100</span></code>, the reported memory becomes 1.</p>
-</dd>
-<dt><strong>dtype</strong><span class="classifier">str, default=’float64’</span></dt><dd><p>Data type</p>
+<dt><strong>unit</strong><span class="classifier">int or str {<code class="docutils literal notranslate"><span class="pre">'B'</span></code>, <code class="docutils literal notranslate"><span class="pre">'KB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GB'</span></code>, <code class="docutils literal notranslate"><span class="pre">'TB'</span></code>},             default=``1``</span></dt><dd><p>Unit of memory either as a string, such as <code class="docutils literal notranslate"><span class="pre">'KB'</span></code>, representing
+1024 bytes, or directly specify the number of bytes as an integer.</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="detkit.Disk.html#detkit.Disk" title="detkit.Disk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Disk</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.Profile.html#detkit.Profile" title="detkit.Profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Profile</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">Memory</span><span class="p">,</span> <span class="n">memdet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a random matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize with MB unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mem</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;MB&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the starting point of memory inquiry</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">mem</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform a memory-intensive operation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Inquiry current allocated memory in MB unit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+<span class="go">82.3</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Inquiry the peak allocated memory in MB unit</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">peak</span><span class="p">())</span>
+</span><span class="go">82.3</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Reset the memory counter and inquiry again</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mem</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="detkit.Memory.set.html#detkit.Memory.set" title="detkit.Memory.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a>()</p></td>
+<td><p>Set or reset tracing allocated memory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="detkit.Memory.now.html#detkit.Memory.now" title="detkit.Memory.now"><code class="xref py py-obj docutils literal notranslate"><span class="pre">now</span></code></a>()</p></td>
+<td><p>Inquiry current memory allocation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="detkit.Memory.peak.html#detkit.Memory.peak" title="detkit.Memory.peak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peak</span></code></a>()</p></td>
+<td><p>Inquiry peak memory allocation since memory is set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="detkit.Memory.info.html#detkit.Memory.info" title="detkit.Memory.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>()</p></td>
+<td><p>Inquiry memory information.</p></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </section>
@@ -437,17 +544,17 @@ memory with the size of an array. For instance, for an array of size
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="detkit.get_instructions_per_task.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="detkit.design_matrix.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">get_instructions_per_task</p>
+          <p class="prev-next-title">design_matrix</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="../benchmark.html" title="next page">
+  <a class='right-next' id="next-link" href="detkit.Memory.set.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Benchmark Test</p>
+      <p class="prev-next-title">detkit.Memory.set</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>

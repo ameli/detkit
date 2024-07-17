@@ -327,7 +327,29 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Utility Functions
+  Profiling
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.Memory.html">
+   detkit.Memory
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.Disk.html">
+   detkit.Disk
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.Profile.html">
+   detkit.Profile
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Profiling Utilities
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -342,8 +364,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="detkit.Memory.html">
-   Memory
+  <a class="reference internal" href="detkit.get_processor_name.html">
+   get_processor_name
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.human_readable_time.html">
+   human_readable_time
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.human_readable_mem.html">
+   human_readable_mem
   </a>
  </li>
 </ul>
@@ -426,21 +458,32 @@ stored with row-major or column-major ordering.</p>
 </dd>
 <dt><strong>shape</strong><span class="classifier">tuple, default=None</span></dt><dd><p>A tuple of size three, determining the shape of an upper-left
 sub-matrices of <cite>A</cite>, <cite>B</cite>, and <cite>C</cite> to be referenced. Namely, if
-<code class="docutils literal notranslate"><span class="pre">shape</span></code> is given as the tuple <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, the sub-matrices
-<code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:n]</span></code> (or <code class="docutils literal notranslate"><span class="pre">A[:n,</span> <span class="pre">:m]</span></code> when <code class="docutils literal notranslate"><span class="pre">trans_a=True</span></code>),
-<code class="docutils literal notranslate"><span class="pre">B[:n,</span> <span class="pre">:k]</span></code> (or <code class="docutils literal notranslate"><span class="pre">B[:k,</span> <span class="pre">:n]</span></code> when <code class="docutils literal notranslate"><span class="pre">trans_b=True</span></code>), and
-<code class="docutils literal notranslate"><span class="pre">C[:n,</span> <span class="pre">:k]</span></code> are used. If <cite>None</cite>, the full shape of <code class="docutils literal notranslate"><span class="pre">A[:,</span> <span class="pre">:]</span></code>,
-<code class="docutils literal notranslate"><span class="pre">B[:,</span> <span class="pre">:]</span></code>, and <code class="docutils literal notranslate"><span class="pre">C[:,</span> <span class="pre">:]</span></code> are considered.</p>
+<code class="docutils literal notranslate"><span class="pre">shape</span></code> is given as the tuple <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code> is the number of rows of <span class="math notranslate nohighlight">\(\mathrm{op}(\mathbf{A})\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of columns of <span class="math notranslate nohighlight">\(\mathrm{op}(\mathbf{A})\)</span>,
+which is also the number of rows of <span class="math notranslate nohighlight">\(\mathrm{op}(\mathbf{B})\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> is the number of columns of <span class="math notranslate nohighlight">\(\mathrm{op}(\mathbf{C})\)</span>.</p></li>
+</ul>
+<p>As such the following sub-matrices are used:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:n]</span></code> (or <code class="docutils literal notranslate"><span class="pre">A[:n,</span> <span class="pre">:m]</span></code> when <code class="docutils literal notranslate"><span class="pre">trans_a=True</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">B[:n,</span> <span class="pre">:k]</span></code> (or <code class="docutils literal notranslate"><span class="pre">B[:k,</span> <span class="pre">:n]</span></code> when <code class="docutils literal notranslate"><span class="pre">trans_b=True</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">C[:m,</span> <span class="pre">:k]</span></code></p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">shape</span></code> is <cite>None</cite>, the full shape of <code class="docutils literal notranslate"><span class="pre">A[:,</span> <span class="pre">:]</span></code>,
+<code class="docutils literal notranslate"><span class="pre">B[:,</span> <span class="pre">:]</span></code>, and <code class="docutils literal notranslate"><span class="pre">C[:,</span> <span class="pre">:]</span></code> are considered provided that their shapes
+are compatible for the matrix product.</p>
 </dd>
 <dt><strong>trans_a</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>False</cite>, the operator <span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{A}) =
 \mathbf{A}\)</span> is used. If <cite>True</cite>, the operator
-<span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{A}) =
-\mathbf{A}^{\intercal}\)</span> is used.</p>
+<span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{A}) = \mathbf{A}^{\intercal}\)</span> is
+used.</p>
 </dd>
 <dt><strong>trans_ab</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>False</cite>, the operator <span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{B}) =
 \mathbf{B}\)</span> is used. If <cite>True</cite>, the operator
-<span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{B}) =
-\mathbf{B}^{\intercal}\)</span> is used.</p>
+<span class="math notranslate nohighlight">\(\operatorname{op}(\mathbf{B}) = \mathbf{B}^{\intercal}\)</span> is
+used.</p>
 </dd>
 <dt><strong>alpha</strong><span class="classifier">float, default=1</span></dt><dd><p>The parameter <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
 </dd>

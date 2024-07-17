@@ -223,7 +223,7 @@ Related Projects
    :target: https://anaconda.org/s-ameli/detkit
 .. |tokei| image:: https://tokei.rs/b1/github/ameli/detkit?category=lines
    :target: https://github.com/ameli/detkit
-.. |tokei-2| image:: https://img.shields.io/badge/code%20lines-12.9k-blue
+.. |tokei-2| image:: https://img.shields.io/badge/code%20lines-22.6k-blue
    :target: https://github.com/ameli/detkit
 .. |languages| image:: https://img.shields.io/github/languages/count/ameli/detkit
    :target: https://github.com/ameli/detkit

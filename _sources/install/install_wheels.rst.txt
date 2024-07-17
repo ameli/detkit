@@ -49,8 +49,6 @@ Alternatively, you can install |project| via ``conda``. To do so, you may refer 
 
     conda install s-ameli::detkit
 
-.. _dependencies:
-
 .. |pypi| image:: https://img.shields.io/pypi/v/detkit
    :target: https://pypi.org/project/detkit
 .. |conda-version| image:: https://img.shields.io/conda/v/s-ameli/detkit

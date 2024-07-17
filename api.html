@@ -327,7 +327,29 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Utility Functions
+  Profiling
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.Memory.html">
+   detkit.Memory
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.Disk.html">
+   detkit.Disk
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.Profile.html">
+   detkit.Profile
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Profiling Utilities
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -342,8 +364,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="generated/detkit.Memory.html">
-   Memory
+  <a class="reference internal" href="generated/detkit.get_processor_name.html">
+   get_processor_name
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.human_readable_time.html">
+   human_readable_time
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.human_readable_mem.html">
+   human_readable_mem
   </a>
  </li>
 </ul>
@@ -408,7 +440,7 @@
 <td><p>Computes the <cite>logpdet</cite> of a matrix.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.memdet.html#detkit.memdet" title="detkit.memdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.memdet</span></code></a>(A[, num_blocks, assume, ...])</p></td>
-<td><p>Compute log-determinant on contained memory.</p></td>
+<td><p>Compute log-determinant under memory constraint.</p></td>
 </tr>
 </tbody>
 </table>
@@ -475,7 +507,22 @@
 </tr>
 </tbody>
 </table>
-<p class="rubric">Utilities</p>
+<p class="rubric">Profiling</p>
+<p>Utility classes for profiling memory and process.</p>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.Memory.html#detkit.Memory" title="detkit.Memory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Memory</span></code></a>([unit])</p></td>
+<td><p>Trace memory allocation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.Disk.html#detkit.Disk" title="detkit.Disk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Disk</span></code></a>([unit])</p></td>
+<td><p>Measure read and write to disk.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.Profile.html#detkit.Profile" title="detkit.Profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Profile</span></code></a>()</p></td>
+<td><p>Profile a process.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Profiling Utilities</p>
 <p>Utility functions for profiling memory and process.</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
@@ -485,8 +532,14 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.get_instructions_per_task.html#detkit.get_instructions_per_task" title="detkit.get_instructions_per_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_instructions_per_task</span></code></a>([task, dtype])</p></td>
 <td><p>Counts the hardware instructions of computing a single FLOP of a benchmark task on the current processor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.Memory.html#detkit.Memory" title="detkit.Memory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.Memory</span></code></a>([unit, chunk, dtype])</p></td>
-<td><p>Trace memory allocation.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.get_processor_name.html#detkit.get_processor_name" title="detkit.get_processor_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_processor_name</span></code></a>()</p></td>
+<td><p>Returns name of processor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.human_readable_time.html#detkit.human_readable_time" title="detkit.human_readable_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.human_readable_time</span></code></a>(t[, pad])</p></td>
+<td><p>Converts time (in seconds) as float to string with time unit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.human_readable_mem.html#detkit.human_readable_mem" title="detkit.human_readable_mem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.human_readable_mem</span></code></a>(m[, pad])</p></td>
+<td><p>Converts memory (in bytes) as float to string with memory unit.</p></td>
 </tr>
 </tbody>
 </table>
