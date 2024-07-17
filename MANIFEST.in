@@ -54,6 +54,7 @@ include environment.yml
 include .dockerignore
 include docker/Dockerfile
 
+exclude docs/todo
 exclude TODO.rst
 exclude .coverage
 exclude .gitattributes
