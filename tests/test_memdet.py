@@ -65,7 +65,7 @@ def test_memdet():
 
     # Compute log-determinant
     ld, sign, diag, info = memdet(
-            z, num_blocks=3, assume='sym', parallel_io='ts',
+            z, max_mem='5MB', assume='sym', parallel_io='tensorstore',
             verbose=True, return_info=True)
 
     # print log-determinant and sign

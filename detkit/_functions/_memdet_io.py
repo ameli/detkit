@@ -12,6 +12,7 @@
 # =======
 
 import os
+import re
 import numpy
 import dask
 import zarr
@@ -42,7 +43,7 @@ def _get_scratch_prefix():
 
     # Get the name of caller function
     stack = inspect.stack()
-    caller_frame = stack[1]
+    caller_frame = stack[2]  # second parent function (which is memdet)
     caller_function_name = caller_frame.function
 
     # Get the name of package
@@ -77,7 +78,7 @@ def _find_io_chunk(m):
             if i != m // i:
                 divisors.append(m // i)
 
-    # Find the divisor closest to a the preferred chunk size
+    # Find the divisor closest to the preferred chunk size
     io_chunk = min(divisors, key=lambda x: abs(x - preferred_io_chunk))
 
     if io_chunk > max_io_chunk:
@@ -86,11 +87,51 @@ def _find_io_chunk(m):
     return io_chunk
 
 
+# ===========================
+# human readable mem to bytes
+# ===========================
+
+def _human_readable_mem_to_bytes(hr_mem):
+    """
+    Parses a string containing number and memory unit to bytes. For example,
+    the string "16.2GB" is converted to 17394617549.
+    """
+
+    # Define unit multipliers
+    unit_multipliers = {
+        'B': 1,
+        'KB': 1024,
+        'MB': 1024**2,
+        'GB': 1024**3,
+        'TB': 1024**4,
+        'PB': 1024**5,
+        'EB': 1024**6,
+        'ZB': 1024**7,
+    }
+
+    # Extract numeric value and unit from the input string
+    match = re.match(r"([0-9.]+)([a-zA-Z]+)", hr_mem)
+    if not match:
+        raise ValueError("Invalid memory string format")
+
+    value, unit = match.groups()
+    value = float(value)
+    unit = unit.upper()
+
+    if unit not in unit_multipliers:
+        raise ValueError("Unknown memory unit %s" % (unit))
+
+    # Calculate the number of bytes
+    bytes_ = int(value * unit_multipliers[unit])
+
+    return bytes_
+
+
 # =============
 # initialize io
 # =============
 
-def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
+def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                   parallel_io, scratch_dir, verbose=False):
     """
     Initialize the io dictionary.
@@ -120,23 +161,75 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
     A21_t = None
     A22 = None
 
+    # When max memory limit is given, ignore number of blocks given by the
+    # user, and instead, determine the number of blocks based on max memory.
+    if max_mem != float('inf'):
+
+        # Convert max_mem to integer
+        if isinstance(max_mem, str):
+            max_mem = _human_readable_mem_to_bytes(max_mem)
+
+        elif not isinstance(max_mem, (int, numpy.int8, numpy.uint8,
+                                      numpy.int16, numpy.uint16, numpy.int32,
+                                      numpy.uint32, numpy.int64,
+                                      numpy.uint64)):
+            raise ValueError('"max_mem" should be integer or string.')
+
+        # Number of bytes per data type
+        beta = numpy.dtype(dtype).itemsize
+
+        # Find number of blocks based on r
+        r = n * numpy.sqrt(beta / max_mem)
+        if r <= 1.0:
+            # Here, one concurrent block will be loaded on memory
+            num_blocks = 1
+        elif r <= 2.0 / numpy.sqrt(3.0):
+            # Here, 3 concurrent blocks will be loaded on memory
+            num_blocks = 2
+        else:
+            # Here, 4 concurrent blocks will be loaded on memory
+            num_blocks = int(numpy.ceil(2.0 * r))
+
+    elif not isinstance(num_blocks, (int, numpy.int8, numpy.uint8,
+                                     numpy.int16, numpy.uint16, numpy.int32,
+                                     numpy.uint32, numpy.int64,
+                                     numpy.uint64)):
+        raise ValueError('"num_blocks" should be an integer.')
+
     # Block size
     m = (n + num_blocks - 1) // num_blocks
 
     # Find io_chunk to be a divisor or block size, m
-    io_chunk = _find_io_chunk(m)
+    io_chunk = _find_io_chunk(m,)
 
-    if verbose:
-        print(f'{ANSI.FAINT}Config:{ANSI.RESET}\n' +
-              f'matrix size : {n}\n' +
-              f'num blocks  : {num_blocks}x{num_blocks}\n' +
-              f'block size  : {m}x{m}\n' +
-              f'dtype       : {str(dtype)}\n',
-              flush=True)
-
+    # Matrix and block memory sizes
+    if hasattr(A, 'nbytes'):
+        A_nbytes = A.nbytes
+    else:
+        A_nbytes = numpy.dtype(A.dtype).itemsize * (n**2)
+    A_hr_nbytes = human_readable_mem(A_nbytes, pad=False)
     block_nbytes = numpy.dtype(dtype).itemsize * (m**2)
     block_hr_nbytes = human_readable_mem(block_nbytes, pad=False)
-    if parallel_io == 'mp':
+
+    if verbose:
+        print(f'{ANSI.FAINT}Matrix:{ANSI.RESET}\n' +
+              f'matrix dtype : {str(dtype)}\n' +
+              f'matrix size  : {A_hr_nbytes}\n' +
+              f'matrix shape : {n}x{n}\n' +
+              f'blocks grid  : {num_blocks}x{num_blocks}\n' +
+              f'block shape  : {m}x{m}\n' +
+              f'block size   : {block_hr_nbytes}\n',
+              flush=True)
+
+    # Check parallel_io
+    if ((parallel_io is not None) and
+            (parallel_io not in ['multiproc', 'dask', 'tensorstore'])):
+        print(parallel_io)
+        print(parallel_io in ['multiproc', 'dask', 'tensorstore'])
+        raise ValueError('"parallel_io" should be either set to None, ' +
+                         '"multiproc", "dask", or "tensorstore".')
+
+    if parallel_io == 'multiproc':
         A11 = shared_memory.SharedMemory(create=True, size=block_nbytes)
     else:
         A11 = numpy.empty((m, m), dtype=dtype, order=order)
@@ -152,7 +245,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
               f'{ANSI.RESET}', flush=True)
 
     # Context for tensorstore
-    if parallel_io == 'ts':
+    if parallel_io == 'tensorstore':
         # The "total_bytes_limit" MUST be set to zero, otherwise cache builds
         # up and takes the whole memory on each load operation.
         ts_context = tensorstore.Context({
@@ -170,7 +263,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
             dask_A = dask.array.from_zarr(A, chunks=(io_chunk, io_chunk))
         else:
             dask_A = dask.array.from_array(A, chunks=(io_chunk, io_chunk))
-    elif parallel_io == 'ts':
+    elif parallel_io == 'tensorstore':
 
         if isinstance(A, zarr.core.Array):
             spec_1 = {
@@ -188,7 +281,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
 
     if num_blocks > 1:
 
-        if parallel_io == 'mp':
+        if parallel_io == 'multiproc':
             A12 = shared_memory.SharedMemory(create=True, size=block_nbytes)
             A21_t = shared_memory.SharedMemory(create=True, size=block_nbytes)
         else:
@@ -213,7 +306,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
             expected_scratch_hr_nbytes = human_readable_mem(
                 expected_scratch_nbytes, pad=False)
 
-            if parallel_io == 'mp':
+            if parallel_io == 'multiproc':
                 A22 = shared_memory.SharedMemory(create=True,
                                                  size=block_nbytes)
             else:
@@ -224,7 +317,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
                       f'{block_hr_nbytes:>8}{ANSI.RESET}', flush=True)
 
             # Scratch space to hold temporary intermediate blocks
-            if parallel_io == 'mp':
+            if parallel_io == 'multiproc':
 
                 # Temporary file as scratch space
                 temp_file = tempfile.NamedTemporaryFile(
@@ -250,7 +343,7 @@ def initialize_io(A, num_blocks, assume, triangle, mixed_precision,
                 if parallel_io == 'dask':
                     dask_scratch = dask.array.from_zarr(
                             scratch, chunks=(io_chunk, io_chunk))
-                elif parallel_io == 'ts':
+                elif parallel_io == 'tensorstore':
 
                     spec_2 = {
                         'driver': 'zarr',

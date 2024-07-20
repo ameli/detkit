@@ -14,6 +14,7 @@
 import os
 import psutil
 import numpy
+import sys
 
 __all__ = ['Disk']
 
@@ -141,7 +142,11 @@ class Disk(object):
         Initialization.
         """
 
-        self.process = psutil.Process(os.getpid())
+        # The io_counters() is not available in macos. For macos, we will
+        # instead use disk_io_counters() function.
+        if sys.platform in ['linux', 'win32', 'cygwin']:
+            self.process = psutil.Process(os.getpid())
+
         self.init_io = None
         self.final_io = None
 
@@ -222,7 +227,10 @@ class Disk(object):
             0.0
         """
 
-        self.init_io = self.process.io_counters()
+        if sys.platform in ['linux', 'win32', 'cygwin']:
+            self.init_io = self.process.io_counters()
+        else:
+            self.init_io = self.disk_io_counters()
 
     # ====
     # read
@@ -291,7 +299,11 @@ class Disk(object):
         # Force the OS to write its buffers to disk
         os.sync()
 
-        self.final_io = self.process.io_counters()
+        if sys.platform in ['linux', 'win32', 'cygwin']:
+            self.final_io = self.process.io_counters()
+        else:
+            self.final_io = self.disk_io_counters()
+
         read_bytes = self.final_io.read_bytes - self.init_io.read_bytes
 
         return read_bytes / self.unit_size
@@ -353,7 +365,11 @@ class Disk(object):
         # Force the OS to write its buffers to disk
         os.sync()
 
-        self.final_io = self.process.io_counters()
+        if sys.platform in ['linux', 'win32', 'cygwin']:
+            self.final_io = self.process.io_counters()
+        else:
+            self.final_io = self.disk_io_counters()
+
         write_bytes = self.final_io.write_bytes - self.init_io.write_bytes
 
         return write_bytes / self.unit_size

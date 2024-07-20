@@ -54,6 +54,7 @@ def _pivot_to_permutation(piv):
 
 def memdet(
         A,
+        max_mem=float('inf'),
         num_blocks=1,
         assume='gen',
         triangle=None,
@@ -69,11 +70,34 @@ def memdet(
     Parameters
     ----------
 
-    A : numpy.ndarray or numpy.memmap or zarr.core.Array
-        Square non-singular matrix.
+    A : numpy.ndarray, numpy.memmap, zarr.core.Array, dask.array,\
+            tensotstore.array
+        Square matrix, which is either already loaded on the memory (such as
+        ``numpy.ndarray``), or cannot fit on the memory, and rather, stored on
+        disk as Numpy's memory map, or Zarr, Dask, or TensorStore array
+        formats.
+
+    max_mem : float or str, default=float('inf')
+        The maximum memory allowed to be allocated during the computation.
+        This can be specified as an integer representing the number of bytes,
+        or as a string such as ``16.2GB`` (a number immediately followed by
+        the unit of memory such as ``B``, ``KB``, ``MB``, ``GB``, ``TB``, etc).
+
+        The default value of ``float('inf')`` indicates infinite amount of
+        memory is available, hence, no memory is constrained. This case falls
+        back to conventional computation of log-determinant on memory without
+        creation of any scratchpad space on disk.
+
+        .. note::
+
+            To constrain memory, you can either set ``max_mem`` or directly set
+            the number of matrix blocks (see ``num_blocks`` option). If
+            ``max_mem`` is set, ``num_block`` option is ignored.
 
     num_blocks : int, default=1
-        Number of memory blocks along rows and columns.
+        Number of memory blocks along rows and columns. This is used when
+        the whole matrix cannot be loaded on the memory, rather, smaller
+        blocks of the matrix are loaded on the memory.
 
         * If `=1`:  the whole matrix is loaded to memory as one block. No
           scratchpad disk space is needed as all data is on memory.
@@ -89,12 +113,19 @@ def memdet(
         If the number of blocks is not a divisor of the matrix size, the blocks
         on the last row-block and column-block will have smaller size.
 
+        .. note::
+
+            To constrain memory, you can either set ``num_blocks`` or directly
+            set the amount of memory limit (see ``max_mem`` option). If
+            ``max_mem`` is set, the given ``num_block`` option by the user is
+            ignored, and instead computed automatically.
+
     triangle : ``'l'``, ``'u'``, or None, default=None
         When the  matrix is symmetric, this option indicates whether the full
-        matrix is stored or only half triangle part of the matrix is given.
+        matrix is stored or only a triangular part of the matrix is given:
 
-        * ``'l'``: assumes the lower-triangle part of the matrix is given.
-        * ``'u'``: assumes the upper-triangle part of the matrix is given.
+        * ``'l'``: assumes the lower-triangular part of the matrix is given.
+        * ``'u'``: assumes the upper-triangular part of the matrix is given.
         * ``None``: indicates full matrix is given.
 
     assume : str {``'gen'``, ``'sym'``, ``'spd'``}, default=``'gen'``
@@ -104,23 +135,26 @@ def memdet(
         * ``'sym'``: symmetric matrix
         * ``'spd'``: symmetric positive-definite matrix
 
+        The assumption on the matrix is not checked.
+
     mixed_precision : str {``'float32'``, ``'float64'``}, or numpy.dtype,\
             default= ``'float64'``
         The precision at which the computations are performed. This may be
-        different than the data type of the input  matrix. It is recommended
-        to set a precision higher than the dtype of the input matrix. For
-        instance, if the input matrix has ``float32`` data type, you may
-        set this option to ``float64``.
+        different than the data type of the input matrix. It is recommended
+        to set a precision equal or higher than the *dtype* of the input
+        matrix. For instance, if the input matrix has ``float32`` data type,
+        you may set this option to ``float64``.
 
-    parallel_io : str {``'mp'``, ``'dask'``, ``'ts'``} or None, default=None
-        Parallel data transfer (load and store operations) from memory to
-        scratchpad on the disk and vice-versa:
+    parallel_io : str {``'multiproc'``, ``'dask'``, ``'tensorstore'``} or\
+            None, default=None
+        Parallel data transfer (load and store operations of each block) from
+        memory to scratchpad on the disk and vice-versa:
 
-        * ``'mp'``: utilizes Python's built-in multiprocessing.
+        * ``'multiproc'``: utilizes Python's built-in multiprocessing.
         * ``'dask'``: utilizes Dask's multiprocessing. For this to work,
           the package `dask <https://www.dask.org/>`__ should be installed.
-        * ``'ts'``: utilizes TensorStore's multiprocessing. For this to work,
-          the packages
+        * ``'tensorstore'``: utilizes TensorStore's multiprocessing. For this
+          to work, the packages
           `tensorstore <https://google.github.io/tensorstore/>`__ and
           `zarr <https://zarr.readthedocs.io/>`__ should be installed.
         * ``None``: no parallel processing is performed. All data transfer is
@@ -146,13 +180,13 @@ def memdet(
             option is set).
 
     overwrite : boolean, default=True
-        Uses the input matrix storage as scratchpad space. The overwrites the
-        input matrix.
+        Uses the input matrix storage for intermediate computations.
+        This will overwrite the input matrix.
 
     return_info : bool, default=False
         Returns a dictionary containing profiling information such as wall and
-        process time, memory allocation, disk usage, etc. See ``info`` variable
-        in the return section below.
+        process times, memory allocation, disk usage, etc. See ``info``
+        variable in the return section below.
 
     verbose : bool, default=False
         Prints verbose output during computation.
@@ -290,10 +324,19 @@ def memdet(
     https://pytorch.org/docs/stable/notes/windows.html
     #multiprocessing-error-without-if-clause-protection
 
+    References
+    ----------
+
+    .. [1] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta,
+           Michael W. Mahoney (2024). Determinant Estimation under Memory
+           Constraints and Neural Scaling Law (*under review*)
+
     Examples
     --------
 
-    **Using a zarr array:**
+    In this example, we generate a random matrix ``A``, and for test purposes,
+    we store this matrix on the disk as a `zarr` array ``z``. You can either
+    pass ``A`` or ``z`` to :func:`detkit.memdet`.
 
     .. code-block:: python
         :emphasize-lines: 15, 16, 17
@@ -302,38 +345,74 @@ def memdet(
         >>> import numpy
         >>> n = 10000
         >>> A = numpy.random.randn(n, n)
-        >>> A = A.T @ A
+        >>> A = A.T + A
 
         >>> # Store matrix as a zarr array on disk (optional)
         >>> import zarr
-        >>> z_path = 'my_matrix.zarr'
+        >>> z_path = 'matrix_file.zarr'
         >>> z = zarr.open(z_path, mode='w', shape=(n, n), dtype=A.dtype)
         >>> z[:, :] = A
 
-        >>> # Compute log-determinant
+        >>> # Compute log-determinant while limiting memory to 500 MB
         >>> from detkit import memdet
-        >>> ld, sign, diag, info = memdet(
-        ...         z, num_blocks=3, assume='sym', parallel_io='ts',
-        ...         verbose=True, return_info=True)
+        >>> ld, sign, diag, info = memdet(z, max_mem='500MB', assume='sym',
+        ...                               parallel_io='tensorstore',
+        ...                               verbose=True, return_info=True)
 
-        >>> # print log-determinant and sign
-        >>> print(f'log-abs-determinant: {ld}, sign-determinant: {sign}')
-        82104.567748, -1
+        >>> # logarithm of absolute value of determinant
+        >>> print(ld)
+        82104.567748
 
-    The above code also produces the following verbose output:
+        >>> # sign of determinant
+        >>> print(sign)
+        -1
+
+    Since we set ``verbose=True``, detailed logs are printed during the
+    computation, as shown in the screenshot below.
 
     .. image:: ../_static/images/plots/memdet_verbose.png
         :align: center
         :class: custom-dark
 
-    Printing the ``info`` variable
+    The above logs illustrate how the matrix is processed. For example, due to
+    the memory limit of 500 MB, a matrix of size 762.9 MB is decomposed into
+    smaller blocks (a grid of 3 by 3 blocks), where each block is 84.8 MB. At
+    any time, only four of these blocks are concurrently loaded into memory:
+    blocks A11, A12, A21, and A22. The allocated size of each block is shown.
+
+    The computation is performed in 7 steps, where each step may involve:
+
+    - Loading a block from disk to memory (`loading blk`)
+    - Storing a block from memory back to disk (`storing blk`)
+    - Performing LDL decomposition (`ldl decompo`)
+    - Solving an upper triangular system of equations (`solve uptri`)
+    - Solving a lower triangular system of equations (`solve lotri`)
+    - Computing the Schur complement (`schur compl`)
+
+    For each task, the proceeding columns are as follows:
+
+    - *time*: Process time
+    - *cpu*: CPU utilization percentage (for all threads)
+    - *alloc*: Peak memory allocation during the task
+    - *read*: Data read from scratchpad on disk
+    - *write*: Data written to scratchpad on disk
+
+    Note that an efficient implementation should not allocate any new memory
+    during any of the above tasks. The only memory allocation should be the
+    creation of the blocks. As seen in the screenshot above, all memory
+    allocations (on the order of KB) are negligible compared to the size of a
+    block (on the order of MB), indicating that no new array is created.
+
+    The above code also returns the ``info`` variable since we set
+    ``return_info`` option to `True`. Printing ``info``
 
     .. code-block:: python
 
         >>> # Print info results
         >>> from pprint import pprint
-        >>> print('%f, %d' % (ld, sign))
         >>> pprint(info)
+
+    which gives the following output:
 
     .. literalinclude:: ../_static/data/memdet_return_info.txt
         :language: python
@@ -345,8 +424,9 @@ def memdet(
     init_wall_time = time.time()
     init_proc_time = time.process_time()
 
-    io = initialize_io(A, num_blocks, assume, triangle, mixed_precision,
-                       parallel_io, scratch_dir, verbose=verbose)
+    io = initialize_io(A, max_mem, num_blocks, assume, triangle,
+                       mixed_precision, parallel_io, scratch_dir,
+                       verbose=verbose)
 
     # Track memory up to this point
     alloc_mem = mem.now()

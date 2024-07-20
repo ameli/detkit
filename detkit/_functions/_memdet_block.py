@@ -190,7 +190,7 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
     # Perform reading
     if read_from_scratch:
 
-        if parallel_io == 'mp':
+        if parallel_io == 'multiproc':
             # Read using multiprocessing
             load(scratch, (i1, i2), (j1-m, j2-m), array, array_shape,
                  array_shape_on_mem, order, trans, perm_inv, num_proc=None)
@@ -217,7 +217,7 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
                     _permute_array(array_, perm_inv, array_shape_on_mem,
                                    dtype, order)
 
-            elif parallel_io == 'ts':
+            elif parallel_io == 'tensorstore':
                 # Read using tensorstore
                 # For ts mode, when source is 'C' order and target is 'F'
                 # order, using perm on source array is faster than
@@ -247,7 +247,7 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
 
     else:
         # Reading from input array A (not from scratch)
-        if (parallel_io == 'mp') and isinstance(A, numpy.memmap):
+        if (parallel_io == 'multiproc') and isinstance(A, numpy.memmap):
             # Read using multiprocessing
             load(A, (i1, i2), (j1, j2), array, array_shape,
                  array_shape_on_mem, order, trans, perm_inv, num_proc=None)
@@ -275,7 +275,7 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
                     _permute_array(array_, perm_inv, array_shape_on_mem,
                                    dtype, order)
 
-            elif parallel_io == 'ts':
+            elif parallel_io == 'tensorstore':
                 # Read using tensorstore
                 # For ts mode, when source is 'C' order and target is 'F'
                 # order, using perm on source array is faster than
@@ -377,7 +377,7 @@ def store_block(io, array, i, j, verbose=False):
     array_shape, array_shape_on_mem = get_block_shape(
         block_info, trans=False)
 
-    if parallel_io == 'mp':
+    if parallel_io == 'multiproc':
         # Write in parallel
         trans = False
         store(scratch, (i1, i2), (j1-m, j2-m), array, array_shape,
@@ -392,7 +392,7 @@ def store_block(io, array, i, j, verbose=False):
                         array_[:(i2-i1), :(j2-j1)],
                         chunks=(io_chunk, io_chunk))
                 scratch[i1:i2, (j1-m):(j2-m)] = dask_array.compute()
-        elif parallel_io == 'ts':
+        elif parallel_io == 'tensorstore':
             ts_scratch[i1:i2, (j1-m):(j2-m)].write(
                 array_[:(i2-i1), :(j2-j1)]).result()
         else:

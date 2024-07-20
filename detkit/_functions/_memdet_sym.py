@@ -68,7 +68,8 @@ def _get_diag(ldu, pivs, block_info, lower=True):
     A_shape, _ = get_block_shape(block_info, trans=False)
     md = A_shape[0]
 
-    diag = numpy.diag(ldu)[:md]
+    diag = numpy.empty((md, ), dtype=numpy.float64)
+    diag[:] = numpy.diag(ldu)[:md]
     blk_i = 0  # block index
 
     for blk in pivs[pivs != 0]:
@@ -81,10 +82,10 @@ def _get_diag(ldu, pivs, block_info, lower=True):
             if lower:
                 off_diag = ldu[blk_i+1, blk_i]
             else:
-                off_diag = ldu[blk_i+1, blk_i]
+                off_diag = ldu[blk_i, blk_i+1]
 
             # Determinant of the 2 by 2 block
-            det = ldu[blk_i] * ldu[blk_i+1] - off_diag**2
+            det = ldu[blk_i, blk_i] * ldu[blk_i+1, blk_i+1] - off_diag**2
 
             # Distribute the determinant to the diagonal blocks
             sqrt_det = numpy.sqrt(numpy.abs(det))
@@ -281,7 +282,7 @@ def memdet_sym(io, verbose):
         perm = _pivot_to_permutation(swap_arr, pivot_arr, lower=False)
 
         # log-determinant
-        ld += numpy.sum(numpy.log(numpy.abs(diag_ldu_11)))  # TODO
+        ld += numpy.sum(numpy.log(numpy.abs(diag_ldu_11)))
 
         # Sign of determinant
         parity = _permutation_parity(perm)
