@@ -442,14 +442,34 @@
 <h1>memdet<a class="headerlink" href="#memdet" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.memdet">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute log-determinant under memory constraint.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>A</strong><span class="classifier">numpy.ndarray or numpy.memmap or zarr.core.Array</span></dt><dd><p>Square non-singular matrix.</p>
+<dt><strong>A</strong><span class="classifier">numpy.ndarray, numpy.memmap, zarr.core.Array, dask.array,            tensotstore.array</span></dt><dd><p>Square matrix, which is either already loaded on the memory (such as
+<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), or cannot fit on the memory, and rather, stored on
+disk as Numpy’s memory map, or Zarr, Dask, or TensorStore array
+formats.</p>
 </dd>
-<dt><strong>num_blocks</strong><span class="classifier">int, default=1</span></dt><dd><p>Number of memory blocks along rows and columns.</p>
+<dt><strong>max_mem</strong><span class="classifier">float or str, default= <code class="docutils literal notranslate"><span class="pre">float('inf')</span></code></span></dt><dd><p>The maximum memory allowed to be allocated during the computation.
+This can be specified as an integer representing the number of bytes,
+or as a string such as <code class="docutils literal notranslate"><span class="pre">16.2GB</span></code> (a number immediately followed by
+the unit of memory such as <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">KB</span></code>, <code class="docutils literal notranslate"><span class="pre">MB</span></code>, <code class="docutils literal notranslate"><span class="pre">GB</span></code>, <code class="docutils literal notranslate"><span class="pre">TB</span></code>, etc).</p>
+<p>The default value of <code class="docutils literal notranslate"><span class="pre">float('inf')</span></code> indicates infinite amount of
+memory is available, hence, no memory is constrained. This case falls
+back to conventional computation of log-determinant on memory without
+creation of any scratchpad space on disk.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To constrain memory, you can either set <code class="docutils literal notranslate"><span class="pre">max_mem</span></code> or directly set
+the number of matrix blocks (see <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> option). If
+<code class="docutils literal notranslate"><span class="pre">max_mem</span></code> is set, <code class="docutils literal notranslate"><span class="pre">num_block</span></code> option is ignored.</p>
+</div>
+</dd>
+<dt><strong>num_blocks</strong><span class="classifier">int, default=1</span></dt><dd><p>Number of memory blocks along rows and columns. This is used when
+the whole matrix cannot be loaded on the memory, rather, smaller
+blocks of the matrix are loaded on the memory.</p>
 <ul class="simple">
 <li><p>If <cite>=1</cite>:  the whole matrix is loaded to memory as one block. No
 scratchpad disk space is needed as all data is on memory.</p></li>
@@ -464,36 +484,44 @@ concurrently. Scratchpad disk space will be created (see
 <p>The number of blocks  may or may not be a divisor of the matrix size.
 If the number of blocks is not a divisor of the matrix size, the blocks
 on the last row-block and column-block will have smaller size.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To constrain memory, you can either set <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> or directly
+set the amount of memory limit (see <code class="docutils literal notranslate"><span class="pre">max_mem</span></code> option). If
+<code class="docutils literal notranslate"><span class="pre">max_mem</span></code> is set, the given <code class="docutils literal notranslate"><span class="pre">num_block</span></code> option by the user is
+ignored, and instead computed automatically.</p>
+</div>
 </dd>
 <dt><strong>triangle</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">'l'</span></code>, <code class="docutils literal notranslate"><span class="pre">'u'</span></code>, or None, default=None</span></dt><dd><p>When the  matrix is symmetric, this option indicates whether the full
-matrix is stored or only half triangle part of the matrix is given.</p>
+matrix is stored or only a triangular part of the matrix is given:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'l'</span></code>: assumes the lower-triangle part of the matrix is given.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'u'</span></code>: assumes the upper-triangle part of the matrix is given.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'l'</span></code>: assumes the lower-triangular part of the matrix is given.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'u'</span></code>: assumes the upper-triangular part of the matrix is given.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: indicates full matrix is given.</p></li>
 </ul>
 </dd>
-<dt><strong>assume</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'gen'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sym'</span></code>, <code class="docutils literal notranslate"><span class="pre">'spd'</span></code>}, default=``’gen’``</span></dt><dd><p>Assumption on the input matrix <cite>A</cite>:</p>
+<dt><strong>assume</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'gen'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sym'</span></code>, <code class="docutils literal notranslate"><span class="pre">'spd'</span></code>}, default= <code class="docutils literal notranslate"><span class="pre">'gen'</span></code></span></dt><dd><p>Assumption on the input matrix <cite>A</cite>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'gen'</span></code>: generic square matrix</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'sym'</span></code>: symmetric matrix</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'spd'</span></code>: symmetric positive-definite matrix</p></li>
 </ul>
+<p>The assumption on the matrix is not checked.</p>
 </dd>
 <dt><strong>mixed_precision</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'float32'</span></code>, <code class="docutils literal notranslate"><span class="pre">'float64'</span></code>}, or numpy.dtype,            default= <code class="docutils literal notranslate"><span class="pre">'float64'</span></code></span></dt><dd><p>The precision at which the computations are performed. This may be
-different than the data type of the input  matrix. It is recommended
-to set a precision higher than the dtype of the input matrix. For
-instance, if the input matrix has <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type, you may
-set this option to <code class="docutils literal notranslate"><span class="pre">float64</span></code>.</p>
+different than the data type of the input matrix. It is recommended
+to set a precision equal or higher than the <em>dtype</em> of the input
+matrix. For instance, if the input matrix has <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type,
+you may set this option to <code class="docutils literal notranslate"><span class="pre">float64</span></code>.</p>
 </dd>
-<dt><strong>parallel_io</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'mp'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dask'</span></code>, <code class="docutils literal notranslate"><span class="pre">'ts'</span></code>} or None, default=None</span></dt><dd><p>Parallel data transfer (load and store operations) from memory to
-scratchpad on the disk and vice-versa:</p>
+<dt><strong>parallel_io</strong><span class="classifier">str {<code class="docutils literal notranslate"><span class="pre">'multiproc'</span></code>, <code class="docutils literal notranslate"><span class="pre">'dask'</span></code>, <code class="docutils literal notranslate"><span class="pre">'tensorstore'</span></code>} or            None, default=None</span></dt><dd><p>Parallel data transfer (load and store operations of each block) from
+memory to scratchpad on the disk and vice-versa:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'mp'</span></code>: utilizes Python’s built-in multiprocessing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'multiproc'</span></code>: utilizes Python’s built-in multiprocessing.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'dask'</span></code>: utilizes Dask’s multiprocessing. For this to work,
 the package <a class="reference external" href="https://www.dask.org/">dask</a> should be installed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'ts'</span></code>: utilizes TensorStore’s multiprocessing. For this to work,
-the packages
+<li><p><code class="docutils literal notranslate"><span class="pre">'tensorstore'</span></code>: utilizes TensorStore’s multiprocessing. For this
+to work, the packages
 <a class="reference external" href="https://google.github.io/tensorstore/">tensorstore</a> and
 <a class="reference external" href="https://zarr.readthedocs.io/">zarr</a> should be installed.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: no parallel processing is performed. All data transfer is
@@ -501,8 +529,8 @@ performed on a single CPU thread.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The option <code class="docutils literal notranslate"><span class="pre">'ts'</span></code> can only be used when the input matrix <cite>A</cite> is
-a <cite>zarr</cite> array. See <a class="reference external" href="https://zarr.readthedocs.io/">zarr</a>
+<p>The option <code class="docutils literal notranslate"><span class="pre">'tensorstore'</span></code> can only be used when the input matrix
+<cite>A</cite> is a <cite>zarr</cite> array. See <a class="reference external" href="https://zarr.readthedocs.io/">zarr</a>
 package.</p>
 </div>
 </dd>
@@ -518,12 +546,12 @@ input matrix (or half of the input matrix size if <code class="docutils literal 
 option is set).</p>
 </div>
 </dd>
-<dt><strong>overwrite</strong><span class="classifier">boolean, default=True</span></dt><dd><p>Uses the input matrix storage as scratchpad space. The overwrites the
-input matrix.</p>
+<dt><strong>overwrite</strong><span class="classifier">boolean, default=True</span></dt><dd><p>Uses the input matrix storage for intermediate computations.
+This will overwrite the input matrix.</p>
 </dd>
 <dt><strong>return_info</strong><span class="classifier">bool, default=False</span></dt><dd><p>Returns a dictionary containing profiling information such as wall and
-process time, memory allocation, disk usage, etc. See <code class="docutils literal notranslate"><span class="pre">info</span></code> variable
-in the return section below.</p>
+process times, memory allocation, disk usage, etc. See <code class="docutils literal notranslate"><span class="pre">info</span></code>
+variable in the return section below.</p>
 </dd>
 <dt><strong>verbose</strong><span class="classifier">bool, default=False</span></dt><dd><p>Prints verbose output during computation.</p>
 </dd>
@@ -690,85 +718,194 @@ ordering during computation.</p></li>
 </dl>
 </div>
 <p class="rubric">Notes</p>
-<p>for dask, make sure to use if-clause protection
-<a class="reference external" href="https://pytorch.org/docs/stable/notes/windows.html">https://pytorch.org/docs/stable/notes/windows.html</a>
-#multiprocessing-error-without-if-clause-protection</p>
+<p><strong>How to limit memory usage:</strong></p>
+<p>If the whole matrix cannot be loaded on the memory, this function breaks
+the matrix into smaller sub-matrices (blocks) and load three or four of
+these blocks concurrently to the memory.</p>
+<p>For instance, if your matrix size is 100 GB, and your machine has 16 GB
+memory, you may need a grid of 5 by 5 blocks (25 blocks), each having
+100 GB / 25 = 4 GB in size. Four of these blocks take 16 GB, which can fit
+your machine’s memory.</p>
+<p>There are two ways to set the memory limit:</p>
+<ul class="simple">
+<li><p>either by directly setting <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> argument (such as 5 in the
+above example),</p></li>
+<li><p>or by setting <code class="docutils literal notranslate"><span class="pre">max_mem</span></code> argument (such as <code class="docutils literal notranslate"><span class="pre">16GB</span></code> in the above
+example).</p></li>
+</ul>
+<p>You only need to set one of these arguments, but not both. However, if you
+set <code class="docutils literal notranslate"><span class="pre">max_mem</span></code>, the argument <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> is ignored, and rather,
+calculated from <code class="docutils literal notranslate"><span class="pre">max_mem</span></code>.</p>
+<p><strong>What is Scratch:</strong></p>
+<p>When <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> is 1 or 2 (a grid of 1x1 or 2x2 blocks), all
+calculations are performed on the memory, even if the whole input matrix
+does not fit on the memory (in case of 2x2 blocks)!</p>
+<p>However, for larger number of blocks (when <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> is greater than
+2), this function creates an intermediate space on your disk to store
+the variables during the inner computations. This space (called scratchpad)
+is a hidden file created in the <code class="docutils literal notranslate"><span class="pre">scratch_dir</span></code> directory. This file will
+be automatically removed once this function finishes the computation and
+returns.</p>
+<p>If you do not specify <code class="docutils literal notranslate"><span class="pre">scratch_dir</span></code>, it automatically selects the <em>tmp</em>
+directory of your operating system (such as <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> in UNIX).</p>
+<p><strong>What is Parallel IO:</strong></p>
+<p>This function reads and writes to the scratchpad in your disk. For very
+large matrices (and hence, very large blocks) the read/write operations
+(io operations) can be time consuming. You can leverage the <code class="docutils literal notranslate"><span class="pre">parallel_io</span></code>
+argument to let all CPU threads performing these tasks. However, note
+that, depending on your hardware, your disk may throttle file operations.</p>
+<p><strong>Using Dask:</strong></p>
+<p>When using dask (either if the input array <code class="docutils literal notranslate"><span class="pre">A</span></code> is a dask array or when
+<code class="docutils literal notranslate"><span class="pre">parallel_io=dask</span></code>), you should call <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a> function in a
+protected <em>if-clause</em>. See further details at
+<a class="reference external" href="https://pytorch.org/docs/stable/notes/windows.html">multiprocessing-error-without-if-clause-protection</a>.</p>
+<p><strong>What is the diag output variable:</strong></p>
+<p>In addition to the log-abs-determinant (<code class="docutils literal notranslate"><span class="pre">ld</span></code>) and sign of determinant
+(<code class="docutils literal notranslate"><span class="pre">sign</span></code>) variables, this function also returns the <code class="docutils literal notranslate"><span class="pre">diag</span></code> variable.
+The variable <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a 1D array of size <cite>n</cite> (the number of rows or
+columns of <code class="docutils literal notranslate"><span class="pre">A</span></code>), and can be used to compute the log-abs-determinant of
+any sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> all at once, where <code class="docutils literal notranslate"><span class="pre">m</span></code> can be 1 to <cite>n</cite>.
+If we denote the sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> as <span class="math notranslate nohighlight">\(\mathbf{A}_{[:m, :m]}\)</span>
+and the element <code class="docutils literal notranslate"><span class="pre">diag[i]</span></code> as <span class="math notranslate nohighlight">\(d_i\)</span>, we have:</p>
+<ul>
+<li><p>For generic and symmetric matrices (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to <code class="docutils literal notranslate"><span class="pre">'gen'</span></code> or
+<code class="docutils literal notranslate"><span class="pre">'sym'</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[\log \vert \mathrm{det}(\mathbf{A}_{[:m, :m]}) \vert = 
+\sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
+</li>
+<li><p>For symmetric and positive-definite matrices (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to
+<code class="docutils literal notranslate"><span class="pre">'spd'</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[\log \vert \mathrm{det}(\mathbf{A}_{[:m, :m]}) \vert =
+2 \sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
+</li>
+</ul>
+<p>In particular, the output variable <code class="docutils literal notranslate"><span class="pre">ld</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">diag</span></code> when
+<span class="math notranslate nohighlight">\(m = n\)</span>.</p>
+<p>Note that computing <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a by-product for free and does not require
+any additional cost to the <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a> function.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rcb8eaaf14d1c-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta,
+Michael W. Mahoney (2024). Determinant Estimation under Memory
+Constraints and Neural Scaling Law (<em>under review</em>)</p>
+</div>
+</div>
 <p class="rubric">Examples</p>
-<p><strong>Using a zarr array:</strong></p>
+<p>In this example, we generate a random matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>, and for test purposes,
+we store this matrix on the disk as a <cite>zarr</cite> array <code class="docutils literal notranslate"><span class="pre">z</span></code>. You can either
+pass <code class="docutils literal notranslate"><span class="pre">A</span></code> or <code class="docutils literal notranslate"><span class="pre">z</span></code> to <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">A</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">A</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Store matrix as a zarr array on disk (optional)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">zarr</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z_path</span> <span class="o">=</span> <span class="s1">&#39;my_matrix.zarr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_path</span> <span class="o">=</span> <span class="s1">&#39;matrix_file.zarr&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">zarr</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">z_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">A</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant while limiting memory to 500 MB</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">memdet</span>
-<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span>
-</span><span class="hll"><span class="gp">... </span>        <span class="n">z</span><span class="p">,</span> <span class="n">num_blocks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span> <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;ts&#39;</span><span class="p">,</span>
-</span><span class="hll"><span class="gp">... </span>        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">max_mem</span><span class="o">=</span><span class="s1">&#39;500MB&#39;</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="gp">... </span>                              <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;tensorstore&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="gp">... </span>                              <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># print log-determinant and sign</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;log-abs-determinant: </span><span class="si">{</span><span class="n">ld</span><span class="si">}</span><span class="s1">, sign-determinant: </span><span class="si">{</span><span class="n">sign</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="go">82104.567748, -1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># logarithm of absolute value of determinant</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ld</span><span class="p">)</span>
+<span class="go">82104.567748</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># sign of determinant</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span>
+<span class="go">-1</span>
 </pre></div>
 </div>
-<p>The above code also produces the following verbose output:</p>
+<p>Since we set <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>, detailed logs are printed during the
+computation, as shown in the screenshot below.</p>
 <img alt="../_images/memdet_verbose.png" class="custom-dark align-center" src="../_images/memdet_verbose.png" />
-<p>Printing the <code class="docutils literal notranslate"><span class="pre">info</span></code> variable</p>
+<p>The above logs illustrate how the matrix is processed. For example, due to
+the memory limit of 500 MB, a matrix of size 762.9 MB is decomposed into
+smaller blocks (a grid of 3 by 3 blocks), where each block is 84.8 MB. At
+any time, only four of these blocks are concurrently loaded into memory:
+blocks A11, A12, A21, and A22. The allocated size of each block is shown.</p>
+<p>Here, the computation is performed in 7 steps, where each step may involve:</p>
+<ul class="simple">
+<li><p>Loading a block from disk to memory (<cite>loading blk</cite>)</p></li>
+<li><p>Storing a block from memory back to disk (<cite>storing blk</cite>)</p></li>
+<li><p>Performing LDL decomposition (<cite>ldl decompo</cite>)</p></li>
+<li><p>Solving an upper triangular system of equations (<cite>solve uptri</cite>)</p></li>
+<li><p>Solving a lower triangular system of equations (<cite>solve lotri</cite>)</p></li>
+<li><p>Computing the Schur complement (<cite>schur compl</cite>)</p></li>
+</ul>
+<p>For each task, the proceeding columns are as follows:</p>
+<ul class="simple">
+<li><p><em>time</em>: CPU process time</p></li>
+<li><p><em>cpu</em>: CPU utilization percentage (for all CPU threads combined)</p></li>
+<li><p><em>alloc</em>: Peak memory allocation during the task</p></li>
+<li><p><em>read</em>: Data read from scratchpad on disk</p></li>
+<li><p><em>write</em>: Data written to scratchpad on disk</p></li>
+</ul>
+<p>Note that an efficient implementation should not allocate any new memory
+during any of the above tasks during the computation. The only memory
+allocation should be the creation of the blocks at the beginning. As seen
+in the screenshot above, all memory allocations (on the order of KB) are
+negligible compared to the size of a block (on the order of MB), indicating
+that no new array is created.</p>
+<p>The above code also returns the <code class="docutils literal notranslate"><span class="pre">info</span></code> variable since we set
+<code class="docutils literal notranslate"><span class="pre">return_info</span></code> option to <cite>True</cite>. Print <code class="docutils literal notranslate"><span class="pre">info</span></code> by</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Print info results</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">, </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>which gives the following output:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
- 	<span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="p">{</span>
-		<span class="s1">&#39;assume&#39;</span><span class="p">:</span> <span class="s1">&#39;sym&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;block&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;block_nbytes&#39;</span><span class="p">:</span> <span class="mi">88924448</span><span class="p">,</span>
+        <span class="s1">&#39;block_shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3334</span><span class="p">,</span> <span class="mi">3334</span><span class="p">),</span>
+        <span class="s1">&#39;matrix_blocks&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;assume&#39;</span><span class="p">:</span> <span class="s1">&#39;sym&#39;</span><span class="p">,</span>
         <span class="s1">&#39;dtype&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
         <span class="s1">&#39;matrix_shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
         <span class="s1">&#39;triangle&#39;</span><span class="p">:</span> <span class="kc">None</span>
-	<span class="p">},</span>
-    <span class="s1">&#39;process&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;load_proc_time&#39;</span><span class="p">:</span> <span class="mf">5.950854327999988</span><span class="p">,</span>
-        <span class="s1">&#39;load_wall_time&#39;</span><span class="p">:</span> <span class="mf">1.4414432048797607</span><span class="p">,</span>
-        <span class="s1">&#39;num_proc&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-        <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="s1">&#39; Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;store_proc_time&#39;</span><span class="p">:</span> <span class="mf">1.8198314090000025</span><span class="p">,</span>
-        <span class="s1">&#39;store_wall_time&#39;</span><span class="p">:</span> <span class="mf">1.3631017208099365</span><span class="p">,</span>
-        <span class="s1">&#39;tot_proc_time&#39;</span><span class="p">:</span> <span class="mf">52.234894016</span><span class="p">,</span>
-        <span class="s1">&#39;tot_wall_time&#39;</span><span class="p">:</span> <span class="mf">15.675167798995972</span>
     <span class="p">},</span>
-	<span class="s1">&#39;block&#39;</span><span class="p">:</span> <span class="p">{</span>
-		<span class="s1">&#39;block_nbytes&#39;</span><span class="p">:</span> <span class="mi">88924448</span><span class="p">,</span>
-        <span class="s1">&#39;block_shape&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3334</span><span class="p">,</span> <span class="mi">3334</span><span class="p">),</span>
-        <span class="s1">&#39;matrix_blocks&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-	<span class="p">},</span>
+    <span class="s1">&#39;memory&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;alloc_mem&#39;</span><span class="p">:</span> <span class="mf">4.003514331626776</span><span class="p">,</span>
+        <span class="s1">&#39;alloc_mem_peak&#39;</span><span class="p">:</span> <span class="mf">4.004212868434112</span><span class="p">,</span>
+        <span class="s1">&#39;mem_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;88924448 bytes&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;total_mem&#39;</span><span class="p">:</span> <span class="mf">0.0009245601389620096</span><span class="p">,</span>
+        <span class="s1">&#39;total_mem_peak&#39;</span><span class="p">:</span> <span class="mf">0.0027315772598329765</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;process&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;load_proc_time&#39;</span><span class="p">:</span> <span class="mf">4.354914859999929</span><span class="p">,</span>
+         <span class="s1">&#39;load_wall_time&#39;</span><span class="p">:</span> <span class="mf">2.3955368995666504</span><span class="p">,</span>
+         <span class="s1">&#39;num_proc&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+         <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="s1">&#39; Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;store_proc_time&#39;</span><span class="p">:</span> <span class="mf">1.6077849289999904</span><span class="p">,</span>
+         <span class="s1">&#39;store_wall_time&#39;</span><span class="p">:</span> <span class="mf">1.626847743988037</span><span class="p">,</span>
+         <span class="s1">&#39;tot_proc_time&#39;</span><span class="p">:</span> <span class="mf">600.250950974</span><span class="p">,</span>
+         <span class="s1">&#39;tot_wall_time&#39;</span><span class="p">:</span> <span class="mf">115.73805451393127</span>
+    <span class="p">},</span>
     <span class="s1">&#39;scratch&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;io_chunk&#39;</span><span class="p">:</span> <span class="mi">3334</span><span class="p">,</span>
-        <span class="s1">&#39;num_block_loads&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
-        <span class="s1">&#39;num_block_stores&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s1">&#39;num_scratch_blocks&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="s1">&#39;scratch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;/tmp/.detkit-initialize_io-jbdgm7ze.zarr&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;scratch_nbytes&#39;</span><span class="p">:</span> <span class="mi">0</span>
-    <span class="p">},</span>
- 	<span class="s1">&#39;memory&#39;</span><span class="p">:</span> <span class="p">{</span>
-		<span class="s1">&#39;alloc_mem&#39;</span><span class="p">:</span> <span class="mf">4.003344906903442</span><span class="p">,</span>
-        <span class="s1">&#39;alloc_mem_peak&#39;</span><span class="p">:</span> <span class="mf">4.004047851947307</span><span class="p">,</span>
-        <span class="s1">&#39;mem_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;88924448 bytes&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;total_mem&#39;</span><span class="p">:</span> <span class="mf">0.0009276189153291117</span><span class="p">,</span>
-        <span class="s1">&#39;total_mem_peak&#39;</span><span class="p">:</span> <span class="mf">0.002434696024202478</span>
+         <span class="s1">&#39;num_block_loads&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+         <span class="s1">&#39;num_block_stores&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+         <span class="s1">&#39;num_scratch_blocks&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+         <span class="s1">&#39;scratch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;/tmp/.detkit-memdet-va1k6eio.zarr&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;scratch_nbytes&#39;</span><span class="p">:</span> <span class="mi">0</span>
     <span class="p">},</span>
     <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;dtype&#39;</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
         <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;ldl decomposition&#39;</span><span class="p">,</span>
         <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.6.0&#39;</span>
+        <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.6.1&#39;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
