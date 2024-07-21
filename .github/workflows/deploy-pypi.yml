@@ -48,11 +48,11 @@ jobs:
                   custom_lib_dir=/usr/local/lib
                   sudo mkdir -p ${custom_include_dir}
                   sudo mkdir -p ${custom_lib_dir}
-                  ln -sf ${libomp_dir}/include/omp-tools.h  ${custom_include_dir}/omp-tools.h
-                  ln -sf ${libomp_dir}/include/omp.h        ${custom_include_dir}/omp.h
-                  ln -sf ${libomp_dir}/include/ompt.h       ${custom_include_dir}/ompt.h
-                  ln -sf ${libomp_dir}/lib/libomp.a         ${custom_lib_dir}/libomp.a
-                  ln -sf ${libomp_dir}/lib/libomp.dylib     ${custom_lib_dir}/libomp.dylib
+                  sudo ln -sf ${libomp_dir}/include/omp-tools.h  ${custom_include_dir}/omp-tools.h
+                  sudo ln -sf ${libomp_dir}/include/omp.h        ${custom_include_dir}/omp.h
+                  sudo ln -sf ${libomp_dir}/include/ompt.h       ${custom_include_dir}/ompt.h
+                  sudo ln -sf ${libomp_dir}/lib/libomp.a         ${custom_lib_dir}/libomp.a
+                  sudo ln -sf ${libomp_dir}/lib/libomp.dylib     ${custom_lib_dir}/libomp.dylib
 
             # Without this, installing cuda give error: no much space left on device
             - name: Clear Cache
