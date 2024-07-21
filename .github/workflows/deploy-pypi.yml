@@ -38,7 +38,7 @@ jobs:
                   # of "fatal error: omp.h file found"
                   brew install libomp
                   libomp_dir=$(brew --prefix libomp)
-                  ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
+                  # ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
                   ln -sf ${libomp_dir}/include/omp.h        /usr/local/include/omp.h
                   ln -sf ${libomp_dir}/include/ompt.h       /usr/local/include/ompt.h
                   ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
