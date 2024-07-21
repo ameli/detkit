@@ -44,11 +44,15 @@ jobs:
                   ls ${libomp_dir}/include
                   ls ${libomp_dir}/lib
                   ls /usr/local
-                  ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
-                  ln -sf ${libomp_dir}/include/omp.h        /usr/local/include/omp.h
-                  ln -sf ${libomp_dir}/include/ompt.h       /usr/local/include/ompt.h
-                  ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
-                  ln -sf ${libomp_dir}/lib/libomp.dylib     /usr/local/lib/libomp.dylib
+                  custom_include_dir=/usr/local/include
+                  custom_lib_dir=/usr/local/lib
+                  mkdir -p ${custom_include_dir}
+                  mkdir -p ${custom_lib_dir}
+                  ln -sf ${libomp_dir}/include/omp-tools.h  ${custom_include_dir}/omp-tools.h
+                  ln -sf ${libomp_dir}/include/omp.h        ${custom_include_dir}/omp.h
+                  ln -sf ${libomp_dir}/include/ompt.h       ${custom_include_dir}/ompt.h
+                  ln -sf ${libomp_dir}/lib/libomp.a         ${custom_lib_dir}/libomp.a
+                  ln -sf ${libomp_dir}/lib/libomp.dylib     ${custom_lib_dir}/libomp.dylib
 
             # Without this, installing cuda give error: no much space left on device
             - name: Clear Cache
