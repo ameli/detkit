@@ -162,6 +162,12 @@ class Disk(object):
                 self.unit_size = 1024**3
             elif unit == 'TB':
                 self.unit_size = 1024**4
+            elif unit == 'PB':
+                self.unit_size = 1024**5
+            elif unit == 'EB':
+                self.unit_size = 1024**6
+            elif unit == 'ZB':
+                self.unit_size = 1024**7
             else:
                 raise ValueError('"unit" is invalid.')
 
@@ -230,7 +236,7 @@ class Disk(object):
         if sys.platform in ['linux', 'win32', 'cygwin']:
             self.init_io = self.process.io_counters()
         else:
-            self.init_io = self.disk_io_counters()
+            self.init_io = psutil.disk_io_counters()
 
     # ====
     # read
@@ -302,7 +308,7 @@ class Disk(object):
         if sys.platform in ['linux', 'win32', 'cygwin']:
             self.final_io = self.process.io_counters()
         else:
-            self.final_io = self.disk_io_counters()
+            self.final_io = psutil.disk_io_counters()
 
         read_bytes = self.final_io.read_bytes - self.init_io.read_bytes
 
@@ -368,7 +374,7 @@ class Disk(object):
         if sys.platform in ['linux', 'win32', 'cygwin']:
             self.final_io = self.process.io_counters()
         else:
-            self.final_io = self.disk_io_counters()
+            self.final_io = psutil.disk_io_counters()
 
         write_bytes = self.final_io.write_bytes - self.init_io.write_bytes
 

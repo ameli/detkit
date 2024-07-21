@@ -27,7 +27,7 @@ __all__ = ['ortho_complement']
 
 cpdef ortho_complement(Xp, X, X_orth=False):
     """
-    Orthogonalizes the columns of matrix `Xp` against `X`.
+    Orthogonalize the columns of matrix `Xp` against `X`.
 
     Parameters
     ----------

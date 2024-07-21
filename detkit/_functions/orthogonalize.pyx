@@ -27,7 +27,7 @@ __all__ = ['orthogonalize']
 
 cpdef orthogonalize(A):
     """
-    Orthogonalizes the columns of matrix.
+    Orthogonalize the columns of matrix.
 
     Parameters
     ----------

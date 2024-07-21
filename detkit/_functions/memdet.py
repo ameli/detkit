@@ -29,7 +29,14 @@ __all__ = ['memdet']
 
 # Register signal handler for SIGINT (Ctrl+C) and SIGTSTP (Ctrl+Z)
 signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTSTP, signal_handler)
+
+# Windows does not have signal.SIGTSTP
+if hasattr(signal, 'SIGTSTP'):
+    signal.signal(signal.SIGTSTP, signal_handler)
+
+# Windows have signal.SIGTERM instead of SIGTSTP
+if hasattr(signal, 'SIGTERM'):
+    signal.signal(signal.SIGTERM, signal_handler)
 
 
 # ====================
@@ -77,7 +84,7 @@ def memdet(
         disk as Numpy's memory map, or Zarr, Dask, or TensorStore array
         formats.
 
-    max_mem : float or str, default=float('inf')
+    max_mem : float or str, default= ``float('inf')``
         The maximum memory allowed to be allocated during the computation.
         This can be specified as an integer representing the number of bytes,
         or as a string such as ``16.2GB`` (a number immediately followed by
@@ -128,7 +135,7 @@ def memdet(
         * ``'u'``: assumes the upper-triangular part of the matrix is given.
         * ``None``: indicates full matrix is given.
 
-    assume : str {``'gen'``, ``'sym'``, ``'spd'``}, default=``'gen'``
+    assume : str {``'gen'``, ``'sym'``, ``'spd'``}, default= ``'gen'``
         Assumption on the input matrix `A`:
 
         * ``'gen'``: generic square matrix
@@ -162,8 +169,8 @@ def memdet(
 
         .. note::
 
-            The option ``'ts'`` can only be used when the input matrix `A` is
-            a `zarr` array. See `zarr <https://zarr.readthedocs.io/>`__
+            The option ``'tensorstore'`` can only be used when the input matrix
+            `A` is a `zarr` array. See `zarr <https://zarr.readthedocs.io/>`__
             package.
 
     scratch_dir : str, default=None
@@ -320,9 +327,91 @@ def memdet(
     Notes
     -----
 
-    for dask, make sure to use if-clause protection
-    https://pytorch.org/docs/stable/notes/windows.html
-    #multiprocessing-error-without-if-clause-protection
+    **How to limit memory usage:**
+
+    If the whole matrix cannot be loaded on the memory, this function breaks
+    the matrix into smaller sub-matrices (blocks) and load three or four of
+    these blocks concurrently to the memory.
+
+    For instance, if your matrix size is 100 GB, and your machine has 16 GB
+    memory, you may need a grid of 5 by 5 blocks (25 blocks), each having
+    100 GB / 25 = 4 GB in size. Four of these blocks take 16 GB, which can fit
+    your machine's memory.
+
+    There are two ways to set the memory limit:
+
+    * either by directly setting ``num_blocks`` argument (such as 5 in the
+      above example),
+    * or by setting ``max_mem`` argument (such as ``16GB`` in the above
+      example).
+
+    You only need to set one of these arguments, but not both. However, if you
+    set ``max_mem``, the argument ``num_blocks`` is ignored, and rather,
+    calculated from ``max_mem``.
+
+    **What is Scratch:**
+
+    When ``num_blocks`` is 1 or 2 (a grid of 1x1 or 2x2 blocks), all
+    calculations are performed on the memory, even if the whole input matrix
+    does not fit on the memory (in case of 2x2 blocks)!
+
+    However, for larger number of blocks (when ``num_blocks`` is greater than
+    2), this function creates an intermediate space on your disk to store
+    the variables during the inner computations. This space (called scratchpad)
+    is a hidden file created in the ``scratch_dir`` directory. This file will
+    be automatically removed once this function finishes the computation and
+    returns.
+
+    If you do not specify ``scratch_dir``, it automatically selects the *tmp*
+    directory of your operating system (such as ``/tmp`` in UNIX).
+
+    **What is Parallel IO:**
+
+    This function reads and writes to the scratchpad in your disk. For very
+    large matrices (and hence, very large blocks) the read/write operations
+    (io operations) can be time consuming. You can leverage the ``parallel_io``
+    argument to let all CPU threads performing these tasks. However, note
+    that, depending on your hardware, your disk may throttle file operations.
+
+    **Using Dask:**
+
+    When using dask (either if the input array ``A`` is a dask array or when
+    ``parallel_io=dask``), you should call :func:`detkit.memdet` function in a
+    protected *if-clause*. See further details at
+    `multiprocessing-error-without-if-clause-protection
+    <https://pytorch.org/docs/stable/notes/windows.html>`__.
+
+    **What is the diag output variable:**
+
+    In addition to the log-abs-determinant (``ld``) and sign of determinant
+    (``sign``) variables, this function also returns the ``diag`` variable.
+    The variable ``diag`` is a 1D array of size `n` (the number of rows or
+    columns of ``A``), and can be used to compute the log-abs-determinant of
+    any sub-matrix ``A[:m, :m]`` all at once, where ``m`` can be 1 to `n`.
+    If we denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{A}_{[:m, :m]}`
+    and the element ``diag[i]`` as :math:`d_i`, we have:
+
+    * For generic and symmetric matrices (if ``assume`` is set to ``'gen'`` or
+      ``'sym'``):
+
+      .. math::
+
+          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert = 
+          \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
+
+    * For symmetric and positive-definite matrices (if ``assume`` is set to
+      ``'spd'``):
+
+      .. math::
+
+          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert =
+          2 \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
+
+    In particular, the output variable ``ld`` is computed from ``diag`` when
+    :math:`m = n`.
+
+    Note that computing ``diag`` is a by-product for free and does not require
+    any additional cost to the :func:`detkit.memdet` function.
 
     References
     ----------
@@ -380,7 +469,7 @@ def memdet(
     any time, only four of these blocks are concurrently loaded into memory:
     blocks A11, A12, A21, and A22. The allocated size of each block is shown.
 
-    The computation is performed in 7 steps, where each step may involve:
+    Here, the computation is performed in 7 steps, where each step may involve:
 
     - Loading a block from disk to memory (`loading blk`)
     - Storing a block from memory back to disk (`storing blk`)
@@ -391,20 +480,21 @@ def memdet(
 
     For each task, the proceeding columns are as follows:
 
-    - *time*: Process time
-    - *cpu*: CPU utilization percentage (for all threads)
+    - *time*: CPU process time
+    - *cpu*: CPU utilization percentage (for all CPU threads combined)
     - *alloc*: Peak memory allocation during the task
     - *read*: Data read from scratchpad on disk
     - *write*: Data written to scratchpad on disk
 
     Note that an efficient implementation should not allocate any new memory
-    during any of the above tasks. The only memory allocation should be the
-    creation of the blocks. As seen in the screenshot above, all memory
-    allocations (on the order of KB) are negligible compared to the size of a
-    block (on the order of MB), indicating that no new array is created.
+    during any of the above tasks during the computation. The only memory
+    allocation should be the creation of the blocks at the beginning. As seen
+    in the screenshot above, all memory allocations (on the order of KB) are
+    negligible compared to the size of a block (on the order of MB), indicating
+    that no new array is created.
 
     The above code also returns the ``info`` variable since we set
-    ``return_info`` option to `True`. Printing ``info``
+    ``return_info`` option to `True`. Print ``info`` by
 
     .. code-block:: python
 

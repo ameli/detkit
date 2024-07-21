@@ -33,7 +33,7 @@ def logdet(
         overwrite_A=False,
         use_scipy=True):
     """
-    Computes the `logdet` of a matrix.
+    Compute the `logdet` of a matrix.
 
     The `logdet` function is defined by
 

@@ -37,7 +37,7 @@ def logpdet(
         flops=False,
         use_scipy=False):
     """
-    Computes the `logpdet` of a matrix.
+    Compute the `logpdet` of a matrix.
 
     The `logpdet` function is defined by
 
