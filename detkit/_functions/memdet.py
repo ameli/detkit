@@ -347,37 +347,37 @@ def memdet(
 
     You only need to set one of these arguments, but not both. However, if you
     set ``max_mem``, the argument ``num_blocks`` is ignored, and rather,
-    calculated from ``max_mem``.
+    recalculated from ``max_mem``.
 
     **What is Scratch:**
 
     When ``num_blocks`` is 1 or 2 (a grid of 1x1 or 2x2 blocks), all
     calculations are performed on the memory, even if the whole input matrix
-    does not fit on the memory (in case of 2x2 blocks)!
+    cannot be fit on the memory (in case of 2x2 blocks)!
 
     However, for larger number of blocks (when ``num_blocks`` is greater than
-    2), this function creates an intermediate space on your disk to store
+    2), this function creates a temporary space on your disk to store
     the variables during the inner computations. This space (called scratchpad)
-    is a hidden file created in the ``scratch_dir`` directory. This file will
-    be automatically removed once this function finishes the computation and
-    returns.
+    is a hidden file created in the ``scratch_dir`` directory, and will be
+    automatically removed once this function returns.
 
-    If you do not specify ``scratch_dir``, it automatically selects the *tmp*
-    directory of your operating system (such as ``/tmp`` in UNIX).
+    If you do not specify ``scratch_dir``, the *tmp* directory in your
+    operating system (such as ``/tmp`` in UNIX) will be used.
 
     **What is Parallel IO:**
 
-    This function reads and writes to the scratchpad in your disk. For very
+    This function reads and writes to the scratchpad on your disk. For very
     large matrices (and hence, very large blocks) the read/write operations
     (io operations) can be time consuming. You can leverage the ``parallel_io``
-    argument to let all CPU threads performing these tasks. However, note
-    that, depending on your hardware, your disk may throttle file operations.
+    argument to let all CPU threads performing these tasks in parallel.
+    However, note that, depending on your hardware, your disk may throttle
+    parallel file operations.
 
     **Using Dask:**
 
-    When using dask (either if the input array ``A`` is a dask array or when
-    ``parallel_io=dask``), you should call :func:`detkit.memdet` function in a
-    protected *if-clause*. See further details at
+    When using Dask (either if the input array ``A`` is a dask array or when
+    ``parallel_io='dask'``), you should call :func:`detkit.memdet` function in
+    a protected *if-clause*. See further details at
     `multiprocessing-error-without-if-clause-protection
     <https://pytorch.org/docs/stable/notes/windows.html>`__.
 
@@ -387,7 +387,7 @@ def memdet(
     (``sign``) variables, this function also returns the ``diag`` variable.
     The variable ``diag`` is a 1D array of size `n` (the number of rows or
     columns of ``A``), and can be used to compute the log-abs-determinant of
-    any sub-matrix ``A[:m, :m]`` all at once, where ``m`` can be 1 to `n`.
+    any sub-matrix ``A[:m, :m]``, all at once, where ``m`` can be 1 to `n`.
     If we denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{A}_{[:m, :m]}`
     and the element ``diag[i]`` as :math:`d_i`, we have:
 
@@ -411,7 +411,7 @@ def memdet(
     :math:`m = n`.
 
     Note that computing ``diag`` is a by-product for free and does not require
-    any additional cost to the :func:`detkit.memdet` function.
+    any additional cost.
 
     References
     ----------
@@ -456,7 +456,7 @@ def memdet(
         >>> print(sign)
         -1
 
-    Since we set ``verbose=True``, detailed logs are printed during the
+    By setting ``verbose=True``, a detailed log is printed during the
     computation, as shown in the screenshot below.
 
     .. image:: ../_static/images/plots/memdet_verbose.png
@@ -469,16 +469,17 @@ def memdet(
     any time, only four of these blocks are concurrently loaded into memory:
     blocks A11, A12, A21, and A22. The allocated size of each block is shown.
 
-    Here, the computation is performed in 7 steps, where each step may involve:
+    In the above, the computation was performed in 7 steps. The number of steps
+    vary depending the number of blocks. Each step may involve:
 
     - Loading a block from disk to memory (`loading blk`)
     - Storing a block from memory back to disk (`storing blk`)
-    - Performing LDL decomposition (`ldl decompo`)
+    - Performing LU, LDL, or Cholesky decomposition (e.g. `ldl decompo`)
     - Solving an upper triangular system of equations (`solve uptri`)
     - Solving a lower triangular system of equations (`solve lotri`)
     - Computing the Schur complement (`schur compl`)
 
-    For each task, the proceeding columns are as follows:
+    For each task, the proceeding columns in the verbose prints are as follows:
 
     - *time*: CPU process time
     - *cpu*: CPU utilization percentage (for all CPU threads combined)
@@ -493,8 +494,8 @@ def memdet(
     negligible compared to the size of a block (on the order of MB), indicating
     that no new array is created.
 
-    The above code also returns the ``info`` variable since we set
-    ``return_info`` option to `True`. Print ``info`` by
+    The above code also returns the ``info`` variable by setting
+    ``return_info=True``. Here is a pretty-print of ``info`` dictionary:
 
     .. code-block:: python
 
