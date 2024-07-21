@@ -41,8 +41,10 @@ jobs:
                   brew install libomp
                   libomp_dir=$(brew --prefix libomp)
                   echo ${libomp_dir}
-                  ls ${libomp_dir}/include -all
-                  # ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
+                  ls ${libomp_dir}/include
+                  ls ${libomp_dir}/lib
+                  ls /usr/local
+                  ln -sf ${libomp_dir}/include/omp-tools.h  /usr/local/include/omp-tools.h
                   ln -sf ${libomp_dir}/include/omp.h        /usr/local/include/omp.h
                   ln -sf ${libomp_dir}/include/ompt.h       /usr/local/include/ompt.h
                   ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
