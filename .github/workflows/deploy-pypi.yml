@@ -46,8 +46,8 @@ jobs:
                   ls /usr/local
                   custom_include_dir=/usr/local/include
                   custom_lib_dir=/usr/local/lib
-                  mkdir -p ${custom_include_dir}
-                  mkdir -p ${custom_lib_dir}
+                  sudo mkdir -p ${custom_include_dir}
+                  sudo mkdir -p ${custom_lib_dir}
                   ln -sf ${libomp_dir}/include/omp-tools.h  ${custom_include_dir}/omp-tools.h
                   ln -sf ${libomp_dir}/include/omp.h        ${custom_include_dir}/omp.h
                   ln -sf ${libomp_dir}/include/ompt.h       ${custom_include_dir}/ompt.h
