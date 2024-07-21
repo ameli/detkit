@@ -370,8 +370,10 @@ class Disk(object):
         if self.init_io is None:
             raise RuntimeError('"Disk" object has not been set.')
 
-        # Force the OS to write its buffers to disk
-        os.sync()
+        # Force the OS to write its buffers to disk (note: on Windows, os.sync
+        # does not exists).
+        if hasattr(os, "sync"):
+            os.sync()
 
         if sys.platform in ['linux', 'win32', 'cygwin']:
             self.final_io = self.process.io_counters()

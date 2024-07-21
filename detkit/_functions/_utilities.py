@@ -55,7 +55,7 @@ def get_processor_name():
     elif platform.system() == "Darwin":
         try:
             os.environ['PATH'] = os.environ['PATH'] + os.pathsep + '/usr/sbin'
-            command = "/usr/sbin/sysctl -n machdep.cpu.brand_string"
+            command = ["sysctl", "-n", "machdep.cpu.brand_string"]
             return subprocess.check_output(command).strip()
         except FileNotFoundError as e:
             raise Exception(f"sysctl command not found: {e}")
