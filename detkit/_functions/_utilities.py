@@ -60,7 +60,7 @@ def get_processor_name():
         except FileNotFoundError as e:
             raise Exception(f"sysctl command not found: {e}")
         except Exception as e:
-            rasie Exception(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
 
     elif platform.system() == "Linux":
         command = "cat /proc/cpuinfo"

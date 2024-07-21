@@ -396,7 +396,7 @@ def memdet(
 
       .. math::
 
-          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert = 
+          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert =
           \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
 
     * For symmetric and positive-definite matrices (if ``assume`` is set to
