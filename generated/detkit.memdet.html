@@ -708,6 +708,13 @@ ordering during computation.</p></li>
 </dd>
 </dl>
 </dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>Error raised when <code class="docutils literal notranslate"><span class="pre">assume='spd'</span></code> and matrix <cite>A</cite> is not symmetric
+positive-definite.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -718,8 +725,8 @@ ordering during computation.</p></li>
 </dl>
 </div>
 <p class="rubric">Notes</p>
-<p><strong>How to limit memory usage:</strong></p>
-<p>If the whole matrix cannot be loaded on the memory, this function breaks
+<p><strong>How to Limit Memory Usage:</strong></p>
+<p>If the whole matrix cannot be loaded on the memory, this function chunks
 the matrix into smaller sub-matrices (blocks) and load three or four of
 these blocks concurrently to the memory.</p>
 <p>For instance, if your matrix size is 100 GB, and your machine has 16 GB
@@ -728,10 +735,10 @@ memory, you may need a grid of 5 by 5 blocks (25 blocks), each having
 your machine’s memory.</p>
 <p>There are two ways to set the memory limit:</p>
 <ul class="simple">
-<li><p>either by directly setting <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> argument (such as 5 in the
+<li><p>either directly, by setting <code class="docutils literal notranslate"><span class="pre">max_mem</span></code> argument (such as <code class="docutils literal notranslate"><span class="pre">16GB</span></code> in the
 above example),</p></li>
-<li><p>or by setting <code class="docutils literal notranslate"><span class="pre">max_mem</span></code> argument (such as <code class="docutils literal notranslate"><span class="pre">16GB</span></code> in the above
-example).</p></li>
+<li><p>or indirectly, by setting <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> argument (such as 5 in the
+above example).</p></li>
 </ul>
 <p>You only need to set one of these arguments, but not both. However, if you
 set <code class="docutils literal notranslate"><span class="pre">max_mem</span></code>, the argument <code class="docutils literal notranslate"><span class="pre">num_blocks</span></code> is ignored, and rather,
@@ -755,11 +762,11 @@ argument to let all CPU threads performing these tasks in parallel.
 However, note that, depending on your hardware, your disk may throttle
 parallel file operations.</p>
 <p><strong>Using Dask:</strong></p>
-<p>When using Dask (either if the input array <code class="docutils literal notranslate"><span class="pre">A</span></code> is a dask array or when
+<p>When using Dask (either if the input array <code class="docutils literal notranslate"><span class="pre">A</span></code> is a Dask array or when
 <code class="docutils literal notranslate"><span class="pre">parallel_io='dask'</span></code>), you should call <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a> function in
 a protected <em>if-clause</em>. See further details at
 <a class="reference external" href="https://pytorch.org/docs/stable/notes/windows.html">multiprocessing-error-without-if-clause-protection</a>.</p>
-<p><strong>What is the diag output variable:</strong></p>
+<p><strong>The “diag” Output Variable:</strong></p>
 <p>In addition to the log-abs-determinant (<code class="docutils literal notranslate"><span class="pre">ld</span></code>) and sign of determinant
 (<code class="docutils literal notranslate"><span class="pre">sign</span></code>) variables, this function also returns the <code class="docutils literal notranslate"><span class="pre">diag</span></code> variable.
 The variable <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a 1D array of size <cite>n</cite> (the number of rows or
