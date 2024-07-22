@@ -14,14 +14,14 @@
 # =======
 
 import numpy
-from detkit import memdet
+from detkit import memdet, logdet
 import zarr
 import os
 import shutil
 
 import warnings
 warnings.resetwarnings()
-warnings.filterwarnings("error")
+warnings.filterwarnings('error')
 
 
 # ==========
@@ -44,6 +44,81 @@ def remove_dir(dir_name):
         print('Directory %s does not exists.' % dir_name)
 
 
+# ====
+# test
+# ====
+
+def _test(A, assumes, dtypes, parallel_ios, num_blocks, max_mems):
+    """
+    Test one or multiple cases.
+    """
+
+    for assume in assumes:
+
+        if assume == 'gen':
+            B = A
+            sym_pos = False
+        elif assume == 'sym':
+            B = A.T + A
+            sym_pos = False
+        elif assume == 'spd':
+            B = A.T @ A
+            sym_pos = True
+
+        for dtype in dtypes:
+
+            B = B.astype(dtype)
+
+            # True solution
+            ld0, sign0 = logdet(B, sym_pos=sym_pos, use_scipy=True)
+
+            for parallel_io in parallel_ios:
+
+                # tensorstore can only be used with zarr arrays
+                if parallel_io == 'tensorstore':
+
+                    # Store matrix as a zarr array on disk (optional)
+                    z_path = 'my_matrix.zarr'
+                    matrix = zarr.open(z_path, mode='w', shape=A.shape,
+                                       dtype=B.dtype)
+                    matrix[:, :] = B
+
+                else:
+                    matrix = B
+
+                for num_block in num_blocks:
+                    for max_mem in max_mems:
+
+                        # Compute log-determinant
+                        ld, sign, diag, info = memdet(
+                                matrix, max_mem=max_mem, num_blocks=num_block,
+                                assume=assume, parallel_io=parallel_io,
+                                verbose=True, return_info=True)
+
+                        # Compare error
+                        sign_error = (sign == sign0)
+                        ld_error = numpy.abs(1.0 - ld0/ld)
+
+                        rtol = 100.0 * numpy.finfo('float32').resolution
+                        if (sign_error is False) or (ld_error > rtol):
+                            raise RuntimeError(
+                                '\nmemdet is inaccurate:\n' +
+                                f'num_block: {num_block}\n' +
+                                f'max_mem: {max_mem}\n' +
+                                f'dtype: {dtype}\n' +
+                                f'assume: {assume}\n' +
+                                f'num_blocks: {num_block}\n' +
+                                f'sign: {sign}, true sign: {sign0}\n' +
+                                f'ld: {ld}, true ld: {ld0}, ' +
+                                f'err: {ld_error}\n' +
+                                f'rtol: {rtol}')
+                        else:
+                            print('OK')
+
+    if 'z_path' in locals():
+        remove_dir(z_path)
+
+
 # ===========
 # test memdet
 # ===========
@@ -54,24 +129,29 @@ def test_memdet():
     """
 
     # Create a symmetric matrix
-    n = 1000
+    n = 200
     A = numpy.random.randn(n, n)
-    A = A.T @ A
 
-    # Store matrix as a zarr array on disk (optional)
-    z_path = 'my_matrix.zarr'
-    z = zarr.open(z_path, mode='w', shape=(n, n), dtype=A.dtype)
-    z[:, :] = A
+    # Limit memory though num_blocks
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+          parallel_ios=['tensorstore'], num_blocks=[2, 3, 4],
+          max_mems=[float('inf')])
 
-    # Compute log-determinant
-    ld, sign, diag, info = memdet(
-            z, max_mem='5MB', assume='sym', parallel_io='tensorstore',
-            verbose=True, return_info=True)
+    # Limit memory though max_mem
+    nbytes = A.nbytes
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+          parallel_ios=['tensorstore'], num_blocks=[1],
+          max_mems=[nbytes//4, '60KB', float('inf')])
 
-    # print log-determinant and sign
-    print(f'log-abs-determinant: {ld}, sign-determinant: {sign}')
+    # Test data types
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
+          parallel_ios=['tensorstore'], num_blocks=[3],
+          max_mems=[float('inf')])
 
-    remove_dir(z_path)
+    # Test various parallel io
+    _test(A, assumes=['gen'], dtypes=['float64'],
+          parallel_ios=[None, 'multiproc', 'dask', 'tensorstore'],
+          num_blocks=[4], max_mems=[float('inf')])
 
 
 # ===========

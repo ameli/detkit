@@ -112,22 +112,24 @@ def _schur_complement(L_t, U, S, dtype, order, block_info, verbose=False):
         prof = Profile()
 
     # Find the size of block on memory
-    S_shape, S_shape_on_mem = get_block_shape(block_info, trans=False)
+    shape, shape_on_mem = get_block_shape(block_info, trans=False)
 
     # Get buffer from shared memory
-    S_ = get_array(S, S_shape_on_mem, dtype, order)
+    L_t_ = get_array(L_t, shape_on_mem, dtype, order)
+    U_ = get_array(U, shape_on_mem, dtype, order)
+    S_ = get_array(S, shape_on_mem, dtype, order)
 
     # Check all matrices have Fortran ordering
-    if not L_t.flags['F_CONTIGUOUS']:
+    if not L_t_.flags['F_CONTIGUOUS']:
         raise TypeError('Matrix "L" should have column-ordering.')
-    if not U.flags['F_CONTIGUOUS']:
+    if not U_.flags['F_CONTIGUOUS']:
         raise TypeError('Matrix "U" should have column-ordering.')
     if not S_.flags['F_CONTIGUOUS']:
         raise TypeError('Matrix "S" should have column-ordering.')
 
     # Find the shape of matrix product
-    m1, m2 = S_shape
-    m = S_shape_on_mem[0]
+    m1, m2 = shape
+    m = shape_on_mem[0]
     matmul_shape = (m1, m, m2)
 
     trans_a = True
@@ -135,11 +137,11 @@ def _schur_complement(L_t, U, S, dtype, order, block_info, verbose=False):
     alpha = -1.0
     beta = 1.0
 
-    matmul(L_t, U, S_, matmul_shape, trans_a, trans_b, alpha, beta,
+    matmul(L_t_, U_, S_, matmul_shape, trans_a, trans_b, alpha, beta,
            overwrite=True)
 
     if verbose:
-        prof.print_profile(S_shape, dtype)
+        prof.print_profile(shape, dtype)
 
 
 # ==================

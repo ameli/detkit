@@ -213,8 +213,10 @@ def logpdet(
 
     See Also
     --------
-        logdet : Computes the `logdet` of a matrix.
-        loggdet : Log of determinant terms used in Gaussian process regression.
+
+    logdet
+    loggdet
+    memdet
 
     References
     ----------

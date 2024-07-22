@@ -205,9 +205,10 @@ def loggdet(
 
     See Also
     --------
-        logdet : Computes the `logdet` of a matrix.
-        logpdet : Log of pseudo-determinant of the precision matrix in Gaussian
-            process regression.
+
+    logdet
+    logpdet
+    memdet
 
     References
     ----------

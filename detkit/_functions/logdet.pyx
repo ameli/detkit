@@ -93,9 +93,10 @@ def logdet(
 
     See Also
     --------
-        loggdet : Log of determinant terms used in Gaussian process regression.
-        logpdet : Log of pseudo-determinant of the precision matrix in Gaussian
-            process regression.
+
+    memdet
+    loggdet
+    logpdet
 
     Examples
     --------

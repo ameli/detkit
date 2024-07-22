@@ -14,7 +14,7 @@
 import os
 import re
 import numpy
-import dask
+import dask.array
 import zarr
 import tensorstore
 import tempfile

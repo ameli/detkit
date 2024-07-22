@@ -15,11 +15,9 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                # os: [ubuntu-latest, windows-latest, macos-latest]
-                os: [macos-latest]
+                os: [ubuntu-latest, windows-latest, macos-latest]
                 # python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'pp38', 'pp39', 'pp310']
-                # python-version: ['cp39', 'cp310', 'cp311', 'cp312']
-                python-version: ['cp311']
+                python-version: ['cp39', 'cp310', 'cp311', 'cp312']
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -40,10 +38,6 @@ jobs:
                   # of "fatal error: omp.h file found"
                   brew install libomp
                   libomp_dir=$(brew --prefix libomp)
-                  echo ${libomp_dir}
-                  ls ${libomp_dir}/include
-                  ls ${libomp_dir}/lib
-                  ls /usr/local
                   custom_include_dir=/usr/local/include
                   custom_lib_dir=/usr/local/lib
                   sudo mkdir -p ${custom_include_dir}

@@ -317,6 +317,13 @@ def memdet(
                   (row-major) ordering or ``F`` for Fortran (column-major)
                   ordering during computation.
 
+    Raises
+    ------
+
+    RuntimeError
+        Error raised when ``assume='spd'`` and matrix `A` is not symmetric
+        positive-definite.
+
     See also
     --------
 
@@ -327,9 +334,9 @@ def memdet(
     Notes
     -----
 
-    **How to limit memory usage:**
+    **How to Limit Memory Usage:**
 
-    If the whole matrix cannot be loaded on the memory, this function breaks
+    If the whole matrix cannot be loaded on the memory, this function chunks
     the matrix into smaller sub-matrices (blocks) and load three or four of
     these blocks concurrently to the memory.
 
@@ -340,10 +347,10 @@ def memdet(
 
     There are two ways to set the memory limit:
 
-    * either by directly setting ``num_blocks`` argument (such as 5 in the
+    * either directly, by setting ``max_mem`` argument (such as ``16GB`` in the
       above example),
-    * or by setting ``max_mem`` argument (such as ``16GB`` in the above
-      example).
+    * or indirectly, by setting ``num_blocks`` argument (such as 5 in the
+      above example).
 
     You only need to set one of these arguments, but not both. However, if you
     set ``max_mem``, the argument ``num_blocks`` is ignored, and rather,
@@ -375,13 +382,13 @@ def memdet(
 
     **Using Dask:**
 
-    When using Dask (either if the input array ``A`` is a dask array or when
+    When using Dask (either if the input array ``A`` is a Dask array or when
     ``parallel_io='dask'``), you should call :func:`detkit.memdet` function in
     a protected *if-clause*. See further details at
     `multiprocessing-error-without-if-clause-protection
     <https://pytorch.org/docs/stable/notes/windows.html>`__.
 
-    **What is the diag output variable:**
+    **The "diag" Output Variable:**
 
     In addition to the log-abs-determinant (``ld``) and sign of determinant
     (``sign``) variables, this function also returns the ``diag`` variable.
