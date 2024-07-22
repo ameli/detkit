@@ -11,6 +11,7 @@
 # Imports
 # =======
 
+import sys
 import os
 import re
 import numpy
@@ -52,7 +53,12 @@ def _get_scratch_prefix():
     package_name = module_name.split('.')[0]
 
     # scratch space filename prefix
-    prefix = '.' + package_name + '-' + caller_function_name + '-'
+    if sys.platform in ['linux', 'darwin']:
+        hidden_file = '.'
+    else:
+        # For windows
+        hidden_file = ''
+    prefix = hidden_file + package_name + '-' + caller_function_name + '-'
 
     return prefix
 

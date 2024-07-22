@@ -89,6 +89,14 @@ def _test(A, assumes, dtypes, parallel_ios, num_blocks, max_mems):
                 for num_block in num_blocks:
                     for max_mem in max_mems:
 
+                        print('\nprocessing:\n' +
+                              f'num_block: {num_block}\n' +
+                              f'max_mem: {max_mem}\n' +
+                              f'dtype: {dtype}\n' +
+                              f'assume: {assume}\n' +
+                              f'parallel_io: {parallel_io}\n' +
+                              f'num_blocks: {num_block}\n', flush=True)
+
                         # Compute log-determinant
                         ld, sign, diag, info = memdet(
                                 matrix, max_mem=max_mem, num_blocks=num_block,
@@ -107,6 +115,7 @@ def _test(A, assumes, dtypes, parallel_ios, num_blocks, max_mems):
                                 f'max_mem: {max_mem}\n' +
                                 f'dtype: {dtype}\n' +
                                 f'assume: {assume}\n' +
+                                f'parallel_io: {parallel_io}\n' +
                                 f'num_blocks: {num_block}\n' +
                                 f'sign: {sign}, true sign: {sign0}\n' +
                                 f'ld: {ld}, true ld: {ld0}, ' +
@@ -130,7 +139,7 @@ def test_memdet():
 
     # Create a symmetric matrix
     n = 200
-    A = numpy.random.randn(n, n)
+    A = numpy.random.randn(n, n) + (n/2.0) * numpy.eye(n)
 
     # Limit memory though num_blocks
     _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
