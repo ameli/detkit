@@ -1,5 +1,5 @@
 numpy>1.11
-scipy>=1.5
+scipy>=1.7
 matplotlib>=2.0
 pooch
 psutil; platform_python_implementation == "CPython"
