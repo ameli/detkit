@@ -90,6 +90,7 @@ cpdef lu_factor(A, shape=None, overwrite=False):
 
     detkit.ldl_factor
     detkit.cho_factor
+    detkit.lu_solve
 
     References
     ----------

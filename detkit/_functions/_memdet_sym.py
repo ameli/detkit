@@ -87,13 +87,9 @@ def _get_diag(ldu, pivs, block_info, lower=True):
             # Determinant of the 2 by 2 block
             det = ldu[blk_i, blk_i] * ldu[blk_i+1, blk_i+1] - off_diag**2
 
-            # Distribute the determinant to the diagonal blocks
-            sqrt_det = numpy.sqrt(numpy.abs(det))
-            diag[blk_i] = sqrt_det
-            if det < 0.0:
-                diag[blk_i+1] = -sqrt_det
-            else:
-                diag[blk_i+1] = sqrt_det
+            # Set the next diagonal such that the determinant of the 2x2 block
+            # is preserved.
+            diag[blk_i+1] = det / diag[blk_i]
 
         blk_i = inc
 
@@ -162,7 +158,7 @@ def _pivot_to_permutation(swap_vec, pivs, lower=True):
 # ldl factor
 # ==========
 
-def _ldl_factor(A, dtype, order, block_info, verbose=False):
+def _ldl_factor(A, dtype, order, lower, block_info, verbose=False):
     """
     Performs LDL factorization of an input matrix.
     """
@@ -184,7 +180,7 @@ def _ldl_factor(A, dtype, order, block_info, verbose=False):
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
     # Upper-triangular LDL factorization where A = U.T @ D @ U
-    ldu, piv = ldl_factor(A_, A_shape[0], lower=False, overwrite=True,
+    ldu, piv = ldl_factor(A_, A_shape[0], lower=lower, overwrite=True,
                           return_as_lapack=True)
 
     # Check ldu is overwritten to A.
@@ -255,6 +251,7 @@ def memdet_sym(io, verbose):
     ld = 0
     sign = 1
     diag = []
+    lower = True  # using LDL.T instead UDD.T decomposition
 
     # Initialize progress
     progress = Progress(num_blocks, assume='sym', verbose=verbose)
@@ -270,16 +267,16 @@ def memdet_sym(io, verbose):
             load_block(io, A11, k, k, verbose=verbose)
 
         # Upper-triangular LDL decomposition
-        ldu_11, piv = _ldl_factor(A11, dtype, order, (k, k, num_blocks, n),
-                                  verbose=verbose)
+        ldu_11, piv = _ldl_factor(A11, dtype, order, lower,
+                                  (k, k, num_blocks, n), verbose=verbose)
 
         # Get diagonal and permutations. The next couple of lines are taken
         # from ../_cy_linear_algebra/ldl_factor.pyx:ldl_factor() function.
         piv_ = piv + 1  # convert from 0-indexing to 1-indexing (Fortran style)
-        swap_arr, pivot_arr = _sanitize_piv(piv_, lower=False)
+        swap_arr, pivot_arr = _sanitize_piv(piv_, lower=lower)
         diag_ldu_11 = _get_diag(ldu_11, pivot_arr, (k, k, num_blocks, n),
-                                lower=False)
-        perm = _pivot_to_permutation(swap_arr, pivot_arr, lower=False)
+                                lower=lower)
+        perm = _pivot_to_permutation(swap_arr, pivot_arr, lower=lower)
 
         # log-determinant
         ld += numpy.sum(numpy.log(numpy.abs(diag_ldu_11)))
@@ -330,7 +327,7 @@ def memdet_sym(io, verbose):
                 if i == i_start:
                     # Solving X = A11^{-1} A12. This overwrites X to A12
                     X = _ldl_solve(ldu_11, piv, A12, dtype, order,
-                                   lower=False,
+                                   lower=lower,
                                    block_info=(k, j, num_blocks, n),
                                    verbose=verbose)
 

@@ -330,6 +330,7 @@ cpdef ldl_factor(
 
     detkit.lu_factor
     detkit.cho_factor
+    detkit.ldl_solve
 
     References
     ----------
