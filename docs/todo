@@ -1,1 +1,3 @@
 use shutil.disk_usage('/tmp').free to find avail scratch space
+
+in detkit.covariance_matrix, the size cannot be larger than 2071, which is the max size of ECG signal.

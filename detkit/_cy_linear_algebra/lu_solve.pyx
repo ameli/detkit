@@ -206,13 +206,13 @@ cpdef lu_solve(lu, perm, B, shape=None, trans=False, overwrite=False):
         >>> A_copy = numpy.copy(A)
         >>> B_copy = numpy.copy(B)
 
-        >>> # Track memory allocation to check if either of the Cholesky
+        >>> # Track memory allocation to check if either of the LU
         >>> # decomposition or solving linear system is now creating any new
         >>> # memory.
         >>> mem = Memory()
         >>> mem.set()
 
-        >>> # Cholesky factorization of the upper-left sub-matrix
+        >>> # LU factorization of the upper-left sub-matrix
         >>> p, q = 800, 700
         >>> lu, perm = lu_factor(A, shape=(p, p), overwrite=True)
 
@@ -370,8 +370,7 @@ cpdef lu_solve(lu, perm, B, shape=None, trans=False, overwrite=False):
         raise ValueError('Array should be "float32" or "float64" precision.')
 
     if info != 0:
-        raise ValueError('Cholesky decomposition failed with error code: %d'
-                         % info)
+        raise ValueError('LU decomposition failed with error code: %d' % info)
 
     return X
 

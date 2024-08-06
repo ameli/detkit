@@ -136,13 +136,16 @@ cpdef cho_factor(A, m=None, lower=True, overwrite=False):
     --------
 
     .. code-block:: python
-        :emphasize-lines: 20
+        :emphasize-lines: 24
 
-        >>> from detkit import lu_factor, Memory
+        >>> from detkit import cho_factor, Memory
         >>> import numpy
         
-        >>> # Create a matrix with 32-bit precision and column-major ordering
-        >>> A = numpy.random.randn(1000, 900) + 100 * numpy.eye(1000, 900)
+        >>> # Create a symmetrc positive-definite matrix with 32-bit precision
+        >>> # and column-major ordering
+        >>> n = 1000
+        >>> A = numpy.random.randn(n, n) + 2*n * numpy.eye(n, n)
+        >>> A = A.T @ A
         >>> A = numpy.asfortranarray(A)
         >>> A = A.astype(numpy.float32)
 
@@ -150,34 +153,31 @@ cpdef cho_factor(A, m=None, lower=True, overwrite=False):
         >>> # overwrite A
         >>> A_copy = numpy.copy(A)
 
-        >>> # Track memory allocation to check if LU decomposition is not
+        >>> # Track memory allocation to check if Chplesky decomposition is not
         >>> # creating any new memory.
         >>> mem = Memory()
         >>> mem.set()
 
-        >>> # LU factorization of the upper-left sub-matrix of smaller shape
-        >>> p, q = 800, 700
-        >>> lu, perm = lu_factor(A, shape=(p, q), overwrite=True)
+        >>> # Choleksy factorization of the upper-left sub-matrix with a
+        >>> # smaller shape
+        >>> m = 800
+        >>> cho = cho_factor(A, m=m, lower=True, overwrite=True)
 
         >>> # Check peak memory allocation (compared to memory of a sum-matrix)
-        >>> slice_nbytes = p * q * A.dtype.itemsize
+        >>> slice_nbytes = m**2 * A.dtype.itemsize
         >>> print(mem.peak() / slice_nbytes)
-        0.001
+        0.004
 
-        >>> # Extract L and U factors from lu matrix
-        >>> k = min(p, q)
-        >>> U = numpy.triu(lu[:k, :q])
-        >>> L = numpy.tril(lu[:p, :k], -1)
-        >>> for i in range(k):
-        ...    L[i, i] = 1.0
+        >>> # Extract L factor from cho matrix
+        >>> L = numpy.tril(cho[:m, :m])
 
-        >>> # Check if A_copy = PLU holds.
+        >>> # Check if A_copy = L@L.T holds.
         >>> atol = numpy.finfo(A.dtype).resolution
-        >>> print(numpy.allclose(A_copy[perm[:p], :q], L @ U, atol=10*atol))
+        >>> print(numpy.allclose(A_copy[:m, :m], L @ L.T, atol=10*atol))
         True
 
-        >>> # When overwrite is set to True, check if lu is indeed a view of A
-        >>> print(lu.base == A.base)
+        >>> # When overwrite is set to True, check if cho is indeed a view of A
+        >>> print(cho.base == A.base)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`

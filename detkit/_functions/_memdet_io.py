@@ -230,8 +230,6 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     # Check parallel_io
     if ((parallel_io is not None) and
             (parallel_io not in ['multiproc', 'dask', 'tensorstore'])):
-        print(parallel_io)
-        print(parallel_io in ['multiproc', 'dask', 'tensorstore'])
         raise ValueError('"parallel_io" should be either set to None, ' +
                          '"multiproc", "dask", or "tensorstore".')
 

@@ -25,7 +25,7 @@ __all__ = ['ldl_solve']
 cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
     """
     Solve symmetric positive-definite linear system given a sub-matrix of
-    Cholesky decomposition.
+    LDL decomposition.
 
     Parameters
     ----------
@@ -35,7 +35,7 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
         ``float32`` data type stored column-major ordering. This matrix can
         be obtained from :func:`detkit.ldl_factor`.
 
-    ppiv : numpy.array
+    piv : numpy.array
         Row pivoting indices (zero-based indexing). This array can be
         obtained from :func:`detkit.ldl_factor`.
 
@@ -192,13 +192,13 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
         >>> A_copy = numpy.copy(A)
         >>> B_copy = numpy.copy(B)
 
-        >>> # Track memory allocation to check if either of the Cholesky
+        >>> # Track memory allocation to check if either of the LDL
         >>> # decomposition or solving linear system is now creating any new
         >>> # memory.
         >>> mem = Memory()
         >>> mem.set()
 
-        >>> # Cholesky factorization of the upper-left sub-matrix
+        >>> # LDL factorization of the upper-left sub-matrix
         >>> p, q = 800, 700
         >>> ldu, piv = ldl_factor(A, m=p, lower=True, overwrite=True,
         ...                       return_as_lapack=True)
@@ -349,8 +349,7 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
         raise ValueError('Array should be "float32" or "float64" precision.')
 
     if info != 0:
-        raise ValueError('Cholesky decomposition failed with error code: %d'
-                         % info)
+        raise ValueError('LDL decomposition failed with error code: %d' % info)
 
     return X
 

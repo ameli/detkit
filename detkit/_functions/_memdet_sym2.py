@@ -20,7 +20,7 @@ from ._memdet_gen import _permutation_parity, _schur_complement
 from .._cy_linear_algebra import ldl_factor, ldl_solve
 from .._cy_linear_algebra.ldl_factor import _sanitize_piv
 
-__all__ = ['memdet_sym']
+__all__ = ['memdet_sym2']
 
 
 # ========
@@ -231,7 +231,7 @@ def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, verbose=False):
 # memdet sym
 # ==========
 
-def memdet_sym(io, verbose):
+def memdet_sym2(io, verbose):
     """
     memdet algorithm for symmetric matrices. This method uses LDL
     decomposition.

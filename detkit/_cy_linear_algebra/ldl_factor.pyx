@@ -318,7 +318,7 @@ cpdef ldl_factor(
         ldu : numpy.ndarray
             2D matrix of the same shape as the input matrix `A` (and not the
             shape of the sub-matrix), containing the LDL decomposition. This
-            matrix stores both `L` (or `U`) and `D` however, the storage
+            matrix stores both `L` (or `U`) and `D`, however, the storage
             format of this matrix is not intuitively interpretable.
 
         piv : numpy.array

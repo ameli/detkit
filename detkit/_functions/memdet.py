@@ -23,7 +23,9 @@ from ..__version__ import __version__
 from ._utilities import get_processor_name
 from ._memdet_gen import memdet_gen
 from ._memdet_sym import memdet_sym
+from ._memdet_sym2 import memdet_sym2
 from ._memdet_spd import memdet_spd
+from ._memdet_spd2 import memdet_spd2
 
 __all__ = ['memdet']
 
@@ -542,9 +544,17 @@ def memdet(
             # Symmetric matrix, using LDL decomposition
             ld, sign, diag = memdet_sym(io, verbose)
 
+        elif assume == 'sym2':
+            # Symmetric matrix, using LDL decomposition
+            ld, sign, diag = memdet_sym2(io, verbose)
+
         elif assume == 'spd':
             # Symmetric positive-definite matrix, using Cholesky decomposition
             ld, sign, diag = memdet_spd(io, verbose)
+
+        elif assume == 'spd2':
+            # Symmetric positive-definite matrix, using Cholesky decomposition
+            ld, sign, diag = memdet_spd2(io, verbose)
 
         else:
             raise ValueError('"assume" should be either "gen", "sym", or ' +
@@ -577,9 +587,11 @@ def memdet(
         # method
         if assume == 'gen':
             method = 'lu decomposition'
-        elif assume == 'sym':
+        # elif assume == 'sym':
+        elif assume in ['sym', 'sym2']:
             method = 'ldl decomposition'
-        elif assume == 'spd':
+        # elif assume == 'spd': # TEST
+        elif assume in ['spd', 'spd2']:
             method = 'cholesky decomposition'
         else:
             raise ValueError('"assume" is invalid.')
