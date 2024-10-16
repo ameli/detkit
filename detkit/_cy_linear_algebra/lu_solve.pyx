@@ -387,7 +387,7 @@ cdef int _lu_solve_fp32(
         int ldb,
         int n,
         int nrhs,
-        char* trans) nogil:
+        char* trans) noexcept nogil:
     """
     Process float64 precision.
     """
@@ -413,7 +413,7 @@ cdef int _lu_solve_fp64(
         int ldb,
         int n,
         int nrhs,
-        char* trans) nogil:
+        char* trans) noexcept nogil:
     """
     Process float64 precision.
     """

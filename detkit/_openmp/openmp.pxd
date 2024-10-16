@@ -23,11 +23,4 @@ cdef extern from "./conditional_openmp.h":
     extern int omp_get_thread_num() noexcept nogil
     extern void omp_set_num_threads(int) noexcept nogil
 
-    # extern void omp_init_lock(omp_lock_t *lock) nogil
-    # extern void omp_set_lock(omp_lock_t *lock) nogil
-    # extern void omp_unset_lock(omp_lock_t *lock) nogil
-    # extern int omp_get_max_threads() nogil
-    # extern int omp_get_thread_num() nogil
-    # extern void omp_set_num_threads(int) nogil
-
     cdef int use_openmp

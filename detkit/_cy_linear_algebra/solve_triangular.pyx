@@ -344,7 +344,7 @@ cdef int _solve_triangular_fp32(
         int &nrhs,
         char* uplo,
         char* trans,
-        char* diag) nogil:
+        char* diag) noexcept nogil:
     """
     Process float32 precision.
     """
@@ -370,7 +370,7 @@ cdef int _solve_triangular_fp64(
         int &nrhs,
         char* uplo,
         char* trans,
-        char* diag) nogil:
+        char* diag) noexcept nogil:
     """
     Process float64 precision.
     """

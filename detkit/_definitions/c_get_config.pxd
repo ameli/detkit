@@ -13,12 +13,12 @@
 
 cdef extern from "c_get_config.h":
 
-    cdef bint is_use_symmetry() nogil
-    cdef bint is_use_openmp() nogil
-    cdef bint is_count_perf() nogil
-    cdef bint is_use_loop_unrolling() nogil
-    cdef bint is_debug_mode() nogil
-    cdef bint is_cython_build_in_source() nogil
-    cdef bint is_cython_build_for_doc() nogil
-    cdef bint is_use_long_int() nogil
-    cdef bint is_use_unsigned_long_int() nogil
+    cdef bint is_use_symmetry() noexcept nogil
+    cdef bint is_use_openmp() noexcept nogil
+    cdef bint is_count_perf() noexcept nogil
+    cdef bint is_use_loop_unrolling() noexcept nogil
+    cdef bint is_debug_mode() noexcept nogil
+    cdef bint is_cython_build_in_source() noexcept nogil
+    cdef bint is_cython_build_for_doc() noexcept nogil
+    cdef bint is_use_long_int() noexcept nogil
+    cdef bint is_use_unsigned_long_int() noexcept nogil

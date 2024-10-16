@@ -300,7 +300,7 @@ cdef int _lu_factor_fp32(
         int* piv,
         int m,
         int n,
-        int lda) nogil:
+        int lda) noexcept nogil:
     """
     Process float32 precision.
     """
@@ -322,7 +322,7 @@ cdef int _lu_factor_fp64(
         int* piv,
         int m,
         int n,
-        int lda) nogil:
+        int lda) noexcept nogil:
     """
     Process float64 precision.
     """

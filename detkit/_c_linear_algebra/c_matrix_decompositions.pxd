@@ -26,19 +26,19 @@ cdef extern from "c_matrix_decompositions.h":
         void lu(
                 DataType* A,
                 const LongIndexType num_rows,
-                DataType* L) nogil
+                DataType* L) noexcept nogil
 
         @staticmethod
         FlagType cholesky(
                 DataType* A,
                 const LongIndexType num_rows,
-                DataType* L) nogil
+                DataType* L) noexcept nogil
 
         @staticmethod
         void gram_schmidt(
                 DataType *A,
                 const LongIndexType num_rows,
-                const LongIndexType num_columns) nogil
+                const LongIndexType num_columns) noexcept nogil
 
         @staticmethod
         void ortho_complement(
@@ -47,4 +47,4 @@ cdef extern from "c_matrix_decompositions.h":
                 const LongIndexType num_rows,
                 const LongIndexType num_columns_Xp,
                 const LongIndexType num_columns_X,
-                const FlagType X_ortho) nogil
+                const FlagType X_ortho) noexcept nogil

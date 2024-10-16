@@ -27,13 +27,13 @@ cdef extern from "c_matrix_functions.h":
                 DataType* A,
                 const LongIndexType num_rows,
                 const FlagType sym_pos,
-                FlagType& sign) nogil
+                FlagType& sign) noexcept nogil
 
         @staticmethod
         DataType det(
                 DataType* A,
                 const LongIndexType num_rows,
-                const FlagType sym_pos) nogil
+                const FlagType sym_pos) noexcept nogil
 
         @staticmethod
         DataType loggdet(
@@ -47,7 +47,7 @@ cdef extern from "c_matrix_functions.h":
                 const FlagType method,
                 const FlagType X_orth,
                 FlagType& sign,
-                long long& flops) nogil
+                long long& flops) noexcept nogil
 
         @staticmethod
         DataType logpdet(
@@ -61,4 +61,4 @@ cdef extern from "c_matrix_functions.h":
                 const FlagType method,
                 const FlagType X_orth,
                 FlagType& sign,
-                long long& flops) nogil
+                long long& flops) noexcept nogil

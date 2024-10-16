@@ -30,7 +30,7 @@ cdef extern from "c_matrix_solvers.h":
                 const LongIndexType n,
                 const LongIndexType m,
                 const FlagType B_transpose,
-                const FlagType X_transpose) nogil
+                const FlagType X_transpose) noexcept nogil
 
         @staticmethod
         void upper_triang_solve(
@@ -40,7 +40,7 @@ cdef extern from "c_matrix_solvers.h":
                 const LongIndexType n,
                 const LongIndexType m,
                 const FlagType B_transpose,
-                const FlagType X_transpose) nogil
+                const FlagType X_transpose) noexcept nogil
 
         @staticmethod
         void lu_solve(
@@ -51,7 +51,7 @@ cdef extern from "c_matrix_solvers.h":
                 const LongIndexType n,
                 const LongIndexType m,
                 const FlagType B_transpose,
-                const FlagType X_transpose) nogil
+                const FlagType X_transpose) noexcept nogil
 
         @staticmethod
         void lup_solve(
@@ -62,4 +62,4 @@ cdef extern from "c_matrix_solvers.h":
                 const LongIndexType n,
                 const LongIndexType m,
                 const FlagType B_transpose,
-                const FlagType X_transpose) nogil
+                const FlagType X_transpose) noexcept nogil

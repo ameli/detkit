@@ -25,24 +25,24 @@ cdef extern from "benchmark.h":
         @staticmethod
         long long matmat(
                 const DataType* dummy_var,
-                const LongIndexType n) nogil
+                const LongIndexType n) noexcept nogil
 
         @staticmethod
         long long gramian(
                 const DataType* dummy_var,
-                const LongIndexType n) nogil
+                const LongIndexType n) noexcept nogil
 
         @staticmethod
         long long cholesky(
                 const DataType* dummy_var,
-                const LongIndexType n) nogil
+                const LongIndexType n) noexcept nogil
 
         @staticmethod
         long long lu(
                 const DataType* dummy_var,
-                const LongIndexType n) nogil
+                const LongIndexType n) noexcept nogil
 
         @staticmethod
         long long lup(
                 const DataType* dummy_var,
-                const LongIndexType n) nogil
+                const LongIndexType n) noexcept nogil

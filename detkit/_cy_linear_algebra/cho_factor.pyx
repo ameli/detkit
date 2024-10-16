@@ -266,7 +266,7 @@ cdef int _cho_factor_fp32(
         float* A,
         int lda,
         int m,
-        char* uplo) nogil:
+        char* uplo) noexcept nogil:
     """
     Process float64 precision.
     """
@@ -288,7 +288,7 @@ cdef int _cho_factor_fp64(
         double* A,
         int lda,
         int m,
-        char* uplo) nogil:
+        char* uplo) noexcept nogil:
     """
     Process float64 precision.
     """

@@ -567,7 +567,7 @@ cdef int _ldl_factor_fp32(
         int lda,
         int* piv,
         int m,
-        char* uplo) nogil:
+        char* uplo) noexcept nogil:
     """
     Process float64 precision.
     """
@@ -605,7 +605,7 @@ cdef int _ldl_factor_fp64(
         int lda,
         int* piv,
         int m,
-        char* uplo) nogil:
+        char* uplo) noexcept nogil:
     """
     Process float64 precision.
     """
