@@ -388,7 +388,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
 
             # When scratch_dir is None, the tempfile object decides where the
             # scratch_dir is.
-            if scratch_dir is None:
+            if (scratch_dir is None) or (scratch_dir == ''):
                 scratch_dir = os.path.dirname(scratch_file)
 
             # Check disk space has enough space

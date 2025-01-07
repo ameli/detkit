@@ -16,28 +16,36 @@
 // Headers
 // =======
 
-#if defined(_OPENMP) || (defined(__INTEL_COMPILER) && defined(__OPENMP))\
+// Check OPENMP exists
+#if defined(_OPENMP) || (defined(__INTEL_COMPILER) && defined(__OPENMP)) \
     || (defined(__NVCOMPILER) && defined(_OPENMP))
+    #define _HAS_OPENMP 1
+#else
+    #define _HAS_OPENMP 0
+#endif
 
+// Check user wants OPENMP
+#if (_HAS_OPENMP == 1) && defined(USE_OPENMP) && (USE_OPENMP == 1)
     #include <omp.h>
     #define use_openmp 1
-
 #else
-
     #define use_openmp 0
-
-    // Dummy type declarations
-    typedef int omp_lock_t;
-
-    // Dummy function declarations
-    void omp_init_lock(omp_lock_t *lock);
-    void omp_set_lock(omp_lock_t *lock);
-    void omp_unset_lock(omp_lock_t *lock);
-    int omp_get_max_threads();
-    int omp_get_thread_num();
-    void omp_set_num_threads(int num_threads);
-
 #endif
+
+// Dummy type declarations
+#if use_openmp == 1
+    typedef omp_lock_t cond_omp_lock_t;
+#else
+    typedef int cond_omp_lock_t;
+#endif
+
+// Dummy function declarations
+void cond_omp_init_lock(cond_omp_lock_t *lock);
+void cond_omp_set_lock(cond_omp_lock_t *lock);
+void cond_omp_unset_lock(cond_omp_lock_t *lock);
+int cond_omp_get_max_threads();
+int cond_omp_get_thread_num();
+void cond_omp_set_num_threads(int num_threads);
 
 
 #endif  // CONDITIONAL_OPENMP_H_

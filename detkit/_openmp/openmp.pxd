@@ -13,14 +13,14 @@
 
 cdef extern from "./conditional_openmp.h":
 
-    ctypedef struct omp_lock_t:
+    ctypedef struct cond_omp_lock_t:
         pass
 
-    extern void omp_init_lock(omp_lock_t *lock) noexcept nogil
-    extern void omp_set_lock(omp_lock_t *lock) noexcept nogil
-    extern void omp_unset_lock(omp_lock_t *lock) noexcept nogil
-    extern int omp_get_max_threads() noexcept nogil
-    extern int omp_get_thread_num() noexcept nogil
-    extern void omp_set_num_threads(int) noexcept nogil
+    extern void cond_omp_init_lock(cond_omp_lock_t *lock) noexcept nogil
+    extern void cond_omp_set_lock(cond_omp_lock_t *lock) noexcept nogil
+    extern void cond_omp_unset_lock(cond_omp_lock_t *lock) noexcept nogil
+    extern int cond_omp_get_max_threads() noexcept nogil
+    extern int cond_omp_get_thread_num() noexcept nogil
+    extern void cond_omp_set_num_threads(int) noexcept nogil
 
     cdef int use_openmp

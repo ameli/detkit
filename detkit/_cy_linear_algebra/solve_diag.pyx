@@ -14,7 +14,7 @@
 import numpy
 from cython.parallel cimport parallel, prange
 from .._openmp import get_avail_num_threads
-from .._openmp cimport omp_set_num_threads
+from .._openmp cimport cond_omp_set_num_threads
 
 __all__ = ['solve_diag']
 
@@ -76,7 +76,7 @@ cpdef solve_diag(D, B, shape=None, overwrite=False):
 
     # Set number of parallel threads
     num_threads = get_avail_num_threads()
-    omp_set_num_threads(num_threads)
+    cond_omp_set_num_threads(num_threads)
 
     cdef float[::1, :] D_fp32_f_mv
     cdef float[::1, :] B_fp32_f_mv

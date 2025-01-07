@@ -16,61 +16,86 @@
 #include "./conditional_openmp.h"  // use_openmp
 
 
-// Nullify all openmp functions
-#if use_openmp == 0
+// ==================
+// cond omp init lock
+// ==================
 
-    // =============
-    // omp init lock
-    // =============
-
-    void omp_init_lock(omp_lock_t *lock)
-    {
+void cond_omp_init_lock(cond_omp_lock_t *lock)
+{
+    #if use_openmp == 1
+        omp_init_lock(lock);
+    #else
+        // Nullify this OPENMP functions
         (void) lock;
-    }
+    #endif
+}
 
-    // ============
-    // omp set lock
-    // ============
-    
-    void omp_set_lock(omp_lock_t *lock)
-    {
+// =================
+// cond omp set lock
+// =================
+
+void cond_omp_set_lock(cond_omp_lock_t *lock)
+{
+    #if use_openmp == 1
+        omp_set_lock(lock);
+    #else
+        // Nullify this OPENMP functions
         (void) lock;
-    }
+    #endif
+}
 
-    // ==============
-    // omp unset lock
-    // ==============
+// ===================
+// cond omp unset lock
+// ===================
 
-    void omp_unset_lock(omp_lock_t *lock)
-    {
+void cond_omp_unset_lock(cond_omp_lock_t *lock)
+{
+    #if use_openmp == 1
+        omp_unset_lock(lock);
+    #else
+        // Nullify this OPENMP functions
         (void) lock;
-    }
+    #endif
+}
 
-    // ===================
-    // omp get max threads
-    // ===================
+// ========================
+// cond omp get max threads
+// ========================
 
-    int omp_get_max_threads()
-    {
+int cond_omp_get_max_threads()
+{
+    #if use_openmp == 1
+        return omp_get_max_threads();
+    #else
+        // Nullify this OPENMP functions
         return 1;
-    }
+    #endif
+}
 
-    // ==================
-    // omp get thread num
-    // ==================
+// =======================
+// cond omp get thread num
+// =======================
 
-    int omp_get_thread_num()
-    {
+int cond_omp_get_thread_num()
+{
+    #if use_openmp == 1
+        return omp_get_thread_num();
+    #else
+        // Nullify this OPENMP functions
         return 0;
-    }
+    #endif
+}
 
-    // ===================
-    // omp set num threads
-    // ===================
-    
-    void omp_set_num_threads(int num_threads)
-    {
+// ========================
+// cond omp set num threads
+// ========================
+
+void cond_omp_set_num_threads(int num_threads)
+{
+    #if use_openmp == 1
+        omp_set_num_threads(num_threads);
+    #else
+        // Nullify this OPENMP functions
         (void) num_threads;
-    }
-
-#endif
+    #endif
+}

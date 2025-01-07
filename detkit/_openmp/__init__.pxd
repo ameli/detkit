@@ -11,10 +11,11 @@
 # Imports
 # =======
 
-from detkit._openmp.openmp cimport omp_lock_t, omp_init_lock, omp_set_lock, \
-    omp_unset_lock, omp_get_max_threads, omp_get_thread_num, \
-    omp_set_num_threads, use_openmp
+from detkit._openmp.openmp cimport cond_omp_lock_t, cond_omp_init_lock, \
+    cond_omp_set_lock, cond_omp_unset_lock, cond_omp_get_max_threads, \
+    cond_omp_get_thread_num, cond_omp_set_num_threads, use_openmp
 
-__all__ = ['omp_lock_t', 'omp_init_lock', 'omp_set_lock', 'omp_unset_lock',
-           'omp_get_max_threads', 'omp_get_thread_num', 'omp_set_num_threads',
+__all__ = ['cond_omp_lock_t', 'cond_omp_init_lock', 'cond_omp_set_lock',
+           'cond_omp_unset_lock', 'cond_omp_get_max_threads',
+           'cond_omp_get_thread_num', 'cond_omp_set_num_threads',
            'use_openmp']

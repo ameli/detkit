@@ -14,7 +14,7 @@
 import numpy
 from cython.parallel cimport parallel, prange
 from .._openmp import get_avail_num_threads
-# from .._openmp cimport omp_set_num_threads
+# from .._openmp cimport cond_omp_set_num_threads
 
 __all__ = ['fill_triangle']
 
@@ -32,7 +32,7 @@ cpdef fill_triangle(array, lower=False):
     num_threads = get_avail_num_threads()
 
     # Set number of parallel threads
-    # omp_set_num_threads(num_threads)
+    # cond_omp_set_num_threads(num_threads)
 
     n, m = array.shape
 

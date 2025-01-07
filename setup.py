@@ -1237,13 +1237,15 @@ def main(argv):
     # Cython cpp extensions
     extensions = []
 
-    extensions.append(create_extension(package_name, '_cy_linear_algebra'))
+    extensions.append(create_extension(package_name, '_cy_linear_algebra',
+                                       other_source_dirs=['_openmp']))
 
     extensions.append(create_extension(package_name, '_functions',
                                        other_source_dirs=[
                                            '_c_basic_algebra',
                                            '_c_linear_algebra',
                                            '_utilities',
+                                           '_openmp',
                                            '_device']))
 
     extensions.append(create_extension(package_name, '_benchmark',
