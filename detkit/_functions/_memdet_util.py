@@ -15,11 +15,13 @@ import signal
 import os
 import sys
 from ._ansi import ANSI
+from .profile import Profile
 import numpy
 from multiprocessing import shared_memory
 
 
-__all__ = ['Progress', 'signal_handler', 'get_array', 'get_block_shape']
+__all__ = ['Progress', 'signal_handler', 'get_array', 'get_block_shape',
+           'deep_copy']
 
 
 # ==============
@@ -66,7 +68,7 @@ class Progress(object):
 
         if assume == 'gen':
 
-            # Sum of squares from 1 to num_blocks-1
+            # Sum of integer squares from 1 to num_blocks-1
             S1 = (num_blocks-1) * num_blocks * (2*num_blocks-1) // 6
 
             # Total count
@@ -74,10 +76,10 @@ class Progress(object):
 
         elif assume in ['sym', 'spd']:
 
-            # Sum of squares from 1 to num_blocks-1
+            # Sum of integer squares from 1 to num_blocks-1
             S1 = (num_blocks-1) * num_blocks * (2*num_blocks-1) // 6
 
-            # Sum from 1 to num_blocks-1
+            # Sum of integers from 1 to num_blocks-1
             S2 = (num_blocks-1) * num_blocks // 2
 
             # Total count
@@ -198,3 +200,37 @@ def get_block_shape(block_info, trans=False):
         block_shape = (m1, m2)
 
     return block_shape, block_shape_on_mem
+
+
+# =========
+# deep copy
+# =========
+
+def deep_copy(source, dest, dtype, order, block_info, verbose=False):
+    """
+    Deep copy from source array to destination array.
+
+    This function is called on blocks that are not on the last row/column.
+    As such, in case when num_blocks is not a divider of matrix size n, and
+    hence, when the shape of the last row/column blocks are smaller, this
+    function is not called. Rather, this function is called on the inner
+    blocks, where the shape of the array is the same as their shape on memory.
+    Hence, the shape of source and destination arrays are similar.
+    """
+
+    if verbose:
+        print(f'copy memory {ANSI.FAINT}... ', end='', flush=True)
+        prof = Profile()
+
+    # Find the size of block on memory
+    shape, shape_on_mem = get_block_shape(block_info, trans=False)
+
+    # Get buffer from shared memory
+    source_ = get_array(source, shape_on_mem, dtype, order)
+    dest_ = get_array(dest, shape_on_mem, dtype, order)
+
+    # Deep copying
+    dest_[:shape[0], :shape[1]] = source_[:shape[0], :shape[1]]
+
+    if verbose:
+        prof.print_profile(shape, dtype)

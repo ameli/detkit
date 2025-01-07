@@ -177,7 +177,7 @@ cpdef cho_factor(A, m=None, lower=True, overwrite=False):
         True
 
         >>> # When overwrite is set to True, check if cho is indeed a view of A
-        >>> print(cho.base == A.base)
+        >>> numpy.may_share_memory(cho, A)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`

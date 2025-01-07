@@ -40,28 +40,30 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
         obtained from :func:`detkit.ldl_factor`.
 
     B : numpy.ndarray
-        Matrix of the right-had side. A rectangular matrix with either
+        Matrix of the right-hand side. A rectangular matrix with either
         ``float64`` or ``float32`` data type stored with row-major or
-        column-major ordering.
+        column-major ordering. However, if ``overwrite=True``, then ``B``
+        should have column-major ordering only.
 
     shape : tuple, default=None
         A tuple of size two, determining the shape of an upper-left
-        sub-matrices of `ldu` and `B` to be referenced. Namely, if ``shape`` is
-        given as the tuple ``(m, n)``, the sub-matrices ``ldu[:m, :m]`` and
+        sub-matrices of `ldu` and ``B`` to be referenced. Namely, if ``shape``
+        is given as the tuple ``(m, n)``, the sub-matrices ``ldu[:m, :m]`` and
         ``B[:m, :n]`` are used. If `None`, the full shape of ``ldu[:, :]`` and
         ``B[:, :]`` are considered.
 
     lower : bool, default=True
-        If `True`, `ldu` is assumed to contain the lower-triangular LDL factor
-        :math:`\\mathbf{L}` such that :math:`\\mathbf{A} = \\mathbf{L}
-        \\mathbf{D} \\mathbf{L}^{\\intercal}`. If `False`, `ldu` is assumed to
-        contain the upper-triangular LDL factor :math:`\\mathbf{U}` such that
+        If `True`, ``ldu`` is assumed to contain the lower-triangular LDL
+        factor :math:`\\mathbf{L}` such that :math:`\\mathbf{A} = \\mathbf{L}
+        \\mathbf{D} \\mathbf{L}^{\\intercal}`. If `False`, ``ldu`` is assumed
+        to contain the upper-triangular LDL factor :math:`\\mathbf{U}` such
+        that
         :math:`\\mathbf{A} = \\mathbf{U} \\mathbf{D} \\mathbf{U}^{\\intercal}`.
 
     overwrite : bool, default=False
-        If `True`, the input matrix `B` will be overwritten as the output,
-        allowing to save memory. In this case, the output matrix `X` will
-        point to the same location in the memory as the input matrix `B`.
+        If `True`, the input matrix ``B`` will be overwritten as the output,
+        allowing to save memory. In this case, the output matrix ``X`` will
+        point to the same location in the memory as the input matrix ``B``.
 
         .. note::
 
@@ -72,17 +74,19 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
     -------
 
     X : numpy.ndarray
-        A 2D matrix of the same shape as the input matrix `B` (and not the
-        shape of the sub-matrix). The upper-left sub-matrix of `B` contains
+        A 2D matrix of the same shape as the input matrix ``B`` (and not the
+        shape of the sub-matrix). The upper-left sub-matrix of ``B`` contains
         the solution to the linear system of equations corresponding to the
         sub-matrices determined by the ``shape`` argument. If ``overwrite`` is
-        set to `True`, the output matrix `X` is becomes a view for the matrix
-        `B`.
+        set to `True`, the output matrix ``X`` is becomes a view for the matrix
+        ``B``.
 
     See Also
     --------
 
     detkit.ldl_factor
+    detkit.lu_solve
+    detkit.cho_solve
 
     References
     ----------
@@ -219,7 +223,7 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of B
-        >>> print(X.base == B.base)
+        >>> numpy.may_share_memory(X, B)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`
@@ -275,7 +279,7 @@ cpdef ldl_solve(ldu, piv, B, shape=None, lower=True, overwrite=False):
 
     # Check ldu has column-ordering.
     if ldu.flags['F_CONTIGUOUS'] is not True:
-        raise ValueError('"B" should be "F" contiguous.')
+        raise ValueError('"ldu" should be "F" contiguous.')
 
     # Check X has column-ordering.
     if X.flags['F_CONTIGUOUS'] is not True:

@@ -235,7 +235,7 @@ cpdef matmul(
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of C
-        >>> print(X.base == C.base)
+        >>> numpy.may_share_memory(X, C)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`

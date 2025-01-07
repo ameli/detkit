@@ -15,7 +15,9 @@ from .lu_solve import lu_solve
 from .ldl_solve import ldl_solve
 from .cho_solve import cho_solve
 from .solve_triangular import solve_triangular
+from .solve_diag import solve_diag
 from .matmul import matmul
 
 __all__ = ['fill_triangle', 'lu_factor', 'lu_solve', 'ldl_factor', 'ldl_solve',
-           'cho_factor', 'cho_solve', 'solve_triangular', 'matmul']
+           'cho_factor', 'cho_solve', 'solve_triangular', 'solve_diag',
+           'matmul']

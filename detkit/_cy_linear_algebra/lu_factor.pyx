@@ -204,7 +204,7 @@ cpdef lu_factor(A, shape=None, overwrite=False):
         True
 
         >>> # When overwrite is set to True, check if lu is indeed a view of A
-        >>> print(lu.base == A.base)
+        >>> numpy.may_share_memory(lu, A)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`

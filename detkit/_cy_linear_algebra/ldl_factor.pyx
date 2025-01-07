@@ -24,7 +24,7 @@ __all__ = ['ldl_factor']
 
 def _sanitize_piv(a, lower=True):
     """
-    Taken from scipy.linalg.decomp_ldl.py
+    Taken from ``scipy.linalg.decomp_ldl.py``.
 
     This helper function takes the rather strangely encoded permutation array
     returned by the LAPACK routines ?(HE/SY)TRF and converts it into
@@ -57,17 +57,21 @@ def _sanitize_piv(a, lower=True):
 
     Parameters
     ----------
+
     a : ndarray
         The permutation array ipiv returned by LAPACK
+
     lower : bool, optional
         The switch to select whether upper or lower triangle is chosen in
         the LAPACK call.
 
     Returns
     -------
+
     swap_ : ndarray
         The array that defines the row/column swap operations. For example,
         if row two is swapped with row four, the result is [0, 3, 2, 3].
+
     pivots : ndarray
         The array that defines the block diagonal structure as given above.
 
@@ -116,27 +120,33 @@ def _sanitize_piv(a, lower=True):
 
 def _get_d_and_l(ldu, pivs, lower=True, hermitian=False):
     """
-    Taken from scipy.linalg.decomp_ldl.py
+    Taken from ``scipy.linalg.decomp_ldl.py``.
 
     Helper function to extract the diagonal and triangular matrices for
     LDL.T factorization.
 
     Parameters
     ----------
+
     ldu : ndarray
         The compact output returned by the LAPACK routing
+
     pivs : ndarray
         The sanitized array of {0, 1, 2} denoting the sizes of the pivots. For
         every 2 there is a succeeding 0.
+
     lower : bool, optional
         If set to False, upper triangular part is considered.
+
     hermitian : bool, optional
         If set to False a symmetric complex array is assumed.
 
     Returns
     -------
+
     d : ndarray
         The block diagonal matrix.
+
     lu : ndarray
         The upper/lower triangular matrix
     """
@@ -179,7 +189,7 @@ def _get_d_and_l(ldu, pivs, lower=True, hermitian=False):
 
 def _construct_tri_factor(lu, swap_vec, pivs, lower=True):
     """
-    Taken from scipy.linalg.decomp_ldl.py
+    Taken from ``scipy.linalg.decomp_ldl.py``.
 
     Helper function to construct explicit outer factors of LDL factorization.
 
@@ -189,28 +199,35 @@ def _construct_tri_factor(lu, swap_vec, pivs, lower=True):
 
     Parameters
     ----------
+
     lu : ndarray
         The triangular array that is extracted from LAPACK routine call with
         ones on the diagonals.
+
     swap_vec : ndarray
         The array that defines the row swapping indices. If the kth entry is m
         then rows k,m are swapped. Notice that the mth entry is not necessarily
         k to avoid undoing the swapping.
+
     pivs : ndarray
         The array that defines the block diagonal structure returned by
         _ldl_sanitize_ipiv().
+
     lower : bool, optional
         The boolean to switch between lower and upper triangular structure.
 
     Returns
     -------
+
     lu : ndarray
         The square outer factor which satisfies the L * D * L.T = A
+
     perm : ndarray
         The permutation vector that brings the lu to the triangular form
 
     Notes
     -----
+
     Note that the original argument "lu" is overwritten.
 
     """
@@ -258,17 +275,16 @@ cpdef ldl_factor(
         stored with either row-major or column major ordering.
 
     m : int, default=None
-        An integer determining the shape of an upper-left sub-matrix the
+        An integer determining the shape of an upper-left sub-matrix
         ``A[:m, :m]`` to be considered. If `None`, the full matrix ``A[:, :]``
         is used.
 
     lower : bool, default=True
-        If `True`, `ldu` is assumed to contain the lower-triangular Cholesky
-        factor :math:`\\mathbf{L}` such that :math:`\\mathbf{A} = \\mathbf{L}
+        If `True`, `ldu` is assumed to contain the lower-triangular factor
+        :math:`\\mathbf{L}` such that :math:`\\mathbf{A} = \\mathbf{L}
         \\mathbf{D} \\mathbf{L}^{\\intercal}`. If `False`, `ldu` is assumed to
-        contain the upper-triangular Cholesky factor :math:`\\mathbf{U}` such
-        that :math:`\\mathbf{A} = \\mathbf{U} \\mathbf{D}
-        \\mathbf{U}^{\\intercal}`.
+        contain the upper-triangular factor :math:`\\mathbf{U}` such that
+        :math:`\\mathbf{A} = \\mathbf{U} \\mathbf{D} \\mathbf{U}^{\\intercal}`.
 
     overwrite : bool, default=False
         If `True`, the input matrix `A` will be overwritten as the output,
@@ -287,7 +303,7 @@ cpdef ldl_factor(
         the outputs with LAPACK's encoded format are post-processed to become
         the matrices ``lu`` and ``d`` and array ``perm``, where ``lu`` stores
         the matrix `L` (if ``lower`` is `True) or the matrix `U` (if ``lower``
-        is `False`), and ``perm`` is the row permutations.
+        is `False`), and ``perm`` is the row/column permutations.
 
         .. note::
             
@@ -301,9 +317,10 @@ cpdef ldl_factor(
 
         lu : numpy.ndarray
             2D array of the same shape as the input matrix `A` (and not the
-            shape of the sub-matrix). The upper-left sub-matrix of ``lu``
-            contains the lower-triangular matrix `L` (if ``lower=True``) or
-            the upper-triangular matrix `U` (if ``lower=False``).
+            shape of the sub-matrix). The upper-left :math:`m \\times m`
+            sub-matrix of ``lu`` contains the lower-triangular matrix `L` (if
+            ``lower=True``) or the upper-triangular matrix `U` (if
+            ``lower=False``).
 
         d : numpy.array
             2D array of the size of ``m`` containing the diagonal blocks of the
@@ -387,8 +404,8 @@ cpdef ldl_factor(
     function. This approach is not memory-efficient since the sliced array
     allocates new memory.
 
-    In contrast, using ``detkit.ldl_factor`` together with the ``shape``
-    argument, no memory slice is created during the inner computation, rather,
+    In contrast, using ``detkit.ldl_factor`` together with the ``m`` argument,
+    no memory slice is created during the inner computation, rather,
     the data from the original input matrix is accessed efficiently.
 
     **Implementation:**
@@ -417,12 +434,12 @@ cpdef ldl_factor(
         >>> A = numpy.asfortranarray(A)
         >>> A = A.astype(numpy.float32)
 
-        >>> # Track memory allocation to check if LU decomposition is not
+        >>> # Track memory allocation to check if LDL decomposition is not
         >>> # creating any new memory.
         >>> mem = Memory()
         >>> mem.set()
 
-        >>> # LU factorization of the upper-left sub-matrix of smaller shape
+        >>> # LDL factorization of the upper-left sub-matrix of smaller shape
         >>> m = 800
         >>> ldu, piv = ldl_factor(A, m=800, overwrite=True,
         ...                       return_as_lapack=True)
@@ -430,15 +447,15 @@ cpdef ldl_factor(
         >>> # Check peak memory allocation (compared to memory of a sum-matrix)
         >>> slice_nbytes = m * m * A.dtype.itemsize
         >>> print(mem.peak() / slice_nbytes)
-        0.001
+        0.026
 
-        >>> # When overwrite is set to True, check if lu is indeed a view of A
-        >>> print(ldu.base == A.base)
+        >>> # When overwrite is set to True, check if ldu is indeed a view of A
+        >>> numpy.may_share_memory(ldu, A)
         True
 
     In the above example, the object ``mem`` of class :class:`detkit.Memory`
     tracks memory allocation. The peak of allocated memory during the matrix
-    multiplication is three orders of magnitude smaller than the size of one
+    factorization is two orders of magnitude smaller than the size of one
     of the matrices slices, confirming that no new array slice was created
     during the operation.
 

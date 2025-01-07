@@ -192,7 +192,7 @@ def _get_diag(A, block_info):
 
     A_shape, _ = get_block_shape(block_info, trans=False)
     md = A_shape[0]
-    diag_A = numpy.diag(A)[:md]
+    diag_A = numpy.diag(A)[:md].astype(numpy.float64)
 
     return diag_A
 
@@ -277,9 +277,8 @@ def memdet_gen(io, verbose):
             load_block(io, A21_t, i, k, trans=True, verbose=verbose)
 
             # Solve upper-triangular system
-            l_21_t = _solve_triangular(lu_11, A21_t, dtype, order,
-                                       trans=True, lower=False,
-                                       unit_diagonal=False,
+            l_21_t = _solve_triangular(lu_11, A21_t, dtype, order, trans=True,
+                                       lower=False, unit_diagonal=False,
                                        block_info=(i, k, num_blocks, n),
                                        verbose=verbose)
 
@@ -296,11 +295,9 @@ def memdet_gen(io, verbose):
                 if (i == num_blocks-1) or (j != j_start):
                     # load_block(io, A12, k, j, verbose=verbose)
                     if i == num_blocks-1:
-                        load_block(io, A12, k, j, perm=perm,
-                                   verbose=verbose)
+                        load_block(io, A12, k, j, perm=perm, verbose=verbose)
                     else:
-                        load_block(io, A12, k, j, perm=None,
-                                   verbose=verbose)
+                        load_block(io, A12, k, j, perm=None, verbose=verbose)
 
                 if i == num_blocks-1:
 
@@ -309,12 +306,24 @@ def memdet_gen(io, verbose):
 
                     # Solve lower-triangular system
                     u_12 = _solve_triangular(
-                            lu_11, A12, dtype, order, trans=False,
-                            lower=True, unit_diagonal=True,
-                            block_info=(k, j, num_blocks, n),
-                            verbose=verbose)
+                            lu_11, A12, dtype, order, trans=False, lower=True,
+                            unit_diagonal=True,
+                            block_info=(k, j, num_blocks, n), verbose=verbose)
 
-                    if num_blocks > 2:
+                    # The if condition below excludes two very specific cases
+                    # from storing A12 to scratch. One case is when
+                    # num_blocks - k = 1 or 2 (0x0 or 1x1 remaining blocks),
+                    # and the other one is then num_block - k is 3 (a 2x2
+                    # remaining block) and only when j is the last j (j_end-1
+                    # in forward or j_end+1 in backward) case. In the last
+                    # case,A12 will be still in memory on the next row
+                    # iteration where j becomes j_start, and there will be no
+                    # further row iteration after that, since there are only
+                    # two rows on that 2x2 remaining block. As for
+                    # num_block - k > 3, A12 should always be stored, since on
+                    # other row iterations, we will need A12 again, so we
+                    # should store it.
+                    if (num_blocks - k > 3) or (j != j_end - j_step):
                         # Store u_12, which is the same as A12 since u_12
                         # is overwritten to A12.
                         store_block(io, A12, k, j, verbose=verbose)

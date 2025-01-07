@@ -205,6 +205,12 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     # Block size
     m = (n + num_blocks - 1) // num_blocks
 
+    # Limit the maximum number of blocks: m * num_blocks - n should be less
+    # than m (that is m * num_blocks - n < m). An example that violates this
+    # condition is n=5 and num_blocks=4.
+    if m * (num_blocks - 1) >= n:
+        raise ValueError('Too many block sizes. Decrease "num_blocks".')
+
     # Find io_chunk to be a divisor or block size, m
     io_chunk = _find_io_chunk(m,)
 
@@ -227,6 +233,34 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
               f'block size   : {block_hr_nbytes}\n',
               flush=True)
 
+    # Get device's memory (total and available memory)
+    mem_info = Memory.info()
+    mem_avail = mem_info.available
+    mem_avail_hr = human_readable_mem(mem_avail, pad=False)
+    mem_tot_hr = human_readable_mem(mem_info.total, pad=False)
+
+    # Determine number of blocks needed on memory
+    num_mem_blocks = 1
+    if num_blocks > 1:
+        num_mem_blocks += 2
+    if num_blocks > 2:
+        num_mem_blocks += 1
+    required_mem_nbytes = num_mem_blocks * block_nbytes
+    required_mem_hr_nbytes = human_readable_mem(required_mem_nbytes,
+                                                pad=False)
+
+    # Check if memory can be allocated
+    if required_mem_nbytes > mem_avail:
+        raise RuntimeError(f'Required memory ({required_mem_hr_nbytes}) ' +
+                           f'exceeds available memory ({mem_avail_hr}).')
+
+    if verbose:
+        print(f'{ANSI.FAINT}Memory: {ANSI.RESET}\n' +
+              f'total memory        : {mem_tot_hr:>8}\n' +
+              f'available memory    : {mem_avail_hr:>8}', flush=True)
+        print(f'required memory     : {ANSI.BOLD}{required_mem_hr_nbytes:>8}' +
+              f'{ANSI.RESET}', flush=True)
+
     # Check parallel_io
     if ((parallel_io is not None) and
             (parallel_io not in ['multiproc', 'dask', 'tensorstore'])):
@@ -239,14 +273,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
         A11 = numpy.empty((m, m), dtype=dtype, order=order)
 
     if verbose:
-        mem_info = Memory.info()
-        mem_avail_hr = human_readable_mem(mem_info.available, pad=False)
-        mem_tot_hr = human_readable_mem(mem_info.total, pad=False)
-        print(f'{ANSI.FAINT}Memory: {ANSI.RESET}\n' +
-              f'total memory        : {mem_tot_hr:>8}\n' +
-              f'available memory    : {mem_avail_hr:>8}', flush=True)
-        print(f'allocated block A11 : {ANSI.BOLD}{block_hr_nbytes:>8}' +
-              f'{ANSI.RESET}', flush=True)
+        print(f'allocated block A11 : {block_hr_nbytes:>8}', flush=True)
 
     # Context for tensorstore
     if parallel_io == 'tensorstore':
@@ -293,10 +320,8 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             A21_t = numpy.empty((m, m), dtype=dtype, order=order)
 
         if verbose:
-            print(f'allocated block A12 : {ANSI.BOLD}{block_hr_nbytes:>8}' +
-                  f'{ANSI.RESET}', flush=True)
-            print(f'allocated block A21 : {ANSI.BOLD}{block_hr_nbytes:>8}' +
-                  f'{ANSI.RESET}', flush=True)
+            print(f'allocated block A12 : {block_hr_nbytes:>8}', flush=True)
+            print(f'allocated block A21 : {block_hr_nbytes:>8}', flush=True)
 
         if num_blocks > 2:
 
@@ -305,7 +330,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                 num_scratch_blocks = num_blocks * (num_blocks - 1) - 1
             elif assume in ['sym', 'spd']:
                 num_scratch_blocks = num_blocks * (num_blocks - 1) // 2 + \
-                    (num_blocks - 1) - 1
+                    (num_blocks - 3) - 1
             expected_scratch_nbytes = num_scratch_blocks * block_nbytes
             expected_scratch_hr_nbytes = human_readable_mem(
                 expected_scratch_nbytes, pad=False)
@@ -317,8 +342,8 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                 A22 = numpy.empty((m, m), dtype=dtype, order=order)
 
             if verbose:
-                print(f'allocated block A22 : {ANSI.BOLD}' +
-                      f'{block_hr_nbytes:>8}{ANSI.RESET}', flush=True)
+                print(f'allocated block A22 : {block_hr_nbytes:>8}',
+                      flush=True)
 
             # Scratch space to hold temporary intermediate blocks
             if parallel_io == 'multiproc':
@@ -362,7 +387,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                             spec_2, context=ts_context).result()
 
             # When scratch_dir is None, the tempfile object decides where the
-            # scrarch_dir is.
+            # scratch_dir is.
             if scratch_dir is None:
                 scratch_dir = os.path.dirname(scratch_file)
 
@@ -437,7 +462,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             'A12': A12,
             'A21_t': A21_t,
             'A22': A22,
-        }
+        },
     }
 
     return io

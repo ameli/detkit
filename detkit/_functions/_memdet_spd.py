@@ -22,55 +22,6 @@ from .._cy_linear_algebra import cho_factor, cho_solve
 __all__ = ['memdet_spd']
 
 
-# =========
-# deep copy
-# =========
-
-def _deep_copy(source, dest, dtype, order, block_info, verbose=False):
-    """
-    Deep copy from source array to destination array.
-
-    This function is called on blocks that are not on the last row/column.
-    As such, in case when num_blocks is not a divider of matrix size n, and
-    hence, when the shape of the last row/column blocks are smaller, this
-    function is not called. Rather, this function is called on the inner
-    blocks, where the shape of the array is the same as their shape on memory.
-    Hence, the shape of source and destination arrays are similar.
-    """
-
-    if verbose:
-        print(f'copy memory {ANSI.FAINT}... ', end='', flush=True)
-        prof = Profile()
-
-    # Find the size of block on memory
-    shape, shape_on_mem = get_block_shape(block_info, trans=False)
-
-    # This function should be called on blocks that are not on the last row
-    # or columns, where, in case m is not divisor of n, blocks would have
-    # smaller shape. Rather, this function is called on inner blocks, where
-    # block shapes are all (m, m). Here we check it.
-    i, j, num_blocks = block_info[0], block_info[1], block_info[2]
-    if (i == num_blocks-1) or (j == num_blocks-1):
-        raise RuntimeError('"deep_copy" should not be called on the ' +
-                           'boundary blocks.')
-
-    # Since boundary blocks are not called, the block shapes should all be
-    # (m, m). Here is to check it.
-    if (shape[0] != shape_on_mem[0]) or (shape[1] != shape_on_mem[1]):
-        raise RuntimeError('arrays do not have full shape. Possibly the ' +
-                           'arrays are on boundary of grid blocks.')
-
-    # Get buffer from shared memory
-    source_ = get_array(source, shape_on_mem, dtype, order)
-    dest_ = get_array(dest, shape_on_mem, dtype, order)
-
-    # Deep copying
-    dest_[:shape[0], :shape[1]] = source_[:shape[0], :shape[1]]
-
-    if verbose:
-        prof.print_profile(shape, dtype)
-
-
 # ==========
 # cho factor
 # ==========
@@ -96,7 +47,7 @@ def _cho_factor(A, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
-    # Upper-triangular Cholesky where A = U.T @ U
+    # Cholesky (Lower: A = L @ L.T or Upper: A = U.T @ U)
     cho = cho_factor(A_, A_shape[0], lower=lower, overwrite=True)
 
     # Check cho is overwritten to A.
@@ -217,7 +168,7 @@ def memdet_spd(io, verbose):
                 _solve_triangular(cho_11, B, dtype, order, trans=False,
                                   lower=lower, unit_diagonal=False,
                                   block_info=(k, j, num_blocks, n),
-                                  verbose=False)
+                                  verbose=verbose)
 
             # Row iterations
             for i in i_range:
@@ -247,7 +198,7 @@ def memdet_spd(io, verbose):
                         _solve_triangular(cho_11, C, dtype, order, trans=False,
                                           lower=lower, unit_diagonal=False,
                                           block_info=(k, i, num_blocks, n),
-                                          verbose=False)
+                                          verbose=verbose)
 
                         if (num_blocks > 2) and (i < j-1):
                             store_block(io, C, k, i, verbose=verbose)

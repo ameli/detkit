@@ -251,7 +251,7 @@ def memdet_sym2(io, verbose):
     ld = 0
     sign = 1
     diag = []
-    lower = True  # using LDL.T instead UDD.T decomposition
+    lower = True  # using LDL.T instead UDU.T decomposition
 
     # Initialize progress
     progress = Progress(num_blocks, assume='sym', verbose=verbose)

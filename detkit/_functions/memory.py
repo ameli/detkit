@@ -115,7 +115,7 @@ class Memory(object):
         elif isinstance(unit, (int, numpy.int8, numpy.int16, numpy.int32,
                                numpy.int64, numpy.uint8, numpy.uint16,
                                numpy.uint32, numpy.uint64)):
-            self.unit_size = numpy.int64(unit)
+            self.unit_size = int(unit)
 
         else:
             raise ValueError('"unit" should be integer or string.')

@@ -17,7 +17,7 @@ jobs:
             matrix:
                 os: [ubuntu-latest, windows-latest, macos-latest]
                 # python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'pp38', 'pp39', 'pp310']
-                python-version: ['cp39', 'cp310', 'cp311', 'cp312']
+                python-version: ['cp39', 'cp310', 'cp311', 'cp312', 'cp313']
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
             - name: Setup Python 
               uses: actions/setup-python@v4
               with:
-                python-version: '3.12'
+                python-version: '3.13'
 
             - name: Install OpenMP for mac
               if: runner.os == 'macos'
@@ -110,7 +110,7 @@ jobs:
                   CIBW_ENVIRONMENT: "USE_LONG_INT=0 USE_UNSIGNED_LONG_INT=0 USE_CBLAS=0"
                   USE_LONG_INT: 0
                   USE_UNSIGNED_LONG_INT: 0
-                  USE_OPENMP: 0
+                  USE_OPENMP: 1
                   COUNT_PERF: 1
                   USE_LOOP_UNROLLING: 1
                   USE_SYMMETRY: 1
@@ -136,7 +136,7 @@ jobs:
             - name: Install Python
               uses: actions/setup-python@v4
               with:
-                python-version: '3.12'
+                python-version: '3.13'
 
             - name: Build sdist
               run: |
@@ -188,7 +188,7 @@ jobs:
                 # other required dependencies (like matplotlib, etc) need to be
                 # compiled on pypy.
                 # python-version: ['3.6', '3.7', '3.8', '3.9', 'pypy-3.6', 'pypy-3.7']
-                python-version: ['3.9', '3.10', '3.11', '3.12']
+                python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
         steps:
             - name: Setup Python ${{ matrix.python-version }}

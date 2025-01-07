@@ -80,8 +80,8 @@ class Profile(object):
 
         echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-    Note that dropping cache is necessary to inquiry disk's *read*, but usually
-    not needed to inquiry disk's *write*.
+    While dropping cache is necessary to inquiry disk's *read*, this is not
+    needed to inquiry disk's *write*.
 
     Examples
     --------

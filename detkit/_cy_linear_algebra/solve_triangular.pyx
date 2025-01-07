@@ -40,7 +40,7 @@ cpdef solve_triangular(
         ``float32`` data type stored with column-major ordering.
 
     B : numpy.ndarray
-        Matrix of the right-had side. A rectangular matrix with either
+        Matrix of the right-hand side. A rectangular matrix with either
         ``float64`` or ``float32`` data type stored with row-major or
         column-major ordering.
 
@@ -206,7 +206,7 @@ cpdef solve_triangular(
         True
 
         >>> # When overwrite is set to True, check if X is indeed a view of B
-        >>> print(X.base == B.base)
+        >>> numpy.may_share_memory(X, B)
         True
         
     In the above example, the object ``mem`` of class :class:`detkit.Memory`
