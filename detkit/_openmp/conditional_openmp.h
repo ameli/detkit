@@ -16,13 +16,20 @@
 // Headers
 // =======
 
-#if defined(USE_OPENMP) && (USE_OPENMP == 1)
+#if defined(_OPENMP) || (defined(__INTEL_COMPILER) && defined(__OPENMP))\
+    || (defined(__NVCOMPILER) && defined(_OPENMP))
+
     #include <omp.h>
     #define use_openmp 1
+
 #else
 
     #define use_openmp 0
+
+    // Dummy type declarations
     typedef int omp_lock_t;
+
+    // Dummy function declarations
     void omp_init_lock(omp_lock_t *lock);
     void omp_set_lock(omp_lock_t *lock);
     void omp_unset_lock(omp_lock_t *lock);

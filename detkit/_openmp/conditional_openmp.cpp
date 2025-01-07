@@ -17,7 +17,7 @@
 
 
 // Nullify all openmp functions
-#if !defined(USE_OPENMP) || (USE_OPENMP != 1)
+#if use_openmp == 0
 
     // =============
     // omp init lock
