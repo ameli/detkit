@@ -23,7 +23,7 @@ jobs:
               uses: actions/checkout@v4
             
             - name: Setup Python 
-              uses: actions/setup-python@v4
+              uses: actions/setup-python@v5
               with:
                 python-version: '3.13'
 
@@ -56,7 +56,7 @@ jobs:
             # Build wheel for windows X86_64
             - name: Build wheels in windows (X86_64) Python ${{ matrix.python-version }}
               if: matrix.os == 'windows-latest'
-              uses: pypa/cibuildwheel@v2.16.5
+              uses: pypa/cibuildwheel@v2.22.0
               env:
                   CIBW_ARCHS_WINDOWS: "AMD64 x86"
                   CIBW_BUILD: "${{ matrix.python-version }}-win_amd64"
@@ -78,7 +78,7 @@ jobs:
             # Note that wheels for macos ARM64 will be built on cirrus ci (see /tools/ci)
             - name: Build wheels in mac (X86_64) Python ${{ matrix.python-version }}
               if: matrix.os == 'macos-latest'
-              uses: pypa/cibuildwheel@v2.16.5
+              uses: pypa/cibuildwheel@v2.22.0
               env:
                   CIBW_ARCHS_MACOS: "x86_64"
                   CIBW_BUILD: "${{ matrix.python-version }}-macosx_x86_64"
@@ -100,7 +100,7 @@ jobs:
             # Note that wheels for linux AARCH64 will be built on cirrus ci (see /tools/ci)
             - name: Build wheels in linux (X86_64) Python ${{ matrix.python-version }}
               if: matrix.os == 'ubuntu-latest'
-              uses: pypa/cibuildwheel@v2.16.5
+              uses: pypa/cibuildwheel@v2.22.0
               env:
                   CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
                   CIBW_ARCHS_LINUX: "x86_64"
@@ -134,7 +134,7 @@ jobs:
               uses: actions/checkout@v3
 
             - name: Install Python
-              uses: actions/setup-python@v4
+              uses: actions/setup-python@v5
               with:
                 python-version: '3.13'
 
@@ -192,7 +192,7 @@ jobs:
 
         steps:
             - name: Setup Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v4
+              uses: actions/setup-python@v5
               with:
                   python-version: ${{ matrix.python-version }}
 
