@@ -806,19 +806,19 @@ Constraints and Neural Scaling Law (<em>under review</em>)</p>
 we store this matrix on the disk as a <cite>zarr</cite> array <code class="docutils literal notranslate"><span class="pre">z</span></code>. You can either
 pass <code class="docutils literal notranslate"><span class="pre">A</span></code> or <code class="docutils literal notranslate"><span class="pre">z</span></code> to <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">A</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Store matrix as a zarr array on disk (optional)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">zarr</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">zarr</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z_path</span> <span class="o">=</span> <span class="s1">&#39;matrix_file.zarr&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">zarr</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">z_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">A</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant while limiting memory to 500 MB</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">memdet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">memdet</span>
 <span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">max_mem</span><span class="o">=</span><span class="s1">&#39;500MB&#39;</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                              <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;tensorstore&#39;</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                              <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -867,7 +867,7 @@ that no new array is created.</p>
 <p>The above code also returns the <code class="docutils literal notranslate"><span class="pre">info</span></code> variable by setting
 <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code>. Here is a pretty-print of <code class="docutils literal notranslate"><span class="pre">info</span></code> dictionary:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Print info results</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 </pre></div>
 </div>

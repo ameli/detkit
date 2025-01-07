@@ -508,14 +508,14 @@ cache, execute the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/proc/sys/vm/drop_caches
 </pre></div>
 </div>
-<p>Note that dropping cache is necessary to inquiry disk’s <em>read</em>, but usually
-not needed to inquiry disk’s <em>write</em>.</p>
+<p>While dropping cache is necessary to inquiry disk’s <em>read</em>, this is not
+needed to inquiry disk’s <em>write</em>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">memdet</span><span class="p">,</span> <span class="n">human_readable_time</span><span class="p">,</span> \
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">memdet</span><span class="p">,</span> <span class="n">human_readable_time</span><span class="p">,</span> \
 <span class="gp">... </span>   <span class="n">human_readable_mem</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a random matrix</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Initialize profile</span>

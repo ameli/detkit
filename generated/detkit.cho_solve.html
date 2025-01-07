@@ -452,13 +452,14 @@ of Cholesky decomposition.</p>
 either <code class="docutils literal notranslate"><span class="pre">float64</span></code> or <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type stored column-major
 ordering. This matrix can be obtained from <a class="reference internal" href="detkit.cho_factor.html#detkit.cho_factor" title="detkit.cho_factor"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.cho_factor()</span></code></a>.</p>
 </dd>
-<dt><strong>B</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of the right-had side. A rectangular matrix with either
+<dt><strong>B</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of the right-hand side. A rectangular matrix with either
 <code class="docutils literal notranslate"><span class="pre">float64</span></code> or <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type stored with row-major or
-column-major ordering.</p>
+column-major ordering. However, if <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code>, then <code class="docutils literal notranslate"><span class="pre">B</span></code>
+should have column-major ordering only.</p>
 </dd>
 <dt><strong>shape</strong><span class="classifier">tuple, default=None</span></dt><dd><p>A tuple of size two, determining the shape of an upper-left
-sub-matrices of <cite>cho</cite> and <cite>B</cite> to be referenced. Namely, if <code class="docutils literal notranslate"><span class="pre">shape</span></code> is
-given as the tuple <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n)</span></code>, the sub-matrices <code class="docutils literal notranslate"><span class="pre">cho[:m,</span> <span class="pre">:m]</span></code> and
+sub-matrices of <cite>cho</cite> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to be referenced. Namely, if <code class="docutils literal notranslate"><span class="pre">shape</span></code>
+is given as the tuple <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n)</span></code>, the sub-matrices <code class="docutils literal notranslate"><span class="pre">cho[:m,</span> <span class="pre">:m]</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B[:m,</span> <span class="pre">:n]</span></code> are used. If <cite>None</cite>, the full shape of <code class="docutils literal notranslate"><span class="pre">cho[:,</span> <span class="pre">:]</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B[:,</span> <span class="pre">:]</span></code> are considered.</p>
 </dd>
@@ -468,12 +469,12 @@ given as the tuple <code class="docutils literal notranslate"><span class="pre">
 upper-triangular Cholesky factor <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> such that
 <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{U}^{\intercal} \mathbf{U}\)</span>.</p>
 </dd>
-<dt><strong>overwrite</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the input matrix <cite>B</cite> will be overwritten as the output,
-allowing to save memory. In this case, the output matrix <cite>X</cite> will
-point to the same location in the memory as the input matrix <cite>B</cite>.</p>
+<dt><strong>overwrite</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the input matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> will be overwritten as the output,
+allowing to save memory. In this case, the output matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> will
+point to the same location in the memory as the input matrix <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <cite>True</cite>, the matrix <cite>B</cite> should have
+<p>When <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is set to <cite>True</cite>, the matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> should have
 column-major (Fortran) ordering.</p>
 </div>
 </dd>
@@ -481,12 +482,12 @@ column-major (Fortran) ordering.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>X</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>A 2D matrix of the same shape as the input matrix <cite>B</cite> (and not the
-shape of the sub-matrix). The upper-left sub-matrix of <cite>B</cite> contains
+<dt><strong>X</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>A 2D matrix of the same shape as the input matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> (and not the
+shape of the sub-matrix). The upper-left sub-matrix of <code class="docutils literal notranslate"><span class="pre">B</span></code> contains
 the solution to the linear system of equations corresponding to the
 sub-matrices determined by the <code class="docutils literal notranslate"><span class="pre">shape</span></code> argument. If <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is
-set to <cite>True</cite>, the output matrix <cite>X</cite> is becomes a view for the matrix
-<cite>B</cite>.</p>
+set to <cite>True</cite>, the output matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> is becomes a view for the matrix
+<code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -495,6 +496,8 @@ set to <cite>True</cite>, the output matrix <cite>X</cite> is becomes a view for
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt><a class="reference internal" href="detkit.cho_factor.html#detkit.cho_factor" title="detkit.cho_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.cho_factor</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.lu_solve.html#detkit.lu_solve" title="detkit.lu_solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.lu_solve</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.ldl_solve.html#detkit.ldl_solve" title="detkit.ldl_solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.ldl_solve</span></code></a></dt><dd></dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
@@ -548,8 +551,8 @@ computation of matrix determinant under memory constraint.</p>
 <li><p><a class="reference external" href="https://www.netlib.org/lapack">LAPACK</a></p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">cho_factor</span><span class="p">,</span> <span class="n">cho_solve</span><span class="p">,</span> <span class="n">Memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">cho_factor</span><span class="p">,</span> <span class="n">cho_solve</span><span class="p">,</span> <span class="n">Memory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric positive-definite matrix with 32-bit precision</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># and column-major ordering</span>
@@ -593,7 +596,7 @@ computation of matrix determinant under memory constraint.</p>
 <span class="go">True</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if X is indeed a view of B</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">B</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">may_share_memory</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>

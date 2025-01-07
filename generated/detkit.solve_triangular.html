@@ -450,7 +450,7 @@
 <dt><strong>A</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of coefficients. A triangular matrix with either <code class="docutils literal notranslate"><span class="pre">float64</span></code> or
 <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type stored with column-major ordering.</p>
 </dd>
-<dt><strong>B</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of the right-had side. A rectangular matrix with either
+<dt><strong>B</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Matrix of the right-hand side. A rectangular matrix with either
 <code class="docutils literal notranslate"><span class="pre">float64</span></code> or <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type stored with row-major or
 column-major ordering.</p>
 </dd>
@@ -549,8 +549,8 @@ computation of matrix determinant under memory constraint.</p>
 <li><p><a class="reference external" href="https://www.netlib.org/lapack">LAPACK</a></p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">solve_triangular</span><span class="p">,</span> <span class="n">Memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_triangular</span><span class="p">,</span> <span class="n">Memory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a lower-triangular matrix with 32-bit precision and</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># column-major ordering</span>
@@ -591,7 +591,7 @@ computation of matrix determinant under memory constraint.</p>
 <span class="go">True</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if X is indeed a view of B</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">B</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">may_share_memory</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>

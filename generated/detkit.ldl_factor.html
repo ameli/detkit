@@ -450,16 +450,15 @@
 <dt><strong>A</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>A symmetric matrix with either <code class="docutils literal notranslate"><span class="pre">float64</span></code> or <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type
 stored with either row-major or column major ordering.</p>
 </dd>
-<dt><strong>m</strong><span class="classifier">int, default=None</span></dt><dd><p>An integer determining the shape of an upper-left sub-matrix the
+<dt><strong>m</strong><span class="classifier">int, default=None</span></dt><dd><p>An integer determining the shape of an upper-left sub-matrix
 <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> to be considered. If <cite>None</cite>, the full matrix <code class="docutils literal notranslate"><span class="pre">A[:,</span> <span class="pre">:]</span></code>
 is used.</p>
 </dd>
-<dt><strong>lower</strong><span class="classifier">bool, default=True</span></dt><dd><p>If <cite>True</cite>, <cite>ldu</cite> is assumed to contain the lower-triangular Cholesky
-factor <span class="math notranslate nohighlight">\(\mathbf{L}\)</span> such that <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{L}
+<dt><strong>lower</strong><span class="classifier">bool, default=True</span></dt><dd><p>If <cite>True</cite>, <cite>ldu</cite> is assumed to contain the lower-triangular factor
+<span class="math notranslate nohighlight">\(\mathbf{L}\)</span> such that <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{L}
 \mathbf{D} \mathbf{L}^{\intercal}\)</span>. If <cite>False</cite>, <cite>ldu</cite> is assumed to
-contain the upper-triangular Cholesky factor <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> such
-that <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{U} \mathbf{D}
-\mathbf{U}^{\intercal}\)</span>.</p>
+contain the upper-triangular factor <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> such that
+<span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{U} \mathbf{D} \mathbf{U}^{\intercal}\)</span>.</p>
 </dd>
 <dt><strong>overwrite</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the input matrix <cite>A</cite> will be overwritten as the output,
 allowing to save memory. In this case, the output matrix <cite>ldu</cite> will
@@ -476,7 +475,7 @@ directly used to pass as input to <a class="reference internal" href="detkit.ldl
 the outputs with LAPACK’s encoded format are post-processed to become
 the matrices <code class="docutils literal notranslate"><span class="pre">lu</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code> and array <code class="docutils literal notranslate"><span class="pre">perm</span></code>, where <code class="docutils literal notranslate"><span class="pre">lu</span></code> stores
 the matrix <cite>L</cite> (if <code class="docutils literal notranslate"><span class="pre">lower</span></code> is <cite>True) or the matrix `U</cite> (if <code class="docutils literal notranslate"><span class="pre">lower</span></code>
-is <cite>False</cite>), and <code class="docutils literal notranslate"><span class="pre">perm</span></code> is the row permutations.</p>
+is <cite>False</cite>), and <code class="docutils literal notranslate"><span class="pre">perm</span></code> is the row/column permutations.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When using <code class="docutils literal notranslate"><span class="pre">return_as_lapack=False</span></code>, the operation is not
@@ -489,9 +488,10 @@ memory-efficient as new memory will be allocated.</p>
 <dd class="field-even"><dl class="simple">
 <dt>If <code class="docutils literal notranslate"><span class="pre">return_as_lapack</span></code> is <cite>False</cite>:</dt><dd><dl class="simple">
 <dt>lu<span class="classifier">numpy.ndarray</span></dt><dd><p>2D array of the same shape as the input matrix <cite>A</cite> (and not the
-shape of the sub-matrix). The upper-left sub-matrix of <code class="docutils literal notranslate"><span class="pre">lu</span></code>
-contains the lower-triangular matrix <cite>L</cite> (if <code class="docutils literal notranslate"><span class="pre">lower=True</span></code>) or
-the upper-triangular matrix <cite>U</cite> (if <code class="docutils literal notranslate"><span class="pre">lower=False</span></code>).</p>
+shape of the sub-matrix). The upper-left <span class="math notranslate nohighlight">\(m \times m\)</span>
+sub-matrix of <code class="docutils literal notranslate"><span class="pre">lu</span></code> contains the lower-triangular matrix <cite>L</cite> (if
+<code class="docutils literal notranslate"><span class="pre">lower=True</span></code>) or the upper-triangular matrix <cite>U</cite> (if
+<code class="docutils literal notranslate"><span class="pre">lower=False</span></code>).</p>
 </dd>
 <dt>d<span class="classifier">numpy.array</span></dt><dd><p>2D array of the size of <code class="docutils literal notranslate"><span class="pre">m</span></code> containing the diagonal blocks of the
 size 1 by 1 or 2 by 2.</p>
@@ -558,8 +558,8 @@ achieved by <code class="docutils literal notranslate"><span class="pre">A[perm[
 <code class="docutils literal notranslate"><span class="pre">scipy.linalg.ldl</span></code> function, you should pass a slice of the matrix to the
 function. This approach is not memory-efficient since the sliced array
 allocates new memory.</p>
-<p>In contrast, using <code class="docutils literal notranslate"><span class="pre">detkit.ldl_factor</span></code> together with the <code class="docutils literal notranslate"><span class="pre">shape</span></code>
-argument, no memory slice is created during the inner computation, rather,
+<p>In contrast, using <code class="docutils literal notranslate"><span class="pre">detkit.ldl_factor</span></code> together with the <code class="docutils literal notranslate"><span class="pre">m</span></code> argument,
+no memory slice is created during the inner computation, rather,
 the data from the original input matrix is accessed efficiently.</p>
 <p><strong>Implementation:</strong></p>
 <p>This function is a wrapper around LAPACK’s <code class="docutils literal notranslate"><span class="pre">ssytrf</span></code> (for 32-bit
@@ -572,8 +572,8 @@ computation of matrix determinant under memory constraint.</p>
 </ul>
 <p class="rubric">Examples</p>
 <p>Using <code class="docutils literal notranslate"><span class="pre">return_as_lapack=True</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">ldl_factor</span><span class="p">,</span> <span class="n">Memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">ldl_factor</span><span class="p">,</span> <span class="n">Memory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix with 32-bit precision and column-major</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ordering</span>
@@ -582,12 +582,12 @@ computation of matrix determinant under memory constraint.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Track memory allocation to check if LU decomposition is not</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Track memory allocation to check if LDL decomposition is not</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># creating any new memory.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mem</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mem</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># LU factorization of the upper-left sub-matrix of smaller shape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># LDL factorization of the upper-left sub-matrix of smaller shape</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="mi">800</span>
 <span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ldu</span><span class="p">,</span> <span class="n">piv</span> <span class="o">=</span> <span class="n">ldl_factor</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                      <span class="n">return_as_lapack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -595,21 +595,21 @@ computation of matrix determinant under memory constraint.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check peak memory allocation (compared to memory of a sum-matrix)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">slice_nbytes</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">m</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="n">peak</span><span class="p">()</span> <span class="o">/</span> <span class="n">slice_nbytes</span><span class="p">)</span>
-<span class="go">0.001</span>
+<span class="go">0.026</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if lu is indeed a view of A</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ldu</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if ldu is indeed a view of A</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">may_share_memory</span><span class="p">(</span><span class="n">ldu</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
 <p>In the above example, the object <code class="docutils literal notranslate"><span class="pre">mem</span></code> of class <a class="reference internal" href="detkit.Memory.html#detkit.Memory" title="detkit.Memory"><code class="xref py py-class docutils literal notranslate"><span class="pre">detkit.Memory</span></code></a>
 tracks memory allocation. The peak of allocated memory during the matrix
-multiplication is three orders of magnitude smaller than the size of one
+factorization is two orders of magnitude smaller than the size of one
 of the matrices slices, confirming that no new array slice was created
 during the operation.</p>
 <p>Repeating the above example, but using <code class="docutils literal notranslate"><span class="pre">return_as_lapack=True</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">ldl_factor</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">ldl_factor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix with 32-bit precision and column-major</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ordering</span>

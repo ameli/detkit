@@ -539,8 +539,8 @@ computation of matrix determinant under memory constraint.</p>
 <li><p><a class="reference external" href="https://www.netlib.org/lapack">LAPACK</a></p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">detkit</span> <span class="kn">import</span> <span class="n">lu_factor</span><span class="p">,</span> <span class="n">Memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">lu_factor</span><span class="p">,</span> <span class="n">Memory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a matrix with 32-bit precision and column-major ordering</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">900</span><span class="p">)</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">900</span><span class="p">)</span>
@@ -578,7 +578,7 @@ computation of matrix determinant under memory constraint.</p>
 <span class="go">True</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># When overwrite is set to True, check if lu is indeed a view of A</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">lu</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">may_share_memory</span><span class="p">(</span><span class="n">lu</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
