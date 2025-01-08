@@ -447,7 +447,7 @@
 <h1>memdet<a class="headerlink" href="#memdet" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.memdet">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute log-determinant under memory constraint.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -558,6 +558,16 @@ This will overwrite the input matrix.</p>
 process times, memory allocation, disk usage, etc. See <code class="docutils literal notranslate"><span class="pre">info</span></code>
 variable in the return section below.</p>
 </dd>
+<dt><strong>flops</strong><span class="classifier">boolean, default=False</span></dt><dd><p>if <cite>True</cite>, FLOP count will be included in <code class="docutils literal notranslate"><span class="pre">info</span></code> output under
+<code class="docutils literal notranslate"><span class="pre">info['process']['flops'].</span> <span class="pre">This</span> <span class="pre">option</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">used</span> <span class="pre">together</span> <span class="pre">with</span>
+<span class="pre">setting</span> <span class="pre">``return_info=True</span></code>.  To use this option, Perf Tool on your
+machine should be installed and proper permission should be granted
+(see <a class="reference internal" href="../install/dependencies.html#perf-tool"><span class="std std-ref">Perf Tool</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is for Linux operating system only.</p>
+</div>
+</dd>
 <dt><strong>verbose</strong><span class="classifier">bool, default=False</span></dt><dd><p>Prints verbose output during computation.</p>
 </dd>
 </dl>
@@ -625,6 +635,10 @@ computation.</p></li>
 only the store operation, which is the data transfer from
 memory to disk. This is relevant only if scratchpad space was
 used during the computation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'hw_inst_count'</span></code>: hardware instruction counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'flops'</span></code>: FLOPs obtained from hardware instruction counts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'simd_factor'</span></code>: SIMD factor to multiply to hardware
+instruction counts to obtain FLOPs.</p></li>
 </ul>
 </dd>
 </dl>
@@ -797,6 +811,17 @@ and the element <code class="docutils literal notranslate"><span class="pre">dia
 <span class="math notranslate nohighlight">\(m = n\)</span>.</p>
 <p>Note that computing <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a by-product for free and does not require
 any additional cost.</p>
+<p><strong>Counting FLOPs:</strong></p>
+<p>FLOPs are counted when <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> and <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code> are set.
+FLOPS are computed by multiplying hardware instruction counts (see
+<code class="docutils literal notranslate"><span class="pre">info['process']['hw_inst_count']</span></code> and SIMD factor (see
+<a href="#id1"><span class="problematic" id="id2">``</span></a>info[‘process’][‘simd_factor’]).</p>
+<p>Single instruction, multiple data (SIMD) factor indicates the number of
+FLOPS per one hardware instruction count, and this is estimated by
+<a class="reference internal" href="detkit.get_instructions_per_task.html#detkit.get_instructions_per_task" title="detkit.get_instructions_per_task"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.get_instructions_per_task()</span></code></a>.</p>
+<p>To compute FLOPs, you should install <a class="reference internal" href="../install/dependencies.html#perf-tool"><span class="std std-ref">Perf Tool</span></a> and
+grant necessary permissions to the kernel. Computing FLOPs with Perf Tool
+can only be done on Linux machines.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rcb8eaaf14d1c-1" role="doc-biblioentry">
