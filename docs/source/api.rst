@@ -101,6 +101,7 @@ Utility functions for profiling memory and process.
     :template: autosummary/member.rst
 
     detkit.get_config
+    detkit.check_perf_support
     detkit.get_instructions_per_task
     detkit.get_processor_name
     detkit.human_readable_time

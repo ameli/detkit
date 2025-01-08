@@ -17,7 +17,7 @@
 #include <cstdlib>  // rand, RAND_MAX
 #include <cassert>  // assert
 #include "../_definitions/definitions.h"  // COUNT_PERF
-#include "../_device/instructions_counter.h"  // InstructionsCounter
+#include "../_device/c_instructions_counter.h"  // cInstructionsCounter
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
 #include "../_c_linear_algebra/c_matrix_decompositions.h"  // cMatrixDecompo...
 
@@ -54,7 +54,7 @@ long long Benchmark<DataType>::matmat(
         Benchmark<DataType>::random(B, n, n);
 
         // Start measure flops
-        InstructionsCounter instructions_counter = InstructionsCounter();
+        cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
         // Matrix-matrix multiplications
@@ -104,7 +104,7 @@ long long Benchmark<DataType>::gramian(
         Benchmark<DataType>::random(A, n, n);
 
         // Start measure flops
-        InstructionsCounter instructions_counter = InstructionsCounter();
+        cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
         // Gramian matrix-matrix multiplications
@@ -157,7 +157,7 @@ long long Benchmark<DataType>::cholesky(
         cMatrixOperations<DataType>::gramian(A, B, n, n, 0.0);
 
         // Start measure flops
-        InstructionsCounter instructions_counter = InstructionsCounter();
+        cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
         // Cholesky decomposition
@@ -207,7 +207,7 @@ long long Benchmark<DataType>::lu(
         Benchmark<DataType>::random(A, n, n);
 
         // Start measure flops
-        InstructionsCounter instructions_counter = InstructionsCounter();
+        cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
         // LU decomposition
@@ -256,7 +256,7 @@ long long Benchmark<DataType>::lup(
         Benchmark<DataType>::random(A, n, n);
 
         // Start measure flops
-        InstructionsCounter instructions_counter = InstructionsCounter();
+        cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
         // LUP decomposition

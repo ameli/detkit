@@ -1257,6 +1257,8 @@ def main(argv):
 
     extensions.append(create_extension(package_name, '_definitions'))
 
+    extensions.append(create_extension(package_name, '_device'))
+
     # Cythonize
     if 'clean' in argv:
         # Do not cythonize if setup.py is called for cleaning only
@@ -1345,6 +1347,7 @@ def main(argv):
             'Programming Language :: Python :: 3.10',
             'Programming Language :: Python :: 3.11',
             'Programming Language :: Python :: 3.12',
+            'Programming Language :: Python :: 3.13',
             'Programming Language :: Python :: Implementation :: CPython',
             'Programming Language :: Python :: Implementation :: PyPy',
             'License :: OSI Approved :: BSD License',

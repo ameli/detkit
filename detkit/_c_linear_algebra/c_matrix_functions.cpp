@@ -19,7 +19,7 @@
 #include "../_c_basic_algebra/c_matrix_operations.h"  // cMatrixOperations
 #include "./c_matrix_decompositions.h"  // cMatrixDecompositions
 #include "./c_matrix_solvers.h"  // cMatrixSolvers
-#include "../_device/instructions_counter.h"  // InstructionsCounter
+#include "../_device/c_instructions_counter.h"  // cInstructionsCounter
 #include "../_utilities/array_util.h"  // ArrayUtil
 #include "../_definitions/definitions.h"
 
@@ -252,10 +252,10 @@ DataType cMatrixFunctions<DataType>::loggdet(
 
     #if COUNT_PERF
     // Measure flops
-    InstructionsCounter* instructions_counter = NULL;
+    cInstructionsCounter* instructions_counter = NULL;
     if (flops == 1)
     {
-        instructions_counter = new InstructionsCounter();
+        instructions_counter = new cInstructionsCounter();
         instructions_counter->start();
     }
     #endif
@@ -707,10 +707,10 @@ DataType cMatrixFunctions<DataType>::logpdet(
     
     #if COUNT_PERF
     // Measure flops
-    InstructionsCounter* instructions_counter = NULL;
+    cInstructionsCounter* instructions_counter = NULL;
     if (flops == 1)
     {
-        instructions_counter = new InstructionsCounter();
+        instructions_counter = new cInstructionsCounter();
         instructions_counter->start();
     }
     #endif

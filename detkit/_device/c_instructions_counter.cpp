@@ -13,7 +13,7 @@
 // Headers
 // =======
 
-#include "./instructions_counter.h"
+#include "./c_instructions_counter.h"
 #include <string.h>
 #include <iostream>
 
@@ -50,19 +50,34 @@
 // Constructor
 // ===========
 
-InstructionsCounter::InstructionsCounter():
+cInstructionsCounter::cInstructionsCounter():
     fd(-1),
-    count(0)
+    count(0),
+    simd_factor(1.0)
 {
     #if __linux__
         memset(&this->pe, 0, sizeof(struct perf_event_attr));
-        this->pe.type = PERF_TYPE_HARDWARE;
         this->pe.size = sizeof(struct perf_event_attr);
-        this->pe.config = PERF_COUNT_HW_INSTRUCTIONS;
         this->pe.disabled = 1;
         this->pe.exclude_kernel = 1;
         this->pe.exclude_hv = 1;  // Don't count hypervisor events.
+        
+        // Option 1: Count "pre-defined" hardware instructions
+        // This option measures all CPU operations, including floating point,
+        // memory, etc. This is has more noise as the count is not solely the
+        // floating point count.
+        this->pe.type = PERF_TYPE_HARDWARE;
+        this->pe.config = PERF_COUNT_HW_INSTRUCTIONS;
 
+        // Option 2: count raw instructions specifically for floating point.
+        // This option measures only floating point operations, not other tasks
+        // such as meoey operations. This option gives me zero counts on a few
+        // CPUs I tested, as it seems it is not supported, so I use option 1
+        // above for now.
+        // this->pe.type = PERF_TYPE_RAW;  // Use raw events
+        // this->pe.config = 0xC7;         // FP instructions
+        // this->pe.config1 = 0x4;        // Unit mask (based on CPU)
+            
         this->fd = perf_event_open(&this->pe, 0, -1, -1, 0);
         if (this->fd == -1)
         {
@@ -77,7 +92,7 @@ InstructionsCounter::InstructionsCounter():
 // Destructor
 // ==========
 
-InstructionsCounter::~InstructionsCounter()
+cInstructionsCounter::~cInstructionsCounter()
 {
     #if __linux__
         if (this->fd != -1)
@@ -88,11 +103,21 @@ InstructionsCounter::~InstructionsCounter()
 }
 
 
+// ===============
+// set smid factor
+// ===============
+
+void cInstructionsCounter::set_simd_factor(double simd_factor)
+{
+    this->simd_factor = simd_factor;
+}
+
+
 // =====
 // Start
 // =====
 
-void InstructionsCounter::start()
+void cInstructionsCounter::start()
 {
     #if __linux__
         if (this->fd != -1)
@@ -108,7 +133,7 @@ void InstructionsCounter::start()
 // Stop
 // ====
 
-void InstructionsCounter::stop()
+void cInstructionsCounter::stop()
 {
     #if __linux__
         if (this->fd != -1)
@@ -128,7 +153,17 @@ void InstructionsCounter::stop()
 // get count
 // =========
 
-long long InstructionsCounter::get_count()
+long long int cInstructionsCounter::get_count()
 {
     return this->count;
+}
+
+
+// =========
+// get flops
+// =========
+
+long long int cInstructionsCounter::get_flops()
+{
+    return static_cast<long long int>(this->count * this->simd_factor);
 }

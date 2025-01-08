@@ -21,25 +21,29 @@
 #endif
 
 
-// ====================
-// Instructions Counter
-// ====================
+// ======================
+// c Instructions Counter
+// ======================
 
-class InstructionsCounter
+class cInstructionsCounter
 {
     public:
-        InstructionsCounter();
-        ~InstructionsCounter();
+        cInstructionsCounter();
+        ~cInstructionsCounter();
+        void set_simd_factor(double factor);
         void start();
         void stop();
-        long long get_count();
+        long long int get_count();
+        long long int get_flops();
         
     // Member data
-    #if __linux__
-    struct perf_event_attr pe;
-    #endif
-    int fd;
-    long long count;
+    private:
+        #if __linux__
+        struct perf_event_attr pe;
+        #endif
+        int fd;
+        long long int count;
+        double simd_factor;
 };
 
 #endif  // _DEVICE_INSTRUCTIONS_COUNTER_H_

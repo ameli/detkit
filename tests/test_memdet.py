@@ -83,7 +83,7 @@ def _test(A, assumes, dtypes, parallel_ios, triangles, num_blocks, max_mems):
                 # to multiproc.
                 if sys.platform == 'win32':
                     # Do not use tmp dir
-                    scratch_dir = ''
+                    scratch_dir = '.'
 
                 for triangle in triangles:
 

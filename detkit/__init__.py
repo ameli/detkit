@@ -79,6 +79,7 @@ try:
     from ._cy_linear_algebra import solve_triangular, matmul       # noqa: E402
     from ._benchmark import get_instructions_per_task              # noqa: E402
     from ._definitions import get_config                           # noqa: E402
+    from ._device import InstructionsCounter, check_perf_support   # noqa: E402
     from .datasets import electrocardiogram                        # noqa: E402
     from .datasets import covariance_matrix, design_matrix         # noqa: E402
 
@@ -96,6 +97,7 @@ __all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'load', 'store', 'Memory',
            'get_processor_name', 'orthogonalize', 'ortho_complement',
            'lu_factor', 'lu_solve', 'ldl_factor', 'ldl_solve', 'cho_factor',
            'cho_solve', 'matmul', 'solve_triangular', 'get_config',
+           'InstructionsCounter', 'check_perf_support',
            'get_instructions_per_task', 'electrocardiogram',
            'covariance_matrix', 'design_matrix']
 

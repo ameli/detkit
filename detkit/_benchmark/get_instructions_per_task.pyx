@@ -14,6 +14,8 @@
 import numpy
 from .._definitions.types cimport LongIndexType, FlagType
 from .benchmark cimport Benchmark
+import matplotlib.pyplot as plt
+import texplot
 
 # To avoid cython's bug that does not recognizes "long double" in template []
 ctypedef long double long_double
@@ -25,7 +27,13 @@ __all__ = ['get_instructions_per_task']
 # get instructions per task
 # =========================
 
-cpdef get_instructions_per_task(task='matmat', dtype='float64'):
+cpdef get_instructions_per_task(
+        task='matmat',
+        dtype='float64',
+        min_n=100,
+        max_n=500,
+        num_n=6,
+        plot=False):
     """
     Counts the hardware instructions of computing a single FLOP of a benchmark
     task on the current processor.
@@ -74,6 +82,19 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
         dtype : {'float32', 'float64', 'float128'}, default='float64'
             The type of the test data.
 
+        min_n : int, default=100
+            Minimum square matrix size to be tested.
+
+        max_n : int, default=500
+            Maximum square matrix size to be tested.
+
+        num_n : int, default=10
+            Number of various matrix sizes to try.
+
+        plot : bool, default=False
+            If `True`, the estimation of FLOPs versus various matrix sizes is
+            plotted.
+
     Returns
     -------
         inst : int
@@ -83,9 +104,11 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
 
     See Also
     --------
-        loggdet : Log of determinant terms used in Gaussian process regression.
-        logpdet : Log of pseudo-determinant of the precision matrix in Gaussian
-            process regression.
+
+        check_perf_support
+        loggdet
+        logpdet
+        memdet
 
     Notes
     -----
@@ -100,7 +123,7 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
 
           .. math::
 
-              c(n) = c_{\\infty} + \\frac{1}{n}
+              c(n) = c_{\\infty} + \\frac{\\alpha}{n}
 
           To measure :math:`c_{\\infty}`, this function measures :math:`c(n)`
           on several matrix sizes :math:`n` and uses the above relation to find
@@ -142,9 +165,25 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
         >>> # Calculate coefficient of complexity
         >>> print(flops / n**3)
         2.11
+
+    Example of plotting how the instructions are estimated:
+
+    .. code-block:: python
+
+        >>> import detkit
+        >>> inst = detkit.get_instructions_per_task(dtype='float32', min_n=100,
+        ...                                         max_n=500, num_n=10,
+        ...                                         plot=True)
+        >>> # inst is the intercept of the regression line in the plot
+        >>> print(inst)
+        4.225773707890822
+
+    .. image:: ../_static/images/plots/simd.png
+        :align: center
+        :class: custom-dark
     """
 
-    n = (1.0 / numpy.linspace(1.0/30.0, 1.0/500.0, 10) + 0.5).astype(int)
+    n = (1.0 / numpy.linspace(1.0/min_n, 1.0/max_n, num_n) + 0.5).astype(int)
     inst_per_task = -numpy.ones((n.size, ), dtype=float)
 
     for i in range(n.size):
@@ -169,10 +208,31 @@ cpdef get_instructions_per_task(task='matmat', dtype='float64'):
 
     # Find inst_per_task when n tends to infinity using an exponential model
     # inst_per_task = a/n + b
-    coeff = numpy.polyfit(1.0/n, inst_per_task, deg=1)
+    slope, intercept = numpy.polyfit(1.0/n, inst_per_task, deg=1)
+
+    if plot:
+        n_inv = numpy.linspace(0, numpy.max(1.0/n), 100)
+        interp = slope * n_inv + intercept
+
+        with texplot.theme():
+            fig, ax = plt.subplots(figsize=(6, 4))
+            ax.plot(1.0/n, inst_per_task, 'o', color='black',
+                    label='Measurement')
+            ax.plot(n_inv, interp, '--', color='black', label='Regression')
+            ax.scatter(n_inv[0], interp[0], s=50, zorder=3, clip_on=False,
+                       color='maroon', label=r'Estimate at $n \to \infty$')
+            ax.set_xlim([n_inv[0], n_inv[-1]])
+            ax.legend(fontsize='small')
+            ax.set_xlabel(r'$n^{-1}$')
+            ax.set_ylabel(r'FLOPs / $n^3$')
+            ax.set_title(r'Estimating SIMD Factor at $n \to \infty$')
+
+            texplot.show_or_save_plot(plt, default_filename='simd',
+                                      transparent_background=True, dpi=200,
+                                      show_and_save=True, verbose=True)
 
     # In the limit n=infinity, b is the number of inst_per_task
-    inst_per_task_limit = coeff[1]
+    inst_per_task_limit = float(intercept)
 
     return inst_per_task_limit
 

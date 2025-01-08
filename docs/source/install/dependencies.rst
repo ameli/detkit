@@ -71,10 +71,12 @@ Below are the specific installation for each operating system:
         ln -sf ${libomp_dir}/lib/libomp.a         /usr/local/lib/libomp.a
         ln -sf ${libomp_dir}/lib/libomp.dylib     /usr/local/lib/libomp.dylib
 
+.. _perf_tool:
+
 Perf Tool (`Optional`)
 ----------------------
 
-|project| can count the FLOPs of the computations, if the argument ``flops=True`` is used in the functions (see :ref:`API Reference <api>`). To this end, the `Linux Performance Counter tool <https://perf.wiki.kernel.org/index.php/Main_Page>`_, known as ``perf`` should be installed.
+|project| can count the FLOPs of computations if the argument ``flops=True`` is used in the functions (see :ref:`API Reference <api>`). To achieve this, the `Linux Performance Counter <https://perf.wiki.kernel.org/index.php/Main_Page>`_ tool, known as ``perf``, must be installed.
 
 .. tab-set::
 
@@ -83,43 +85,65 @@ Perf Tool (`Optional`)
 
         .. prompt:: bash
 
-            sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+            sudo apt-get install linux-tools-common linux-tools-generic linux-tools-$(uname -r)
 
     .. tab-item:: CentOS 7
         :sync: centos
 
         .. prompt:: bash
 
-            sudo yum group install perf
+            sudo yum install perf
 
     .. tab-item:: RHEL 9
         :sync: rhel
 
         .. prompt:: bash
 
-            sudo dnf group install perf
+            sudo dnf install perf
 
 .. attention::
 
-    The ``perf`` tool is not available in macOS and Windows.
+    The ``perf`` tool is not available on macOS or Windows.
 
-Grant permissions to the user to be able to run the perf tool:
+Granting Permissions
+~~~~~~~~~~~~~~~~~~~~
+
+After installing ``perf``, grant the necessary permissions to the user to run it:
 
 .. prompt:: bash
 
-    sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
-    
-Test if the `perf` tool works by
+    sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'
 
-.. prompt::
+This setting is temporary and will be lost after a reboot. To make it permanent, use the following commands instead:
+
+.. prompt:: bash
+
+    echo "kernel.perf_event_paranoid = 1" | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+
+Testing the Perf Tool
+~~~~~~~~~~~~~~~~~~~~~
+
+You can test if the ``perf`` tool is working by running the following command:
+
+.. prompt:: bash
 
     perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=100000
 
-Alternatively, you may also test `perf` tool with |project| by
+Alternatively, you can test the ``perf`` tool directly with :func:`detkit.check_perf_support`:
 
 .. code-block:: python
 
     >>> import detkit
-    >>> detkit..get_instructions_per_task()
+    >>> detkit.check_perf_support()
 
-If the installed `perf` tool is configured properly, the output of either of the above commands should not be empty.
+If the ``perf`` tool is installed and configured properly, the output of either of the above commands should be like:
+
+.. code-block::
+
+    {
+        'kernel_version': '6.8.0-51-generic',
+        'perf_event_paranoid': -1,
+        'perf_installed': True,
+        'perf_working': True
+    }

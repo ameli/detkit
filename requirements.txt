@@ -1,6 +1,7 @@
 numpy>1.11
 scipy>=1.5
 matplotlib>=2.0
+texplot
 pooch
 psutil; platform_python_implementation == "CPython"
 zarr; platform_python_implementation == "CPython"
