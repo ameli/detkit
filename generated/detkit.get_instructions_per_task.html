@@ -62,7 +62,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="get_processor_name" href="detkit.get_processor_name.html" />
-    <link rel="prev" title="get_config" href="detkit.get_config.html" />
+    <link rel="prev" title="check_perf_support" href="detkit.check_perf_support.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -358,6 +358,11 @@
    get_config
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.check_perf_support.html">
+   check_perf_support
+  </a>
+ </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    get_instructions_per_task
@@ -442,7 +447,7 @@
 <h1>get_instructions_per_task<a class="headerlink" href="#get-instructions-per-task" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.get_instructions_per_task">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">get_instructions_per_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matmat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.get_instructions_per_task" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">get_instructions_per_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matmat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.get_instructions_per_task" title="Permalink to this definition">#</a></dt>
 <dd><p>Counts the hardware instructions of computing a single FLOP of a benchmark
 task on the current processor.</p>
 <p>The goal of this function is to be used to measure the computational
@@ -505,6 +510,15 @@ tends to infinity.</p>
 </dd>
 <dt><strong>dtype</strong><span class="classifier">{‘float32’, ‘float64’, ‘float128’}, default=’float64’</span></dt><dd><p>The type of the test data.</p>
 </dd>
+<dt><strong>min_n</strong><span class="classifier">int, default=100</span></dt><dd><p>Minimum square matrix size to be tested.</p>
+</dd>
+<dt><strong>max_n</strong><span class="classifier">int, default=500</span></dt><dd><p>Maximum square matrix size to be tested.</p>
+</dd>
+<dt><strong>num_n</strong><span class="classifier">int, default=10</span></dt><dd><p>Number of various matrix sizes to try.</p>
+</dd>
+<dt><strong>plot</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, the estimation of FLOPs versus various matrix sizes is
+plotted.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -519,10 +533,10 @@ instructions, <cite>-1</cite> is returned.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggdet</span></code></a></dt><dd><p>Log of determinant terms used in Gaussian process regression.</p>
-</dd>
-<dt><a class="reference internal" href="detkit.logpdet.html#detkit.logpdet" title="detkit.logpdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logpdet</span></code></a></dt><dd><p>Log of pseudo-determinant of the precision matrix in Gaussian process regression.</p>
-</dd>
+<dt><a class="reference internal" href="detkit.check_perf_support.html#detkit.check_perf_support" title="detkit.check_perf_support"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_perf_support</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.loggdet.html#detkit.loggdet" title="detkit.loggdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggdet</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.logpdet.html#detkit.logpdet" title="detkit.logpdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logpdet</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.memdet.html#detkit.memdet" title="detkit.memdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">memdet</span></code></a></dt><dd></dd>
 </dl>
 </div>
 <p class="rubric">Notes</p>
@@ -535,7 +549,7 @@ matrices used in the benchmark test, but it converges when the matrix
 size, <span class="math notranslate nohighlight">\(n\)</span> is very large. To obtain a unique number, we use the
 following asymptotic relation:</p>
 <div class="math notranslate nohighlight">
-\[c(n) = c_{\infty} + \frac{1}{n}\]</div>
+\[c(n) = c_{\infty} + \frac{\alpha}{n}\]</div>
 <p>To measure <span class="math notranslate nohighlight">\(c_{\infty}\)</span>, this function measures <span class="math notranslate nohighlight">\(c(n)\)</span>
 on several matrix sizes <span class="math notranslate nohighlight">\(n\)</span> and uses the above relation to find
 their asymptote.</p>
@@ -574,6 +588,17 @@ count of hardware instructions.</p></li>
 <span class="go">2.11</span>
 </pre></div>
 </div>
+<p>Example of plotting how the instructions are estimated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">detkit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inst</span> <span class="o">=</span> <span class="n">detkit</span><span class="o">.</span><span class="n">get_instructions_per_task</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">min_n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="gp">... </span>                                        <span class="n">max_n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>                                        <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># inst is the intercept of the regression line in the plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+<span class="go">4.225773707890822</span>
+</pre></div>
+</div>
+<img alt="../_images/simd.png" class="custom-dark align-center" src="../_images/simd.png" />
 </dd></dl>
 
 </section>
@@ -586,11 +611,11 @@ count of hardware instructions.</p></li>
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="detkit.get_config.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="detkit.check_perf_support.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">get_config</p>
+          <p class="prev-next-title">check_perf_support</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="detkit.get_processor_name.html" title="next page">

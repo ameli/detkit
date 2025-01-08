@@ -290,6 +290,18 @@
    </cite>
    )
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#granting-permissions">
+     3.2.1. Granting Permissions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#testing-the-perf-tool">
+     3.2.2. Testing the Perf Tool
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -370,43 +382,56 @@ macOS</label><div class="sd-tab-content docutils">
 </pre></div></div></div>
 </section>
 <section id="perf-tool-optional">
-<h2><span class="section-number">3.2. </span>Perf Tool (<cite>Optional</cite>)<a class="headerlink" href="#perf-tool-optional" title="Permalink to this heading">#</a></h2>
-<p><span class="synco">detkit</span> can count the FLOPs of the computations, if the argument <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> is used in the functions (see <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>). To this end, the <a class="reference external" href="https://perf.wiki.kernel.org/index.php/Main_Page">Linux Performance Counter tool</a>, known as <code class="docutils literal notranslate"><span class="pre">perf</span></code> should be installed.</p>
+<span id="perf-tool"></span><h2><span class="section-number">3.2. </span>Perf Tool (<cite>Optional</cite>)<a class="headerlink" href="#perf-tool-optional" title="Permalink to this heading">#</a></h2>
+<p><span class="synco">detkit</span> can count the FLOPs of computations if the argument <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> is used in the functions (see <a class="reference internal" href="../api.html#api"><span class="std std-ref">API Reference</span></a>). To achieve this, the <a class="reference external" href="https://perf.wiki.kernel.org/index.php/Main_Page">Linux Performance Counter</a> tool, known as <code class="docutils literal notranslate"><span class="pre">perf</span></code>, must be installed.</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="ubuntu" for="sd-tab-item-4">
 Ubuntu/Debian</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>linux-tools-common<span class="w"> </span>linux-tools-generic<span class="w"> </span>linux-tools-<span class="sb">`</span>uname<span class="w"> </span>-r<span class="sb">`</span></span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>linux-tools-common<span class="w"> </span>linux-tools-generic<span class="w"> </span>linux-tools-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span></span>
 </pre></div></div></div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="centos" for="sd-tab-item-5">
 CentOS 7</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" data-sync-group="tab" data-sync-id="rhel" for="sd-tab-item-6">
 RHEL 9</label><div class="sd-tab-content docutils">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>group<span class="w"> </span>install<span class="w"> </span>perf</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>perf</span>
 </pre></div></div></div>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is not available in macOS and Windows.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is not available on macOS or Windows.</p>
 </div>
-<p>Grant permissions to the user to be able to run the perf tool:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo -1 &gt;/proc/sys/kernel/perf_event_paranoid&#39;</span></span>
-</pre></div></div><p>Test if the <cite>perf</cite> tool works by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
-span.prompt2:before {
-  content: " ";
-}
-</style><span class="prompt2">perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=100000</span>
-</pre></div></div><p>Alternatively, you may also test <cite>perf</cite> tool with <span class="synco">detkit</span> by</p>
+<section id="granting-permissions">
+<h3><span class="section-number">3.2.1. </span>Granting Permissions<a class="headerlink" href="#granting-permissions" title="Permalink to this heading">#</a></h3>
+<p>After installing <code class="docutils literal notranslate"><span class="pre">perf</span></code>, grant the necessary permissions to the user to run it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">sudo<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo 1 &gt;/proc/sys/kernel/perf_event_paranoid&#39;</span></span>
+</pre></div></div><p>This setting is temporary and will be lost after a reboot. To make it permanent, use the following commands instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;kernel.perf_event_paranoid = 1&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/sysctl.conf</span>
+<span class="prompt1">sudo<span class="w"> </span>sysctl<span class="w"> </span>-p</span>
+</pre></div></div></section>
+<section id="testing-the-perf-tool">
+<h3><span class="section-number">3.2.2. </span>Testing the Perf Tool<a class="headerlink" href="#testing-the-perf-tool" title="Permalink to this heading">#</a></h3>
+<p>You can test if the <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is working by running the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">perf<span class="w"> </span>stat<span class="w"> </span>-e<span class="w"> </span>instructions:u<span class="w"> </span>dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/null<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">100000</span></span>
+</pre></div></div><p>Alternatively, you can test the <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool directly with <a class="reference internal" href="../generated/detkit.check_perf_support.html#detkit.check_perf_support" title="detkit.check_perf_support"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.check_perf_support()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">detkit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">..</span><span class="n">get_instructions_per_task</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">.</span><span class="n">check_perf_support</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>If the installed <cite>perf</cite> tool is configured properly, the output of either of the above commands should not be empty.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is installed and configured properly, the output of either of the above commands should be like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;kernel_version&#39;</span><span class="p">:</span> <span class="s1">&#39;6.8.0-51-generic&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;perf_event_paranoid&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;perf_installed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;perf_working&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
