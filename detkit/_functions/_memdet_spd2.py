@@ -18,6 +18,7 @@ from ._ansi import ANSI
 from .profile import Profile
 from ._memdet_gen import _get_diag, _schur_complement
 from .._cy_linear_algebra import cho_factor, cho_solve
+from .._device import InstructionsCounter
 
 __all__ = ['memdet_spd2']
 
@@ -26,7 +27,7 @@ __all__ = ['memdet_spd2']
 # cho factor
 # ==========
 
-def _cho_factor(A, dtype, order, block_info, verbose=False):
+def _cho_factor(A, dtype, order, block_info, ic, verbose=False):
     """
     Performs Cholesky factorization of an input matrix.
     """
@@ -47,8 +48,16 @@ def _cho_factor(A, dtype, order, block_info, verbose=False):
     # Get buffer from shared memory
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     # Upper-triangular Cholesky where A = U.T @ U
     cho = cho_factor(A_, A_shape[0], lower=False, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check cho is overwritten to A.
     if not numpy.may_share_memory(cho, A_):
@@ -64,7 +73,7 @@ def _cho_factor(A, dtype, order, block_info, verbose=False):
 # cho solve
 # =========
 
-def _cho_solve(cho, B, dtype, order, lower, block_info, verbose=False):
+def _cho_solve(cho, B, dtype, order, lower, block_info, ic, verbose=False):
     """
     Solve triangular system of equations.
     """
@@ -82,7 +91,15 @@ def _cho_solve(cho, B, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     B_ = get_array(B, B_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     x = cho_solve(cho, B_, shape=B_shape, lower=lower, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check x is actually overwritten to B
     if not numpy.may_share_memory(x, B_):
@@ -119,6 +136,13 @@ def memdet_spd2(io, verbose):
     sign = 1
     diag = []
 
+    # Hardware instruction counter
+    if io['profile']['simd_factor'] is not None:
+        ic = InstructionsCounter()
+        ic.set_simd_factor(io['profile']['simd_factor'])
+    else:
+        ic = None
+
     # Initialize progress
     progress = Progress(num_blocks, assume='sym', verbose=verbose)
 
@@ -133,7 +157,8 @@ def memdet_spd2(io, verbose):
             load_block(io, A11, k, k, verbose=verbose)
 
         # Cholesky decomposition
-        cho_11 = _cho_factor(A11, dtype, order, (k, k, num_blocks, n),
+        cho_11 = _cho_factor(A11, dtype, order,
+                             block_info=(k, k, num_blocks, n), ic=ic,
                              verbose=verbose)
 
         # log-determinant
@@ -185,7 +210,7 @@ def memdet_spd2(io, verbose):
                     # Solving X = A11^{-1} A12. This overwrites X to A12
                     X = _cho_solve(cho_11, A12, dtype, order,
                                    lower=False,
-                                   block_info=(k, j, num_blocks, n),
+                                   block_info=(k, j, num_blocks, n), ic=ic,
                                    verbose=verbose)
 
                 # Compute Schur complement
@@ -196,7 +221,7 @@ def memdet_spd2(io, verbose):
 
                     # Overwrite A11 with Schur complement
                     _schur_complement(A21_t, X, A11, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
                 else:
 
@@ -204,7 +229,7 @@ def memdet_spd2(io, verbose):
 
                     # Overwrite A22 with Schur complement
                     _schur_complement(A21_t, X, A22, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
 
                     # Store A22 to disk. This point reaches only when num_block
@@ -216,5 +241,10 @@ def memdet_spd2(io, verbose):
 
     # concatenate diagonals of blocks of U
     diag = numpy.concatenate(diag)
+
+    # Instructions count
+    if ic is not None:
+        io['profile']['hw_inst_count'] = ic.get_count()
+        io['profile']['flops'] = ic.get_flops()
 
     return ld, sign, diag

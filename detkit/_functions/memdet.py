@@ -72,6 +72,7 @@ def memdet(
         scratch_dir=None,
         overwrite=False,
         return_info=False,
+        flops=False,
         verbose=False):
     """
     Compute log-determinant under memory constraint.
@@ -197,6 +198,17 @@ def memdet(
         process times, memory allocation, disk usage, etc. See ``info``
         variable in the return section below.
 
+    flops : boolean, default=False
+        if `True`, FLOP count will be included in ``info`` output under
+        ``info['process']['flops']. This option should be used together with
+        setting ``return_info=True``.  To use this option, Perf Tool on your
+        machine should be installed and proper permission should be granted
+        (see :ref:`Perf Tool <perf_tool>`).
+
+        .. note::
+
+            This option is for Linux operating system only.
+
     verbose : bool, default=False
         Prints verbose output during computation.
 
@@ -260,6 +272,10 @@ def memdet(
                   only the store operation, which is the data transfer from
                   memory to disk. This is relevant only if scratchpad space was
                   used during the computation.
+                * ``'hw_inst_count'``: hardware instruction counts.
+                * ``'flops'``: FLOPs obtained from hardware instruction counts.
+                * ``'simd_factor'``: SIMD factor to multiply to hardware
+                  instruction counts to obtain FLOPs.
             * ``'block'``: info about matrix blocks
                 * ``'block_nbytes'``: number of bytes of each block allocated
                   on the memory. When the number of blocks along row-block (or
@@ -422,6 +438,21 @@ def memdet(
     Note that computing ``diag`` is a by-product for free and does not require
     any additional cost.
 
+    **Counting FLOPs:**
+
+    FLOPs are counted when ``flops=True`` and ``return_info=True`` are set.
+    FLOPS are computed by multiplying hardware instruction counts (see
+    ``info['process']['hw_inst_count']`` and SIMD factor (see
+    ``info['process']['simd_factor']).
+
+    Single instruction, multiple data (SIMD) factor indicates the number of
+    FLOPS per one hardware instruction count, and this is estimated by
+    :func:`detkit.get_instructions_per_task`.
+
+    To compute FLOPs, you should install :ref:`Perf Tool <perf_tool>` and
+    grant necessary permissions to the kernel. Computing FLOPs with Perf Tool
+    can only be done on Linux machines.
+
     References
     ----------
 
@@ -524,8 +555,12 @@ def memdet(
     init_wall_time = time.time()
     init_proc_time = time.process_time()
 
+    if (flops is True) and (return_info is False):
+        raise ValueError('When setting "flops=True", "return_info" should ' +
+                         'also be "True".')
+
     io = initialize_io(A, max_mem, num_blocks, assume, triangle,
-                       mixed_precision, parallel_io, scratch_dir,
+                       mixed_precision, parallel_io, scratch_dir, flops,
                        verbose=verbose)
 
     # Track memory up to this point
@@ -587,7 +622,7 @@ def memdet(
         # method
         if assume == 'gen':
             method = 'lu decomposition'
-        # elif assume == 'sym':
+        # elif assume == 'sym': # TEST
         elif assume in ['sym', 'sym2']:
             method = 'ldl decomposition'
         # elif assume == 'spd': # TEST
@@ -620,6 +655,9 @@ def memdet(
                 'load_proc_time': io['profile']['load_proc_time'],
                 'store_wall_time': io['profile']['store_wall_time'],
                 'store_proc_time': io['profile']['store_proc_time'],
+                'hw_inst_count': io['profile']['hw_inst_count'],
+                'flops': io['profile']['flops'],
+                'simd_factor': io['profile']['simd_factor'],
             },
             'block': {
                 'block_nbytes': block_nbytes,

@@ -19,6 +19,7 @@ cdef extern from "c_instructions_counter.h":
         void set_simd_factor(double simd_factor)
         void start()
         void stop()
+        void reset()
         int64_t get_count()
         int64_t get_flops()
 
@@ -81,11 +82,22 @@ cdef class InstructionsCounter:
 
         self.c_instructions_counter.stop()
 
+    # =====
+    # reset
+    # =====
+
+    def reset(self):
+        """
+        Reset counts.
+        """
+
+        self.c_instructions_counter.reset()
+
     # =========
     # get count
     # =========
 
-    def get_count(self) -> int:
+    def get_count(self):
         """
         Get the instruction count.
         

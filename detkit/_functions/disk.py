@@ -451,8 +451,15 @@ class Disk(object):
         part_info = None
 
         for partition in partitions:
-            if path.startswith(partition.mountpoint):
-                part_info = partition
-                break
+            # On Windows, check if the path starts with the drive letter
+            if sys.platform == 'win32':
+                if path.lower().startswith(partition.mountpoint.lower()):
+                    part_info = partition
+                    break
+            else:
+                # For Linux and others
+                if path.startswith(partition.mountpoint):
+                    part_info = partition
+                    break
 
         return part_info

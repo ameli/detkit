@@ -21,6 +21,7 @@ from ._memdet_gen import _schur_complement
 from .._cy_linear_algebra import ldl_factor, ldl_solve, solve_diag
 from .._cy_linear_algebra.ldl_factor import _sanitize_piv, \
     _construct_tri_factor
+from .._device import InstructionsCounter
 
 __all__ = ['memdet_sym']
 
@@ -175,7 +176,7 @@ def _unpermute_tri_factor(A, perm, dtype, order, block_info):
 # ldl factor
 # ==========
 
-def _ldl_factor(A, dtype, order, lower, block_info, verbose=False):
+def _ldl_factor(A, dtype, order, lower, block_info, ic, verbose=False):
     """
     Performs LDL factorization of an input matrix.
     """
@@ -196,9 +197,17 @@ def _ldl_factor(A, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     # LDL factorization (Lower: A = L @ D @ L.T, or Upper: A = U.T @ D @ U)
     ldu, piv = ldl_factor(A_, A_shape[0], lower=lower, overwrite=True,
                           return_as_lapack=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check ldu is overwritten to A.
     if not numpy.may_share_memory(ldu, A_):
@@ -214,7 +223,8 @@ def _ldl_factor(A, dtype, order, lower, block_info, verbose=False):
 # ldl solve
 # =========
 
-def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, verbose=False):
+def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, ic,
+               verbose=False):
     """
     Solve triangular system of equations.
 
@@ -222,7 +232,7 @@ def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, verbose=False):
     LDL factor A = P L D L P.T.
 
     Note: this function is no longer used in memdet_sym, as it is up to orders
-    of magnitude slower. The culrpit is ?sytrs from LAPACK.
+    of magnitude slower. The culprit is ?sytrs from LAPACK.
     """
 
     if verbose:
@@ -238,7 +248,15 @@ def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     B_ = get_array(B, B_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     x = ldl_solve(ldu, piv, B_, shape=B_shape, lower=lower, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check x is actually overwritten to B
     if not numpy.may_share_memory(x, B_):
@@ -254,7 +272,7 @@ def _ldl_solve(ldu, piv, B, dtype, order, lower, block_info, verbose=False):
 # solve diag
 # ==========
 
-def _solve_diag(block_diag, B, dtype, order, block_info, verbose=False):
+def _solve_diag(block_diag, B, dtype, order, block_info, ic, verbose=False):
     """
     Solve by a block-diagonal matrix.
 
@@ -278,7 +296,15 @@ def _solve_diag(block_diag, B, dtype, order, block_info, verbose=False):
     md = block_diag.shape[0]
     nrhs = B_shape_on_mem[1]
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     X, info = solve_diag(block_diag, B_, shape=(md, nrhs), overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     if info != 0:
         raise RuntimeError('Diagonal solved encountered zero diagonal in ' +
@@ -316,6 +342,13 @@ def memdet_sym(io, verbose):
     diag = []
     lower = True  # using LDL.T instead UDU.T decomposition
 
+    # Hardware instruction counter
+    if io['profile']['simd_factor'] is not None:
+        ic = InstructionsCounter()
+        ic.set_simd_factor(io['profile']['simd_factor'])
+    else:
+        ic = None
+
     # Initialize progress
     progress = Progress(num_blocks, assume='sym', verbose=verbose)
 
@@ -331,7 +364,7 @@ def memdet_sym(io, verbose):
 
         # Lower-triangular LDL decomposition
         ldu_11, piv = _ldl_factor(A11, dtype, order, lower=lower,
-                                  block_info=(k, k, num_blocks, n),
+                                  block_info=(k, k, num_blocks, n), ic=ic,
                                   verbose=verbose)
 
         # Get diagonal and permutations. The next couple of lines are taken
@@ -405,7 +438,7 @@ def memdet_sym(io, verbose):
                 # Perform B <-- L^{-1} B
                 _solve_triangular(ldu_11, B, dtype, order, trans=False,
                                   lower=lower, unit_diagonal=True,
-                                  block_info=(k, j, num_blocks, n),
+                                  block_info=(k, j, num_blocks, n), ic=ic,
                                   verbose=verbose)
 
             # Copy B (source) to C (destination) before B is modified next.
@@ -414,7 +447,8 @@ def memdet_sym(io, verbose):
 
             # Perform B <-- D^{-1} @ B in-place where D is block diagonal
             _solve_diag(block_diag_ldu_11, B, dtype, order,
-                        block_info=(k, j, num_blocks, n), verbose=verbose)
+                        block_info=(k, j, num_blocks, n), ic=ic,
+                        verbose=verbose)
 
             # Row iterations
             for i in i_range:
@@ -452,7 +486,7 @@ def memdet_sym(io, verbose):
                         _solve_triangular(ldu_11, C, dtype, order, trans=False,
                                           lower=lower, unit_diagonal=True,
                                           block_info=(k, i, num_blocks, n),
-                                          verbose=verbose)
+                                          ic=ic, verbose=verbose)
 
                         # Only need to store C back to scratch if we know it is
                         # needed to be loaded in the future. For the case of
@@ -469,7 +503,7 @@ def memdet_sym(io, verbose):
 
                     # Overwrite A11 with Schur complement
                     _schur_complement(C, B, A11, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
                 else:
 
@@ -477,7 +511,7 @@ def memdet_sym(io, verbose):
 
                     # Overwrite A22 with Schur complement
                     _schur_complement(C, B, A22, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
 
                     # Store A22 to disk. This point reaches only when num_block
@@ -489,5 +523,10 @@ def memdet_sym(io, verbose):
 
     # concatenate diagonals of blocks of U
     diag = numpy.concatenate(diag)
+
+    # Instructions count
+    if ic is not None:
+        io['profile']['hw_inst_count'] = ic.get_count()
+        io['profile']['flops'] = ic.get_flops()
 
     return ld, sign, diag

@@ -229,7 +229,7 @@ cpdef get_instructions_per_task(
 
             texplot.show_or_save_plot(plt, default_filename='simd',
                                       transparent_background=True, dpi=200,
-                                      show_and_save=True, verbose=True)
+                                      show_and_save=False, verbose=True)
 
     # In the limit n=infinity, b is the number of inst_per_task
     inst_per_task_limit = float(intercept)

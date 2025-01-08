@@ -13,11 +13,38 @@
 # Imports
 # =======
 
+import os
+import glob
 from detkit import get_instructions_per_task
 
 import warnings
 warnings.resetwarnings()
 warnings.filterwarnings("error")
+
+
+# =================
+# remove saved plot
+# =================
+
+def _remove_saved_plot(filenames):
+    """
+    Deletes image files produced during the test.
+    """
+
+    directory = os.getcwd()
+    fullpath_filenames = os.path.join(directory, filenames)
+
+    # Get a list of all files matching wildcard
+    files_list = glob.glob(fullpath_filenames)
+
+    # Iterate over files
+    for file in files_list:
+        try:
+            os.remove(file)
+            print('File %s is deleted.' % file)
+        except BaseException as error:
+            print('An exception occurred: {}'.format(error))
+            print("Error while removing file : ", file)
 
 
 # ======================
@@ -54,6 +81,13 @@ def test_get_inst_per_task():
           % (inst_per_lu, rel_inst_per_lu))
     print('instructions per lup:      %0.3f, rel: %0.3f'
           % (inst_per_lup, rel_inst_per_lup))
+
+    # Check plot
+    _ = get_instructions_per_task(dtype='float32', min_n=100, max_n=500,
+                                  num_n=10, plot=True)
+
+    _remove_saved_plot('simd.svg')
+    _remove_saved_plot('simd.pdf')
 
 
 # ===========

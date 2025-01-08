@@ -27,6 +27,8 @@ from ._utilities import human_readable_mem
 from .memory import Memory
 from .disk import Disk
 from .._openmp import get_avail_num_threads
+from .._device import check_perf_support
+from .._benchmark import get_instructions_per_task
 
 
 __all__ = ['initialize_io', 'cleanup_mem']
@@ -138,7 +140,7 @@ def _human_readable_mem_to_bytes(hr_mem):
 # =============
 
 def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
-                  parallel_io, scratch_dir, verbose=False):
+                  parallel_io, scratch_dir, flops, verbose=False):
     """
     Initialize the io dictionary.
     """
@@ -210,6 +212,50 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     # condition is n=5 and num_blocks=4.
     if m * (num_blocks - 1) >= n:
         raise ValueError('Too many block sizes. Decrease "num_blocks".')
+
+    # FLOPs
+    if not flops:
+        hw_inst_count = None
+        flops_count = None
+        simd_factor = None
+
+    else:
+        if os.name != "posix":
+            raise RuntimeError('The option "flops=True" can only be used on ' +
+                               'Linux machines.')
+
+        perf_status = check_perf_support()
+        kernel_version = perf_status['kernel_version']
+        perf_event_paranoid = perf_status['perf_event_paranoid']
+        perf_installed = perf_status['perf_installed']
+        perf_working = perf_status['perf_working']
+
+        if perf_installed is False:
+            raise RuntimeError('"perf" tool is not installed. This is needed' +
+                               'for computing FLOPs. Either install or ' +
+                               'set "flops=False".')
+        elif perf_working is False:
+            raise RuntimeError(
+                'Necessary permission has not been granted by the Linux ' +
+                'kernel for "perf" tool. This is needed to compute FLOPS. ' +
+                'Either set permissions or set "flops=False". ' +
+                '"perf_event_paranoid": %d.' % perf_event_paranoid)
+
+        if verbose:
+            print(f'{ANSI.FAINT}Performance Counter:{ANSI.RESET}\n' +
+                  f'kernel version       : {kernel_version}\n' +
+                  f'perf event paranoid  : {perf_event_paranoid}\n' +
+                  f'perf installed       : {perf_installed}\n' +
+                  f'perf working         : {perf_working}', flush=True)
+
+        hw_inst_count = 0
+        flops_count = 0
+        simd_factor = get_instructions_per_task(
+                dtype=dtype, min_n=100, max_n=500, num_n=6, plot=False)
+
+        if verbose:
+            print(f'SIMD factor          : {ANSI.BOLD}{simd_factor:>0.2f}' +
+                  f'{ANSI.RESET}\n', flush=True)
 
     # Find io_chunk to be a divisor or block size, m
     io_chunk = _find_io_chunk(m,)
@@ -429,6 +475,9 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             'store_proc_time': 0,
             'num_block_loads': 0,
             'num_block_stores': 0,
+            'hw_inst_count': hw_inst_count,
+            'flops': flops_count,
+            'simd_factor': simd_factor,
         },
         'config': {
             'num_blocks': num_blocks,

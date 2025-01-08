@@ -17,6 +17,7 @@ from ._memdet_block import load_block, store_block
 from ._ansi import ANSI
 from .profile import Profile
 from .._cy_linear_algebra import lu_factor, solve_triangular, matmul
+from .._device import InstructionsCounter
 
 __all__ = ['memdet_gen']
 
@@ -25,7 +26,7 @@ __all__ = ['memdet_gen']
 # lu factor
 # =========
 
-def _lu_factor(A, dtype, order, block_info, verbose=False):
+def _lu_factor(A, dtype, order, block_info, ic, verbose=False):
     """
     Performs LU factorization of an input matrix.
     """
@@ -46,7 +47,15 @@ def _lu_factor(A, dtype, order, block_info, verbose=False):
     # Get buffer from shared memory
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     lu, perm = lu_factor(A_, A_shape, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check lu is overwritten to A.
     if not numpy.may_share_memory(lu, A_):
@@ -63,7 +72,7 @@ def _lu_factor(A, dtype, order, block_info, verbose=False):
 # ================
 
 def _solve_triangular(lu, B, dtype, order, trans, lower, unit_diagonal,
-                      block_info, verbose=False):
+                      block_info, ic, verbose=False):
     """
     Solve triangular system of equations.
     """
@@ -81,8 +90,16 @@ def _solve_triangular(lu, B, dtype, order, trans, lower, unit_diagonal,
     # Get buffer from shared memory
     B_ = get_array(B, B_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     x = solve_triangular(lu, B_, shape=B_shape, trans=trans, lower=lower,
                          unit_diagonal=unit_diagonal, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check x is actually overwritten to B
     if not numpy.may_share_memory(x, B_):
@@ -98,7 +115,7 @@ def _solve_triangular(lu, B, dtype, order, trans, lower, unit_diagonal,
 # schur complement
 # ================
 
-def _schur_complement(L_t, U, S, dtype, order, block_info, verbose=False):
+def _schur_complement(L_t, U, S, dtype, order, block_info, ic, verbose=False):
     """
     Computes in-place Schur complement without allocating any intermediate
     memory. This method is parallel.
@@ -137,8 +154,16 @@ def _schur_complement(L_t, U, S, dtype, order, block_info, verbose=False):
     alpha = -1.0
     beta = 1.0
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     matmul(L_t_, U_, S_, matmul_shape, trans_a, trans_b, alpha, beta,
            overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     if verbose:
         prof.print_profile(shape, dtype)
@@ -223,6 +248,13 @@ def memdet_gen(io, verbose):
     sign = 1
     diag = []
 
+    # Hardware instruction counter
+    if io['profile']['simd_factor'] is not None:
+        ic = InstructionsCounter()
+        ic.set_simd_factor(io['profile']['simd_factor'])
+    else:
+        ic = None
+
     # Initialize progress
     progress = Progress(num_blocks, assume='gen', verbose=verbose)
 
@@ -237,7 +269,8 @@ def memdet_gen(io, verbose):
             load_block(io, A11, k, k, verbose=verbose)
 
         # LU decomposition
-        lu_11, perm = _lu_factor(A11, dtype, order, (k, k, num_blocks, n),
+        lu_11, perm = _lu_factor(A11, dtype, order,
+                                 block_info=(k, k, num_blocks, n), ic=ic,
                                  verbose=verbose)
 
         # log-determinant
@@ -279,7 +312,7 @@ def memdet_gen(io, verbose):
             # Solve upper-triangular system
             l_21_t = _solve_triangular(lu_11, A21_t, dtype, order, trans=True,
                                        lower=False, unit_diagonal=False,
-                                       block_info=(i, k, num_blocks, n),
+                                       block_info=(i, k, num_blocks, n), ic=ic,
                                        verbose=verbose)
 
             # Column iterations
@@ -308,7 +341,8 @@ def memdet_gen(io, verbose):
                     u_12 = _solve_triangular(
                             lu_11, A12, dtype, order, trans=False, lower=True,
                             unit_diagonal=True,
-                            block_info=(k, j, num_blocks, n), verbose=verbose)
+                            block_info=(k, j, num_blocks, n), ic=ic,
+                            verbose=verbose)
 
                     # The if condition below excludes two very specific cases
                     # from storing A12 to scratch. One case is when
@@ -338,14 +372,14 @@ def memdet_gen(io, verbose):
 
                     # Overwrite A11 with Schur complement
                     _schur_complement(l_21_t, u_12, A11, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
                 else:
                     load_block(io, A22, i, j, verbose=verbose)
 
                     # Overwrite A22 with Schur complement
                     _schur_complement(l_21_t, u_12, A22, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
 
                     # Store A22 to disk. This point reaches only when num_block
@@ -357,5 +391,10 @@ def memdet_gen(io, verbose):
 
     # concatenate diagonals of blocks of U
     diag = numpy.concatenate(diag)
+
+    # Instructions count
+    if ic is not None:
+        io['profile']['hw_inst_count'] = ic.get_count()
+        io['profile']['flops'] = ic.get_flops()
 
     return ld, sign, diag

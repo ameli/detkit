@@ -18,6 +18,7 @@ from ._ansi import ANSI
 from .profile import Profile
 from ._memdet_gen import _get_diag, _schur_complement, _solve_triangular
 from .._cy_linear_algebra import cho_factor, cho_solve
+from .._device import InstructionsCounter
 
 __all__ = ['memdet_spd']
 
@@ -26,7 +27,7 @@ __all__ = ['memdet_spd']
 # cho factor
 # ==========
 
-def _cho_factor(A, dtype, order, lower, block_info, verbose=False):
+def _cho_factor(A, dtype, order, lower, block_info, ic, verbose=False):
     """
     Performs Cholesky factorization of an input matrix.
     """
@@ -47,8 +48,16 @@ def _cho_factor(A, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     A_ = get_array(A, A_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     # Cholesky (Lower: A = L @ L.T or Upper: A = U.T @ U)
     cho = cho_factor(A_, A_shape[0], lower=lower, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check cho is overwritten to A.
     if not numpy.may_share_memory(cho, A_):
@@ -64,7 +73,7 @@ def _cho_factor(A, dtype, order, lower, block_info, verbose=False):
 # cho solve
 # =========
 
-def _cho_solve(cho, B, dtype, order, lower, block_info, verbose=False):
+def _cho_solve(cho, B, dtype, order, lower, block_info, ic, verbose=False):
     """
     Solve triangular system of equations.
     """
@@ -82,7 +91,15 @@ def _cho_solve(cho, B, dtype, order, lower, block_info, verbose=False):
     # Get buffer from shared memory
     B_ = get_array(B, B_shape_on_mem, dtype, order)
 
+    # Start performance counter
+    if ic is not None:
+        ic.start()
+
     x = cho_solve(cho, B_, shape=B_shape, lower=lower, overwrite=True)
+
+    # Stop performance counter
+    if ic is not None:
+        ic.stop()
 
     # Check x is actually overwritten to B
     if not numpy.may_share_memory(x, B_):
@@ -120,6 +137,13 @@ def memdet_spd(io, verbose):
     diag = []
     lower = True
 
+    # Hardware instruction counter
+    if io['profile']['simd_factor'] is not None:
+        ic = InstructionsCounter()
+        ic.set_simd_factor(io['profile']['simd_factor'])
+    else:
+        ic = None
+
     # Initialize progress
     progress = Progress(num_blocks, assume='sym', verbose=verbose)
 
@@ -135,7 +159,8 @@ def memdet_spd(io, verbose):
 
         # Cholesky decomposition
         cho_11 = _cho_factor(A11, dtype, order, lower=lower,
-                             block_info=(k, k, num_blocks, n), verbose=verbose)
+                             block_info=(k, k, num_blocks, n), ic=ic,
+                             verbose=verbose)
 
         # log-determinant
         diag_cho_11 = _get_diag(cho_11, (k, k, num_blocks, n))
@@ -167,7 +192,7 @@ def memdet_spd(io, verbose):
                 load_block(io, B, k, j, trans=False, verbose=verbose)
                 _solve_triangular(cho_11, B, dtype, order, trans=False,
                                   lower=lower, unit_diagonal=False,
-                                  block_info=(k, j, num_blocks, n),
+                                  block_info=(k, j, num_blocks, n), ic=ic,
                                   verbose=verbose)
 
             # Row iterations
@@ -198,7 +223,7 @@ def memdet_spd(io, verbose):
                         _solve_triangular(cho_11, C, dtype, order, trans=False,
                                           lower=lower, unit_diagonal=False,
                                           block_info=(k, i, num_blocks, n),
-                                          verbose=verbose)
+                                          ic=ic, verbose=verbose)
 
                         if (num_blocks > 2) and (i < j-1):
                             store_block(io, C, k, i, verbose=verbose)
@@ -211,7 +236,7 @@ def memdet_spd(io, verbose):
 
                     # Overwrite A11 with Schur complement
                     _schur_complement(C, B, A11, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
                 else:
 
@@ -219,7 +244,7 @@ def memdet_spd(io, verbose):
 
                     # Overwrite A22 with Schur complement
                     _schur_complement(C, B, A22, dtype, order,
-                                      block_info=(i, j, num_blocks, n),
+                                      block_info=(i, j, num_blocks, n), ic=ic,
                                       verbose=verbose)
 
                     # Store A22 to disk. This point reaches only when num_block
@@ -231,5 +256,10 @@ def memdet_spd(io, verbose):
 
     # concatenate diagonals of blocks of U
     diag = numpy.concatenate(diag)
+
+    # Instructions count
+    if ic is not None:
+        io['profile']['hw_inst_count'] = ic.get_count()
+        io['profile']['flops'] = ic.get_flops()
 
     return ld, sign, diag

@@ -33,8 +33,9 @@ class cInstructionsCounter
         void set_simd_factor(double factor);
         void start();
         void stop();
-        long long int get_count();
-        long long int get_flops();
+        void reset();
+        long long get_count();
+        long long get_flops();
         
     // Member data
     private:
@@ -42,7 +43,7 @@ class cInstructionsCounter
         struct perf_event_attr pe;
         #endif
         int fd;
-        long long int count;
+        long long count;
         double simd_factor;
 };
 

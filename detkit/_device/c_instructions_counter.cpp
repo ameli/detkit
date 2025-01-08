@@ -71,7 +71,7 @@ cInstructionsCounter::cInstructionsCounter():
 
         // Option 2: count raw instructions specifically for floating point.
         // This option measures only floating point operations, not other tasks
-        // such as meoey operations. This option gives me zero counts on a few
+        // such as memory operations. This option gives me zero counts on a few
         // CPUs I tested, as it seems it is not supported, so I use option 1
         // above for now.
         // this->pe.type = PERF_TYPE_RAW;  // Use raw events
@@ -136,16 +136,33 @@ void cInstructionsCounter::start()
 void cInstructionsCounter::stop()
 {
     #if __linux__
+        
+        long long current_count;
+
         if (this->fd != -1)
         {
             ioctl(this->fd, PERF_EVENT_IOC_DISABLE, 0);
-            ssize_t bytes = read(this->fd, &this->count, sizeof(long long));
+            ssize_t bytes = read(this->fd, &current_count,
+                                 sizeof(long long));
             if (bytes < 0)
             {
                 std::cerr << "Error reading file." << std::endl;
             }
+
+            // Accumulate counts
+            this->count += current_count;
         }
     #endif
+}
+
+
+// =====
+// reset
+// =====
+
+void cInstructionsCounter::reset()
+{
+    this->count = 0;
 }
 
 
@@ -153,7 +170,7 @@ void cInstructionsCounter::stop()
 // get count
 // =========
 
-long long int cInstructionsCounter::get_count()
+long long cInstructionsCounter::get_count()
 {
     return this->count;
 }
@@ -163,7 +180,7 @@ long long int cInstructionsCounter::get_count()
 // get flops
 // =========
 
-long long int cInstructionsCounter::get_flops()
+long long cInstructionsCounter::get_flops()
 {
-    return static_cast<long long int>(this->count * this->simd_factor);
+    return static_cast<long long>(this->count * this->simd_factor);
 }
