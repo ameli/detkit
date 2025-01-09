@@ -137,9 +137,9 @@ def memdet_spd2(io, verbose):
     diag = []
 
     # Hardware instruction counter
-    if io['profile']['simd_factor'] is not None:
+    if io['profile']['inst_per_flop'] is not None:
         ic = InstructionsCounter()
-        ic.set_simd_factor(io['profile']['simd_factor'])
+        ic.set_inst_per_flop(io['profile']['inst_per_flop'])
     else:
         ic = None
 

@@ -53,7 +53,7 @@
 cInstructionsCounter::cInstructionsCounter():
     fd(-1),
     count(0),
-    simd_factor(1.0)
+    inst_per_flop(1.0)
 {
     #if __linux__
         memset(&this->pe, 0, sizeof(struct perf_event_attr));
@@ -103,13 +103,13 @@ cInstructionsCounter::~cInstructionsCounter()
 }
 
 
-// ===============
-// set smid factor
-// ===============
+// =================
+// set inst per flop
+// =================
 
-void cInstructionsCounter::set_simd_factor(double simd_factor)
+void cInstructionsCounter::set_inst_per_flop(double inst_per_flop)
 {
-    this->simd_factor = simd_factor;
+    this->inst_per_flop = inst_per_flop;
 }
 
 
@@ -182,5 +182,5 @@ long long cInstructionsCounter::get_count()
 
 long long cInstructionsCounter::get_flops()
 {
-    return static_cast<long long>(this->count * this->simd_factor);
+    return static_cast<long long>(this->count / this->inst_per_flop);
 }

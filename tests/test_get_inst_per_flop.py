@@ -15,7 +15,7 @@
 
 import os
 import glob
-from detkit import get_instructions_per_task
+from detkit import get_instructions_per_flop
 
 import warnings
 warnings.resetwarnings()
@@ -48,20 +48,20 @@ def _remove_saved_plot(filenames):
 
 
 # ======================
-# test get inst per task
+# test get inst per flop
 # ======================
 
-def test_get_inst_per_task():
+def test_get_inst_per_flop():
     """
-    Test for `get_inst_per_task` function.
+    Test for `get_inst_per_flop` function.
     """
 
     # Instructions for each task
-    inst_per_matmat = get_instructions_per_task(task='matmat')
-    inst_per_gramian = get_instructions_per_task(task='gramian')
-    inst_per_cholesky = get_instructions_per_task(task='cholesky')
-    inst_per_lu = get_instructions_per_task(task='lu')
-    inst_per_lup = get_instructions_per_task(task='lup')
+    inst_per_matmat = get_instructions_per_flop(task='matmat')
+    inst_per_gramian = get_instructions_per_flop(task='gramian')
+    inst_per_cholesky = get_instructions_per_flop(task='cholesky')
+    inst_per_lu = get_instructions_per_flop(task='lu')
+    inst_per_lup = get_instructions_per_flop(task='lup')
 
     # Instructions relative to matrix-matrix multiplication
     rel_inst_per_matmat = inst_per_matmat / inst_per_matmat
@@ -83,7 +83,7 @@ def test_get_inst_per_task():
           % (inst_per_lup, rel_inst_per_lup))
 
     # Check plot
-    _ = get_instructions_per_task(dtype='float32', min_n=100, max_n=500,
+    _ = get_instructions_per_flop(dtype='float32', min_n=100, max_n=500,
                                   num_n=10, plot=True)
 
     _remove_saved_plot('simd.svg')
@@ -95,4 +95,4 @@ def test_get_inst_per_task():
 # ===========
 
 if __name__ == "__main__":
-    test_get_inst_per_task()
+    test_get_inst_per_flop()

@@ -27,7 +27,7 @@ import re
 
 from timer import Timer
 from detkit import loggdet, logpdet, orthogonalize, covariance_matrix, \
-        design_matrix, get_config, get_instructions_per_task
+        design_matrix, get_config, get_instructions_per_flop
 
 
 # ===============
@@ -285,7 +285,7 @@ def benchmark(argv):
     """
 
     # Check if perf tool is installed (or user permission is set for perf)
-    inst = get_instructions_per_task()
+    inst = get_instructions_per_flop()
     if numpy.isnan(inst):
         raise RuntimeError('Perf tool is not installed or the user ' +
                            'permission is not set to run perf tool.')
@@ -324,13 +324,13 @@ def benchmark(argv):
     devices = {
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
-        'instructions_per_matmat': get_instructions_per_task(task='matmat'),
-        'instructions_per_gramian': get_instructions_per_task(
+        'instructions_per_matmat': get_instructions_per_flop(task='matmat'),
+        'instructions_per_gramian': get_instructions_per_flop(
             task='gramian'),
-        'instructions_per_cholesky': get_instructions_per_task(
+        'instructions_per_cholesky': get_instructions_per_flop(
             task='cholesky'),
-        'instructions_per_lu': get_instructions_per_task(task='lu'),
-        'instructions_per_lup': get_instructions_per_task(task='lup')
+        'instructions_per_lu': get_instructions_per_flop(task='lu'),
+        'instructions_per_lup': get_instructions_per_flop(task='lup')
     }
 
     n = config['n']

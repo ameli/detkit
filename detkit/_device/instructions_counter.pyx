@@ -16,7 +16,7 @@ from libc.stdint cimport int64_t
 cdef extern from "c_instructions_counter.h":
     cdef cppclass cInstructionsCounter:
         cInstructionsCounter()
-        void set_simd_factor(double simd_factor)
+        void set_inst_per_flop(double inst_per_flop)
         void start()
         void stop()
         void reset()
@@ -41,13 +41,13 @@ cdef class InstructionsCounter:
     # cinit
     # ====
 
-    def __cinit__(self, simd_factor=1.0):
+    def __cinit__(self, inst_per_flop=1.0):
         """
         Initialize the C++ InstructionsCounter
         """
 
         self.c_instructions_counter = new cInstructionsCounter()
-        self.c_instructions_counter.set_simd_factor(1.0)
+        self.c_instructions_counter.set_inst_per_flop(1.0)
 
     # =======
     # dealloc
@@ -111,21 +111,21 @@ cdef class InstructionsCounter:
         return self.c_instructions_counter.get_count()
 
     # ===============
-    # set simd factor
+    # set inst per flop
     # ===============
 
-    def set_simd_factor(self, simd_factor: float):
+    def set_inst_per_flop(self, inst_per_flop: float):
         """
-        Set the SIMD adjustment factor for floating-point operations.
+        Set retired instructions per floating-point operations.
 
         Parameters
         ----------
 
-        factor : float
-            Number of FLOPs per hardware instruction.
+        inst_per_flop : float
+            Number of hardware instruction per FLOP.
         """
 
-        self.c_instructions_counter.set_simd_factor(simd_factor)
+        self.c_instructions_counter.set_inst_per_flop(inst_per_flop)
 
     # =========
     # get flops

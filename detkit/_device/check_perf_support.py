@@ -41,7 +41,7 @@ def check_perf_support():
     See Also
     --------
 
-    get_instructions_per_task
+    get_instructions_per_flop
     memdet
     loggdet
     logpdet

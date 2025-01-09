@@ -143,7 +143,7 @@ If the ``perf`` tool is installed and configured properly, the output of either 
 
     {
         'kernel_version': '6.8.0-51-generic',
-        'perf_event_paranoid': -1,
+        'perf_event_paranoid': 1,
         'perf_installed': True,
         'perf_working': True
     }

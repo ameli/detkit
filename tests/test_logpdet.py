@@ -16,7 +16,7 @@
 import numpy
 import numpy.linalg
 from detkit import logpdet, orthogonalize, ortho_complement, \
-        get_instructions_per_task
+        get_instructions_per_flop
 
 import warnings
 warnings.resetwarnings()
@@ -65,7 +65,7 @@ def test_logpdet():
     print('%16.8f' % logdet_7)
 
     # Check if flops can be used
-    if numpy.isnan(get_instructions_per_task()):
+    if numpy.isnan(get_instructions_per_flop()):
         flops = False
     else:
         flops = True

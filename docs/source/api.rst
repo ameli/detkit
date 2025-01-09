@@ -102,7 +102,7 @@ Utility functions for profiling memory and process.
 
     detkit.get_config
     detkit.check_perf_support
-    detkit.get_instructions_per_task
+    detkit.get_instructions_per_flop
     detkit.get_processor_name
     detkit.human_readable_time
     detkit.human_readable_mem

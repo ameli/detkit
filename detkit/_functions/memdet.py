@@ -200,7 +200,7 @@ def memdet(
 
     flops : boolean, default=False
         if `True`, FLOP count will be included in ``info`` output under
-        ``info['process']['flops']. This option should be used together with
+        ``info['process']['flops']``. This option should be used together with
         setting ``return_info=True``.  To use this option, Perf Tool on your
         machine should be installed and proper permission should be granted
         (see :ref:`Perf Tool <perf_tool>`).
@@ -274,8 +274,7 @@ def memdet(
                   used during the computation.
                 * ``'hw_inst_count'``: hardware instruction counts.
                 * ``'flops'``: FLOPs obtained from hardware instruction counts.
-                * ``'simd_factor'``: SIMD factor to multiply to hardware
-                  instruction counts to obtain FLOPs.
+                * ``'inst_per_flop'``: Hardware instructions per FLOP.
             * ``'block'``: info about matrix blocks
                 * ``'block_nbytes'``: number of bytes of each block allocated
                   on the memory. When the number of blocks along row-block (or
@@ -441,23 +440,25 @@ def memdet(
     **Counting FLOPs:**
 
     FLOPs are counted when ``flops=True`` and ``return_info=True`` are set.
-    FLOPS are computed by multiplying hardware instruction counts (see
-    ``info['process']['hw_inst_count']`` and SIMD factor (see
-    ``info['process']['simd_factor']).
-
-    Single instruction, multiple data (SIMD) factor indicates the number of
-    FLOPS per one hardware instruction count, and this is estimated by
-    :func:`detkit.get_instructions_per_task`.
+    FLOPs counts are stored at ``info['process']['flops']``.
 
     To compute FLOPs, you should install :ref:`Perf Tool <perf_tool>` and
     grant necessary permissions to the kernel. Computing FLOPs with Perf Tool
     can only be done on Linux machines.
 
+    FLOPS are computed by multiplying hardware instruction counts (which can be
+    found at ``info['process']['hw_inst_count']`` and instructions per FLOP
+    (which can be found at ``info['process']['inst_per_flop']``).
+
+    Single instruction, multiple data (SIMD) factor indicates the number of
+    FLOPS per one hardware instruction count, and this is estimated by
+    :func:`detkit.get_instructions_per_flop`.
+
     References
     ----------
 
     .. [1] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta,
-           Michael W. Mahoney (2024). Determinant Estimation under Memory
+           Michael W. Mahoney (2025). Determinant Estimation under Memory
            Constraints and Neural Scaling Law (*under review*)
 
     Examples
@@ -657,7 +658,7 @@ def memdet(
                 'store_proc_time': io['profile']['store_proc_time'],
                 'hw_inst_count': io['profile']['hw_inst_count'],
                 'flops': io['profile']['flops'],
-                'simd_factor': io['profile']['simd_factor'],
+                'inst_per_flop': io['profile']['inst_per_flop'],
             },
             'block': {
                 'block_nbytes': block_nbytes,

@@ -20,14 +20,14 @@ import texplot
 # To avoid cython's bug that does not recognizes "long double" in template []
 ctypedef long double long_double
 
-__all__ = ['get_instructions_per_task']
+__all__ = ['get_instructions_per_flop']
 
 
 # =========================
-# get instructions per task
+# get instructions per flop
 # =========================
 
-cpdef get_instructions_per_task(
+cpdef get_instructions_per_flop(
         task='matmat',
         dtype='float64',
         min_n=100,
@@ -77,7 +77,7 @@ cpdef get_instructions_per_task(
             * ``'gramian'``: Gramian matrix-matrix multiplication task.
             * ``'cholesky'``: Cholesky decomposition task.
             * ``'lu'``: LU decomposition task.
-            * ``'lu'``: LUP decomposition task.
+            * ``'lup'``: LUP decomposition task.
 
         dtype : {'float32', 'float64', 'float128'}, default='float64'
             The type of the test data.
@@ -153,7 +153,7 @@ cpdef get_instructions_per_task(
         11009228170
 
         >>> # Measure hardware instructions of a single FLOP
-        >>> benchmark_inst = get_instructions_per_task(task='matmat')
+        >>> benchmark_inst = get_instructions_per_flop(task='matmat')
         >>> print(benchmark_int)
         5.21
 
@@ -171,7 +171,7 @@ cpdef get_instructions_per_task(
     .. code-block:: python
 
         >>> import detkit
-        >>> inst = detkit.get_instructions_per_task(dtype='float32', min_n=100,
+        >>> inst = detkit.get_instructions_per_flop(dtype='float32', min_n=100,
         ...                                         max_n=500, num_n=10,
         ...                                         plot=True)
         >>> # inst is the intercept of the regression line in the plot
@@ -184,7 +184,7 @@ cpdef get_instructions_per_task(
     """
 
     n = (1.0 / numpy.linspace(1.0/min_n, 1.0/max_n, num_n) + 0.5).astype(int)
-    inst_per_task = -numpy.ones((n.size, ), dtype=float)
+    inst_per_flop = -numpy.ones((n.size, ), dtype=float)
 
     for i in range(n.size):
 
@@ -203,12 +203,25 @@ cpdef get_instructions_per_task(
             return numpy.nan
 
         # Flops for matrix-matrix multiplication
-        matmat_flops = n[i]**3
-        inst_per_task[i] = inst / matmat_flops
+        benchmark_flops = n[i]**3
+        if task == 'matmat':
+            pass
+        elif task == 'gramian':
+            benchmark_flops /= 1.0/2.0
+        elif task == 'cholesky':
+            benchmark_flops /= 1.0/3.0
+        elif task == 'lu':
+            benchmark_flops /= 2.0/3.0
+        elif task == 'lup':
+            benchmark_flops /= 2.0/3.0
+        else:
+            raise ValueError('"task" is not recognized.')
 
-    # Find inst_per_task when n tends to infinity using an exponential model
-    # inst_per_task = a/n + b
-    slope, intercept = numpy.polyfit(1.0/n, inst_per_task, deg=1)
+        inst_per_flop[i] = inst / benchmark_flops
+
+    # Find inst_per_flop when n tends to infinity using an exponential model
+    # inst_per_flop = a/n + b
+    slope, intercept = numpy.polyfit(1.0/n, inst_per_flop, deg=1)
 
     if plot:
         n_inv = numpy.linspace(0, numpy.max(1.0/n), 100)
@@ -216,7 +229,7 @@ cpdef get_instructions_per_task(
 
         with texplot.theme():
             fig, ax = plt.subplots(figsize=(6, 4))
-            ax.plot(1.0/n, inst_per_task, 'o', color='black',
+            ax.plot(1.0/n, inst_per_flop, 'o', color='black',
                     label='Measurement')
             ax.plot(n_inv, interp, '--', color='black', label='Regression')
             ax.scatter(n_inv[0], interp[0], s=50, zorder=3, clip_on=False,
@@ -224,17 +237,17 @@ cpdef get_instructions_per_task(
             ax.set_xlim([n_inv[0], n_inv[-1]])
             ax.legend(fontsize='small')
             ax.set_xlabel(r'$n^{-1}$')
-            ax.set_ylabel(r'FLOPs / $n^3$')
-            ax.set_title(r'Estimating SIMD Factor at $n \to \infty$')
+            ax.set_ylabel(r'Retired Instructions / $n^3$')
+            ax.set_title(r'Estimating Instructions per FLOP at $n \to \infty$')
 
             texplot.show_or_save_plot(plt, default_filename='simd',
                                       transparent_background=True, dpi=200,
                                       show_and_save=False, verbose=True)
 
-    # In the limit n=infinity, b is the number of inst_per_task
-    inst_per_task_limit = float(intercept)
+    # In the limit n=infinity, b is the number of inst_per_flop
+    inst_per_flop_limit = float(intercept)
 
-    return inst_per_task_limit
+    return inst_per_flop_limit
 
 
 # ======================

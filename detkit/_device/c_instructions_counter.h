@@ -30,7 +30,7 @@ class cInstructionsCounter
     public:
         cInstructionsCounter();
         ~cInstructionsCounter();
-        void set_simd_factor(double factor);
+        void set_inst_per_flop(double factor);
         void start();
         void stop();
         void reset();
@@ -44,7 +44,7 @@ class cInstructionsCounter
         #endif
         int fd;
         long long count;
-        double simd_factor;
+        double inst_per_flop;
 };
 
 #endif  // _DEVICE_INSTRUCTIONS_COUNTER_H_

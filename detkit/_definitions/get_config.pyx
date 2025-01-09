@@ -63,7 +63,7 @@ def get_config(key=None):
     See Also
     --------
 
-    detkit.get_instructions_per_task
+    detkit.get_instructions_per_flop
 
     Notes
     -----

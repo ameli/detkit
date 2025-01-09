@@ -201,15 +201,25 @@ def logpdet(
 
             perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=1000
 
-        Alternatively, you may also test `perf` tool with |project| by
+        Alternatively, you can test the ``perf`` tool directly with
+        :func:`detkit.check_perf_support`:
 
         .. code-block:: python
 
             >>> import detkit
-            >>> detkit..get_instructions_per_task()
+            >>> detkit.check_perf_support()
 
-        If the installed `perf` tool is configured properly, the output of
-        either of the above commands should not be empty.
+        If the ``perf`` tool is installed and configured properly, the output
+        of either of the above commands should be like:
+
+        .. code-block::
+
+            {
+                'kernel_version': '6.8.0-51-generic',
+                'perf_event_paranoid': 1,
+                'perf_installed': True,
+                'perf_working': True
+            }
 
     See Also
     --------

@@ -28,7 +28,7 @@ from .memory import Memory
 from .disk import Disk
 from .._openmp import get_avail_num_threads
 from .._device import check_perf_support
-from .._benchmark import get_instructions_per_task
+from .._benchmark import get_instructions_per_flop
 
 
 __all__ = ['initialize_io', 'cleanup_mem']
@@ -217,7 +217,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     if not flops:
         hw_inst_count = None
         flops_count = None
-        simd_factor = None
+        inst_per_flop = None
 
     else:
         if os.name != "posix":
@@ -250,11 +250,11 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
 
         hw_inst_count = 0
         flops_count = 0
-        simd_factor = get_instructions_per_task(
+        inst_per_flop = get_instructions_per_flop(
                 dtype=dtype, min_n=100, max_n=500, num_n=6, plot=False)
 
         if verbose:
-            print(f'SIMD factor          : {ANSI.BOLD}{simd_factor:>0.2f}' +
+            print(f'inst per flop        : {ANSI.BOLD}{inst_per_flop:>0.2f}' +
                   f'{ANSI.RESET}\n', flush=True)
 
     # Find io_chunk to be a divisor or block size, m
@@ -477,7 +477,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             'num_block_stores': 0,
             'hw_inst_count': hw_inst_count,
             'flops': flops_count,
-            'simd_factor': simd_factor,
+            'inst_per_flop': inst_per_flop,
         },
         'config': {
             'num_blocks': num_blocks,

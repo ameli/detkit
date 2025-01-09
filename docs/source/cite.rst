@@ -23,7 +23,7 @@ If you publish work that uses |project|, please consider citing the following ma
         </div>
         </div>
 
-.. [2] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2024). *Determinant Estimation under Memory Constraints and Neural Scaling Laws* (under review) |btn-nip-doi| |ameli-nip| |btn-bib-2| |btn-view-pdf-2|
+.. [2] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2025). *Determinant Estimation under Memory Constraints and Neural Scaling Laws* (under review) |btn-nip-doi| |ameli-nip| |btn-bib-2| |btn-view-pdf-2|
 
    .. raw:: html
 
