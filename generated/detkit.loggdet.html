@@ -364,8 +364,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="detkit.get_instructions_per_task.html">
-   get_instructions_per_task
+  <a class="reference internal" href="detkit.get_instructions_per_flop.html">
+   get_instructions_per_flop
   </a>
  </li>
  <li class="toctree-l1">
@@ -593,13 +593,22 @@ span.prompt2:before {
   content: " ";
 }
 </style><span class="prompt2">perf stat -e instructions:u dd if=/dev/zero of=/dev/null count=1000</span>
-</pre></div></div><p>Alternatively, you may also test <cite>perf</cite> tool with <span class="synco">detkit</span> by</p>
+</pre></div></div><p>Alternatively, you can test the <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool directly with
+<a class="reference internal" href="detkit.check_perf_support.html#detkit.check_perf_support" title="detkit.check_perf_support"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.check_perf_support()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">detkit</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">..</span><span class="n">get_instructions_per_task</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detkit</span><span class="o">.</span><span class="n">check_perf_support</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>If the installed <cite>perf</cite> tool is configured properly, the output of
-either of the above commands should not be empty.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">perf</span></code> tool is installed and configured properly, the output
+of either of the above commands should be like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;kernel_version&#39;</span><span class="p">:</span> <span class="s1">&#39;6.8.0-51-generic&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;perf_event_paranoid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;perf_installed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;perf_working&#39;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="r714b6b9d238b-1" role="doc-biblioentry">

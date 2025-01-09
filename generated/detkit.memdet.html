@@ -364,8 +364,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="detkit.get_instructions_per_task.html">
-   get_instructions_per_task
+  <a class="reference internal" href="detkit.get_instructions_per_flop.html">
+   get_instructions_per_flop
   </a>
  </li>
  <li class="toctree-l1">
@@ -559,8 +559,8 @@ process times, memory allocation, disk usage, etc. See <code class="docutils lit
 variable in the return section below.</p>
 </dd>
 <dt><strong>flops</strong><span class="classifier">boolean, default=False</span></dt><dd><p>if <cite>True</cite>, FLOP count will be included in <code class="docutils literal notranslate"><span class="pre">info</span></code> output under
-<code class="docutils literal notranslate"><span class="pre">info['process']['flops'].</span> <span class="pre">This</span> <span class="pre">option</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">used</span> <span class="pre">together</span> <span class="pre">with</span>
-<span class="pre">setting</span> <span class="pre">``return_info=True</span></code>.  To use this option, Perf Tool on your
+<code class="docutils literal notranslate"><span class="pre">info['process']['flops']</span></code>. This option should be used together with
+setting <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code>.  To use this option, Perf Tool on your
 machine should be installed and proper permission should be granted
 (see <a class="reference internal" href="../install/dependencies.html#perf-tool"><span class="std std-ref">Perf Tool</span></a>).</p>
 <div class="admonition note">
@@ -637,8 +637,7 @@ memory to disk. This is relevant only if scratchpad space was
 used during the computation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'hw_inst_count'</span></code>: hardware instruction counts.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'flops'</span></code>: FLOPs obtained from hardware instruction counts.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'simd_factor'</span></code>: SIMD factor to multiply to hardware
-instruction counts to obtain FLOPs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'inst_per_flop'</span></code>: Hardware instructions per FLOP.</p></li>
 </ul>
 </dd>
 </dl>
@@ -813,21 +812,22 @@ and the element <code class="docutils literal notranslate"><span class="pre">dia
 any additional cost.</p>
 <p><strong>Counting FLOPs:</strong></p>
 <p>FLOPs are counted when <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> and <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code> are set.
-FLOPS are computed by multiplying hardware instruction counts (see
-<code class="docutils literal notranslate"><span class="pre">info['process']['hw_inst_count']</span></code> and SIMD factor (see
-<a href="#id1"><span class="problematic" id="id2">``</span></a>info[‘process’][‘simd_factor’]).</p>
-<p>Single instruction, multiple data (SIMD) factor indicates the number of
-FLOPS per one hardware instruction count, and this is estimated by
-<a class="reference internal" href="detkit.get_instructions_per_task.html#detkit.get_instructions_per_task" title="detkit.get_instructions_per_task"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.get_instructions_per_task()</span></code></a>.</p>
+FLOPs counts are stored at <code class="docutils literal notranslate"><span class="pre">info['process']['flops']</span></code>.</p>
 <p>To compute FLOPs, you should install <a class="reference internal" href="../install/dependencies.html#perf-tool"><span class="std std-ref">Perf Tool</span></a> and
 grant necessary permissions to the kernel. Computing FLOPs with Perf Tool
 can only be done on Linux machines.</p>
+<p>FLOPS are computed by multiplying hardware instruction counts (which can be
+found at <code class="docutils literal notranslate"><span class="pre">info['process']['hw_inst_count']</span></code> and instructions per FLOP
+(which can be found at <code class="docutils literal notranslate"><span class="pre">info['process']['inst_per_flop']</span></code>).</p>
+<p>Single instruction, multiple data (SIMD) factor indicates the number of
+FLOPS per one hardware instruction count, and this is estimated by
+<a class="reference internal" href="detkit.get_instructions_per_flop.html#detkit.get_instructions_per_flop" title="detkit.get_instructions_per_flop"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.get_instructions_per_flop()</span></code></a>.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rcb8eaaf14d1c-1" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <p>Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta,
-Michael W. Mahoney (2024). Determinant Estimation under Memory
+Michael W. Mahoney (2025). Determinant Estimation under Memory
 Constraints and Neural Scaling Law (<em>under review</em>)</p>
 </div>
 </div>
