@@ -62,7 +62,7 @@ def check_perf_support():
         >>> print(results)
         {
             'kernel_version': '6.8.0-51-generic',
-            'perf_event_paranoid': -1,
+            'perf_event_paranoid': 1,
             'perf_installed': True,
             'perf_working': True
         }

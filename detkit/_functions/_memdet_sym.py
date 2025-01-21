@@ -340,6 +340,8 @@ def memdet_sym(io, verbose):
     ld = 0
     sign = 1
     diag = []
+    perm = []
+    perm_base_index = 0
     lower = True  # using LDL.T instead UDU.T decomposition
 
     # Hardware instruction counter
@@ -389,11 +391,11 @@ def memdet_sym(io, verbose):
         # P times L instead (not L itself). After this function, ldu_11
         # becomes exactly what scipy.linag.ldl outputs. However, all
         # computations here are performed in-place (as opposed to scipy).
-        _, perm = _construct_tri_factor(ldu_11, swap_arr, pivot_arr,
-                                        lower=lower)
+        _, perm_ldu_11 = _construct_tri_factor(ldu_11, swap_arr, pivot_arr,
+                                               lower=lower)
 
         # Un-permute P*L so L becomes the actual L. This is done in-place.
-        _unpermute_tri_factor(ldu_11, perm, dtype, order,
+        _unpermute_tri_factor(ldu_11, perm_ldu_11, dtype, order,
                               block_info=(k, k, num_blocks, n))
 
         # log-determinant
@@ -406,8 +408,10 @@ def memdet_sym(io, verbose):
         # +1, so we do not need to compute the parity of P at all.
         sign *= numpy.prod(numpy.sign(diag_ldu_11))
 
-        # Save diagonals
+        # Save diagonals and permutations
         diag.append(numpy.copy(diag_ldu_11))
+        perm.append(numpy.copy(perm_ldu_11) + perm_base_index)
+        perm_base_index += perm_ldu_11.size
 
         # Print progress count
         progress.count()
@@ -433,7 +437,7 @@ def memdet_sym(io, verbose):
 
             if j == num_blocks-1:
                 # Load P.T @ A12 (P.T is applied using perm)
-                load_block(io, B, k, j, perm=perm, verbose=verbose)
+                load_block(io, B, k, j, perm=perm_ldu_11, verbose=verbose)
 
                 # Perform B <-- L^{-1} B
                 _solve_triangular(ldu_11, B, dtype, order, trans=False,
@@ -471,7 +475,8 @@ def memdet_sym(io, verbose):
                         # First time loading C from input array, so, load the
                         # permuted matrix P.T @ A12. This is load from
                         # input array not scratch.
-                        load_block(io, C, k, i, perm=perm, verbose=verbose)
+                        load_block(io, C, k, i, perm=perm_ldu_11,
+                                   verbose=verbose)
                     else:
                         # Here, C was loaded before from input array, and
                         # L^{-1} was pre-multiplied and its transpose was
@@ -521,12 +526,13 @@ def memdet_sym(io, verbose):
                 # Print progress count
                 progress.count()
 
-    # concatenate diagonals of blocks of U
+    # concatenate diagonals and permutations of blocks of U
     diag = numpy.concatenate(diag)
+    perm = numpy.concatenate(perm)
 
     # Instructions count
     if ic is not None:
         io['profile']['hw_inst_count'] = ic.get_count()
         io['profile']['flops'] = ic.get_flops()
 
-    return ld, sign, diag
+    return ld, sign, diag, perm

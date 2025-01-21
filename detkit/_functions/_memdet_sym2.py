@@ -16,7 +16,7 @@ from ._memdet_util import Progress, get_array, get_block_shape
 from ._memdet_block import load_block, store_block
 from ._ansi import ANSI
 from .profile import Profile
-from ._memdet_gen import _permutation_parity, _schur_complement
+from ._memdet_gen import _schur_complement
 from .._cy_linear_algebra import ldl_factor, ldl_solve
 from .._cy_linear_algebra.ldl_factor import _sanitize_piv
 from .._device import InstructionsCounter
@@ -269,6 +269,8 @@ def memdet_sym2(io, verbose):
     ld = 0
     sign = 1
     diag = []
+    perm = []
+    perm_base_index = 0
     lower = True  # using LDL.T instead UDU.T decomposition
 
     # Hardware instruction counter
@@ -302,17 +304,18 @@ def memdet_sym2(io, verbose):
         swap_arr, pivot_arr = _sanitize_piv(piv_, lower=lower)
         diag_ldu_11 = _get_diag(ldu_11, pivot_arr, (k, k, num_blocks, n),
                                 lower=lower)
-        perm = _pivot_to_permutation(swap_arr, pivot_arr, lower=lower)
+        perm_ldu_11 = _pivot_to_permutation(swap_arr, pivot_arr, lower=lower)
 
         # log-determinant
         ld += numpy.sum(numpy.log(numpy.abs(diag_ldu_11)))
 
         # Sign of determinant
-        parity = _permutation_parity(perm)
-        sign *= numpy.prod(numpy.sign(diag_ldu_11)) * parity
+        sign *= numpy.prod(numpy.sign(diag_ldu_11))
 
-        # Save diagonals
+        # Save diagonals and permutations
         diag.append(numpy.copy(diag_ldu_11))
+        perm.append(numpy.copy(perm_ldu_11) + perm_base_index)
+        perm_base_index += perm_ldu_11.size
 
         # Print progress count
         progress.count()
@@ -385,12 +388,13 @@ def memdet_sym2(io, verbose):
                 # Print progress count
                 progress.count()
 
-    # concatenate diagonals of blocks of U
+    # concatenate diagonals and permutations of blocks of U
     diag = numpy.concatenate(diag)
+    perm = numpy.concatenate(perm)
 
     # Instructions count
     if ic is not None:
         io['profile']['hw_inst_count'] = ic.get_count()
         io['profile']['flops'] = ic.get_flops()
 
-    return ld, sign, diag
+    return ld, sign, diag, perm

@@ -242,9 +242,12 @@ def memdet_spd2(io, verbose):
     # concatenate diagonals of blocks of U
     diag = numpy.concatenate(diag)
 
+    # Cholesky has no permutation
+    perm = numpy.arange(diag.size)
+
     # Instructions count
     if ic is not None:
         io['profile']['hw_inst_count'] = ic.get_count()
         io['profile']['flops'] = ic.get_flops()
 
-    return ld, sign, diag
+    return ld, sign, diag, perm

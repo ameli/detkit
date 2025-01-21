@@ -189,7 +189,7 @@ def memdet(
             input matrix (or half of the input matrix size if ``triangle``
             option is set).
 
-    overwrite : boolean, default=True
+    overwrite : boolean, default=False
         Uses the input matrix storage for intermediate computations.
         This will overwrite the input matrix.
 
@@ -218,12 +218,14 @@ def memdet(
     ld : float
         :math:`\\mathrm{logabsdet}(\\mathbf{A})`, which is the natural
         logarithm of the absolute value of the determinant of the input matrix.
+
     sign : int
         Sign of determinant
+
     diag : numpy.array
-        An array of the size of the number rows (or columns) of the matrix,
-        containing the diagonal elements of the matrix decomposition as
-        follows:
+        A one-dimensional array of the size of the number rows (or columns) of
+        the matrix, containing the diagonal elements of the matrix
+        decomposition as follows:
 
         * For genetic matrix (when ``assume='gen'``), this is the diagonal
           entries of the matrix :math:`\\mathbf{U}` in the LU decomposition
@@ -237,6 +239,13 @@ def memdet(
           is the diagonal entries of the matrix :math:`\\mathbf{L}` in the
           Cholesky decomposition :math:`\\mathbf{A} = \\mathbf{U}^{\\intercal}
           \\mathbf{U}` where :math:`\\mathbf{U}` is upper-triangular.
+
+    perm : numpy.array
+        A one-dimensional array of the size of number of rows (or columns) of
+        the matrix, containing the row (or column) permutations during the
+        determinant computations, representing the matrix :math:`\\mathbf{P}`
+        given above.  See *Notes* and *Examples* below on how to interpret this
+        array.
 
     if ``return_info=True``:
 
@@ -405,37 +414,56 @@ def memdet(
     `multiprocessing-error-without-if-clause-protection
     <https://pytorch.org/docs/stable/notes/windows.html>`__.
 
-    **The "diag" Output Variable:**
+    **The "diag" and "perm" Output Variables:**
 
     In addition to the log-abs-determinant (``ld``) and sign of determinant
-    (``sign``) variables, this function also returns the ``diag`` variable.
-    The variable ``diag`` is a 1D array of size `n` (the number of rows or
-    columns of ``A``), and can be used to compute the log-abs-determinant of
-    any sub-matrix ``A[:m, :m]``, all at once, where ``m`` can be 1 to `n`.
-    If we denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{A}_{[:m, :m]}`
-    and the element ``diag[i]`` as :math:`d_i`, we have:
+    (``sign``) variables, this function also returns the ``diag`` and ``perm``
+    variables. Both of these variables are one-dimensional array of size `n`
+    (the number of rows or columns of ``A``), and can be used to compute the
+    log-abs-determinants of all leading (principal) sub-matrices of ``A``
+    (or a permutation of ``A``) of any size ``m`` where ``m`` can be 1 to `n`.
+    Here is how to use ``diag`` and ``perm``:
+
+    Denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{A}_{[:m, :m]}`
+    and the element ``diag[i]`` as :math:`d_i`. We describe the process for
+    each of the three cases of generic, symmetric, and symmetric
+    positive-definite matrices separately.
 
     * For generic and symmetric matrices (if ``assume`` is set to ``'gen'`` or
-      ``'sym'``):
+      ``'sym'``), define the row-permutations of the original matrix as
+      :math:`\\mathbf{B} = \\mathbf{P}^{\\intercal} \\mathbf{A}`. This can be
+      computed by ``B = A[perm, :]``. Then
 
       .. math::
 
-          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert =
+          \\log \\vert \\mathrm{det}(\\mathbf{B}_{[:m, :m]}) \\vert =
           \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
 
-    * For symmetric and positive-definite matrices (if ``assume`` is set to
-      ``'spd'``):
+    * For symmetric matrix (if ``assume`` is set to ``'sym'``), define the row
+      and column permutations of the original matrix as :math:`\\mathbf{B} =
+      \\mathbf{P}^{\\intercal} \\mathbf{A} \\mathbf{P}`. This can be computed
+      by ``B = A[perm, :][:, perm]``. Then,
+
+      .. math::
+
+          \\log \\vert \\mathrm{det}(\\mathbf{B}_{[:m, :m]}) \\vert =
+          \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
+
+    * For symmetric positive-definite matrix (if ``assume`` is set to
+      ``'spd'``), no permutation is performed, and  the array ``perm``
+      represents identity matrix (meaning no permutation), and hence, we do not
+      need to use it. As such,
 
       .. math::
 
           \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert =
           2 \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
 
-    In particular, the output variable ``ld`` is computed from ``diag`` when
-    :math:`m = n`.
+    The output variable ``ld`` can also be retrieved from ``diag`` when
+    :math:`m = n` in the above formulations.
 
-    Note that computing ``diag`` is a by-product for free and does not require
-    any additional cost.
+    Note that computing ``diag`` and ``perm`` are by-products of the algorithms
+    for free and they do not require any additional cost.
 
     **Counting FLOPs:**
 
@@ -485,9 +513,10 @@ def memdet(
 
         >>> # Compute log-determinant while limiting memory to 500 MB
         >>> from detkit import memdet
-        >>> ld, sign, diag, info = memdet(z, max_mem='500MB', assume='sym',
-        ...                               parallel_io='tensorstore',
-        ...                               verbose=True, return_info=True)
+        >>> ld, sign, diag, perm, info = memdet(z, max_mem='500MB',
+        ...                                     assume='sym',
+        ...                                     parallel_io='tensorstore',
+        ...                                     verbose=True, return_info=True)
 
         >>> # logarithm of absolute value of determinant
         >>> print(ld)
@@ -508,7 +537,8 @@ def memdet(
     the memory limit of 500 MB, a matrix of size 762.9 MB is decomposed into
     smaller blocks (a grid of 3 by 3 blocks), where each block is 84.8 MB. At
     any time, only four of these blocks are concurrently loaded into memory:
-    blocks A11, A12, A21, and A22. The allocated size of each block is shown.
+    blocks *A11*, *A12*, *A21*, and *A22*. The allocated size of each block is
+    shown.
 
     In the above, the computation was performed in 7 steps. The number of steps
     vary depending the number of blocks. Each step may involve:
@@ -548,6 +578,112 @@ def memdet(
 
     .. literalinclude:: ../_static/data/memdet_return_info.txt
         :language: python
+
+    **Working with "diag" and "perm" outputs:**
+
+    The following shows how to use ``diag`` and ``perm`` for a **generic**
+    matrix:
+
+    .. code-block:: python
+        :emphasize-lines: 8, 11, 15
+
+        >>> # Create a symmetric matrix
+        >>> import numpy
+        >>> n = 100
+        >>> A = numpy.random.randn(n, n)
+
+        >>> # Compute log-determinant for generic matrix
+        >>> from detkit import memdet
+        >>> ld, sign, diag, perm = memdet(A, assume='gen', num_blocks=3)
+
+        >>> # Compute log-determinants of all sub-matrices using diag and perm
+        >>> lds = numpy.cumsum(numpy.log(numpy.abs(diag)))
+
+        >>> # The above lds array are the log-determinants of the principal
+        >>> # sub-matrices of the following matrix
+        >>> B = A[perm, :]
+
+        >>> # Directly compute logdet of sub-matrices of B (for comparison)
+        >>> from detkit import logdet
+        >>> lds2 = numpy.empty(B.shape[0])
+        >>> for i in range(B.shape[0]):
+        ...     lds2[i], _ = logdet(B[:i+1, :i+1])
+
+        >>> # The two arrays lds and lds2 should be identical.
+        >>> numpy.allclose(lds, lds2)
+        True
+
+    For **symmetric** matrix, the matrix ``B`` in the above should be defined
+    as ``B = A[perm, :][:, perm]``. Here is the full code for symmetric matrix:
+
+    .. code-block:: python
+        :emphasize-lines: 9, 13, 14, 18
+
+        >>> # Create a symmetric matrix
+        >>> import numpy
+        >>> n = 100
+        >>> A = numpy.random.randn(n, n)
+        >>> A = A + A.T  # symmetric matrix
+
+        >>> # Compute log-determinant for symmetric matrix
+        >>> from detkit import memdet
+        >>> ld, sign, diag, perm = memdet(A, assume='sym', num_blocks=3)
+
+        >>> # Compute log-determinants and sign of determinants of all
+        >>> # sub-matrices using diag and perm
+        >>> lds = numpy.cumsum(numpy.log(numpy.abs(diag)))
+        >>> signs = numpy.cumprod(numpy.sign(diag))
+
+        >>> # The above lds array are the log-determinants of the principal
+        >>> # sub-matrices of the following matrix
+        >>> B = A[perm, :][:, perm]
+
+        >>> # Directly compute logdet of sub-matrices of B (for comparison)
+        >>> from detkit import logdet
+        >>> lds2 = numpy.empty(B.shape[0])
+        >>> signs2 = numpy.empty(B.shape[0])
+        >>> for i in range(B.shape[0]):
+        ...     lds2[i], signs2[i] = logdet(B[:i+1, :i+1])
+
+        >>> # The two arrays lds and lds2 should be identical.
+        >>> print(numpy.allclose(lds, lds2))
+        True
+
+        >>> # The two arrays signs and signs2 should be identical.
+        >>> print(numpy.allclose(signs, signs2))
+        True
+
+    For **symmetric positive-definite** matrices, the ``perm`` output is not
+    needed. Here an example on how to use ``diag``. Note that for these
+    matrices, the sign of determinant is always ``+1`` as the determinant is
+    always positive, so we do not check it here.
+
+    .. code-block:: python
+        :emphasize-lines: 9, 13
+
+        >>> # Create a symmetric matrix
+        >>> import numpy
+        >>> n = 100
+        >>> A = numpy.random.randn(n, n)
+        >>> A = A @ A.T  # symmetric positive-definite matrix
+
+        >>> # Compute log-determinant for symmetric positive-definite matrix
+        >>> from detkit import memdet
+        >>> ld, sign, diag, perm = memdet(A, assume='spd', num_blocks=3)
+
+        >>> # Compute log-determinants of all sub-matrices using diag.
+        >>> # Note, here, the multiplication factor 2.0 is needed.
+        >>> lds = 2.0 * numpy.cumsum(numpy.log(numpy.abs(diag)))
+
+        >>> # Directly compute logdet of sub-matrices of A (for comparison)
+        >>> from detkit import logdet
+        >>> lds2 = numpy.empty(A.shape[0])
+        >>> for i in range(A.shape[0]):
+        ...     lds2[i], _ = logdet(A[:i+1, :i+1])
+
+        >>> # The two arrays lds and lds2 should be identical.
+        >>> numpy.allclose(lds, lds2)
+        True
     """
 
     # Initialize time and set memory counter
@@ -574,23 +710,23 @@ def memdet(
         # Main log-determinant computation
         if assume == 'gen':
             # Generic matrix, using LU decomposition
-            ld, sign, diag = memdet_gen(io, verbose)
+            ld, sign, diag, perm = memdet_gen(io, verbose)
 
         elif assume == 'sym':
             # Symmetric matrix, using LDL decomposition
-            ld, sign, diag = memdet_sym(io, verbose)
+            ld, sign, diag, perm = memdet_sym(io, verbose)
 
         elif assume == 'sym2':
             # Symmetric matrix, using LDL decomposition
-            ld, sign, diag = memdet_sym2(io, verbose)
+            ld, sign, diag, perm = memdet_sym2(io, verbose)
 
         elif assume == 'spd':
             # Symmetric positive-definite matrix, using Cholesky decomposition
-            ld, sign, diag = memdet_spd(io, verbose)
+            ld, sign, diag, perm = memdet_spd(io, verbose)
 
         elif assume == 'spd2':
             # Symmetric positive-definite matrix, using Cholesky decomposition
-            ld, sign, diag = memdet_spd2(io, verbose)
+            ld, sign, diag, perm = memdet_spd2(io, verbose)
 
         else:
             raise ValueError('"assume" should be either "gen", "sym", or ' +
@@ -691,4 +827,4 @@ def memdet(
         return ld, sign, diag, info
 
     else:
-        return ld, sign, diag
+        return ld, sign, diag, perm

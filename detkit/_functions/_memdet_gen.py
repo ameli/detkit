@@ -247,6 +247,8 @@ def memdet_gen(io, verbose):
     ld = 0
     sign = 1
     diag = []
+    perm = []
+    perm_base_index = 0
 
     # Hardware instruction counter
     if io['profile']['inst_per_flop'] is not None:
@@ -269,20 +271,22 @@ def memdet_gen(io, verbose):
             load_block(io, A11, k, k, verbose=verbose)
 
         # LU decomposition
-        lu_11, perm = _lu_factor(A11, dtype, order,
-                                 block_info=(k, k, num_blocks, n), ic=ic,
-                                 verbose=verbose)
+        lu_11, perm_lu_11 = _lu_factor(A11, dtype, order,
+                                       block_info=(k, k, num_blocks, n), ic=ic,
+                                       verbose=verbose)
 
         # log-determinant
         diag_lu_11 = _get_diag(lu_11, (k, k, num_blocks, n))
         ld += numpy.sum(numpy.log(numpy.abs(diag_lu_11)))
 
         # Sign of determinant
-        parity = _permutation_parity(perm)
+        parity = _permutation_parity(perm_lu_11)
         sign *= numpy.prod(numpy.sign(diag_lu_11)) * parity
 
-        # Save diagonals
+        # Save diagonals and permutationd
         diag.append(numpy.copy(diag_lu_11))
+        perm.append(numpy.copy(perm_lu_11) + perm_base_index)
+        perm_base_index += perm_lu_11.size
 
         # Print progress count
         progress.count()
@@ -328,14 +332,15 @@ def memdet_gen(io, verbose):
                 if (i == num_blocks-1) or (j != j_start):
                     # load_block(io, A12, k, j, verbose=verbose)
                     if i == num_blocks-1:
-                        load_block(io, A12, k, j, perm=perm, verbose=verbose)
+                        load_block(io, A12, k, j, perm=perm_lu_11,
+                                   verbose=verbose)
                     else:
                         load_block(io, A12, k, j, perm=None, verbose=verbose)
 
                 if i == num_blocks-1:
 
                     # Permute A12
-                    # _permute_array(A12, perm, (m, md), dtype, order)
+                    # _permute_array(A12, perm_lu_11, (m, md), dtype, order)
 
                     # Solve lower-triangular system
                     u_12 = _solve_triangular(
@@ -389,12 +394,13 @@ def memdet_gen(io, verbose):
                 # Print progress count
                 progress.count()
 
-    # concatenate diagonals of blocks of U
+    # concatenate diagonals and permutartions of blocks of U
     diag = numpy.concatenate(diag)
+    perm = numpy.concatenate(perm)
 
     # Instructions count
     if ic is not None:
         io['profile']['hw_inst_count'] = ic.get_count()
         io['profile']['flops'] = ic.get_flops()
 
-    return ld, sign, diag
+    return ld, sign, diag, perm
