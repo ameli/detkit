@@ -551,7 +551,7 @@ input matrix (or half of the input matrix size if <code class="docutils literal 
 option is set).</p>
 </div>
 </dd>
-<dt><strong>overwrite</strong><span class="classifier">boolean, default=True</span></dt><dd><p>Uses the input matrix storage for intermediate computations.
+<dt><strong>overwrite</strong><span class="classifier">boolean, default=False</span></dt><dd><p>Uses the input matrix storage for intermediate computations.
 This will overwrite the input matrix.</p>
 </dd>
 <dt><strong>return_info</strong><span class="classifier">bool, default=False</span></dt><dd><p>Returns a dictionary containing profiling information such as wall and
@@ -579,9 +579,9 @@ logarithm of the absolute value of the determinant of the input matrix.</p>
 </dd>
 <dt><strong>sign</strong><span class="classifier">int</span></dt><dd><p>Sign of determinant</p>
 </dd>
-<dt><strong>diag</strong><span class="classifier">numpy.array</span></dt><dd><p>An array of the size of the number rows (or columns) of the matrix,
-containing the diagonal elements of the matrix decomposition as
-follows:</p>
+<dt><strong>diag</strong><span class="classifier">numpy.array</span></dt><dd><p>A one-dimensional array of the size of the number rows (or columns) of
+the matrix, containing the diagonal elements of the matrix
+decomposition as follows:</p>
 <ul class="simple">
 <li><p>For genetic matrix (when <code class="docutils literal notranslate"><span class="pre">assume='gen'</span></code>), this is the diagonal
 entries of the matrix <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> in the LU decomposition
@@ -596,6 +596,12 @@ is the diagonal entries of the matrix <span class="math notranslate nohighlight"
 Cholesky decomposition <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{U}^{\intercal}
 \mathbf{U}\)</span> where <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is upper-triangular.</p></li>
 </ul>
+</dd>
+<dt><strong>perm</strong><span class="classifier">numpy.array</span></dt><dd><p>A one-dimensional array of the size of number of rows (or columns) of
+the matrix, containing the row (or column) permutations during the
+determinant computations, representing the matrix <span class="math notranslate nohighlight">\(\mathbf{P}\)</span>
+given above.  See <em>Notes</em> and <em>Examples</em> below on how to interpret this
+array.</p>
 </dd>
 <dt>if <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code>:</dt><dd><dl class="simple">
 <dt>info<span class="classifier">dict</span></dt><dd><p>A dictionary containing the following key-values:</p>
@@ -784,32 +790,48 @@ parallel file operations.</p>
 <code class="docutils literal notranslate"><span class="pre">parallel_io='dask'</span></code>), you should call <a class="reference internal" href="#detkit.memdet" title="detkit.memdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">detkit.memdet()</span></code></a> function in
 a protected <em>if-clause</em>. See further details at
 <a class="reference external" href="https://pytorch.org/docs/stable/notes/windows.html">multiprocessing-error-without-if-clause-protection</a>.</p>
-<p><strong>The “diag” Output Variable:</strong></p>
+<p><strong>The “diag” and “perm” Output Variables:</strong></p>
 <p>In addition to the log-abs-determinant (<code class="docutils literal notranslate"><span class="pre">ld</span></code>) and sign of determinant
-(<code class="docutils literal notranslate"><span class="pre">sign</span></code>) variables, this function also returns the <code class="docutils literal notranslate"><span class="pre">diag</span></code> variable.
-The variable <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a 1D array of size <cite>n</cite> (the number of rows or
-columns of <code class="docutils literal notranslate"><span class="pre">A</span></code>), and can be used to compute the log-abs-determinant of
-any sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code>, all at once, where <code class="docutils literal notranslate"><span class="pre">m</span></code> can be 1 to <cite>n</cite>.
-If we denote the sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> as <span class="math notranslate nohighlight">\(\mathbf{A}_{[:m, :m]}\)</span>
-and the element <code class="docutils literal notranslate"><span class="pre">diag[i]</span></code> as <span class="math notranslate nohighlight">\(d_i\)</span>, we have:</p>
+(<code class="docutils literal notranslate"><span class="pre">sign</span></code>) variables, this function also returns the <code class="docutils literal notranslate"><span class="pre">diag</span></code> and <code class="docutils literal notranslate"><span class="pre">perm</span></code>
+variables. Both of these variables are one-dimensional array of size <cite>n</cite>
+(the number of rows or columns of <code class="docutils literal notranslate"><span class="pre">A</span></code>), and can be used to compute the
+log-abs-determinants of all leading (principal) sub-matrices of <code class="docutils literal notranslate"><span class="pre">A</span></code>
+(or a permutation of <code class="docutils literal notranslate"><span class="pre">A</span></code>) of any size <code class="docutils literal notranslate"><span class="pre">m</span></code> where <code class="docutils literal notranslate"><span class="pre">m</span></code> can be 1 to <cite>n</cite>.
+Here is how to use <code class="docutils literal notranslate"><span class="pre">diag</span></code> and <code class="docutils literal notranslate"><span class="pre">perm</span></code>:</p>
+<p>Denote the sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> as <span class="math notranslate nohighlight">\(\mathbf{A}_{[:m, :m]}\)</span>
+and the element <code class="docutils literal notranslate"><span class="pre">diag[i]</span></code> as <span class="math notranslate nohighlight">\(d_i\)</span>. We describe the process for
+each of the three cases of generic, symmetric, and symmetric
+positive-definite matrices separately.</p>
 <ul>
 <li><p>For generic and symmetric matrices (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to <code class="docutils literal notranslate"><span class="pre">'gen'</span></code> or
-<code class="docutils literal notranslate"><span class="pre">'sym'</span></code>):</p>
+<code class="docutils literal notranslate"><span class="pre">'sym'</span></code>), define the row-permutations of the original matrix as
+<span class="math notranslate nohighlight">\(\mathbf{B} = \mathbf{P}^{\intercal} \mathbf{A}\)</span>. This can be
+computed by <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">A[perm,</span> <span class="pre">:]</span></code>. Then</p>
 <div class="math notranslate nohighlight">
-\[\log \vert \mathrm{det}(\mathbf{A}_{[:m, :m]}) \vert =
+\[\log \vert \mathrm{det}(\mathbf{B}_{[:m, :m]}) \vert =
 \sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
 </li>
-<li><p>For symmetric and positive-definite matrices (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to
-<code class="docutils literal notranslate"><span class="pre">'spd'</span></code>):</p>
+<li><p>For symmetric matrix (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to <code class="docutils literal notranslate"><span class="pre">'sym'</span></code>), define the row
+and column permutations of the original matrix as <span class="math notranslate nohighlight">\(\mathbf{B} =
+\mathbf{P}^{\intercal} \mathbf{A} \mathbf{P}\)</span>. This can be computed
+by <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">A[perm,</span> <span class="pre">:][:,</span> <span class="pre">perm]</span></code>. Then,</p>
+<div class="math notranslate nohighlight">
+\[\log \vert \mathrm{det}(\mathbf{B}_{[:m, :m]}) \vert =
+\sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
+</li>
+<li><p>For symmetric positive-definite matrix (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to
+<code class="docutils literal notranslate"><span class="pre">'spd'</span></code>), no permutation is performed, and  the array <code class="docutils literal notranslate"><span class="pre">perm</span></code>
+represents identity matrix (meaning no permutation), and hence, we do not
+need to use it. As such,</p>
 <div class="math notranslate nohighlight">
 \[\log \vert \mathrm{det}(\mathbf{A}_{[:m, :m]}) \vert =
 2 \sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
 </li>
 </ul>
-<p>In particular, the output variable <code class="docutils literal notranslate"><span class="pre">ld</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">diag</span></code> when
-<span class="math notranslate nohighlight">\(m = n\)</span>.</p>
-<p>Note that computing <code class="docutils literal notranslate"><span class="pre">diag</span></code> is a by-product for free and does not require
-any additional cost.</p>
+<p>The output variable <code class="docutils literal notranslate"><span class="pre">ld</span></code> can also be retrieved from <code class="docutils literal notranslate"><span class="pre">diag</span></code> when
+<span class="math notranslate nohighlight">\(m = n\)</span> in the above formulations.</p>
+<p>Note that computing <code class="docutils literal notranslate"><span class="pre">diag</span></code> and <code class="docutils literal notranslate"><span class="pre">perm</span></code> are by-products of the algorithms
+for free and they do not require any additional cost.</p>
 <p><strong>Counting FLOPs:</strong></p>
 <p>FLOPs are counted when <code class="docutils literal notranslate"><span class="pre">flops=True</span></code> and <code class="docutils literal notranslate"><span class="pre">return_info=True</span></code> are set.
 FLOPs counts are stored at <code class="docutils literal notranslate"><span class="pre">info['process']['flops']</span></code>.</p>
@@ -849,10 +871,11 @@ pass <code class="docutils literal notranslate"><span class="pre">A</span></code
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant while limiting memory to 500 MB</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">memdet</span>
-<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">max_mem</span><span class="o">=</span><span class="s1">&#39;500MB&#39;</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span>
-</span><span class="hll"><span class="gp">... </span>                              <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;tensorstore&#39;</span><span class="p">,</span>
-</span><span class="hll"><span class="gp">... </span>                              <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">perm</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">max_mem</span><span class="o">=</span><span class="s1">&#39;500MB&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="gp">... </span>                                    <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="gp">... </span>                                    <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;tensorstore&#39;</span><span class="p">,</span>
+</span><span class="gp">... </span>                                    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># logarithm of absolute value of determinant</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ld</span><span class="p">)</span>
 <span class="go">82104.567748</span>
@@ -869,7 +892,8 @@ computation, as shown in the screenshot below.</p>
 the memory limit of 500 MB, a matrix of size 762.9 MB is decomposed into
 smaller blocks (a grid of 3 by 3 blocks), where each block is 84.8 MB. At
 any time, only four of these blocks are concurrently loaded into memory:
-blocks A11, A12, A21, and A22. The allocated size of each block is shown.</p>
+blocks <em>A11</em>, <em>A12</em>, <em>A21</em>, and <em>A22</em>. The allocated size of each block is
+shown.</p>
 <p>In the above, the computation was performed in 7 steps. The number of steps
 vary depending the number of blocks. Each step may involve:</p>
 <ul class="simple">
@@ -946,6 +970,102 @@ that no new array is created.</p>
         <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.6.1&#39;</span>
     <span class="p">}</span>
 <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Working with “diag” and “perm” outputs:</strong></p>
+<p>The following shows how to use <code class="docutils literal notranslate"><span class="pre">diag</span></code> and <code class="docutils literal notranslate"><span class="pre">perm</span></code> for a <strong>generic</strong>
+matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant for generic matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">memdet</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">perm</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;gen&#39;</span><span class="p">,</span> <span class="n">num_blocks</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinants of all sub-matrices using diag and perm</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">lds</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diag</span><span class="p">)))</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The above lds array are the log-determinants of the principal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># sub-matrices of the following matrix</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">perm</span><span class="p">,</span> <span class="p">:]</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Directly compute logdet of sub-matrices of B (for comparison)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">logdet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lds2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="n">lds2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">logdet</span><span class="p">(</span><span class="n">B</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The two arrays lds and lds2 should be identical.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lds</span><span class="p">,</span> <span class="n">lds2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>For <strong>symmetric</strong> matrix, the matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> in the above should be defined
+as <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">A[perm,</span> <span class="pre">:][:,</span> <span class="pre">perm]</span></code>. Here is the full code for symmetric matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># symmetric matrix</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant for symmetric matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">memdet</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">perm</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span> <span class="n">num_blocks</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinants and sign of determinants of all</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># sub-matrices using diag and perm</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">lds</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diag</span><span class="p">)))</span>
+</span><span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">signs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">diag</span><span class="p">))</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The above lds array are the log-determinants of the principal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># sub-matrices of the following matrix</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">perm</span><span class="p">,</span> <span class="p">:][:,</span> <span class="n">perm</span><span class="p">]</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Directly compute logdet of sub-matrices of B (for comparison)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">logdet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lds2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signs2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="n">lds2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">signs2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">logdet</span><span class="p">(</span><span class="n">B</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The two arrays lds and lds2 should be identical.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lds</span><span class="p">,</span> <span class="n">lds2</span><span class="p">))</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The two arrays signs and signs2 should be identical.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">signs</span><span class="p">,</span> <span class="n">signs2</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>For <strong>symmetric positive-definite</strong> matrices, the <code class="docutils literal notranslate"><span class="pre">perm</span></code> output is not
+needed. Here an example on how to use <code class="docutils literal notranslate"><span class="pre">diag</span></code>. Note that for these
+matrices, the sign of determinant is always <code class="docutils literal notranslate"><span class="pre">+1</span></code> as the determinant is
+always positive, so we do not check it here.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a symmetric matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># symmetric positive-definite matrix</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinant for symmetric positive-definite matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">memdet</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">perm</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;spd&#39;</span><span class="p">,</span> <span class="n">num_blocks</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute log-determinants of all sub-matrices using diag.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Note, here, the multiplication factor 2.0 is needed.</span>
+<span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">lds</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diag</span><span class="p">)))</span>
+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Directly compute logdet of sub-matrices of A (for comparison)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">logdet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lds2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="n">lds2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_</span> <span class="o">=</span> <span class="n">logdet</span><span class="p">(</span><span class="n">A</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The two arrays lds and lds2 should be identical.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lds</span><span class="p">,</span> <span class="n">lds2</span><span class="p">)</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>

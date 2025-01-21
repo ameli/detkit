@@ -166,7 +166,7 @@ Features
 |tokei-2| |languages|
 
 * Functions are implemented with a novel algorithm described in [1]_.
-* The underlying library is implemented in C++ and wrapped in cython.
+* The underlying library is implemented in C++ and wrapped in Cython.
 * An accurate count of computational FLOPs during the execution of functions can be measured.
 
 How to Contribute
