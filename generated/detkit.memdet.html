@@ -452,7 +452,7 @@
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>A</strong><span class="classifier">numpy.ndarray, numpy.memmap, zarr.core.Array, dask.array,            tensotstore.array</span></dt><dd><p>Square matrix, which is either already loaded on the memory (such as
+<dt><strong>A</strong><span class="classifier">numpy.ndarray, numpy.memmap, zarr.Array, dask.array,            tensotstore.array</span></dt><dd><p>Square matrix, which is either already loaded on the memory (such as
 <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), or cannot fit on the memory, and rather, stored on
 disk as Numpy’s memory map, or Zarr, Dask, or TensorStore array
 formats.</p>
@@ -874,8 +874,8 @@ pass <code class="docutils literal notranslate"><span class="pre">A</span></code
 <span class="hll"><span class="gp">&gt;&gt;&gt; </span><span class="n">ld</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">perm</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">memdet</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">max_mem</span><span class="o">=</span><span class="s1">&#39;500MB&#39;</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                                    <span class="n">assume</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">,</span>
 </span><span class="hll"><span class="gp">... </span>                                    <span class="n">parallel_io</span><span class="o">=</span><span class="s1">&#39;tensorstore&#39;</span><span class="p">,</span>
-</span><span class="gp">... </span>                                    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
+</span><span class="hll"><span class="gp">... </span>                                    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># logarithm of absolute value of determinant</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ld</span><span class="p">)</span>
 <span class="go">82104.567748</span>
