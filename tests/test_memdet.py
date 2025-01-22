@@ -118,7 +118,7 @@ def _test(A, assumes, dtypes, parallel_ios, triangles, num_blocks, max_mems):
                                   f'parallel_io: {parallel_io}\n', flush=True)
 
                             # Compute log-determinant
-                            ld, sign, diag, info = memdet(
+                            ld, sign, diag, perm, info = memdet(
                                     matrix, max_mem=max_mem,
                                     num_blocks=num_block, assume=assume,
                                     mixed_precision=mixed_precision,

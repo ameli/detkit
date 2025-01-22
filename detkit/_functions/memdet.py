@@ -80,7 +80,7 @@ def memdet(
     Parameters
     ----------
 
-    A : numpy.ndarray, numpy.memmap, zarr.core.Array, dask.array,\
+    A : numpy.ndarray, numpy.memmap, zarr.Array, dask.array,\
             tensotstore.array
         Square matrix, which is either already loaded on the memory (such as
         ``numpy.ndarray``), or cannot fit on the memory, and rather, stored on
@@ -497,7 +497,7 @@ def memdet(
     pass ``A`` or ``z`` to :func:`detkit.memdet`.
 
     .. code-block:: python
-        :emphasize-lines: 15, 16, 17
+        :emphasize-lines: 15, 16, 17, 18
 
         >>> # Create a symmetric matrix
         >>> import numpy
@@ -824,7 +824,7 @@ def memdet(
             }
         }
 
-        return ld, sign, diag, info
+        return ld, sign, diag, perm, info
 
     else:
         return ld, sign, diag, perm

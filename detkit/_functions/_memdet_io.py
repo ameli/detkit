@@ -20,6 +20,7 @@ import zarr
 import tensorstore
 import tempfile
 import inspect
+from packaging.version import Version
 import shutil
 from multiprocessing import shared_memory
 from ._ansi import ANSI
@@ -30,6 +31,8 @@ from .._openmp import get_avail_num_threads
 from .._device import check_perf_support
 from .._benchmark import get_instructions_per_flop
 
+# Zarr version
+zarr_version = Version(zarr.__version__)
 
 __all__ = ['initialize_io', 'cleanup_mem']
 
@@ -133,6 +136,55 @@ def _human_readable_mem_to_bytes(hr_mem):
     bytes_ = int(value * unit_multipliers[unit])
 
     return bytes_
+
+
+# =======
+# is zarr
+# =======
+
+def _is_zarr(array):
+    """
+    Determin if an array is zarr, and if so, check it supports zarr2 or zarr3.
+    """
+
+    # Initialize output
+    array_is_zarr = False
+    array_store_path = None
+    array_driver = None
+
+    # zarr 3.0 uses 'zarr.Array'. Older versions uses 'zarr.core.Array'
+    if hasattr(zarr, 'Array') and isinstance(array, zarr.Array):
+        array_is_zarr = True
+    elif hasattr(zarr.core, 'Array') and isinstance(array, zarr.core.Array):
+        array_is_zarr = True
+
+    if array_is_zarr:
+
+        # Find where array is stored
+        if hasattr(array.store, 'path'):
+            # Older versions of zarr
+            array_store_path = array.store.path
+
+        elif hasattr(array.store, 'root'):
+            # For zarr 3.0 and above
+            array_store_path = array.store.root
+        else:
+            raise AttributeError('The Zarr store does not have a "path" or ' +
+                                 '"root" attribute.')
+
+        # Ensure the path is a string
+        array_store_path = str(array_store_path)
+
+        # Check this is zarr or zarr3
+        if os.path.exists(os.path.join(array_store_path, 'zarr.json')):
+            array_driver = 'zarr3'
+        elif os.path.exists(os.path.join(array_store_path, '.zarray')):
+            array_driver = 'zarr'
+        else:
+            raise ValueError('Unknown Zarr version: neither "zarr.json" nor ' +
+                             '".zarray" was found.')
+
+    return array_is_zarr, array_store_path, array_driver
 
 
 # =============
@@ -334,20 +386,27 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             }
         })
 
+    # Check if A is already a zarr array
+    if parallel_io in ['dask', 'tensorstore']:
+        A_is_zarr, A_store_path, A_driver = _is_zarr(A)
+
     # Create dask for input data
     if parallel_io == 'dask':
-        if isinstance(A, zarr.core.Array):
+
+        if A_is_zarr is True:
             dask_A = dask.array.from_zarr(A, chunks=(io_chunk, io_chunk))
         else:
             dask_A = dask.array.from_array(A, chunks=(io_chunk, io_chunk))
+
     elif parallel_io == 'tensorstore':
 
-        if isinstance(A, zarr.core.Array):
+        if A_is_zarr:
+
             spec_1 = {
-                'driver': 'zarr',
+                'driver': A_driver,
                 'kvstore': {
                     'driver': 'file',
-                    'path': A.store.path,
+                    'path': A_store_path,
                 }
             }
 
@@ -411,20 +470,32 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
 
                 scratch_file = temp_dir.name
 
-                scratch = zarr.open(temp_dir.name, mode='w', shape=(n, n-m),
-                                    dtype=dtype, order=order,
-                                    chunks=(io_chunk, io_chunk))
+                if zarr_version >= Version("3.0.0"):
+                    # This is zarr 3.0 and above. Use config.
+                    scratch = zarr.open(temp_dir.name, mode='w',
+                                        shape=(n, n-m), dtype=dtype,
+                                        config={'order': order},
+                                        chunks=(io_chunk, io_chunk))
+                else:
+                    # This is zarr 2. Do not use order as parameter directly.
+                    scratch = zarr.open(temp_dir.name, mode='w',
+                                        shape=(n, n-m), dtype=dtype,
+                                        order=order,
+                                        chunks=(io_chunk, io_chunk))
+
+                _, scratch_store_path, scratch_driver = _is_zarr(scratch)
 
                 if parallel_io == 'dask':
                     dask_scratch = dask.array.from_zarr(
                             scratch, chunks=(io_chunk, io_chunk))
+
                 elif parallel_io == 'tensorstore':
 
                     spec_2 = {
-                        'driver': 'zarr',
+                        'driver': scratch_driver,
                         'kvstore': {
                             'driver': 'file',
-                            'path': scratch.store.path,
+                            'path': scratch_store_path,
                         }
                     }
 
