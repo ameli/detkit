@@ -389,11 +389,14 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     # Check if A is already a zarr array
     if parallel_io in ['dask', 'tensorstore']:
         A_is_zarr, A_store_path, A_driver = _is_zarr(A)
+        A_is_dask = isinstance(A, dask.array.Array)
 
     # Create dask for input data
     if parallel_io == 'dask':
 
-        if A_is_zarr is True:
+        if A_is_dask:
+            dask_A = A
+        elif A_is_zarr:
             dask_A = dask.array.from_zarr(A, chunks=(io_chunk, io_chunk))
         else:
             dask_A = dask.array.from_array(A, chunks=(io_chunk, io_chunk))
