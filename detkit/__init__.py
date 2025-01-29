@@ -68,6 +68,7 @@ def _check_import():
 try:
     # Import sub-packages
     from ._functions import logdet, loggdet, logpdet, memdet       # noqa: E402
+    from ._functions import FitLogdet                              # noqa: E402
     from ._functions import orthogonalize, ortho_complement        # noqa: E402
     from ._functions import Memory, Disk, Profile                  # noqa: E402
     from ._functions import human_readable_mem                     # noqa: E402
@@ -92,13 +93,13 @@ except Exception as e:
     # error.
     raise e
 
-__all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'load', 'store', 'Memory',
-           'Disk', 'Profile', 'human_readable_time', 'human_readable_mem',
-           'get_processor_name', 'orthogonalize', 'ortho_complement',
-           'lu_factor', 'lu_solve', 'ldl_factor', 'ldl_solve', 'cho_factor',
-           'cho_solve', 'matmul', 'solve_triangular', 'get_config',
-           'InstructionsCounter', 'check_perf_support',
-           'get_instructions_per_flop', 'electrocardiogram',
-           'covariance_matrix', 'design_matrix']
+__all__ = ['logdet', 'loggdet', 'logpdet', 'memdet', 'FitLogdet', 'load',
+           'store', 'Memory', 'Disk', 'Profile', 'human_readable_time',
+           'human_readable_mem', 'get_processor_name', 'orthogonalize',
+           'ortho_complement', 'lu_factor', 'lu_solve', 'ldl_factor',
+           'ldl_solve', 'cho_factor', 'cho_solve', 'matmul',
+           'solve_triangular', 'get_config', 'InstructionsCounter',
+           'check_perf_support', 'get_instructions_per_flop',
+           'electrocardiogram', 'covariance_matrix', 'design_matrix']
 
 from .__version__ import __version__                          # noqa: F401 E402

@@ -19,6 +19,16 @@ Functions for computing determinant and related quantities of matrices.
     detkit.logpdet
     detkit.memdet
 
+Classes for fitting and extrapolation of log-determinants.
+
+.. autosummary::
+    :toctree: generated
+    :caption: Profiling
+    :recursive:
+    :template: autosummary/class.rst
+
+    detkit.FitLogdet
+
 .. rubric:: Matrix Decompositions
 
 LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations.
