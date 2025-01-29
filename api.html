@@ -11,10 +11,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://ameli.github.io/api.html" />
 <meta property="og:site_name" content="DetKit" />
-<meta property="og:description" content="Matrix Determinant Functions for computing determinant and related quantities of matrices. Matrix Decompositions LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations. Solving Linear Systems Solving linear systems for sub-matrices based on LU, LDL and Cholesky..." />
+<meta property="og:description" content="Matrix Determinant Functions for computing determinant and related quantities of matrices. Classes for fitting and extrapolation of log-determinants. Matrix Decompositions LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations. Solving Linear Systems Solving li..." />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
-<meta name="description" content="Matrix Determinant Functions for computing determinant and related quantities of matrices. Matrix Decompositions LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations. Solving Linear Systems Solving linear systems for sub-matrices based on LU, LDL and Cholesky..." />
+<meta name="description" content="Matrix Determinant Functions for computing determinant and related quantities of matrices. Classes for fitting and extrapolation of log-determinants. Matrix Decompositions LU, LDL and Cholesky factorizations for sub-matrices, as well as matrix orthogonalizations. Solving Linear Systems Solving li..." />
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
@@ -234,6 +234,18 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  Profiling
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/detkit.FitLogdet.html">
+   detkit.FitLogdet
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Supplementary
  </span>
 </p>
@@ -446,6 +458,14 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/detkit.memdet.html#detkit.memdet" title="detkit.memdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.memdet</span></code></a>(A[, max_mem, num_blocks, ...])</p></td>
 <td><p>Compute log-determinant under memory constraint.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Classes for fitting and extrapolation of log-determinants.</p>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/detkit.FitLogdet.html#detkit.FitLogdet" title="detkit.FitLogdet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.FitLogdet</span></code></a>([m, n, scale_x, scale_y])</p></td>
+<td><p>Fit and extrapolate log-determinant of large matrices.</p></td>
 </tr>
 </tbody>
 </table>

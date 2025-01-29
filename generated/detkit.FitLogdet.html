@@ -7,16 +7,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="electrocardiogram" />
+<meta property="og:title" content="detkit.FitLogdet" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ameli.github.io/generated/detkit.electrocardiogram.html" />
+<meta property="og:url" content="https://ameli.github.io/generated/detkit.FitLogdet.html" />
 <meta property="og:site_name" content="DetKit" />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>electrocardiogram &#8212; detkit Manual</title>
+    <title>detkit.FitLogdet &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -55,12 +55,14 @@
     <script src="../_static/js/custom-pydata.js"></script>
     <script src="../_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/custom-pydata.css"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="covariance_matrix" href="detkit.covariance_matrix.html" />
-    <link rel="prev" title="matmul" href="detkit.matmul.html" />
+    <link rel="next" title="detkit.FitLogdet.fit" href="detkit.FitLogdet.fit.html" />
+    <link rel="prev" title="memdet" href="detkit.memdet.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -235,11 +237,28 @@
   Profiling
  </span>
 </p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.FitLogdet.html">
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
    detkit.FitLogdet
   </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.FitLogdet.fit.html">
+     detkit.FitLogdet.fit
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="detkit.FitLogdet.eval.html">
+     detkit.FitLogdet.eval
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
@@ -318,9 +337,9 @@
   Datasets
  </span>
 </p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="detkit.electrocardiogram.html">
    electrocardiogram
   </a>
  </li>
@@ -419,10 +438,10 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#detkit.electrocardiogram">
+  <a class="reference internal nav-link" href="#detkit.FitLogdet">
    <code class="docutils literal notranslate">
     <span class="pre">
-     electrocardiogram()
+     FitLogdet
     </span>
    </code>
   </a>
@@ -436,7 +455,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.electrocardiogram.rst">
+    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.FitLogdet.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -453,94 +472,74 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="electrocardiogram">
-<h1>electrocardiogram<a class="headerlink" href="#electrocardiogram" title="Permalink to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="detkit.electrocardiogram">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">electrocardiogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bw_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_bw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.electrocardiogram" title="Permalink to this definition">#</a></dt>
-<dd><p>Load an electrocardiogram signal as an example for a 1D signal.</p>
+  <section id="detkit-fitlogdet">
+<h1>detkit.FitLogdet<a class="headerlink" href="#detkit-fitlogdet" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="detkit.FitLogdet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">FitLogdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet" title="Permalink to this definition">#</a></dt>
+<dd><p>Fit and extrapolate log-determinant of large matrices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>start</strong><span class="classifier">float, default=0.0</span></dt><dd><p>Start of the signal in seconds.</p>
+<dt><strong>m</strong><span class="classifier">int, default=2</span></dt><dd><p>Number of terms in the Laurent series with logarithm</p>
 </dd>
-<dt><strong>end</strong><span class="classifier">float, default=10.0</span></dt><dd><p>End of the signal in seconds.</p>
+<dt><strong>n</strong><span class="classifier">int, default=0</span></dt><dd><p>Number of terms in the Laurent series without logarithm</p>
 </dd>
-<dt><strong>bw_window</strong><span class="classifier">default=1.0</span></dt><dd><p>Length of moving average filter (in seconds) to remove baseline wander
-(bw). If zero, BW is not removed. If set to zero, baseline is not
-removed.</p>
+<dt><strong>scale_x</strong><span class="classifier">float, default=1</span></dt><dd><p>Scales <cite>x</cite> input data by a factor.</p>
 </dd>
-<dt><strong>freq_cut</strong><span class="classifier">float, default=45</span></dt><dd><p>Frequencies (in Hz) above this limit will be cut by low-pass filter. If
-<cite>numpy.inf</cite>, no filtering is performed.</p>
-</dd>
-<dt><strong>plot</strong><span class="classifier">bool or str, default=False</span></dt><dd><p>If <cite>True</cite>, the ECG signal and its autocorrelation function, the
-covariance (or correlation) matrix and its eigenvalues are plotted.
-If <code class="docutils literal notranslate"><span class="pre">plot</span></code> is a string, the plot is not shown, rather saved with a
-filename as the given string. If the filename does not contain file
-extension, the plot is saved in both <code class="docutils literal notranslate"><span class="pre">svg</span></code> and <code class="docutils literal notranslate"><span class="pre">pdf</span></code> formats. If
-the filename does not have directory path, the plot is saved in the
-current directory.</p>
-</dd>
-<dt><strong>plot_bw</strong><span class="classifier">bool, default=False</span></dt><dd><p>If <cite>True</cite>, plots the baseline wander and the original signal along with
-the filtered signal. This option is effective only if <code class="docutils literal notranslate"><span class="pre">plot</span></code> is not
-<cite>False</cite>.</p>
-</dd>
-<dt><strong>verbose</strong><span class="classifier">bool, default=False</span></dt><dd><p>if <cite>True</cite>, the saved plot filename is printed.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>ecg</strong><span class="classifier">numpy.array</span></dt><dd><p>ECG signal.</p>
-</dd>
-<dt><strong>time</strong><span class="classifier">numpy.array</span></dt><dd><p>Time axis corresponding to the ECG signal.</p>
+<dt><strong>scale_y</strong><span class="classifier">float, default=1</span></dt><dd><p>Scales <cite>y</cite> input data by a factor.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="detkit.covariance_matrix.html#detkit.covariance_matrix" title="detkit.covariance_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.covariance_matrix</span></code></a></dt><dd></dd>
-</dl>
-</div>
 <p class="rubric">Notes</p>
-<p>The signal is sampled at 360 Hz.</p>
-<p>Two filters are applied on the original ECG signal:</p>
-<ul class="simple">
-<li><p>Removing baseline wander (BW) by moving average filter. BW is the trend
-of the signal caused by respiration and movements of the person. Usually,
-BW is on the frequency range of 0.1 HZ to 0.5 Hz. Unfortunately, a
-high-pass filter above 0.5 Hz does not cleanly remove the BW. The best
-approach so far was a moving average filter with the kernel duration of
-about 1 seconds.</p></li>
-<li><p>Removing noise by low-pass filter with critical frequency of 45 Hz.
-This also removes the 60 Hz power-line frequency that interferes with the
-measurement device.</p></li>
-</ul>
+<p>The fitting model is based on FLODANCE algorithm <a class="reference internal" href="#rd9b8e32d3fb1-1" id="id1">[1]</a>, given as</p>
+<div class="math notranslate nohighlight">
+\[y(x) = a_0 + a_{1} x + \left( \nu + \sum_{i=1}^m b_{i} x^{-i}
+\right) \ln(x!) + \sum_{i=1}^n c_{i} x^{-i}\]</div>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
-<div class="citation" id="rf6b039cceee1-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<p>Moody GB, Mark RG. The impact of the MIT-BIH Arrhythmia Database.
-IEEE Eng in Med and Biol 20(3):45-50 (May-June 2001).
-(PMID: 11446209); DOI: <a class="reference external" href="https://doi.org/10.13026/C2F305">10.13026/C2F305</a></p>
-</div>
-<div class="citation" id="rf6b039cceee1-2" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<p>Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark
-RG, Mietus JE, Moody GB, Peng C-K, Stanley HE. PhysioBank,
-PhysioToolkit, and PhysioNet: Components of a New Research Resource
-for Complex Physiologic Signals. Circulation 101(23):e215-e220;
-DOI: <a class="reference external" href="https://doi.org/10.1161/01.CIR.101.23.e215">10.1161/01.CIR.101.23.e215</a></p>
+<div class="citation" id="rd9b8e32d3fb1-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Ameli, S., van der Heide, C., Hodgkinson, L., Roosta, F., and
+Mahoney, M. W. (2025). Determinant Estimation under Memory Constraints
+and Neural Scaling Laws.</p>
 </div>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">electrocardiogram</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">,</span> <span class="n">ecg</span> <span class="o">=</span> <span class="n">electrocardiogram</span><span class="p">(</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_bw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">FitLogdet</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create an interpolator object using m=6 truncated Laurent series.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flodet</span> <span class="o">=</span> <span class="n">FitLogdet</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fit model to data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flodet</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Evaluate fitted curve</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_eval</span> <span class="o">=</span> <span class="n">flodet</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x_eval</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/electrocardiogram.png" class="custom-dark align-center" src="../_images/electrocardiogram.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>param</strong></dt><dd><p>Parameters of curve fitting.</p>
+</dd>
+<dt><strong>res</strong></dt><dd><p>Result of curve fitting optimization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="detkit.FitLogdet.fit.html#detkit.FitLogdet.fit" title="detkit.FitLogdet.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(x, y[, verbose])</p></td>
+<td><p>Fit the model to data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="detkit.FitLogdet.eval.html#detkit.FitLogdet.eval" title="detkit.FitLogdet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>(x)</p></td>
+<td><p>Evaluate fitted curve at a given <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </section>
@@ -553,17 +552,17 @@ DOI: <a class="reference external" href="https://doi.org/10.1161/01.CIR.101.23.e
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="detkit.matmul.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="detkit.memdet.html" title="previous page">
       <i class="fas fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">matmul</p>
+          <p class="prev-next-title">memdet</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="detkit.covariance_matrix.html" title="next page">
+  <a class='right-next' id="next-link" href="detkit.FitLogdet.fit.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">covariance_matrix</p>
+      <p class="prev-next-title">detkit.FitLogdet.fit</p>
   </div>
   <i class="fas fa-angle-right"></i>
   </a>
