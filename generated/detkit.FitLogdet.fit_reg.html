@@ -7,16 +7,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<meta property="og:title" content="detkit.FitLogdet.eval" />
+<meta property="og:title" content="detkit.FitLogdet.fit_reg" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://ameli.github.io/generated/detkit.FitLogdet.eval.html" />
+<meta property="og:url" content="https://ameli.github.io/generated/detkit.FitLogdet.fit_reg.html" />
 <meta property="og:site_name" content="DetKit" />
 <meta property="og:image" content="https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg" />
 <meta property="og:image:alt" content="DetKit" />
 <meta property="og:title" content="DetKit">
 <meta property="og:description" content="DetKit is a python package to compute some common functions involving determinant of matrices used in machine learning.">
 
-    <title>detkit.FitLogdet.eval &#8212; detkit Manual</title>
+    <title>detkit.FitLogdet.fit_reg &#8212; detkit Manual</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "auto";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -59,8 +59,6 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="orthogonalize" href="detkit.orthogonalize.html" />
-    <link rel="prev" title="detkit.FitLogdet.fit" href="detkit.FitLogdet.fit.html" />
     <script defer data-domain="docs.scipy.org" src="https://views.scientific-python.org/js/script.js"></script>
 
     <!-- My custom JS -->
@@ -128,7 +126,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 current active nav-item">
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../api.html">
   API Reference
  </a>
@@ -203,215 +201,7 @@
   <div class="sidebar-start-items"><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     
-    <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Matrix Determinant
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.logdet.html">
-   logdet
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.loggdet.html">
-   loggdet
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.logpdet.html">
-   logpdet
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.memdet.html">
-   memdet
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Profiling
- </span>
-</p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="detkit.FitLogdet.html">
-   detkit.FitLogdet
-  </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
-   <li class="toctree-l2">
-    <a class="reference internal" href="detkit.FitLogdet.fit.html">
-     detkit.FitLogdet.fit
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     detkit.FitLogdet.eval
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Supplementary
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.orthogonalize.html">
-   orthogonalize
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.ortho_complement.html">
-   ortho_complement
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.lu_factor.html">
-   lu_factor
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.ldl_factor.html">
-   ldl_factor
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.cho_factor.html">
-   cho_factor
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Solving Linear Systems
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.lu_solve.html">
-   lu_solve
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.ldl_solve.html">
-   ldl_solve
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.cho_solve.html">
-   cho_solve
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.solve_triangular.html">
-   solve_triangular
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  BLAS Operations
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.matmul.html">
-   matmul
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Datasets
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.electrocardiogram.html">
-   electrocardiogram
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.covariance_matrix.html">
-   covariance_matrix
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.design_matrix.html">
-   design_matrix
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Profiling
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.Memory.html">
-   detkit.Memory
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.Disk.html">
-   detkit.Disk
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.Profile.html">
-   detkit.Profile
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Profiling Utilities
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.get_config.html">
-   get_config
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.check_perf_support.html">
-   check_perf_support
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.get_instructions_per_flop.html">
-   get_instructions_per_flop
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.get_processor_name.html">
-   get_processor_name
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.human_readable_time.html">
-   human_readable_time
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="detkit.human_readable_mem.html">
-   human_readable_mem
-  </a>
- </li>
-</ul>
-
+    
     
   </div>
 </nav>
@@ -436,10 +226,10 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#detkit.FitLogdet.eval">
+  <a class="reference internal nav-link" href="#detkit.FitLogdet.fit_reg">
    <code class="docutils literal notranslate">
     <span class="pre">
-     FitLogdet.eval()
+     FitLogdet.fit_reg()
     </span>
    </code>
   </a>
@@ -453,7 +243,7 @@
       
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.FitLogdet.eval.rst">
+    <a href="https://github.com/ameli/detkit/edit/main/docs/source/generated/detkit.FitLogdet.fit_reg.rst">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -470,22 +260,25 @@
               
               <article class="bd-article" role="main">
                 
-  <section id="detkit-fitlogdet-eval">
-<h1>detkit.FitLogdet.eval<a class="headerlink" href="#detkit-fitlogdet-eval" title="Permalink to this heading">#</a></h1>
+  <section id="detkit-fitlogdet-fit-reg">
+<h1>detkit.FitLogdet.fit_reg<a class="headerlink" href="#detkit-fitlogdet-fit-reg" title="Permalink to this heading">#</a></h1>
 <dl class="py method">
-<dt class="sig sig-object py" id="detkit.FitLogdet.eval">
-<span class="sig-prename descclassname"><span class="pre">FitLogdet.</span></span><span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet.eval" title="Permalink to this definition">#</a></dt>
-<dd><p>Evaluate fitted curve at a given <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dt class="sig sig-object py" id="detkit.FitLogdet.fit_reg">
+<span class="sig-prename descclassname"><span class="pre">FitLogdet.</span></span><span class="sig-name descname"><span class="pre">fit_reg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet.fit_reg" title="Permalink to this definition">#</a></dt>
+<dd><p>Fit the model to data with optional smoothness regularization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">numpy.array</span></dt><dd><p>1D array of length N</p>
+<dt><strong>x</strong><span class="classifier">numpy.array</span></dt><dd><p>One-dimensional arrays of length N</p>
 </dd>
-</dl>
+<dt><strong>y</strong><span class="classifier">numpy.array</span></dt><dd><p>One-dimensional arrays of length N</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">numpy.array</span></dt><dd><p>Evaluated values of curve fitting</p>
+<dt><strong>lam</strong><span class="classifier">float, default=0.0</span></dt><dd><p>Regularization strength. If set to zero, the model reverts to
+standard least squares fitting.</p>
+</dd>
+<dt><strong>smooth_interval</strong><span class="classifier">tuple (x_low, x_high) or None</span></dt><dd><p>If given, the second derivative penalty is enforced in this range.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">boolean, default=False</span></dt><dd><p>If <cite>True</cite>, the optimization results will be printed.</p>
 </dd>
 </dl>
 </dd>
@@ -494,6 +287,7 @@
 <p class="admonition-title">See also</p>
 <dl class="simple">
 <dt><a class="reference internal" href="detkit.FitLogdet.fit.html#detkit.FitLogdet.fit" title="detkit.FitLogdet.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="detkit.FitLogdet.eval.html#detkit.FitLogdet.eval" title="detkit.FitLogdet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a></dt><dd></dd>
 </dl>
 </div>
 </dd></dl>
@@ -508,20 +302,6 @@
               <footer class="bd-footer-article">
                   <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="detkit.FitLogdet.fit.html" title="previous page">
-      <i class="fas fa-angle-left"></i>
-      <div class="prev-next-info">
-          <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">detkit.FitLogdet.fit</p>
-      </div>
-  </a>
-  <a class='right-next' id="next-link" href="detkit.orthogonalize.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">orthogonalize</p>
-  </div>
-  <i class="fas fa-angle-right"></i>
-  </a>
 </div>
               </footer>
               
