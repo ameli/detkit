@@ -122,13 +122,13 @@ class FitLogdet(object):
 
         X : numpy.ndarray
             Two-dimensional array of design matrix. Number of rows are
-            ``x.size`` and number of columns are ``4 + m  n``. Columns of ``X``
-            represent basis functions.
+            ``x.size`` and number of columns are ``4 + m + n``. The columns of
+            ``X`` represent basis functions.
 
         Notes
         -----
 
-        Columns of X are basis functions.
+        The columns of ``X`` are the basis functions.
 
         See Also
         --------
@@ -136,6 +136,8 @@ class FitLogdet(object):
         fit
         """
 
+        # Three main bases x*log(x), x, and 1. Also, m+1 bases for the Laurent
+        # terms log(x)*x^{-1}, and n bases for the Laurent terms x^{-i}.
         X = numpy.zeros((len(x), 3 + self.m + 1 + self.n))
 
         # Main basis
@@ -163,12 +165,15 @@ class FitLogdet(object):
 
     def fit(self, x, y, verbose=False):
         """
-        Fit the model to data.
+        Fit model to data.
 
         Parameters
         ----------
 
-        x, y : numpy.array
+        x : numpy.array
+            One-dimensional arrays of length N
+
+        y : numpy.array
             One-dimensional arrays of length N
 
         verbose : boolean, default=False
@@ -190,7 +195,7 @@ class FitLogdet(object):
         y = y[mask] * self.scale_y
 
         if len(x) < self.m + self.n + 3:
-            raise ValueError("Not enough valid data points for the chosen m.")
+            raise ValueError("Not enough valid data points.")
 
         # Build the design matrix
         X = self._design_matrix(x)
@@ -209,6 +214,137 @@ class FitLogdet(object):
         if verbose:
             pprint(self.res)
 
+    # =======================
+    # second derivative basis
+    # =======================
+
+    @staticmethod
+    def _second_derivative_basis(self, i, x):
+        """
+        Compute second derivative of basis function indexed by i.
+        """
+
+        # The three main terms
+        if i == 0:
+            # 2nd derivative of loggamma
+            return scipy.special.polygamma(1, x + 1)
+
+        elif i == 1:
+            # x term -> second derivative = 0
+            return numpy.zeros_like(x)
+
+        elif i == 2:
+            # Constant term -> second derivative = 0
+            return numpy.zeros_like(x)
+
+        elif 3 <= i <= 3 + self.m:
+            # Lautern terms with log
+            j = i - 3
+            if j == 0:
+                return -numpy.log(x) / x**2
+            else:
+                return (j * (j + 1) * numpy.log(x) * x**(-j - 2))
+
+        else:
+            # Laurent terms without log
+            j = i - (3 + self.m + 1)
+            return (j * (j + 1) * x**(-j - 2))
+
+    # =======
+    # fit reg
+    # =======
+
+    def fit_reg(self, x, y, lam=0.0, smooth_interval=None, verbose=False):
+        """
+        Fit the model to data with optional smoothness regularization.
+
+        Parameters
+        ----------
+
+        x : numpy.array
+            One-dimensional arrays of length N
+
+        y : numpy.array
+            One-dimensional arrays of length N
+
+        lam : float, default=0.0
+            Regularization strength. If set to zero, the model reverts to
+            standard least squares fitting.
+
+        smooth_interval : tuple (x_low, x_high) or None
+            If given, the second derivative penalty is enforced in this range.
+
+        verbose : boolean, default=False
+            If `True`, the optimization results will be printed.
+
+        See Also
+        --------
+
+        fit
+        eval
+        """
+
+        # Ensure x and y are numpy arrays
+        x = numpy.asarray(x, dtype=float)
+        y = numpy.asarray(y, dtype=float)
+
+        # Ensure positive x
+        mask = x > 0
+        x = x[mask] * self.scale_x
+        y = y[mask] * self.scale_y
+
+        if len(x) < self.m + self.n + 3:
+            raise ValueError("Not enough valid data points.")
+
+        # Build the design matrix
+        X = self._design_matrix(x)
+
+        # -----------------------
+        # Regularization Matrix Q
+        # -----------------------
+
+        if lam > 0 and smooth_interval is not None:
+            x_low, x_high = smooth_interval
+            Q = numpy.zeros((X.shape[1], X.shape[1]))
+
+            # Compute Q matrix
+            num_basis = X.shape[1]
+            for i in range(num_basis):
+                for j in range(num_basis):
+                    Q[i, j] = numpy.trapz(
+                        self._second_derivative_basis(i, x) *
+                        self._second_derivative_basis(j, x), x)
+
+            # Regularization matrix
+            Q *= lam
+
+        else:
+            # No penalty when lam = 0
+            Q = numpy.zeros((X.shape[1], X.shape[1]))
+
+        # --------------------------
+        # Solve the Penalized System
+        # --------------------------
+
+        lhs = X.T @ X + Q
+        rhs = X.T @ y
+
+        self.param = numpy.linalg.solve(lhs, rhs)
+
+        # Store residual information
+        residuals = numpy.sum((y - X @ self.param) ** 2)
+        rank = numpy.linalg.matrix_rank(X)
+        singular_values = numpy.linalg.svd(X, compute_uv=False)
+
+        self.res = {
+            'residuals': residuals,
+            'rank': rank,
+            'singular_values': singular_values
+        }
+
+        if verbose:
+            pprint(self.res)
+
     # ====
     # eval
     # ====
@@ -220,12 +356,14 @@ class FitLogdet(object):
         Parameters
         ----------
 
-        x : 1D array of length N
+        x : numpy.array
+            1D array of length N
 
         Returns
         -------
 
-        y : Evaluated values of curve fitting
+        y : numpy.array
+            Evaluated values of curve fitting
 
         See Also
         --------
