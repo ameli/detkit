@@ -116,3 +116,13 @@ Utility functions for profiling memory and process.
     detkit.get_processor_name
     detkit.human_readable_time
     detkit.human_readable_mem
+
+Utility classes for profiling process.
+   
+.. autosummary::
+    :toctree: generated
+    :caption: Profiling Utilities
+    :recursive:
+    :template: autosummary/class.rst
+
+    detkit.InstructionsCounter
