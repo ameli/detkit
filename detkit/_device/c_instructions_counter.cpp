@@ -16,13 +16,14 @@
 #include "./c_instructions_counter.h"
 #include <string.h>
 #include <iostream>
+#include <cstdlib>  // atoi
 
 #if __linux__
-    #include <asm/unistd.h>
     #include <sys/ioctl.h>
-    #include <unistd.h>
-    #include <inttypes.h>
     #include <sys/types.h>
+    #include <syscall.h>
+    #include <dirent.h>
+    #include <unistd.h>
 #endif
 
 
@@ -46,22 +47,96 @@
 #endif
 
 
+// ======================
+// attach perf to threads
+// ======================
+
+void cInstructionsCounter::_attach_perf_to_threads()
+{
+    // Get main process ID
+    pid_t pid = getpid();
+
+    char task_path[64];
+    snprintf(task_path, sizeof(task_path), "/proc/%d/task", pid);
+
+    DIR* dir = opendir(task_path);
+    if (!dir)
+    {
+        std::cerr << "Failed to open " << task_path << std::endl;
+        return;
+    }
+
+    struct dirent* entry;
+
+    // Reset counter for valid TIDs
+    this->num_fds = 0;
+
+    int capacity = 256;  // Start small, grow dynamically
+    this->fds = new int[capacity];
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (entry->d_name[0] == '.')
+        {
+            // Skip "." and ".."
+            continue;
+        }
+
+        // Convert TID to integer
+        pid_t tid = atoi(entry->d_name);
+
+        int fd = perf_event_open(&this->pe, tid, -1, -1, 0);
+
+        if (fd != -1)
+        {
+            // If the array is full, resize it manually
+            if (this->num_fds >= capacity)
+            {
+                capacity *= 2;
+                int* new_fds = new int[capacity];
+
+                // Copy
+                for (int i = 0; i < this->num_fds; ++i)
+                {
+                    new_fds[i] = this->fds[i];
+                }
+
+                delete[] this->fds;
+                this->fds = new_fds;
+            }
+
+            // Store valid FD
+            this->fds[this->num_fds++] = fd;
+        }
+        else
+        {
+            std::cerr << "Failed to attach perf counter to TID " << tid;
+            std::cerr << std::endl;
+        }
+    }
+
+    closedir(dir);
+}
+
+
 // ===========
 // Constructor
 // ===========
 
 cInstructionsCounter::cInstructionsCounter():
-    fd(-1),
+    fds(NULL),
+    num_fds(0),
     count(0),
     inst_per_flop(1.0)
 {
     #if __linux__
+
         memset(&this->pe, 0, sizeof(struct perf_event_attr));
         this->pe.size = sizeof(struct perf_event_attr);
         this->pe.disabled = 1;
         this->pe.exclude_kernel = 1;
         this->pe.exclude_hv = 1;  // Don't count hypervisor events.
-        
+
         // Option 1: Count "pre-defined" hardware instructions
         // This option measures all CPU operations, including floating point,
         // memory, etc. This is has more noise as the count is not solely the
@@ -77,13 +152,8 @@ cInstructionsCounter::cInstructionsCounter():
         // this->pe.type = PERF_TYPE_RAW;  // Use raw events
         // this->pe.config = 0xC7;         // FP instructions
         // this->pe.config1 = 0x4;        // Unit mask (based on CPU)
-            
-        this->fd = perf_event_open(&this->pe, 0, -1, -1, 0);
-        if (this->fd == -1)
-        {
-            // Error, cannot open the leader.
-            this->count = -1;
-        }
+ 
+        this->_attach_perf_to_threads();
     #endif
 }
 
@@ -95,9 +165,17 @@ cInstructionsCounter::cInstructionsCounter():
 cInstructionsCounter::~cInstructionsCounter()
 {
     #if __linux__
-        if (this->fd != -1)
+        if (this->fds != NULL)
         {
-            close(this->fd);
+            for (int i=0; i < this->num_fds; ++i)
+            {
+                if (this->fds[i] != -1)
+                {
+                    close(this->fds[i]);
+                }
+            }
+
+            delete[] this->fds;
         }
     #endif
 }
@@ -120,10 +198,13 @@ void cInstructionsCounter::set_inst_per_flop(double inst_per_flop)
 void cInstructionsCounter::start()
 {
     #if __linux__
-        if (this->fd != -1)
+        for (int i=0; i < this->num_fds; ++i)
         {
-            ioctl(this->fd, PERF_EVENT_IOC_RESET, 0);
-            ioctl(this->fd, PERF_EVENT_IOC_ENABLE, 0);
+            if (this->fds[i] != -1)
+            {
+                ioctl(this->fds[i], PERF_EVENT_IOC_RESET, 0);
+                ioctl(this->fds[i], PERF_EVENT_IOC_ENABLE, 0);
+            }
         }
     #endif
 }
@@ -136,21 +217,24 @@ void cInstructionsCounter::start()
 void cInstructionsCounter::stop()
 {
     #if __linux__
-        
+
         long long current_count;
 
-        if (this->fd != -1)
+        for (int i=0; i < this->num_fds; ++i)
         {
-            ioctl(this->fd, PERF_EVENT_IOC_DISABLE, 0);
-            ssize_t bytes = read(this->fd, &current_count,
-                                 sizeof(long long));
-            if (bytes < 0)
+            if (this->fds[i] != -1)
             {
-                std::cerr << "Error reading file." << std::endl;
-            }
+                ioctl(this->fds[i], PERF_EVENT_IOC_DISABLE, 0);
+                ssize_t bytes = read(this->fds[i], &current_count,
+                                     sizeof(long long));
+                if (bytes < 0)
+                {
+                    std::cerr << "Error reading file." << std::endl;
+                }
 
-            // Accumulate counts
-            this->count += current_count;
+                // Accumulate counts
+                this->count += current_count;
+            }
         }
     #endif
 }

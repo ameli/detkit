@@ -33,17 +33,94 @@ __all__ = ['InstructionCounter']
 cdef class InstructionsCounter:
     """
     Wrapper for Linux's Perf tool.
+
+    Parameters
+    ----------
+
+    inst_per_flop : float, default=1.0
+        Instructions per FLOP. This can also be set later using
+        :func:`set_inst_per_flop`.
+
+    Methods
+    -------
+
+    start
+    stop
+    reset
+    get_count
+    set_inst_per_flop
+    get_flop
+
+    See Also
+    --------
+
+    detkit.check_perf_support
+    detkit.get_instructions_per_flop
+    detkit.Profile
+    detkit.memdet
+
+    Notes
+    -----
+
+    To measure hardware instructions count, the Perf tool needs to be installed
+    and necessary permissions should be granted for it to work. See
+    :ref:`Perf Tool <perf_tool>`.
+
+    To count FLOPs, multiply hardware instructions counter by flops per
+    hardware instructions, which can be estimated using
+    :func:`detkit.get_instructions_per_flop`.
+
+    Examples
+    --------
+
+    .. code-block:: python
+
+        >>> import detkit
+
+        >>> # You may first check Perf tool is installed and supported
+        >>> results = detkit.check_perf_support()
+        >>> print(results)
+        {
+            'kernel_version': '6.8.0-51-generic',
+            'perf_event_paranoid': 1,
+            'perf_installed': True,
+            'perf_working': True
+        }
+
+    Once you made sure Perf tool is installed and working, you can measure
+    hardware instructions count. In the example below, we measure it for the
+    matrix-matrix multiplication.
+
+    .. code-block:: python
+        :emphasize-lines: 3, 12, 14, 16
+
+        >>> # Initialize
+        >>> from detkit import InstructionsCounter
+        >>> ic = InstructionsCounter()
+
+        >>> # Create matrices for testing
+        >>> import numpy
+        >>> n = 1000
+        >>> A = numpy.random.randn(n, n)
+        >>> B = numpy.random.randn(n, n)
+
+        >>> # Start counting hardware instructions
+        >>> ic.start()
+        >>> C = A @ B
+        >>> ic.stop()
+
+        >>> print(is.get_count())
     """
 
     cdef cInstructionsCounter* c_instructions_counter
 
-    # ====
+    # =====
     # cinit
-    # ====
+    # =====
 
     def __cinit__(self, inst_per_flop=1.0):
         """
-        Initialize the C++ InstructionsCounter
+        Initialize the C++ InstructionsCounter.
         """
 
         self.c_instructions_counter = new cInstructionsCounter()
@@ -110,9 +187,9 @@ cdef class InstructionsCounter:
 
         return self.c_instructions_counter.get_count()
 
-    # ===============
+    # =================
     # set inst per flop
-    # ===============
+    # =================
 
     def set_inst_per_flop(self, inst_per_flop: float):
         """

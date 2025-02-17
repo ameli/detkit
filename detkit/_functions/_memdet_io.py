@@ -303,7 +303,8 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
         hw_inst_count = 0
         flops_count = 0
         inst_per_flop = get_instructions_per_flop(
-                dtype=dtype, min_n=100, max_n=500, num_n=6, plot=False)
+                task='matmat', impl='lapack', dtype=dtype, min_n=500,
+                max_n=2000, num_n=16, plot=False)
 
         if verbose:
             print(f'inst per flop        : {ANSI.BOLD}{inst_per_flop:>0.2f}' +

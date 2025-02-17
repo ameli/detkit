@@ -36,13 +36,15 @@ class cInstructionsCounter
         void reset();
         long long get_count();
         long long get_flops();
-        
-    // Member data
+
     private:
+        void _attach_perf_to_threads();
+
         #if __linux__
         struct perf_event_attr pe;
         #endif
-        int fd;
+        int* fds;
+        int num_fds;
         long long count;
         double inst_per_flop;
 };

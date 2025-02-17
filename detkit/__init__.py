@@ -44,21 +44,23 @@ def _check_import():
     _project_dir = os.path.dirname(_package_dir)                # It is: ../../
 
     if (_user_current_dir == _project_dir):
-        raise RuntimeError('You are in the source-code directory of this ' +
-                           'package. Importing the package will fail. To ' +
-                           'resolve this issue, consider changing the ' +
-                           'current directory outside of the directory of ' +
-                           'the source-code of this package. Your current' +
-                           'directory is: %s.' % _user_current_dir)
+        msg = 'You are in the source-code directory of this package. ' + \
+                'Importing the package will fail. To resolve this issue, ' + \
+                'consider changing the current directory outside of the ' + \
+                'directory of the source-code of this package. Your ' + \
+                'current directory is: %s.' % _user_current_dir
+
+        sys.stderr.write(msg)
 
     elif (_executable_dir == _project_dir):
-        raise RuntimeError('You are running a script in the source-code ' +
-                           'directory of this package. Importing the ' +
-                           'package will fail. To resolve this issue, ' +
-                           'consider changing the script directory outside' +
-                           'of the directory of the source-code of this' +
-                           'package. Your current directory is: %s.'
-                           % _executable_dir)
+        msg = 'You are running a script in the source-code directory of ' + \
+                'this package. Importing the package will fail. To ' + \
+                'resolve this issue, consider changing the script ' + \
+                'directory outside of the directory of the source-code of ' + \
+                'this package. Your current directory is: ' + \
+                '%s.' % _executable_dir
+
+        sys.stderr.write(msg)
 
 
 # =======

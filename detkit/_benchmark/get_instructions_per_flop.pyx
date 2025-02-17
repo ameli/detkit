@@ -13,6 +13,8 @@
 
 import numpy
 from .._definitions.types cimport LongIndexType, FlagType
+from .._cy_linear_algebra import matmul, cho_factor, lu_factor
+from .._device import InstructionsCounter
 from .benchmark cimport Benchmark
 import matplotlib.pyplot as plt
 import texplot
@@ -30,6 +32,7 @@ __all__ = ['get_instructions_per_flop']
 cpdef get_instructions_per_flop(
         task='matmat',
         dtype='float64',
+        impl='native',
         min_n=100,
         max_n=500,
         num_n=6,
@@ -81,6 +84,14 @@ cpdef get_instructions_per_flop(
 
         dtype : {'float32', 'float64', 'float128'}, default='float64'
             The type of the test data.
+
+        impl : {``'detkit'``, ``'lapack'``, ``'openblas'``},\
+                default:``'native'``
+            Implementation to execute the benchmark.
+
+            * ``'native'``: uses in-house implementation of tasks.
+            * ``'lapack'``: uses LAPACK implementation of tasks.
+            * ``'openblas'``: uses OpenBLAS implementation of tasks.
 
         min_n : int, default=100
             Minimum square matrix size to be tested.
@@ -188,40 +199,20 @@ cpdef get_instructions_per_flop(
 
     for i in range(n.size):
 
-        if dtype == 'float32':
-            inst = _get_instructions_float(task, n[i])
-        elif dtype == 'float64':
-            inst = _get_instructions_double(task, n[i])
-        elif dtype == 'float128':
-            inst = _get_instructions_long_double(task, n[i])
+        if impl == 'native':
+            inst_per_flop[i] = _native_benchmark(task, dtype, n[i])
+        elif impl == 'lapack':
+            inst_per_flop[i] = _lapack_benchmark(task, dtype, n[i])
+        elif impl == 'openblas':
+            inst_per_flop[i] = _openblas_benchmark(task, dtype, n[i])
         else:
-            raise ValueError('"dtype" should be "float32", "float64", or ' +
-                             '"float128".')
-
-        # Negative means the perf_tool is not installed on Linux OS.
-        if inst < 0:
-            return numpy.nan
-
-        # Flops for matrix-matrix multiplication
-        benchmark_flops = n[i]**3
-        if task == 'matmat':
-            pass
-        elif task == 'gramian':
-            benchmark_flops /= 1.0/2.0
-        elif task == 'cholesky':
-            benchmark_flops /= 1.0/3.0
-        elif task == 'lu':
-            benchmark_flops /= 2.0/3.0
-        elif task == 'lup':
-            benchmark_flops /= 2.0/3.0
-        else:
-            raise ValueError('"task" is not recognized.')
-
-        inst_per_flop[i] = inst / benchmark_flops
+            raise ValueError('"impl" is not valid.')
 
     # Find inst_per_flop when n tends to infinity using an exponential model
     # inst_per_flop = a/n + b
-    slope, intercept = numpy.polyfit(1.0/n, inst_per_flop, deg=1)
+    # slope, intercept = numpy.polyfit(1.0/n, inst_per_flop, deg=1)
+    slope, intercept, mask = _quantile_filtered_regression(
+            1.0/n, inst_per_flop)
 
     if plot:
         n_inv = numpy.linspace(0, numpy.max(1.0/n), 100)
@@ -229,8 +220,10 @@ cpdef get_instructions_per_flop(
 
         with texplot.theme():
             fig, ax = plt.subplots(figsize=(6, 4))
-            ax.plot(1.0/n, inst_per_flop, 'o', color='black',
+            ax.plot(1.0/n[mask], inst_per_flop[mask], 'ko', color='black',
                     label='Measurement')
+            ax.plot(1.0/n[~mask], inst_per_flop[~mask], 'wo',
+                    markeredgecolor='black', label='Outliers')
             ax.plot(n_inv, interp, '--', color='black', label='Regression')
             ax.scatter(n_inv[0], interp[0], s=50, zorder=3, clip_on=False,
                        color='maroon', label=r'Estimate at $n \to \infty$')
@@ -248,6 +241,254 @@ cpdef get_instructions_per_flop(
     inst_per_flop_limit = float(intercept)
 
     return inst_per_flop_limit
+
+
+# ============================
+# quantile filtered regression
+# ============================
+
+def _quantile_filtered_regression(x, y, threshold=1.5, max_iter=10, tol=1e-6):
+    """
+    Perform iterative least squares regression, removing extreme residuals in
+    each iteration.
+    
+    Parameters
+    ----------
+    
+    x : numpy array (independent variable)
+    y : numpy array (dependent variable)
+    threshold : float, multiplier for IQR-based outlier detection
+    max_iter : int, maximum number of iterations
+    tol : float, stopping threshold for change in data size
+
+    Returns
+    -------
+
+    slope : float, final slope
+    intercept : float, final intercept
+    mask : boolean numpy array, True for inliers, False for outliers
+    """
+
+    x = numpy.array(x)
+    y = numpy.array(y)
+    
+    # Start with all points as inliers
+    mask = numpy.ones_like(y, dtype=bool)
+
+    for _ in range(max_iter):
+        # Fit regression to current inliers
+        slope, intercept = numpy.polyfit(x[mask], y[mask], deg=1)
+        y_pred = slope * x + intercept
+        residuals = y - y_pred
+
+        # Compute IQR
+        Q1, Q3 = numpy.percentile(residuals[mask], [25, 75])
+        IQR = Q3 - Q1
+        lower_bound = Q1 - threshold * IQR
+        upper_bound = Q3 + threshold * IQR
+
+        # Update mask: Keep only points within IQR range
+        new_mask = (residuals >= lower_bound) & (residuals <= upper_bound)
+
+        # Stop if no more changes in mask
+        if numpy.sum(mask) - numpy.sum(new_mask) < tol:
+            break
+
+        mask = new_mask  # Update mask for next iteration
+
+    return slope, intercept, mask
+
+# ================
+# lapack benchmark
+# ================
+
+cpdef _lapack_benchmark(task, dtype, n):
+    """
+    Benchmark using LAPACK implementation.
+    """
+
+    A = numpy.random.randn(n, n)
+    if task in ['matmat', 'gramian']:
+        B = numpy.random.randn(n, n)
+        C = numpy.random.randn(n, n)
+    elif task == 'cholesky':
+        A = A.T @ A
+
+    if dtype == 'float32':
+        A = A.astype(numpy.float32)
+        if task in ['matmat', 'gramian']:
+            B = B.astype(numpy.float32)
+            C = B.astype(numpy.float32)
+
+    elif dtype == 'float64':
+        A = A.astype(numpy.float64)
+        if task in ['matmat', 'gramian']:
+            B = B.astype(numpy.float64)
+            C = C.astype(numpy.float64)
+
+    else:
+        raise ValueError('When "impl" is set to "lapack", "dtype" should ' +
+                         'be "float32", "float64".')
+
+    A = numpy.asfortranarray(A)
+    if task == 'matmat':
+        B = numpy.asfortranarray(B)
+        C = numpy.asfortranarray(C)
+
+    # Start counting
+    ic = InstructionsCounter()
+    ic.start()
+
+    # Perform task
+    if task in ['matmat', 'gramian']:
+        matmul(A, B, C)
+    elif task == 'cholesky':
+        cho_factor(A)
+    elif task in ['lu', 'plu']:
+        lu_factor(A)
+    else:
+        raise ValueError('"task" is not recognized.')
+
+    # Stop counting
+    ic.stop()
+    inst = ic.get_count()
+
+    # Negative means the perf_tool is not installed on Linux OS.
+    if inst < 0:
+        return numpy.nan
+
+    # Flops for matrix-matrix multiplication
+    benchmark_flops = n**3
+    if task in ['matmat', 'gramian']:
+        pass
+    elif task == 'cholesky':
+        benchmark_flops *= 1.0/3.0
+    elif task in ['lu', 'plu']:
+        benchmark_flops *= 2.0/3.0
+    else:
+        raise ValueError('"task" is not recognized.')
+
+    inst_per_flop = inst / benchmark_flops
+
+    return inst_per_flop
+
+
+# ==================
+# openblas benchmark
+# ==================
+
+cpdef _openblas_benchmark(task, dtype, n):
+    """
+    Benchmark using OpenBLAS implementation.
+    """
+
+    A = numpy.random.randn(n, n)
+    if task in ['matmat', 'gramian']:
+        B = numpy.random.randn(n, n)
+        C = numpy.random.randn(n, n)
+    elif task == 'cholesky':
+        A = A.T @ A
+
+    if dtype == 'float32':
+        A = A.astype(numpy.float32)
+        if task in ['matmat', 'gramian']:
+            B = B.astype(numpy.float32)
+            C = B.astype(numpy.float32)
+
+    elif dtype == 'float64':
+        A = A.astype(numpy.float64)
+        if task in ['matmat', 'gramian']:
+            B = B.astype(numpy.float64)
+            C = C.astype(numpy.float64)
+
+    else:
+        raise ValueError('When "impl" is set to "openblblas", "dtype" ' +
+                         'should be "float32", "float64".')
+
+    A = numpy.asfortranarray(A)
+    if task == 'matmat':
+        B = numpy.asfortranarray(B)
+        C = numpy.asfortranarray(C)
+
+    # Start counting
+    ic = InstructionsCounter()
+    ic.start()
+
+    # Perform task
+    if task in ['matmat', 'gramian']:
+        matmul(A, B, C)
+    elif task == 'cholesky':
+        cho_factor(A)
+    elif task in ['lu', 'plu']:
+        lu_factor(A)
+    else:
+        raise ValueError('"task" is not recognized.')
+
+    # Stop counting
+    ic.stop()
+    inst = ic.get_count()
+
+    # Negative means the perf_tool is not installed on Linux OS.
+    if inst < 0:
+        return numpy.nan
+
+    # Flops for matrix-matrix multiplication
+    benchmark_flops = n**3
+    if task in ['matmat', 'gramian']:
+        pass
+    elif task == 'cholesky':
+        benchmark_flops *= 1.0/3.0
+    elif task in ['lu', 'plu']:
+        benchmark_flops *= 2.0/3.0
+    else:
+        raise ValueError('"task" is not recognized.')
+
+    inst_per_flop = inst / benchmark_flops
+
+    return inst_per_flop
+
+
+# ================
+# native benchmark
+# ================
+
+cpdef _native_benchmark(task, dtype, n):
+    """
+    Benchmark using in-house implementation.
+    """
+
+    if dtype == 'float32':
+        inst = _get_instructions_float(task, n)
+    elif dtype == 'float64':
+        inst = _get_instructions_double(task, n)
+    elif dtype == 'float128':
+        inst = _get_instructions_long_double(task, n)
+    else:
+        raise ValueError('"dtype" should be "float32", "float64", or ' +
+                         '"float128".')
+
+    # Negative means the perf_tool is not installed on Linux OS.
+    if inst < 0:
+        return numpy.nan
+
+    # Flops for matrix-matrix multiplication
+    benchmark_flops = n**3
+    if task == 'matmat':
+        pass
+    elif task == 'gramian':
+        benchmark_flops *= 1.0/2.0
+    elif task == 'cholesky':
+        benchmark_flops *= 1.0/3.0
+    elif task == 'lu':
+        benchmark_flops *= 2.0/3.0
+    elif task == 'lup':
+        benchmark_flops *= 2.0/3.0
+    else:
+        raise ValueError('"task" is not recognized.')
+
+    inst_per_flop = inst / benchmark_flops
+
+    return inst_per_flop
 
 
 # ======================

@@ -49,7 +49,7 @@ def check_perf_support():
     Notes
     -----
 
-    The Perf tool needs to be installed and neccessary permissions should be
+    The Perf tool needs to be installed and necessary permissions should be
     granted for it to work. See :ref:`Perf Tool <perf_tool>`.
 
     Examples
