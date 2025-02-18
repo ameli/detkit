@@ -19,9 +19,13 @@ import dask.array
 import zarr
 import tensorstore
 import tempfile
+import atexit
+import signal
+from functools import partial
 import inspect
 from packaging.version import Version
 import shutil
+import subprocess
 from multiprocessing import shared_memory
 from ._ansi import ANSI
 from ._utilities import human_readable_mem
@@ -185,6 +189,30 @@ def _is_zarr(array):
                              '".zarray" was found.')
 
     return array_is_zarr, array_store_path, array_driver
+
+
+# =======
+# cleanup
+# =======
+
+def _cleanup(scratch_file):
+    """
+    This function is primarily used for Windows. In Windows, a tempfile is
+    immediately locked, and as such, memmap cannot reopen it. To fix this,
+    we close the tempfile, so memmap can open it later. But by closing the
+    tempfile, we wont be able to automatically clean it after termination.
+
+    This function, paired with atexit.register, will close the file.
+    """
+
+    try:
+        os.remove(scratch_file)
+    except FileNotFoundError:
+        # File is already deleted.
+        pass
+    except PermissionError:
+        # OS will handle it
+        pass
 
 
 # =============
@@ -457,11 +485,25 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             # Scratch space to hold temporary intermediate blocks
             if parallel_io == 'multiproc':
 
+                if sys.platform == "win32":
+                    # Windows: Use `delete=False` + `atexit` for cleanup
+                    delete = False
+                else:
+                    delete = True
+
                 # Temporary file as scratch space
                 temp_file = tempfile.NamedTemporaryFile(
                         prefix=_get_scratch_prefix(), suffix='.npy',
-                        delete=True, dir=scratch_dir)
+                        delete=delete, dir=scratch_dir)
+
                 scratch_file = temp_file.name
+
+                if sys.platform == "win32":
+                    temp_file.close()  # Close so numpy.memmap can access it
+                    partial_cleanup = partial(_cleanup, scratch_file)
+                    atexit.register(partial_cleanup)
+                    signal.signal(signal.SIGTERM, partial_cleanup)
+                    signal.signal(signal.SIGINT, partial_cleanup)
 
                 scratch = numpy.memmap(temp_file.name, dtype=dtype, mode='w+',
                                        shape=(n, n-m), order=order)
@@ -601,13 +643,45 @@ def _get_dir_size(path):
     Get the size of a director.
     """
 
-    total_size = 0
-    for dirpath, dirnames, filenames in os.walk(path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            total_size += os.path.getsize(fp)
+    if sys.platform in ['linux', 'darwin']:
 
-    return total_size
+        # Use 'du -sb' for fast size computation on Linux/macOS
+        try:
+            result = subprocess.run(['du', '-sb', path], capture_output=True,
+                                    text=True, check=True)
+            return int(result.stdout.split()[0])
+
+        except (subprocess.CalledProcessError, FileNotFoundError,
+                ValueError):
+            # Return 0 if 'du' fails
+            return 0
+
+    elif sys.platform == 'win32':
+        # Use os.scandir() for fast traversal on Windows
+        total_size = 0
+        try:
+            with os.scandir(path) as it:
+                for entry in it:
+                    try:
+                        if entry.is_file(follow_symlinks=False):
+                            total_size += entry.stat().st_size
+
+                        elif entry.is_dir(follow_symlinks=False):
+                            # Recursively process subdirectories
+                            total_size += _get_dir_size(entry.path)
+
+                    except OSError:
+                        # Ignore inaccessible files
+                        pass
+
+        except FileNotFoundError:
+            # Directory might have been deleted
+            pass
+
+        return total_size
+
+    else:
+        raise RuntimeError(f"Unsupported OS: {sys.platform}")
 
 
 # ===========
@@ -622,7 +696,6 @@ def cleanup_mem(io, verbose):
     # Unpack dir variables
     temp_file = io['dir']['temp_file']
     temp_dir = io['dir']['temp_dir']
-    scratch_nbytes = io['dir']['scratch_nbytes']
     scratch_file = io['dir']['scratch_file']
 
     # Unpack array variables
@@ -634,28 +707,35 @@ def cleanup_mem(io, verbose):
     # Cleanup directory and files
     if temp_file is not None:
         scratch_nbytes = os.path.getsize(scratch_file)
-        temp_file.close()
-    elif temp_dir is not None:
-        scratch_nbytes = _get_dir_size(temp_dir.name)
-        temp_dir.cleanup()
+        io['dir']['scratch_nbytes'] = scratch_nbytes
 
+        temp_file.close()
         if verbose:
-            print('removed scratch space: %s' % scratch_file)
+            print('removed scratch space: %s' % scratch_file, flush=True)
+
+    elif temp_dir is not None:
+
+        scratch_nbytes = _get_dir_size(temp_dir.name)
+        io['dir']['scratch_nbytes'] = scratch_nbytes
+
+        temp_dir.cleanup()
+        if verbose:
+            print('removed scratch space: %s' % scratch_file, flush=True)
 
     # Free memory
     if ('A11' in locals()) and isinstance(A11, shared_memory.SharedMemory):
         A11.close()
-        A11.unlink
+        A11.unlink()
 
     if ('A12' in locals()) and isinstance(A12, shared_memory.SharedMemory):
         A12.close()
-        A12.unlink
+        A12.unlink()
 
     if ('A21_t' in locals()) and \
             isinstance(A21_t, shared_memory.SharedMemory):
         A21_t.close()
-        A21_t.unlink
+        A21_t.unlink()
 
     if ('A22' in locals()) and isinstance(A22, shared_memory.SharedMemory):
         A22.close()
-        A22.unlink
+        A22.unlink()
