@@ -175,11 +175,11 @@ def test_memdet():
           parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
           max_mems=[nbytes//4, '60KB', float('inf')])
 
-    # # Test data types
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
-    #       max_mems=[float('inf')])
-    #
+    # Test data types
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
+          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
+          max_mems=[float('inf')])
+
     # # Test various parallel io
     # _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
     #       parallel_ios=[None, 'multiproc', 'dask', 'tensorstore'],
