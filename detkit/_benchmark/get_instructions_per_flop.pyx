@@ -215,7 +215,7 @@ cpdef get_instructions_per_flop(
             inst_per_flop[i] = numpy.nan
 
     # This means perf is not supported.
-    if numpy.any(numpy.nan(inst_per_flop)):
+    if numpy.any(numpy.isnan(inst_per_flop)):
         return numpy.nan
 
     # Find inst_per_flop when n tends to infinity using an exponential model
