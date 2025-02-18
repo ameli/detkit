@@ -109,11 +109,6 @@ void cInstructionsCounter::_attach_perf_to_threads()
                 // Store valid FD
                 this->fds[this->num_fds++] = fd;
             }
-            else
-            {
-                std::cerr << "Failed to attach perf counter to TID " << tid;
-                std::cerr << std::endl;
-            }
         }
 
         closedir(dir);
