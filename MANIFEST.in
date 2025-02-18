@@ -31,7 +31,11 @@ recursive-include docs/source *.html
 recursive-include detkit *.rst
 recursive-include examples *.py
 recursive-include examples *.rst
+
 recursive-include notebooks *.ipynb
+recursive-exclude notebooks *.pdf
+recursive-exclude notebooks *.svg
+
 recursive-include tests *.py
 recursive-include tests *.rst
 recursive-include tests *.txt
