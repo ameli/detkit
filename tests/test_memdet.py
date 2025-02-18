@@ -117,13 +117,18 @@ def _test(A, assumes, dtypes, parallel_ios, triangles, num_blocks, max_mems):
                                   f'triangle: {triangle}\n' +
                                   f'parallel_io: {parallel_io}\n', flush=True)
 
+                            if sys.platform == "linux":
+                                flops = True
+                            else:
+                                flops = False
+
                             # Compute log-determinant
                             ld, sign, diag, perm, info = memdet(
                                     matrix, max_mem=max_mem,
                                     num_blocks=num_block, assume=assume,
                                     mixed_precision=mixed_precision,
                                     scratch_dir=scratch_dir, triangle=triangle,
-                                    parallel_io=parallel_io, flops=True,
+                                    parallel_io=parallel_io, flops=False,
                                     verbose=True, return_info=True)
 
                             # Compare error

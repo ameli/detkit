@@ -112,6 +112,13 @@ void cInstructionsCounter::_attach_perf_to_threads()
         }
 
         closedir(dir);
+
+        // If no fd is opened, set counts to a negative number indicating perf
+        // is not supported.
+        if (this->num_fds == 0)
+        {
+            this->count = -1;
+        }
     #endif
 }
 

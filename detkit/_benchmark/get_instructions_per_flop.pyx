@@ -210,9 +210,16 @@ cpdef get_instructions_per_flop(
         else:
             raise ValueError('"impl" is not valid.')
 
+        # Negative means perf is not supported
+        if inst_per_flop[i] < 0.0:
+            inst_per_flop[i] = numpy.nan
+
+    # This means perf is not supported.
+    if numpy.any(numpy.nan(inst_per_flop)):
+        return numpy.nan
+
     # Find inst_per_flop when n tends to infinity using an exponential model
     # inst_per_flop = a/n + b
-    # slope, intercept = numpy.polyfit(1.0/n, inst_per_flop, deg=1)
     slope, intercept, mask = _quantile_filtered_regression(
             1.0/n, inst_per_flop)
 

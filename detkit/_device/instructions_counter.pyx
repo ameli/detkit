@@ -12,6 +12,7 @@
 # =======
 
 from libc.stdint cimport int64_t
+import numpy
 
 cdef extern from "c_instructions_counter.h":
     cdef cppclass cInstructionsCounter:
@@ -219,4 +220,9 @@ cdef class InstructionsCounter:
             Number of FLOPs counted.
         """
 
-        return self.c_instructions_counter.get_flops()
+        flops = self.c_instructions_counter.get_flops()
+
+        if flops < 0.0:
+            flops = numpy.nan
+
+        return flops
