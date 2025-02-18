@@ -183,7 +183,7 @@ def test_memdet():
     # Test various parallel io
     _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
           # parallel_ios=[None, 'multiproc', 'dask', 'tensorstore'],
-          parallel_ios=['dask'],
+          parallel_ios=[None, 'multiproc', 'tensorstore'],
           num_blocks=[4], max_mems=[float('inf')])
 
     # # Test triangle, but only for sym matrices
