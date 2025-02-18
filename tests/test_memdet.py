@@ -123,7 +123,7 @@ def _test(A, assumes, dtypes, parallel_ios, triangles, num_blocks, max_mems):
                                     num_blocks=num_block, assume=assume,
                                     mixed_precision=mixed_precision,
                                     scratch_dir=scratch_dir, triangle=triangle,
-                                    parallel_io=parallel_io,
+                                    parallel_io=parallel_io, flops=False,
                                     verbose=True, return_info=True)
 
                             # Compare error
