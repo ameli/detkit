@@ -303,7 +303,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
         hw_inst_count = 0
         flops_count = 0
         inst_per_flop = get_instructions_per_flop(
-                task='matmat', impl='lapack', dtype=dtype, min_n=500,
+                task='matmul', impl='lapack', dtype=dtype, min_n=500,
                 max_n=2000, num_n=16, plot=False)
 
         if verbose:

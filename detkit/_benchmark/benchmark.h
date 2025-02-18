@@ -28,7 +28,7 @@ class Benchmark
 {
     public:
 
-        static long long matmat(
+        static long long matmul(
                 const DataType* dummy_var,
                 const IndexType n);
 
@@ -44,7 +44,7 @@ class Benchmark
                 const DataType* dummy_var,
                 const IndexType n);
 
-        static long long lup(
+        static long long plu(
                 const DataType* dummy_var,
                 const IndexType n);
 

@@ -446,6 +446,9 @@ class Disk(object):
             'ext4'
         """
 
+        # Convert relative to absolute path
+        path = os.path.abspath(path)
+
         # Get partition information
         partitions = psutil.disk_partitions()
         part_info = None

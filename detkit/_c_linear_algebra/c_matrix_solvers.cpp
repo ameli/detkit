@@ -29,7 +29,7 @@
 ///        in the system $L X = B.T$.
 ///
 ///        Matrix \c L should have its diagonals. That is, \c L should have
-///        been computed from lu function, but not lup function.
+///        been computed from lu function, but not plu function.
 
 template <typename DataType>
 void cMatrixSolvers<DataType>::lower_triang_solve(
@@ -163,7 +163,7 @@ void cMatrixSolvers<DataType>::upper_triang_solve(
 ///        in the system $L X = B.T$.
 ///
 ///        Matrices L and U should have been computed from LU decomposition,
-///        bit not from LUP decomposition.
+///        bit not from PLU decomposition.
 
 template <typename DataType>
 void cMatrixSolvers<DataType>::lu_solve(
@@ -191,14 +191,14 @@ void cMatrixSolvers<DataType>::lu_solve(
 
 
 // =========
-// lup solve
+// plu solve
 // =========
 
-/// \brief Solves linear system. A should be the LU factor from LUP
+/// \brief Solves linear system. A should be the LU factor from PLU
 ///        decomposition, not from LU decomposition.
 
 template <typename DataType>
-void cMatrixSolvers<DataType>::lup_solve(
+void cMatrixSolvers<DataType>::plu_solve(
         const DataType *A,
         const LongIndexType *P, 
         const DataType *B,

@@ -324,13 +324,13 @@ def benchmark(argv):
     devices = {
         'cpu_name': get_processor_name(),
         'num_all_cpu_threads': multiprocessing.cpu_count(),
-        'instructions_per_matmat': get_instructions_per_flop(task='matmat'),
+        'instructions_per_matmul': get_instructions_per_flop(task='matmul'),
         'instructions_per_gramian': get_instructions_per_flop(
             task='gramian'),
         'instructions_per_cholesky': get_instructions_per_flop(
             task='cholesky'),
         'instructions_per_lu': get_instructions_per_flop(task='lu'),
-        'instructions_per_lup': get_instructions_per_flop(task='lup')
+        'instructions_per_plu': get_instructions_per_flop(task='plu')
     }
 
     n = config['n']
@@ -600,20 +600,20 @@ def benchmark(argv):
             print(' Done.', flush=True)
 
     # Convert number of instructions to number of flops
-    inst_per_matmat = devices['instructions_per_matmat']
-    flops_lgcy_gen_gen /= inst_per_matmat
-    flops_lgcy_gen_ort /= inst_per_matmat
-    flops_lgcy_spd_gen /= inst_per_matmat
-    flops_lgcy_spd_ort /= inst_per_matmat
-    flops_proj_gen /= inst_per_matmat
-    flops_proj_ort_pre /= inst_per_matmat
-    flops_proj_ort /= inst_per_matmat
-    flops_comp_gen_gen /= inst_per_matmat
-    flops_comp_spd_gen /= inst_per_matmat
-    flops_comp_gen_ort /= inst_per_matmat
-    flops_comp_spd_ort /= inst_per_matmat
-    flops_comp_gen_ort_xp /= inst_per_matmat
-    flops_comp_spd_ort_xp /= inst_per_matmat
+    inst_per_matmul = devices['instructions_per_matmul']
+    flops_lgcy_gen_gen /= inst_per_matmul
+    flops_lgcy_gen_ort /= inst_per_matmul
+    flops_lgcy_spd_gen /= inst_per_matmul
+    flops_lgcy_spd_ort /= inst_per_matmul
+    flops_proj_gen /= inst_per_matmul
+    flops_proj_ort_pre /= inst_per_matmul
+    flops_proj_ort /= inst_per_matmul
+    flops_comp_gen_gen /= inst_per_matmul
+    flops_comp_spd_gen /= inst_per_matmul
+    flops_comp_gen_ort /= inst_per_matmul
+    flops_comp_spd_ort /= inst_per_matmul
+    flops_comp_gen_ort_xp /= inst_per_matmul
+    flops_comp_spd_ort_xp /= inst_per_matmul
 
     # Dictionary of results
     results = {

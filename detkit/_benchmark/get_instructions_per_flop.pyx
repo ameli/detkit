@@ -12,6 +12,7 @@
 # =======
 
 import numpy
+import scipy
 from .._definitions.types cimport LongIndexType, FlagType
 from .._cy_linear_algebra import matmul, cho_factor, lu_factor
 from .._device import InstructionsCounter
@@ -30,7 +31,7 @@ __all__ = ['get_instructions_per_flop']
 # =========================
 
 cpdef get_instructions_per_flop(
-        task='matmat',
+        task='matmul',
         dtype='float64',
         impl='native',
         min_n=100,
@@ -61,10 +62,10 @@ cpdef get_instructions_per_flop(
     ==============  =============================  =======================
     Code name       Task name                      Complexity
     ==============  =============================  =======================
-    ``'matmat'``    matrix-matrix multiplication   :math:`n^3`
+    ``'matmul'``    matrix-matrix multiplication   :math:`n^3`
     ``'gramian'``   Gramian matrix multiplication  :math:`\\frac{1}{2}n^3`
     ``'cholesky'``  Cholesky decomposition         :math:`\\frac{1}{3}n^3`
-    ``'lup'``       LUP decomposition              :math:`\\frac{2}{3}n^3`
+    ``'plu'``       PLU decomposition              :math:`\\frac{2}{3}n^3`
     ``'lu'``        LU decomposition               :math:`\\frac{2}{3}n^3`
     ==============  =============================  =======================
 
@@ -73,25 +74,26 @@ cpdef get_instructions_per_flop(
 
     Parameters
     ----------
-        task : {'matmat', 'gramian', 'cholesky', 'lu', 'lup'}, default='matmat'
+        task : {'matmul', 'gramian', 'cholesky', 'lu', 'plu'}, default='matmul'
             The benchmark task to count its hardware instructions.
 
-            * ``'matmat'``: matrix-matrix multiplication task.
+            * ``'matmul'``: matrix-matrix multiplication task.
             * ``'gramian'``: Gramian matrix-matrix multiplication task.
             * ``'cholesky'``: Cholesky decomposition task.
             * ``'lu'``: LU decomposition task.
-            * ``'lup'``: LUP decomposition task.
+            * ``'plu'``: PLU decomposition task.
 
         dtype : {'float32', 'float64', 'float128'}, default='float64'
             The type of the test data.
 
-        impl : {``'detkit'``, ``'lapack'``, ``'openblas'``},\
+        impl : {``'detkit'``, ``'lapack'``, ``'blas'``},\
                 default:``'native'``
             Implementation to execute the benchmark.
 
-            * ``'native'``: uses in-house implementation of tasks.
-            * ``'lapack'``: uses LAPACK implementation of tasks.
-            * ``'openblas'``: uses OpenBLAS implementation of tasks.
+            * ``'native'``: uses native implementation of tasks (on single
+              thread).
+            * ``'lapack'``: uses LAPACK implementation of tasks using scipy.
+            * ``'blas'``: uses BLAS implementation of tasks using numpy.
 
         min_n : int, default=100
             Minimum square matrix size to be tested.
@@ -164,7 +166,7 @@ cpdef get_instructions_per_flop(
         11009228170
 
         >>> # Measure hardware instructions of a single FLOP
-        >>> benchmark_inst = get_instructions_per_flop(task='matmat')
+        >>> benchmark_inst = get_instructions_per_flop(task='matmul')
         >>> print(benchmark_int)
         5.21
 
@@ -203,8 +205,8 @@ cpdef get_instructions_per_flop(
             inst_per_flop[i] = _native_benchmark(task, dtype, n[i])
         elif impl == 'lapack':
             inst_per_flop[i] = _lapack_benchmark(task, dtype, n[i])
-        elif impl == 'openblas':
-            inst_per_flop[i] = _openblas_benchmark(task, dtype, n[i])
+        elif impl == 'blas':
+            inst_per_flop[i] = _blas_benchmark(task, dtype, n[i])
         else:
             raise ValueError('"impl" is not valid.')
 
@@ -220,9 +222,9 @@ cpdef get_instructions_per_flop(
 
         with texplot.theme():
             fig, ax = plt.subplots(figsize=(6, 4))
-            ax.plot(1.0/n[mask], inst_per_flop[mask], 'ko', color='black',
+            ax.plot(1.0/n[mask], inst_per_flop[mask], 'o', color='black',
                     label='Measurement')
-            ax.plot(1.0/n[~mask], inst_per_flop[~mask], 'wo',
+            ax.plot(1.0/n[~mask], inst_per_flop[~mask], 'o', color='white',
                     markeredgecolor='black', label='Outliers')
             ax.plot(n_inv, interp, '--', color='black', label='Regression')
             ax.scatter(n_inv[0], interp[0], s=50, zorder=3, clip_on=False,
@@ -298,6 +300,7 @@ def _quantile_filtered_regression(x, y, threshold=1.5, max_iter=10, tol=1e-6):
 
     return slope, intercept, mask
 
+
 # ================
 # lapack benchmark
 # ================
@@ -308,7 +311,7 @@ cpdef _lapack_benchmark(task, dtype, n):
     """
 
     A = numpy.random.randn(n, n)
-    if task in ['matmat', 'gramian']:
+    if task in ['matmul', 'gramian']:
         B = numpy.random.randn(n, n)
         C = numpy.random.randn(n, n)
     elif task == 'cholesky':
@@ -316,13 +319,13 @@ cpdef _lapack_benchmark(task, dtype, n):
 
     if dtype == 'float32':
         A = A.astype(numpy.float32)
-        if task in ['matmat', 'gramian']:
+        if task in ['matmul', 'gramian']:
             B = B.astype(numpy.float32)
             C = B.astype(numpy.float32)
 
     elif dtype == 'float64':
         A = A.astype(numpy.float64)
-        if task in ['matmat', 'gramian']:
+        if task in ['matmul', 'gramian']:
             B = B.astype(numpy.float64)
             C = C.astype(numpy.float64)
 
@@ -331,7 +334,7 @@ cpdef _lapack_benchmark(task, dtype, n):
                          'be "float32", "float64".')
 
     A = numpy.asfortranarray(A)
-    if task == 'matmat':
+    if task in ['matmul', 'gramian']:
         B = numpy.asfortranarray(B)
         C = numpy.asfortranarray(C)
 
@@ -340,7 +343,7 @@ cpdef _lapack_benchmark(task, dtype, n):
     ic.start()
 
     # Perform task
-    if task in ['matmat', 'gramian']:
+    if task in ['matmul', 'gramian']:
         matmul(A, B, C)
     elif task == 'cholesky':
         cho_factor(A)
@@ -359,7 +362,7 @@ cpdef _lapack_benchmark(task, dtype, n):
 
     # Flops for matrix-matrix multiplication
     benchmark_flops = n**3
-    if task in ['matmat', 'gramian']:
+    if task in ['matmul', 'gramian']:
         pass
     elif task == 'cholesky':
         benchmark_flops *= 1.0/3.0
@@ -373,17 +376,17 @@ cpdef _lapack_benchmark(task, dtype, n):
     return inst_per_flop
 
 
-# ==================
-# openblas benchmark
-# ==================
+# ==============
+# blas benchmark
+# ==============
 
-cpdef _openblas_benchmark(task, dtype, n):
+cpdef _blas_benchmark(task, dtype, n):
     """
-    Benchmark using OpenBLAS implementation.
+    Benchmark using BLAS implementation.
     """
 
     A = numpy.random.randn(n, n)
-    if task in ['matmat', 'gramian']:
+    if task in ['matmul', 'gramian']:
         B = numpy.random.randn(n, n)
         C = numpy.random.randn(n, n)
     elif task == 'cholesky':
@@ -391,13 +394,13 @@ cpdef _openblas_benchmark(task, dtype, n):
 
     if dtype == 'float32':
         A = A.astype(numpy.float32)
-        if task in ['matmat', 'gramian']:
+        if task in ['matmul', 'gramian']:
             B = B.astype(numpy.float32)
             C = B.astype(numpy.float32)
 
     elif dtype == 'float64':
         A = A.astype(numpy.float64)
-        if task in ['matmat', 'gramian']:
+        if task in ['matmul', 'gramian']:
             B = B.astype(numpy.float64)
             C = C.astype(numpy.float64)
 
@@ -405,22 +408,17 @@ cpdef _openblas_benchmark(task, dtype, n):
         raise ValueError('When "impl" is set to "openblblas", "dtype" ' +
                          'should be "float32", "float64".')
 
-    A = numpy.asfortranarray(A)
-    if task == 'matmat':
-        B = numpy.asfortranarray(B)
-        C = numpy.asfortranarray(C)
-
     # Start counting
     ic = InstructionsCounter()
     ic.start()
 
     # Perform task
-    if task in ['matmat', 'gramian']:
-        matmul(A, B, C)
+    if task in ['matmul', 'gramian']:
+        C = A @ B
     elif task == 'cholesky':
-        cho_factor(A)
+        numpy.linalg.cholesky(A)
     elif task in ['lu', 'plu']:
-        lu_factor(A)
+        scipy.linalg.lu(A)
     else:
         raise ValueError('"task" is not recognized.')
 
@@ -434,7 +432,7 @@ cpdef _openblas_benchmark(task, dtype, n):
 
     # Flops for matrix-matrix multiplication
     benchmark_flops = n**3
-    if task in ['matmat', 'gramian']:
+    if task in ['matmul', 'gramian']:
         pass
     elif task == 'cholesky':
         benchmark_flops *= 1.0/3.0
@@ -473,7 +471,7 @@ cpdef _native_benchmark(task, dtype, n):
 
     # Flops for matrix-matrix multiplication
     benchmark_flops = n**3
-    if task == 'matmat':
+    if task == 'matmul':
         pass
     elif task == 'gramian':
         benchmark_flops *= 1.0/2.0
@@ -481,7 +479,7 @@ cpdef _native_benchmark(task, dtype, n):
         benchmark_flops *= 1.0/3.0
     elif task == 'lu':
         benchmark_flops *= 2.0/3.0
-    elif task == 'lup':
+    elif task == 'plu':
         benchmark_flops *= 2.0/3.0
     else:
         raise ValueError('"task" is not recognized.')
@@ -506,16 +504,16 @@ cpdef long long _get_instructions_float(
     cdef float* dummy_var = NULL
     cdef long long inst = -1
 
-    if task == 'matmat':
-        inst = Benchmark[float].matmat(dummy_var, n)
+    if task == 'matmul':
+        inst = Benchmark[float].matmul(dummy_var, n)
     elif task == 'gramian':
         inst = Benchmark[float].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[float].cholesky(dummy_var, n)
     elif task == 'lu':
         inst = Benchmark[float].lu(dummy_var, n)
-    elif task == 'lup':
-        inst = Benchmark[float].lup(dummy_var, n)
+    elif task == 'plu':
+        inst = Benchmark[float].plu(dummy_var, n)
     else:
         raise ValueError('"task" is not recognized.')
 
@@ -537,16 +535,16 @@ cpdef long long _get_instructions_double(
     cdef double* dummy_var = NULL
     cdef long long inst = -1
 
-    if task == 'matmat':
-        inst = Benchmark[double].matmat(dummy_var, n)
+    if task == 'matmul':
+        inst = Benchmark[double].matmul(dummy_var, n)
     elif task == 'gramian':
         inst = Benchmark[double].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[double].cholesky(dummy_var, n)
     elif task == 'lu':
         inst = Benchmark[double].lu(dummy_var, n)
-    elif task == 'lup':
-        inst = Benchmark[double].lup(dummy_var, n)
+    elif task == 'plu':
+        inst = Benchmark[double].plu(dummy_var, n)
     else:
         raise ValueError('"task" is not recognized.')
 
@@ -568,16 +566,16 @@ cpdef long long _get_instructions_long_double(
     cdef long double* dummy_var = NULL
     cdef long long inst = -1
 
-    if task == 'matmat':
-        inst = Benchmark[long_double].matmat(dummy_var, n)
+    if task == 'matmul':
+        inst = Benchmark[long_double].matmul(dummy_var, n)
     elif task == 'gramian':
         inst = Benchmark[long_double].gramian(dummy_var, n)
     elif task == 'cholesky':
         inst = Benchmark[long_double].cholesky(dummy_var, n)
     elif task == 'lu':
         inst = Benchmark[long_double].lu(dummy_var, n)
-    elif task == 'lup':
-        inst = Benchmark[long_double].lup(dummy_var, n)
+    elif task == 'plu':
+        inst = Benchmark[long_double].plu(dummy_var, n)
     else:
         raise ValueError('"task" is not recognized.')
 

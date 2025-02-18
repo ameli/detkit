@@ -54,7 +54,7 @@ cdef extern from "c_matrix_solvers.h":
                 const FlagType X_transpose) noexcept nogil
 
         @staticmethod
-        void lup_solve(
+        void plu_solve(
                 const DataType *A,
                 const LongIndexType *P, 
                 const DataType *B,

@@ -101,9 +101,9 @@ DataType cMatrixFunctions<DataType>::logdet(
     {
         // Perform LU Decomposition. A is overwritten to LU.
         P = new LongIndexType[num_rows+1];
-        status = cMatrixDecompositions<DataType>::lup(A, P, num_rows, tol);
+        status = cMatrixDecompositions<DataType>::plu(A, P, num_rows, tol);
         
-        // Check if the lup decomposition was successful.
+        // Check if the plu decomposition was successful.
         if (status != 0)
         {
             // Matrix is degenerate.
@@ -377,10 +377,10 @@ DataType cMatrixFunctions<DataType>::_loggdet_legacy(
     {
         // Perform LU Decomposition. A is overwritten to U.
         P = new LongIndexType[num_rows+1];
-        status = cMatrixDecompositions<DataType>::lup(
+        status = cMatrixDecompositions<DataType>::plu(
             A_copy, P, num_rows, tol);
 
-        // Check if the lup decomposition was successful.
+        // Check if the plu decomposition was successful.
         if (status != 0)
         {
             // Matrix is degenerate.
@@ -400,7 +400,7 @@ DataType cMatrixFunctions<DataType>::_loggdet_legacy(
                 A_copy, P, num_rows, sign_A);
 
         // Solve Y = Ainv * X using LU decomposition of A_copy. A_copy is U.
-        cMatrixSolvers<DataType>::lup_solve(
+        cMatrixSolvers<DataType>::plu_solve(
                 A_copy, P, X, Y, num_rows, num_columns, 0, 0);
 
         // Compute W = X.T * Y
@@ -836,10 +836,10 @@ DataType cMatrixFunctions<DataType>::_logpdet_legacy(
     {
         // Perform LU Decomposition. A is overwritten to U.
         P = new LongIndexType[num_rows+1];
-        status = cMatrixDecompositions<DataType>::lup(
+        status = cMatrixDecompositions<DataType>::plu(
             A_copy, P, num_rows, tol);
 
-        // Check if the lup decomposition was successful.
+        // Check if the plu decomposition was successful.
         if (status != 0)
         {
             // Matrix is degenerate.
@@ -859,7 +859,7 @@ DataType cMatrixFunctions<DataType>::_logpdet_legacy(
                 A_copy, P, num_rows, sign_A);
 
         // Solve Y = Ainv * X using LU decomposition of A_copy. A_copy is U.
-        cMatrixSolvers<DataType>::lup_solve(
+        cMatrixSolvers<DataType>::plu_solve(
                 A_copy, P, X, Y, num_rows, num_columns, 0, 0);
 
         // Compute W = X.T * Y

@@ -11,6 +11,8 @@
 # Imports
 # =======
 
+import os
+
 __all__ = ['ANSI']
 
 
@@ -22,6 +24,10 @@ class ANSI(object):
     """
     ANSI escape codes for colors and styles.
     """
+
+    if sys.platform == "win32":
+        # Enables ANSI escape codes in some Windows terminals
+        os.system("")
 
     # Style
     RESET = '\033[0m'

@@ -56,34 +56,22 @@ def test_get_inst_per_flop():
     Test for `get_inst_per_flop` function.
     """
 
+    tasks = ['matmul', 'gramian', 'cholesky', 'lu', 'plu']
+    impls = ['native', 'lapack', 'blas']
+
     # Instructions for each task
-    inst_per_matmat = get_instructions_per_flop(task='matmat')
-    inst_per_gramian = get_instructions_per_flop(task='gramian')
-    inst_per_cholesky = get_instructions_per_flop(task='cholesky')
-    inst_per_lu = get_instructions_per_flop(task='lu')
-    inst_per_lup = get_instructions_per_flop(task='lup')
+    for impl in impls:
+        for task in tasks:
+            inst_per_flop = get_instructions_per_flop(
+                    task=task, impl=impl, dtype='float64', min_n=100,
+                    max_n=500, num_n=6, plot=False)
 
-    # Instructions relative to matrix-matrix multiplication
-    rel_inst_per_matmat = inst_per_matmat / inst_per_matmat
-    rel_inst_per_gramian = inst_per_gramian / inst_per_matmat
-    rel_inst_per_cholesky = inst_per_cholesky / inst_per_matmat
-    rel_inst_per_lu = inst_per_lu / inst_per_matmat
-    rel_inst_per_lup = inst_per_lup / inst_per_matmat
-
-    # Print results
-    print('instructions per matmat:   %0.3f, rel: %0.3f'
-          % (inst_per_matmat, rel_inst_per_matmat))
-    print('instructions per gramian:  %0.3f, rel: %0.3f'
-          % (inst_per_gramian, rel_inst_per_gramian))
-    print('instructions per cholesky: %0.3f, rel: %0.3f'
-          % (inst_per_cholesky, rel_inst_per_cholesky))
-    print('instructions per lu:       %0.3f, rel: %0.3f'
-          % (inst_per_lu, rel_inst_per_lu))
-    print('instructions per lup:      %0.3f, rel: %0.3f'
-          % (inst_per_lup, rel_inst_per_lup))
+            print(f'impl: {impl:<7s}, task: {task:<8s}, ' +
+                    f'inst_per_flop: {inst_per_flop:>5.2f}')
 
     # Check plot
-    _ = get_instructions_per_flop(dtype='float32', min_n=100, max_n=500,
+    _ = get_instructions_per_flop(task='matmul', impl='lapack',
+                                  dtype='float32', min_n=100, max_n=500,
                                   num_n=10, plot=True)
 
     _remove_saved_plot('simd.svg')

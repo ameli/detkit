@@ -63,8 +63,8 @@ class cMatrixDecompositions
                 const LongIndexType num_rows,
                 DataType* L);
 
-        // lup
-        static FlagType lup(
+        // plu
+        static FlagType plu(
                 DataType* A,
                 LongIndexType* P,
                 const LongIndexType num_rows,

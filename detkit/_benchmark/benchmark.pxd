@@ -23,7 +23,7 @@ cdef extern from "benchmark.h":
     cdef cppclass Benchmark[DataType]:
 
         @staticmethod
-        long long matmat(
+        long long matmul(
                 const DataType* dummy_var,
                 const LongIndexType n) noexcept nogil
 
@@ -43,6 +43,6 @@ cdef extern from "benchmark.h":
                 const LongIndexType n) noexcept nogil
 
         @staticmethod
-        long long lup(
+        long long plu(
                 const DataType* dummy_var,
                 const LongIndexType n) noexcept nogil

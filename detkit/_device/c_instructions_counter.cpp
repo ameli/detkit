@@ -53,69 +53,71 @@
 
 void cInstructionsCounter::_attach_perf_to_threads()
 {
-    // Get main process ID
-    pid_t pid = getpid();
+    #if __linux__
+        // Get main process ID
+        pid_t pid = getpid();
 
-    char task_path[64];
-    snprintf(task_path, sizeof(task_path), "/proc/%d/task", pid);
+        char task_path[64];
+        snprintf(task_path, sizeof(task_path), "/proc/%d/task", pid);
 
-    DIR* dir = opendir(task_path);
-    if (!dir)
-    {
-        std::cerr << "Failed to open " << task_path << std::endl;
-        return;
-    }
-
-    struct dirent* entry;
-
-    // Reset counter for valid TIDs
-    this->num_fds = 0;
-
-    int capacity = 256;  // Start small, grow dynamically
-    this->fds = new int[capacity];
-
-    while ((entry = readdir(dir)) != NULL)
-    {
-        if (entry->d_name[0] == '.')
+        DIR* dir = opendir(task_path);
+        if (!dir)
         {
-            // Skip "." and ".."
-            continue;
+            std::cerr << "Failed to open " << task_path << std::endl;
+            return;
         }
 
-        // Convert TID to integer
-        pid_t tid = atoi(entry->d_name);
+        struct dirent* entry;
 
-        int fd = perf_event_open(&this->pe, tid, -1, -1, 0);
+        // Reset counter for valid TIDs
+        this->num_fds = 0;
 
-        if (fd != -1)
+        int capacity = 256;  // Start small, grow dynamically
+        this->fds = new int[capacity];
+
+        while ((entry = readdir(dir)) != NULL)
         {
-            // If the array is full, resize it manually
-            if (this->num_fds >= capacity)
+            if (entry->d_name[0] == '.')
             {
-                capacity *= 2;
-                int* new_fds = new int[capacity];
-
-                // Copy
-                for (int i = 0; i < this->num_fds; ++i)
-                {
-                    new_fds[i] = this->fds[i];
-                }
-
-                delete[] this->fds;
-                this->fds = new_fds;
+                // Skip "." and ".."
+                continue;
             }
 
-            // Store valid FD
-            this->fds[this->num_fds++] = fd;
-        }
-        else
-        {
-            std::cerr << "Failed to attach perf counter to TID " << tid;
-            std::cerr << std::endl;
-        }
-    }
+            // Convert TID to integer
+            pid_t tid = atoi(entry->d_name);
 
-    closedir(dir);
+            int fd = perf_event_open(&this->pe, tid, -1, -1, 0);
+
+            if (fd != -1)
+            {
+                // If the array is full, resize it manually
+                if (this->num_fds >= capacity)
+                {
+                    capacity *= 2;
+                    int* new_fds = new int[capacity];
+
+                    // Copy
+                    for (int i = 0; i < this->num_fds; ++i)
+                    {
+                        new_fds[i] = this->fds[i];
+                    }
+
+                    delete[] this->fds;
+                    this->fds = new_fds;
+                }
+
+                // Store valid FD
+                this->fds[this->num_fds++] = fd;
+            }
+            else
+            {
+                std::cerr << "Failed to attach perf counter to TID " << tid;
+                std::cerr << std::endl;
+            }
+        }
+
+        closedir(dir);
+    #endif
 }
 
 
@@ -130,7 +132,6 @@ cInstructionsCounter::cInstructionsCounter():
     inst_per_flop(1.0)
 {
     #if __linux__
-
         memset(&this->pe, 0, sizeof(struct perf_event_attr));
         this->pe.size = sizeof(struct perf_event_attr);
         this->pe.disabled = 1;
@@ -151,7 +152,7 @@ cInstructionsCounter::cInstructionsCounter():
         // above for now.
         // this->pe.type = PERF_TYPE_RAW;  // Use raw events
         // this->pe.config = 0xC7;         // FP instructions
-        // this->pe.config1 = 0x4;        // Unit mask (based on CPU)
+        // this->pe.config1 = 0x4;         // Unit mask (based on CPU)
  
         this->_attach_perf_to_threads();
     #endif
@@ -217,7 +218,6 @@ void cInstructionsCounter::start()
 void cInstructionsCounter::stop()
 {
     #if __linux__
-
         long long current_count;
 
         for (int i=0; i < this->num_fds; ++i)

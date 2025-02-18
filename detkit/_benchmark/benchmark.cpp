@@ -23,7 +23,7 @@
 
 
 // ======
-// matmat
+// matmul
 // ======
 
 /// \brief  Computes the number of hardware instructions for a matrix-martrix
@@ -33,7 +33,7 @@
 ///         and one addition.
 
 template <typename DataType>
-long long Benchmark<DataType>::matmat(
+long long Benchmark<DataType>::matmul(
         const DataType* dummy_var,
         const LongIndexType n)
 {
@@ -227,7 +227,7 @@ long long Benchmark<DataType>::lu(
 
 
 // ===
-// lup
+// plu
 // ===
 
 /// \brief  Computes the number of hardware instructions for a matrix-martrix
@@ -237,7 +237,7 @@ long long Benchmark<DataType>::lu(
 ///         and one addition.
 
 template <typename DataType>
-long long Benchmark<DataType>::lup(
+long long Benchmark<DataType>::plu(
         const DataType* dummy_var,
         const LongIndexType n)
 {
@@ -259,9 +259,9 @@ long long Benchmark<DataType>::lup(
         cInstructionsCounter instructions_counter = cInstructionsCounter();
         instructions_counter.start();
 
-        // LUP decomposition
+        // PLU decomposition
         DataType tol = 1e-8;
-        FlagType status = cMatrixDecompositions<DataType>::lup(A, P, n, tol);
+        FlagType status = cMatrixDecompositions<DataType>::plu(A, P, n, tol);
 
         // With the if condition, avoid -Wunused-value warning
         if (status == 0)

@@ -76,15 +76,15 @@ void cMatrixDecompositions<DataType>::lu(
 
 
 // ===
-// lup
+// plu
 // ===
 
-/// \brief LUP decomposition (with partial pivoting). A is (n, n) matrix and
+/// \brief PLU decomposition (with partial pivoting). A is (n, n) matrix and
 ///        P is a 1D array of size n+1.
 ///
 
 template <typename DataType>
-FlagType cMatrixDecompositions<DataType>::lup(
+FlagType cMatrixDecompositions<DataType>::plu(
         DataType* A,
         LongIndexType* P,
         const LongIndexType num_rows,

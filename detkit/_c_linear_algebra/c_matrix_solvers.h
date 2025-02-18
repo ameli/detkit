@@ -88,7 +88,7 @@ class cMatrixSolvers
                 const FlagType B_transpose,
                 const FlagType X_transpose);
 
-        static void lup_solve(
+        static void plu_solve(
                 const DataType *A,
                 const LongIndexType *P, 
                 const DataType *B,
