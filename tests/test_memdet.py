@@ -183,9 +183,9 @@ def test_memdet():
     # Test various parallel io
     if sys.version_info[:2] == (3, 12):
         # In Python 3.12, dask takes forever.
-        parallel_ios=[None, 'multiproc', 'tensorstore']
+        parallel_ios = [None, 'multiproc', 'tensorstore']
     else:
-        parallel_ios=[None, 'multiproc', 'dask', 'tensorstore']
+        parallel_ios = [None, 'multiproc', 'dask', 'tensorstore']
 
     _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
           parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
