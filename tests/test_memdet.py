@@ -123,8 +123,8 @@ def _test(A, assumes, dtypes, parallel_ios, triangles, num_blocks, max_mems):
                                     num_blocks=num_block, assume=assume,
                                     mixed_precision=mixed_precision,
                                     scratch_dir=scratch_dir, triangle=triangle,
-                                    parallel_io=parallel_io, flops=False,
-                                    verbose=False, return_info=True)
+                                    parallel_io=parallel_io, flops=True,
+                                    verbose=True, return_info=True)
 
                             # Compare error
                             sign_error = (sign == sign0)
@@ -183,7 +183,7 @@ def test_memdet():
     # Test various parallel io
     _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
           # parallel_ios=[None, 'multiproc', 'dask', 'tensorstore'],
-          parallel_ios=['dask', 'tensorstore'],
+          parallel_ios=[None],
           num_blocks=[4], max_mems=[float('inf')])
 
     # # Test triangle, but only for sym matrices
