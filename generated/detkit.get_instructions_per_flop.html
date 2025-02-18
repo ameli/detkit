@@ -471,7 +471,7 @@
 <h1>get_instructions_per_flop<a class="headerlink" href="#get-instructions-per-flop" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.get_instructions_per_flop">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">get_instructions_per_flop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matmat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'native'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.get_instructions_per_flop" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">get_instructions_per_flop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matmul'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'native'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.get_instructions_per_flop" title="Permalink to this definition">#</a></dt>
 <dd><p>Counts the hardware instructions of computing a single FLOP of a benchmark
 task on the current processor.</p>
 <p>The goal of this function is to be used to measure the computational
@@ -496,7 +496,7 @@ tasks provided in are as follows</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'matmat'</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'matmul'</span></code></p></td>
 <td><p>matrix-matrix multiplication</p></td>
 <td><p><span class="math notranslate nohighlight">\(n^3\)</span></p></td>
 </tr>
@@ -508,8 +508,8 @@ tasks provided in are as follows</p>
 <td><p>Cholesky decomposition</p></td>
 <td><p><span class="math notranslate nohighlight">\(\frac{1}{3}n^3\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'lup'</span></code></p></td>
-<td><p>LUP decomposition</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'plu'</span></code></p></td>
+<td><p>PLU decomposition</p></td>
 <td><p><span class="math notranslate nohighlight">\(\frac{2}{3}n^3\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'lu'</span></code></p></td>
@@ -523,22 +523,23 @@ tends to infinity.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>task</strong><span class="classifier">{‘matmat’, ‘gramian’, ‘cholesky’, ‘lu’, ‘lup’}, default=’matmat’</span></dt><dd><p>The benchmark task to count its hardware instructions.</p>
+<dt><strong>task</strong><span class="classifier">{‘matmul’, ‘gramian’, ‘cholesky’, ‘lu’, ‘plu’}, default=’matmul’</span></dt><dd><p>The benchmark task to count its hardware instructions.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'matmat'</span></code>: matrix-matrix multiplication task.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'matmul'</span></code>: matrix-matrix multiplication task.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'gramian'</span></code>: Gramian matrix-matrix multiplication task.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'cholesky'</span></code>: Cholesky decomposition task.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'lu'</span></code>: LU decomposition task.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'lup'</span></code>: LUP decomposition task.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'plu'</span></code>: PLU decomposition task.</p></li>
 </ul>
 </dd>
 <dt><strong>dtype</strong><span class="classifier">{‘float32’, ‘float64’, ‘float128’}, default=’float64’</span></dt><dd><p>The type of the test data.</p>
 </dd>
-<dt><strong>impl</strong><span class="classifier">{<code class="docutils literal notranslate"><span class="pre">'detkit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'lapack'</span></code>, <code class="docutils literal notranslate"><span class="pre">'openblas'</span></code>},                default:<code class="docutils literal notranslate"><span class="pre">'native'</span></code></span></dt><dd><p>Implementation to execute the benchmark.</p>
+<dt><strong>impl</strong><span class="classifier">{<code class="docutils literal notranslate"><span class="pre">'detkit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'lapack'</span></code>, <code class="docutils literal notranslate"><span class="pre">'blas'</span></code>},                default:<code class="docutils literal notranslate"><span class="pre">'native'</span></code></span></dt><dd><p>Implementation to execute the benchmark.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'native'</span></code>: uses in-house implementation of tasks.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'lapack'</span></code>: uses LAPACK implementation of tasks.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'openblas'</span></code>: uses OpenBLAS implementation of tasks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'native'</span></code>: uses native implementation of tasks (on single
+thread).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'lapack'</span></code>: uses LAPACK implementation of tasks using scipy.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'blas'</span></code>: uses BLAS implementation of tasks using numpy.</p></li>
 </ul>
 </dd>
 <dt><strong>min_n</strong><span class="classifier">int, default=100</span></dt><dd><p>Minimum square matrix size to be tested.</p>
@@ -605,7 +606,7 @@ count of hardware instructions.</p></li>
 <span class="go">11009228170</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Measure hardware instructions of a single FLOP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">benchmark_inst</span> <span class="o">=</span> <span class="n">get_instructions_per_flop</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s1">&#39;matmat&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">benchmark_inst</span> <span class="o">=</span> <span class="n">get_instructions_per_flop</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s1">&#39;matmul&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">benchmark_int</span><span class="p">)</span>
 <span class="go">5.21</span>
 
