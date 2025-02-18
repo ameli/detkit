@@ -12,6 +12,7 @@
 # =======
 
 import os
+import sys
 
 __all__ = ['ANSI']
 

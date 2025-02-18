@@ -67,7 +67,7 @@ def test_get_inst_per_flop():
                     max_n=500, num_n=6, plot=False)
 
             print(f'impl: {impl:<7s}, task: {task:<8s}, ' +
-                    f'inst_per_flop: {inst_per_flop:>5.2f}')
+                  f'inst_per_flop: {inst_per_flop:>5.2f}')
 
     # Check plot
     _ = get_instructions_per_flop(task='matmul', impl='lapack',
