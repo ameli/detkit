@@ -218,7 +218,6 @@ class FitLogdet(object):
     # second derivative basis
     # =======================
 
-    @staticmethod
     def _second_derivative_basis(self, i, x):
         """
         Compute second derivative of basis function indexed by i.
@@ -238,7 +237,7 @@ class FitLogdet(object):
             return numpy.zeros_like(x)
 
         elif 3 <= i <= 3 + self.m:
-            # Lautern terms with log
+            # Laurent terms with log
             j = i - 3
             if j == 0:
                 return -numpy.log(x) / x**2

@@ -20,9 +20,9 @@ import zarr
 import os
 import shutil
 
-import warnings
-warnings.resetwarnings()
-warnings.filterwarnings('error')
+# import warnings
+# warnings.resetwarnings()
+# warnings.filterwarnings('error')
 
 
 # ==========
