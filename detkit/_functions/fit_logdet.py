@@ -239,10 +239,7 @@ class FitLogdet(object):
         elif 3 <= i <= 3 + self.m:
             # Laurent terms with log
             j = i - 3
-            if j == 0:
-                return -numpy.log(x) / x**2
-            else:
-                return (j * (j + 1) * numpy.log(x) * x**(-j - 2))
+            return (j * (j + 1) * numpy.log(x) - (2 * j + 1)) * x**(-j - 2)
 
         else:
             # Laurent terms without log

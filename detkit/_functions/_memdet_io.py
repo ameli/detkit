@@ -362,9 +362,9 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
 
     # Get device's memory (total and available memory)
     mem_info = Memory.info()
-    mem_avail = mem_info.available
+    mem_avail = mem_info['allocatable']
     mem_avail_hr = human_readable_mem(mem_avail, pad=False)
-    mem_tot_hr = human_readable_mem(mem_info.total, pad=False)
+    mem_tot_hr = human_readable_mem(mem_info['total'], pad=False)
 
     # Determine number of blocks needed on memory
     num_mem_blocks = 1

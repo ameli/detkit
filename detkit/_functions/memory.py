@@ -303,18 +303,19 @@ class Memory(object):
         -------
 
         mem_info
-            An object containing the following attributes:
+            A dictionary containing the following keys:
 
             * ``'total'``: total memory in bytes
-            * ``'available'``: available memory in bytes
-            * ``'used'``: used memory in bytes
-            * ``'free'``: free memory in bytes
-            * ``'inactive'``: inactive memory in bytes
-            * ``'buffer'``: buffer memory in bytes
-            * ``'cached'``: cached memory in bytes
-            * ``'shared'``: shared memory in bytes
-            * ``'percent'``: percent of one minus available over total memory
-            * ``'slab'``: slab memory in bytes
+            * ``'used'``: used memory.
+            * ``'available'``: available memory.
+            * ``'allocatable'``: allocatable memory in bytes
+
+        Notes
+        -----
+
+        Allocatable memory is obtained by the difference of total and used
+        memory. Used memory is obtaiend as the summ of all RSS for all
+        processes. This is a similar apporach that ``top`` and ``htop`` report.
 
         See Also
         --------
@@ -331,18 +332,36 @@ class Memory(object):
             >>> mem_info = Memory.info()
 
             >>> # total memory
-            >>> print(human_readable_mem(mem_info.total))
+            >>> print(human_readable_mem(mem_info['total']))
             15.6 (GB)
 
             >>> # used memory
-            >>> print(human_readable_mem(mem_info.used))
+            >>> print(human_readable_mem(mem_info['used']))
             4.28 (GB)
 
-            >>> # available memory
-            >>> print(human_readable_mem(mem_info.available))
+            >>> # allocatable memory
+            >>> print(human_readable_mem(mem_info['allocatable']))
             9.24 (GB)
         """
 
-        mem_info_ = psutil.virtual_memory()
+        mem_info = psutil.virtual_memory()
+        total_mem = mem_info.total
 
-        return mem_info_
+        # Used memory is the sum of all RSS
+        total_rss = 0
+        for proc in psutil.process_iter(['memory_info']):
+            try:
+                total_rss += proc.info['memory_info'].rss
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+
+        allocatable_mem = total_mem - total_rss
+
+        info_ = {
+            'total': mem_info.total,
+            'used': mem_info.used,
+            'available': mem_info.available,
+            'allocatable': allocatable_mem,
+        }
+
+        return info_
