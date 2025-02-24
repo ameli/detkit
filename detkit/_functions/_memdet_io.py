@@ -568,8 +568,8 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                 # Get partition info for the scratch directory
                 part_info = Disk.partition_info(scratch_dir)
                 if part_info is not None:
-                    fstype = getattr(part_info, 'fstype', '')
-                    device = getattr(part_info, 'device', '')
+                    fstype = getattr(part_info, 'fstype', 'not detected')
+                    device = getattr(part_info, 'device', 'not detected')
                 else:
                     fstype = 'not detected'
                     device = 'not detected'

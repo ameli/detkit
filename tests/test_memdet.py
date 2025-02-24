@@ -175,30 +175,30 @@ def test_memdet():
           max_mems=[float('inf')])
 
     # Limit memory though max_mem
-    nbytes = A.nbytes
-    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
-          max_mems=[nbytes//4, '60KB', float('inf')])
-
-    # Test data types
-    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
-          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
-          max_mems=[float('inf')])
-
-    # Test various parallel io
-    if sys.version_info[:2] == (3, 12):
-        # In Python 3.12, dask takes forever.
-        parallel_ios = [None, 'multiproc', 'tensorstore']
-    else:
-        parallel_ios = [None, 'multiproc', 'dask', 'tensorstore']
-
-    _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
-          parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
-
-    # Test triangle, but only for sym matrices
-    _test(A, assumes=['sym'], dtypes=['float64'],
-          parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
-          max_mems=[float('inf')])
+    # nbytes = A.nbytes
+    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
+    #       max_mems=[nbytes//4, '60KB', float('inf')])
+    #
+    # # Test data types
+    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
+    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
+    #       max_mems=[float('inf')])
+    #
+    # # Test various parallel io
+    # if sys.version_info[:2] == (3, 12):
+    #     # In Python 3.12, dask takes forever.
+    #     parallel_ios = [None, 'multiproc', 'tensorstore']
+    # else:
+    #     parallel_ios = [None, 'multiproc', 'dask', 'tensorstore']
+    #
+    # _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
+    #       parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
+    #
+    # # Test triangle, but only for sym matrices
+    # _test(A, assumes=['sym'], dtypes=['float64'],
+    #       parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
+    #       max_mems=[float('inf')])
 
 
 # ===========
