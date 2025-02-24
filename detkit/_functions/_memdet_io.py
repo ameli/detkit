@@ -567,10 +567,13 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             if verbose:
                 # Get partition info for the scratch directory
                 part_info = Disk.partition_info(scratch_dir)
+                if part_info is not None:
+                    fstype = getattr(part_info, 'fstype', '')
+                    device = getattr(part_info, 'device', '')
 
                 print(f'\n{ANSI.FAINT}Disk:{ANSI.RESET}\n' +
-                      f'filesystem            : {part_info.fstype}\n' +
-                      f'device:               : {part_info.device}\n' +
+                      f'filesystem            : {fstype}\n' +
+                      f'device:               : {device}\n' +
                       f'total disk space      : {disk_total_hr:>8}\n' +
                       f'available disk space  : {disk_free_hr:>8}\n' +
                       f'required scratch size : {ANSI.BOLD}' +
