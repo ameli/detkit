@@ -345,17 +345,18 @@ class Memory(object):
         """
 
         mem_info = psutil.virtual_memory()
-        total_mem = mem_info.total
+        # total_mem = mem_info.total
 
         # Used memory is the sum of all RSS
-        total_rss = 0
-        for proc in psutil.process_iter(['memory_info']):
-            try:
-                total_rss += proc.info['memory_info'].rss
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                continue
-
-        allocatable_mem = total_mem - total_rss
+        # total_rss = 0
+        # for proc in psutil.process_iter(['memory_info']):
+        #     try:
+        #         total_rss += proc.info['memory_info'].rss
+        #     except (psutil.NoSuchProcess, psutil.AccessDenied):
+        #         continue
+        #
+        # allocatable_mem = total_mem - total_rss
+        allocatable_mem = mem_info.available
 
         info_ = {
             'total': mem_info.total,
