@@ -570,6 +570,9 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                 if part_info is not None:
                     fstype = getattr(part_info, 'fstype', '')
                     device = getattr(part_info, 'device', '')
+                else:
+                    fstype = 'not detected'
+                    device = 'not detected'
 
                 print(f'\n{ANSI.FAINT}Disk:{ANSI.RESET}\n' +
                       f'filesystem            : {fstype}\n' +
