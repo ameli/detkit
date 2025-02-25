@@ -170,20 +170,20 @@ def test_memdet():
     A = numpy.random.randn(n, n) + (n/2.0) * numpy.eye(n)
 
     # Limit memory though num_blocks
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[2, 3, 4],
-    #       max_mems=[float('inf')])
-    #
-    # # Limit memory though max_mem
-    # nbytes = A.nbytes
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
-    #       max_mems=[nbytes//4, '60KB', float('inf')])
-    #
-    # # Test data types
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
-    #       max_mems=[float('inf')])
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[2, 3, 4],
+          max_mems=[float('inf')])
+
+    # Limit memory though max_mem
+    nbytes = A.nbytes
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
+          max_mems=[nbytes//4, '60KB', float('inf')])
+
+    # Test data types
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
+          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
+          max_mems=[float('inf')])
 
     # # Test various parallel io
     if sys.version_info[:2] == (3, 12):
@@ -198,9 +198,9 @@ def test_memdet():
           parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
 
     # Test triangle, but only for sym matrices
-    # _test(A, assumes=['sym'], dtypes=['float64'],
-    #       parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
-    #       max_mems=[float('inf')])
+    _test(A, assumes=['sym'], dtypes=['float64'],
+          parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
+          max_mems=[float('inf')])
 
 
 # ===========
