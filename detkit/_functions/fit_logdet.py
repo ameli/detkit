@@ -33,10 +33,16 @@ class FitLogdet(object):
     n : int, default=0
         Number of terms in the Laurent series without logarithm
 
-    scale_x : float, default=1
+    alpha : float, default=0.0
+        The exponent :math:`\\alpha` for the weight function
+        :math:`w_{\\alpha}(x) = x^{-\\alpha}`. During the regression,
+        both targets and covariates will be multiplied by this weight
+        function.
+
+    scale_x : float, default=1.0
         Scales `x` input data by a factor.
 
-    scale_y : float, default=1
+    scale_y : float, default=1.0
         Scales `y` input data by a factor.
 
     Methods
@@ -64,8 +70,11 @@ class FitLogdet(object):
 
     .. math::
 
-        y(x) = a_0 + a_{1} x + \\left( \\nu + \\sum_{i=1}^m b_{i} x^{-i}
-        \\right) \\ln(x!) + \\sum_{i=1}^n c_{i} x^{-i}
+        y(x) w_{\\alpha}(x) = \\left( a_0 + a_{1} x + \\left(
+        \\sum_{i=1}^m b_{i} x^{-i} \\right) \\ln(x!) +
+        \\sum_{i=1}^n c_{i} x^{-i} \\right) w_{\\alpha}(x)
+
+    where :math:`w(x) = x^{-\\alpha}`.
 
     References
     ----------
@@ -90,14 +99,19 @@ class FitLogdet(object):
         >>> # Evaluate fitted curve
         >>> y_eval = flodet.eval(x_eval)
     """
+    
+    # ====
+    # init
+    # ====
 
-    def __init__(self, m=2, n=0, scale_x=1, scale_y=1):
+    def __init__(self, m=2, n=0, alpha=0.0, scale_x=1.0, scale_y=1.0):
         """
         Initialization.
         """
 
         self.m = m
         self.n = n
+        self.alpha = alpha
         self.scale_x = scale_x
         self.scale_y = scale_y
         self.param = None
@@ -135,84 +149,36 @@ class FitLogdet(object):
 
         fit
         """
+        
+        # Ensure x is an array
+        if  numpy.isscalar(x):
+            x = numpy.array([x])
+        else:
+            x = numpy.array(x)
 
         # Three main bases x*log(x), x, and 1. Also, m+1 bases for the Laurent
         # terms log(x)*x^{-1}, and n bases for the Laurent terms x^{-i}.
-        X = numpy.zeros((len(x), 3 + self.m + 1 + self.n))
+        offset = 3
+        X = numpy.zeros((len(x), offset + self.m + self.n))
 
         # Main basis
-        # X[:, 0] = x * numpy.log(x)
         X[:, 0] = scipy.special.loggamma(x + 1.0)
         X[:, 1] = x
         X[:, 2] = 1.0
 
         # Basis for Laurent series with log
-        for i in range(0, self.m+1):
-            if i == 0:
-                X[:, 3 + i] = numpy.log(x)
-            else:
-                X[:, 3 + i] = numpy.log(x) * x**(-i)
+        for i in range(0, self.m):
+            X[:, offset + i] = scipy.special.loggamma(x + 1.0) * x**(-i-1)
 
         # Basis for Laurent series without log
-        for i in range(1, self.n+1):
-            X[:, 3 + (self.m + 1) + (i - 1)] = x**(-i)
+        for i in range(0, self.n):
+            X[:, offset + self.m + i] = x**(-i-1)
+
+        # Weights
+        w = x**(-self.alpha)
+        X = X * w[:, numpy.newaxis]
 
         return X
-
-    # ===
-    # fit
-    # ===
-
-    def fit(self, x, y, verbose=False):
-        """
-        Fit model to data.
-
-        Parameters
-        ----------
-
-        x : numpy.array
-            One-dimensional arrays of length N
-
-        y : numpy.array
-            One-dimensional arrays of length N
-
-        verbose : boolean, default=False
-            If `True`, the optimization results will be printer.
-
-        See Also
-        --------
-
-        eval
-        """
-
-        # Ensure x and y are numpy arrays
-        x = numpy.asarray(x, dtype=float)
-        y = numpy.asarray(y, dtype=float)
-
-        # Ensure positive x
-        mask = x > 0
-        x = x[mask] * self.scale_x
-        y = y[mask] * self.scale_y
-
-        if len(x) < self.m + self.n + 3:
-            raise ValueError("Not enough valid data points.")
-
-        # Build the design matrix
-        X = self._design_matrix(x)
-
-        # Solve the least squares problem
-        self.param, residuals, rank, singular = numpy.linalg.lstsq(
-            X, y, rcond=None)
-
-        # Return the results
-        self.res = {
-            'residuals': residuals,
-            'rank': rank,
-            'singular_values': singular
-        }
-
-        if verbose:
-            pprint(self.res)
 
     # =======================
     # second derivative basis
@@ -222,37 +188,51 @@ class FitLogdet(object):
         """
         Compute second derivative of basis function indexed by i.
         """
+        
+        offset = 3
+        a = self.alpha
+        
+        # Log-gamma and its first and second derivatives (in terms of di-gamma)
+        lg_d0 = scipy.special.loggamma(x + 1.0)
+        lg_d1 = scipy.special.polygamma(0, x + 1.0)
+        lg_d2 = scipy.special.polygamma(1, x + 1.0)
 
         # The three main terms
         if i == 0:
-            # 2nd derivative of loggamma
-            return scipy.special.polygamma(1, x + 1)
+            # 2nd derivative of log-gamma
+            der2 = (-a) * (-a-1) * x**(-a-2) * lg_d0 + \
+                2.0 * (-a) * x**(-a-1) * lg_d1 + \
+                x**(-a) * lg_d2
 
         elif i == 1:
             # x term -> second derivative = 0
-            return numpy.zeros_like(x)
+            der2 = (1.0 - a) * (-a) * x**(-a-1)
 
         elif i == 2:
             # Constant term -> second derivative = 0
-            return numpy.zeros_like(x)
+            der2 = (-a) * (-a - 1) * x**(-a - 2)
 
-        elif 3 <= i <= 3 + self.m:
+        elif (offset <= i) and (i <= offset + self.m):
             # Laurent terms with log
-            j = i - 3
-            return (j * (j + 1) * numpy.log(x) - (2 * j + 1)) * x**(-j - 2)
+            j = i - offset
+            der2 = (-j-1-a) * (-j-2-a) * x**(-j-3-a) * lg_d0 + \
+                   2.0 * (-j-1-a) * x**(-j-2-a) * lg_d1 + \
+                   x**(-j-1-a) * lg_d2
 
         else:
             # Laurent terms without log
-            j = i - (3 + self.m + 1)
-            return (j * (j + 1) * x**(-j - 2))
+            j = i - (offset + self.m)
+            der2 = (-j-1-a) * (-j-2-a) * x**(-j-3-a)
+        
+        return der2
 
-    # =======
-    # fit reg
-    # =======
+    # ===
+    # fit
+    # ===
 
-    def fit_reg(self, x, y, lam=0.0, smooth_interval=None, verbose=False):
+    def fit(self, x, y, lam=0.0, smooth_interval=None, verbose=False):
         """
-        Fit the model to data with optional smoothness regularization.
+        Fit model to data.
 
         Parameters
         ----------
@@ -276,7 +256,6 @@ class FitLogdet(object):
         See Also
         --------
 
-        fit
         eval
         """
 
@@ -286,8 +265,9 @@ class FitLogdet(object):
 
         # Ensure positive x
         mask = x > 0
+        w = x**(-self.alpha)
         x = x[mask] * self.scale_x
-        y = y[mask] * self.scale_y
+        y = y[mask] * self.scale_y * w
 
         if len(x) < self.m + self.n + 3:
             raise ValueError("Not enough valid data points.")
@@ -378,20 +358,9 @@ class FitLogdet(object):
 
         if numpy.any(mask):
             x_valid = x[mask]
-
-            # Main terms
-            y_valid = \
-                self.param[0] * scipy.special.loggamma(x_valid + 1) + \
-                self.param[1] * x + self.param[2]
-
-            # Laurent series with log terms
-            for i in range(0, self.m + 1):
-                y_valid += self.param[3 + i] * numpy.log(x) * x**(-i)
-
-            # Laurent series without log terms
-            for i in range(1, self.n+1):
-                y_valid += self.param[3 + (self.m + 1) + (i - 1)] * x**(-i)
-
+            X = self._design_matrix(x_valid)
+            w = x_valid**(-self.alpha)
+            y_valid = X @ self.param / w
             y[mask] = y_valid
 
         return y / self.scale_y

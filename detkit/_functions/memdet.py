@@ -799,7 +799,8 @@ def memdet(
             'block': {
                 'block_nbytes': block_nbytes,
                 'block_shape': (m, m),
-                'matrix_blocks': (num_blocks, num_blocks),
+                'matrix_blocks': (io['config']['num_blocks'],
+                                  io['config']['num_blocks']),
             },
             'scratch': {
                 'io_chunk': io['data']['io_chunk'],
