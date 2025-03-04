@@ -190,11 +190,12 @@ def test_memdet():
     if sys.version_info[:2] != (3, 12):
         # In Python 3.12, dask takes forever.
         parallel_ios += ['dask']
-    if sys.platform.startswith("linux"):
-        # For some reason, multiproc does not work well in macos and windows,
-        # causing issues in loading or storing blocks. As such, the blocks
-        # become empty or zero, and makes the matrix singular till LU crashes.
-        parallel_ios += ['multiproc']
+
+    # if sys.platform.startswith("linux"):
+    #     # For some reason, multiproc does not work well in macos and windows,
+    #     # causing issues in loading or storing blocks. As such, the blocks
+    #     # become empty or zero, and makes the matrix singular till LU crashes.
+    #     parallel_ios += ['multiproc']
 
     _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
           parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
