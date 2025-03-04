@@ -393,6 +393,15 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             (parallel_io not in ['multiproc', 'dask', 'tensorstore'])):
         raise ValueError('"parallel_io" should be either set to None, ' +
                          '"multiproc", "dask", or "tensorstore".')
+    elif (parallel_io == 'multiproc') and \
+            (not sys.platform.startswith("linux")):
+        # We prevent using multiproc in macos and windows since, due to a # bug
+        # (yet I have not resolved it), loading and storing blocks cannot load
+        # or store the actual data from disk, making the blocks empty or zero,
+        # eventually leading to matrix singular, which causes LU or other
+        # decomposition methods to crash.
+        raise ValueError('The argument parallel_io="multiproc" can only be ' +
+                         'used in Linux.')
 
     if parallel_io == 'multiproc':
         A11 = shared_memory.SharedMemory(create=True, size=block_nbytes)

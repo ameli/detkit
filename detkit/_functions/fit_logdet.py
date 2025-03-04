@@ -99,7 +99,7 @@ class FitLogdet(object):
         >>> # Evaluate fitted curve
         >>> y_eval = flodet.eval(x_eval)
     """
-    
+
     # ====
     # init
     # ====
@@ -149,9 +149,9 @@ class FitLogdet(object):
 
         fit
         """
-        
+
         # Ensure x is an array
-        if  numpy.isscalar(x):
+        if numpy.isscalar(x):
             x = numpy.array([x])
         else:
             x = numpy.array(x)
@@ -188,10 +188,10 @@ class FitLogdet(object):
         """
         Compute second derivative of basis function indexed by i.
         """
-        
+
         offset = 3
         a = self.alpha
-        
+
         # Log-gamma and its first and second derivatives (in terms of di-gamma)
         lg_d0 = scipy.special.loggamma(x + 1.0)
         lg_d1 = scipy.special.polygamma(0, x + 1.0)
@@ -216,14 +216,14 @@ class FitLogdet(object):
             # Laurent terms with log
             j = i - offset
             der2 = (-j-1-a) * (-j-2-a) * x**(-j-3-a) * lg_d0 + \
-                   2.0 * (-j-1-a) * x**(-j-2-a) * lg_d1 + \
-                   x**(-j-1-a) * lg_d2
+                2.0 * (-j-1-a) * x**(-j-2-a) * lg_d1 + \
+                x**(-j-1-a) * lg_d2
 
         else:
             # Laurent terms without log
             j = i - (offset + self.m)
             der2 = (-j-1-a) * (-j-2-a) * x**(-j-3-a)
-        
+
         return der2
 
     # ===
