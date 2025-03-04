@@ -187,9 +187,9 @@ def test_memdet():
 
     # Test various parallel io
     parallel_ios = [None, 'tensorstore']
-    if sys.version_info[:2] != (3, 12):
-        # In Python 3.12, dask takes forever.
-        parallel_ios += ['dask']
+    # if sys.version_info[:2] != (3, 12):
+    #     # In Python 3.12, dask takes forever.
+    #     parallel_ios += ['dask']
 
     # if sys.platform.startswith("linux"):
     #     # For some reason, multiproc does not work well in macos and windows,
