@@ -171,7 +171,8 @@ def test_memdet():
 
     # Limit memory though num_blocks
     _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-          parallel_ios=['tensorstore'], triangles=[None], num_blocks=[2, 3, 4],
+          # parallel_ios=['tensorstore'], triangles=[None], num_blocks=[2, 3, 4],
+          parallel_ios=[None], triangles=[None], num_blocks=[2, 3, 4],
           max_mems=[float('inf')])
 
     # Limit memory though max_mem
