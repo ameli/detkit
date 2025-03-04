@@ -501,18 +501,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt>mem_info</dt><dd><p>An object containing the following attributes:</p>
+<dt>mem_info</dt><dd><p>A dictionary containing the following keys:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">'total'</span></code>: total memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'available'</span></code>: available memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'used'</span></code>: used memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'free'</span></code>: free memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'inactive'</span></code>: inactive memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'buffer'</span></code>: buffer memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'cached'</span></code>: cached memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'shared'</span></code>: shared memory in bytes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'percent'</span></code>: percent of one minus available over total memory</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'slab'</span></code>: slab memory in bytes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'used'</span></code>: used memory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'available'</span></code>: available memory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'allocatable'</span></code>: allocatable memory in bytes</p></li>
 </ul>
 </dd>
 </dl>
@@ -525,20 +519,24 @@
 <dt><a class="reference internal" href="detkit.get_processor_name.html#detkit.get_processor_name" title="detkit.get_processor_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detkit.get_processor_name</span></code></a></dt><dd></dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>Allocatable memory is obtained by the difference of total and used
+memory. Used memory is obtaiend as the summ of all RSS for all
+processes. This is a similar apporach that <code class="docutils literal notranslate"><span class="pre">top</span></code> and <code class="docutils literal notranslate"><span class="pre">htop</span></code> report.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">detkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Memory</span><span class="p">,</span> <span class="n">human_readable_mem</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mem_info</span> <span class="o">=</span> <span class="n">Memory</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># total memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="o">.</span><span class="n">total</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">]))</span>
 <span class="go">15.6 (GB)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># used memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="o">.</span><span class="n">used</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="p">[</span><span class="s1">&#39;used&#39;</span><span class="p">]))</span>
 <span class="go">4.28 (GB)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># available memory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="o">.</span><span class="n">available</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># allocatable memory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">human_readable_mem</span><span class="p">(</span><span class="n">mem_info</span><span class="p">[</span><span class="s1">&#39;allocatable&#39;</span><span class="p">]))</span>
 <span class="go">9.24 (GB)</span>
 </pre></div>
 </div>

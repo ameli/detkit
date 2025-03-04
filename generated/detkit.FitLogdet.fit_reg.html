@@ -219,23 +219,9 @@
     
     <div class="toc-item">
       
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#detkit.FitLogdet.fit_reg">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     FitLogdet.fit_reg()
-    </span>
-   </code>
-  </a>
- </li>
-</ul>
-
+    
 </nav>
     </div>
     
@@ -262,36 +248,6 @@
                 
   <section id="detkit-fitlogdet-fit-reg">
 <h1>detkit.FitLogdet.fit_reg<a class="headerlink" href="#detkit-fitlogdet-fit-reg" title="Permalink to this heading">#</a></h1>
-<dl class="py method">
-<dt class="sig sig-object py" id="detkit.FitLogdet.fit_reg">
-<span class="sig-prename descclassname"><span class="pre">FitLogdet.</span></span><span class="sig-name descname"><span class="pre">fit_reg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet.fit_reg" title="Permalink to this definition">#</a></dt>
-<dd><p>Fit the model to data with optional smoothness regularization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">numpy.array</span></dt><dd><p>One-dimensional arrays of length N</p>
-</dd>
-<dt><strong>y</strong><span class="classifier">numpy.array</span></dt><dd><p>One-dimensional arrays of length N</p>
-</dd>
-<dt><strong>lam</strong><span class="classifier">float, default=0.0</span></dt><dd><p>Regularization strength. If set to zero, the model reverts to
-standard least squares fitting.</p>
-</dd>
-<dt><strong>smooth_interval</strong><span class="classifier">tuple (x_low, x_high) or None</span></dt><dd><p>If given, the second derivative penalty is enforced in this range.</p>
-</dd>
-<dt><strong>verbose</strong><span class="classifier">boolean, default=False</span></dt><dd><p>If <cite>True</cite>, the optimization results will be printed.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="detkit.FitLogdet.fit.html#detkit.FitLogdet.fit" title="detkit.FitLogdet.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a></dt><dd></dd>
-<dt><a class="reference internal" href="detkit.FitLogdet.eval.html#detkit.FitLogdet.eval" title="detkit.FitLogdet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a></dt><dd></dd>
-</dl>
-</div>
-</dd></dl>
-
 </section>
 
 

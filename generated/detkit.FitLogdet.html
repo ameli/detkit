@@ -488,7 +488,7 @@
 <h1>detkit.FitLogdet<a class="headerlink" href="#detkit-fitlogdet" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="detkit.FitLogdet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">FitLogdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">FitLogdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet" title="Permalink to this definition">#</a></dt>
 <dd><p>Fit and extrapolate log-determinant of large matrices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -497,9 +497,14 @@
 </dd>
 <dt><strong>n</strong><span class="classifier">int, default=0</span></dt><dd><p>Number of terms in the Laurent series without logarithm</p>
 </dd>
-<dt><strong>scale_x</strong><span class="classifier">float, default=1</span></dt><dd><p>Scales <cite>x</cite> input data by a factor.</p>
+<dt><strong>alpha</strong><span class="classifier">float, default=0.0</span></dt><dd><p>The exponent <span class="math notranslate nohighlight">\(\alpha\)</span> for the weight function
+<span class="math notranslate nohighlight">\(w_{\alpha}(x) = x^{-\alpha}\)</span>. During the regression,
+both targets and covariates will be multiplied by this weight
+function.</p>
 </dd>
-<dt><strong>scale_y</strong><span class="classifier">float, default=1</span></dt><dd><p>Scales <cite>y</cite> input data by a factor.</p>
+<dt><strong>scale_x</strong><span class="classifier">float, default=1.0</span></dt><dd><p>Scales <cite>x</cite> input data by a factor.</p>
+</dd>
+<dt><strong>scale_y</strong><span class="classifier">float, default=1.0</span></dt><dd><p>Scales <cite>y</cite> input data by a factor.</p>
 </dd>
 </dl>
 </dd>
@@ -507,8 +512,10 @@
 <p class="rubric">Notes</p>
 <p>The fitting model is based on FLODANCE algorithm <a class="reference internal" href="#rd9b8e32d3fb1-1" id="id1">[1]</a>, given as</p>
 <div class="math notranslate nohighlight">
-\[y(x) = a_0 + a_{1} x + \left( \nu + \sum_{i=1}^m b_{i} x^{-i}
-\right) \ln(x!) + \sum_{i=1}^n c_{i} x^{-i}\]</div>
+\[y(x) w_{\alpha}(x) = \left( a_0 + a_{1} x + \left(
+\sum_{i=1}^m b_{i} x^{-i} \right) \ln(x!) +
+\sum_{i=1}^n c_{i} x^{-i} \right) w_{\alpha}(x)\]</div>
+<p>where <span class="math notranslate nohighlight">\(w(x) = x^{-\alpha}\)</span>.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rd9b8e32d3fb1-1" role="doc-biblioentry">
@@ -544,7 +551,7 @@ and Neural Scaling Laws.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="detkit.FitLogdet.fit.html#detkit.FitLogdet.fit" title="detkit.FitLogdet.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(x, y[, verbose])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="detkit.FitLogdet.fit.html#detkit.FitLogdet.fit" title="detkit.FitLogdet.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(x, y[, lam, smooth_interval, verbose])</p></td>
 <td><p>Fit model to data.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="detkit.FitLogdet.eval.html#detkit.FitLogdet.eval" title="detkit.FitLogdet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>(x)</p></td>

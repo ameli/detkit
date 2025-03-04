@@ -486,7 +486,7 @@
 <h1>detkit.FitLogdet.fit<a class="headerlink" href="#detkit-fitlogdet-fit" title="Permalink to this heading">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="detkit.FitLogdet.fit">
-<span class="sig-prename descclassname"><span class="pre">FitLogdet.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">FitLogdet.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.FitLogdet.fit" title="Permalink to this definition">#</a></dt>
 <dd><p>Fit model to data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -495,7 +495,12 @@
 </dd>
 <dt><strong>y</strong><span class="classifier">numpy.array</span></dt><dd><p>One-dimensional arrays of length N</p>
 </dd>
-<dt><strong>verbose</strong><span class="classifier">boolean, default=False</span></dt><dd><p>If <cite>True</cite>, the optimization results will be printer.</p>
+<dt><strong>lam</strong><span class="classifier">float, default=0.0</span></dt><dd><p>Regularization strength. If set to zero, the model reverts to
+standard least squares fitting.</p>
+</dd>
+<dt><strong>smooth_interval</strong><span class="classifier">tuple (x_low, x_high) or None</span></dt><dd><p>If given, the second derivative penalty is enforced in this range.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">boolean, default=False</span></dt><dd><p>If <cite>True</cite>, the optimization results will be printed.</p>
 </dd>
 </dl>
 </dd>

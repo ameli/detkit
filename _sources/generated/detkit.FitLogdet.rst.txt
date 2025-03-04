@@ -15,7 +15,6 @@
       
          FitLogdet.eval
          FitLogdet.fit
-         FitLogdet.fit_reg
       
   
 
