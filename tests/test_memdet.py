@@ -194,7 +194,7 @@ def test_memdet():
     # if sys.platform.startswith("linux"):
     #     # For some reason, multiproc does not work well in macos and windows,
     #     # causing issues in loading or storing blocks. As such, the blocks
-    #     # become empty or zero, and makes the matrix singular till LU crashes.
+    #     # become zero, and makes the matrix singular till LU crashes.
     #     parallel_ios += ['multiproc']
 
     _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],

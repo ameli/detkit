@@ -351,7 +351,10 @@ class Memory(object):
         total_rss = 0
         for proc in psutil.process_iter(['memory_info']):
             try:
-                total_rss += proc.info['memory_info'].rss
+                proc_mem_info = proc.info['memory_info']
+                if (proc_mem_info is not None) and \
+                   (hasattr(proc_mem_info, 'rss')):
+                    total_rss += proc_mem_info.rss
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
