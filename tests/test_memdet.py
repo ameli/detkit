@@ -19,6 +19,7 @@ from detkit import memdet, logdet
 import zarr
 import os
 import shutil
+import platform
 
 # import warnings
 # warnings.resetwarnings()
@@ -169,42 +170,49 @@ def test_memdet():
     n = 200
     A = numpy.random.randn(n, n) + (n/2.0) * numpy.eye(n)
 
+    os_name = platform.system()
+
+    if os_name in ['Linux', 'Windows']:
+        parallel_ios = ['tensorstore']
+    else:
+        # For some reason, tensorstore causes threading issues on macos
+        parallel_ios = [None]
+
     # Limit memory though num_blocks
     _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-          # parallel_ios=['tensorstore'], triangles=[None], num_blocks=[2, 3, 4],
-          parallel_ios=[None], triangles=[None], num_blocks=[2, 3, 4],
+          parallel_ios=parallel_ios, triangles=[None], num_blocks=[2, 3, 4],
           max_mems=[float('inf')])
 
     # Limit memory though max_mem
-    # nbytes = A.nbytes
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[1],
-    #       max_mems=[nbytes//4, '60KB', float('inf')])
-    #
-    # # Test data types
-    # _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
-    #       parallel_ios=['tensorstore'], triangles=[None], num_blocks=[3],
-    #       max_mems=[float('inf')])
+    nbytes = A.nbytes
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float64'],
+          parallel_ios=parallel_ios, triangles=[None], num_blocks=[1],
+          max_mems=[nbytes//4, '60KB', float('inf')])
 
-    # Test various parallel io
-    # parallel_ios = [None, 'tensorstore']
-    # # if sys.version_info[:2] != (3, 12):
-    # #     # In Python 3.12, dask takes forever.
-    # #     parallel_ios += ['dask']
-    #
-    # # if sys.platform.startswith("linux"):
-    # #     # For some reason, multiproc does not work well in macos and windows,
-    # #     # causing issues in loading or storing blocks. As such, the blocks
-    # #     # become zero, and makes the matrix singular till LU crashes.
-    # #     parallel_ios += ['multiproc']
-    #
-    # _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
-    #       parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
+    # Test data types
+    _test(A, assumes=['gen', 'sym', 'spd'], dtypes=['float32', 'float64'],
+          parallel_ios=parallel_ios, triangles=[None], num_blocks=[3],
+          max_mems=[float('inf')])
+
+    # Test other parallel io
+    parallel_ios = [None]
+    if (sys.version_info[0] >= 3) and (sys.version_info[1] < 12):
+        # In Python 3.12, dask takes forever.
+        parallel_ios += ['dask']
+
+    if sys.platform.startswith("linux"):
+        # For some reason, multiproc does not work well in macos and windows,
+        # causing issues in loading or storing blocks. As such, the blocks
+        # become zero, and makes the matrix singular till LU crashes.
+        parallel_ios += ['multiproc']
+
+    _test(A, assumes=['gen'], dtypes=['float64'], triangles=[None],
+          parallel_ios=parallel_ios, num_blocks=[4], max_mems=[float('inf')])
 
     # Test triangle, but only for sym matrices
-    # _test(A, assumes=['sym'], dtypes=['float64'],
-    #       parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
-    #       max_mems=[float('inf')])
+    _test(A, assumes=['sym'], dtypes=['float64'],
+          parallel_ios=[None], triangles=['u', 'l'], num_blocks=[4],
+          max_mems=[float('inf')])
 
 
 # ===========
