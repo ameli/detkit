@@ -284,6 +284,10 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
                                      numpy.uint64)):
         raise ValueError('"num_blocks" should be an integer.')
 
+    else:
+        # Avoid numpy's int types
+        num_blocks = int(num_blocks) 
+
     # Block size
     m = (n + num_blocks - 1) // num_blocks
 
