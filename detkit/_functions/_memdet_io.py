@@ -219,8 +219,9 @@ def _cleanup(scratch_file):
 # initialize io
 # =============
 
-def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
-                  parallel_io, scratch_dir, flops, verbose=False):
+def initialize_io(A, t, d, max_mem, num_blocks, assume, triangle,
+                  mixed_precision, parallel_io, scratch_dir, flops,
+                  verbose=False):
     """
     Initialize the io dictionary.
     """
@@ -231,6 +232,28 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
     else:
         dtype = A.dtype
     order = 'F'
+
+    # Check t
+    if not numpy.isscalar(t):
+        raise ValueError('"t" should be a real scalar number.')
+    t = float(t)
+
+    # Check d
+    if numpy.isscalar(d):
+        d = float(d)
+
+        if d == 0.0:
+            d = None
+
+    elif isinstance(d, numpy.ndarray):
+        if d.ndim != 1:
+            raise ValueError('"d" should be a 1D array.')
+        elif d.size != n:
+            raise ValueError('Sizes of "d" and "A" do not match.')
+        elif d.dtype != dtype:
+            d = d.astype(dtype)
+    else:
+        raise ValueError('"d" should be a scalar or 1D array.')
 
     # Initialize
     temp_file = None
@@ -286,7 +309,7 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
 
     else:
         # Avoid numpy's int types
-        num_blocks = int(num_blocks) 
+        num_blocks = int(num_blocks)
 
     # Block size
     m = (n + num_blocks - 1) // num_blocks
@@ -640,6 +663,8 @@ def initialize_io(A, max_mem, num_blocks, assume, triangle, mixed_precision,
             'dask_A': dask_A,
             'ts_A': ts_A,
             'A': A,
+            't': t,
+            'd': d,
             'cached': cached,
         },
         'arrays': {

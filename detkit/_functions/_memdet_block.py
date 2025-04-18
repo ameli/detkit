@@ -278,11 +278,11 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
             elif parallel_io == 'tensorstore':
                 # Read using tensorstore
                 # For ts mode, when source is 'C' order and target is 'F'
-                # order, using perm on source array is faster than
-                # using perm_inv on target array. But, if source and target
-                # have the same ordering, either perm or perm_inv have the
-                # same performance. Here, array_ is 'F' ordering while
-                # ts_A is 'C' ordering, so using perm is preferred.
+                # order, using perm on source array is faster than using
+                # perm_inv on target array. But, if source and target have the
+                # same ordering, either perm or perm_inv have the same
+                # performance. Here, array_ is 'F' ordering while ts_A is 'C'
+                # ordering, so using perm is preferred.
                 if trans:
                     # Using perm in columns of source when transposing.
                     array_[:(j2-j1), :(i2-i1)] = \
@@ -311,6 +311,28 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
             lower = False
 
         fill_triangle(array_, lower)
+
+    # Forming matrix M = t*A + diag(d). Only apply to the first read of the
+    # matrix from the input, not those already stored from scratch.
+    if not read_from_scratch:
+        t = io['data']['t']
+        d = io['data']['d']
+
+        # Get buffer from shared memory
+        array_ = get_array(array, array_shape_on_mem, dtype, order)
+
+        # Perform t A
+        if t != 1.0:
+            array_ *= t
+
+        # Add diagonal diag(d)
+        if (i == j) and (d is not None):
+            diag_idx = numpy.arange(i2-i1)
+
+            if numpy.isscalar(d):
+                array_[diag_idx, diag_idx] += d
+            else:
+                array_[diag_idx, diag_idx] += d[i1:i2]
 
     # load times
     io['profile']['load_wall_time'] += time.time() - init_load_wall_time

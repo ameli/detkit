@@ -43,21 +43,21 @@ If you publish work that uses |project|, please consider citing the following ma
         </div>
         </div>
 
-.. [3] Ameli, S. (2022). *DetKit, a python package for matrix determinant*. |detkit-zenodo| |btn-bib-3|
-
-   .. raw:: html
-
-        <div class="highlight-BibTeX notranslate collapse" id="collapse-bib2">
-        <div class="highlight">
-        <pre class="language-bib">
-        <code class="language-bib">@misc{zenodo.6395320,
-            title = {{DetKit}, a python package for matrix determinant},
-            author = {Ameli, S.},
-            year = {2022},
-            howpublished = {\url{https://pypi.org/project/detkit/}}
-        }</code></pre>
-        </div>
-        </div>
+.. .. [3] Ameli, S. (2022). *DetKit, a python package for matrix determinant*. |detkit-zenodo| |btn-bib-3|
+..
+..    .. raw:: html
+..
+..         <div class="highlight-BibTeX notranslate collapse" id="collapse-bib2">
+..         <div class="highlight">
+..         <pre class="language-bib">
+..         <code class="language-bib">@misc{zenodo.6395320,
+..             title = {{DetKit}, a python package for matrix determinant},
+..             author = {Ameli, S.},
+..             year = {2022},
+..             howpublished = {\url{https://pypi.org/project/detkit/}}
+..         }</code></pre>
+..         </div>
+..         </div>
 
 .. |btn-amc-doi| raw:: html
 

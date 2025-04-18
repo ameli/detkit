@@ -63,6 +63,8 @@ def _pivot_to_permutation(piv):
 
 def memdet(
         A,
+        t=1.0,
+        d=0.0,
         max_mem=float('inf'),
         num_blocks=1,
         assume='gen',
@@ -77,15 +79,36 @@ def memdet(
     """
     Compute log-determinant under memory constraint.
 
+    This function computes the determinant of the matrix
+
+    .. math::
+
+        \\mathbf{M} = t \\mathbf{A} + \\mathbf{D}
+
+    where :math:`\\mathbf{A}` is a square matrix, :math:`t` is a real scalar,
+    and :math:`\\mathbf{D}` is a diagonal matrix.
+
     Parameters
     ----------
 
     A : numpy.ndarray, numpy.memmap, zarr.Array, dask.array,\
             tensotstore.array
-        Square matrix, which is either already loaded on the memory (such as
-        ``numpy.ndarray``), or cannot fit on the memory, and rather, stored on
-        disk as Numpy's memory map, or Zarr, Dask, or TensorStore array
-        formats.
+        Square dense matrix :math:`\\mathbf{A}`. This matrix can be given
+        either as an array that is already loaded on the memory (such as
+        ``numpy.ndarray``), or if it cannot fit on the memory capacity, it can
+        be provided as a memory map on disk, such as Numpy's ``memmap``, Zarr,
+        Dask, or TensorStore array formats.
+
+    t : float, default=1.0
+        Scalar :math:`t`.
+
+    d : float, numpy.array, default=0.0
+        If ``d`` is a scalar, the diagonal matrix :math:`\\mathbf{D}` is
+        assumed to be :math:`\\mathbf{D} = d \\mathbf{I}` where
+        :math:`\\mathbf{I}` is the identity matrix. If ``d`` is given as an
+        array :math:`\\boldsymbol{d}` of size :math:`n`, the diagonal matrix
+        :math:`\\mathbf{D}` is constructed by
+        :math:`\\mathbf{D} = \\mathrm{diag}(\\boldsymbol{d})`.
 
     max_mem : float or str, default= ``float('inf')``
         The maximum memory allowed to be allocated during the computation.
@@ -216,11 +239,12 @@ def memdet(
     -------
 
     ld : float
-        :math:`\\mathrm{logabsdet}(\\mathbf{A})`, which is the natural
+        :math:`\\mathrm{logabsdet}(\\mathbf{M})`, which is the natural
         logarithm of the absolute value of the determinant of the input matrix.
 
     sign : int
-        Sign of determinant
+        Sign of determinant, :math:`\\mathrm{sign} (\\vert
+        \\mathrm{det}(\\mathbf{B}) \\vert)`.
 
     diag : numpy.array
         A one-dimensional array of the size of the number rows (or columns) of
@@ -229,15 +253,15 @@ def memdet(
 
         * For genetic matrix (when ``assume='gen'``), this is the diagonal
           entries of the matrix :math:`\\mathbf{U}` in the LU decomposition
-          :math:`\\mathbf{P} \\mathbf{A} = \\mathbf{L} \\mathbf{U}`.
+          :math:`\\mathbf{P} \\mathbf{M} = \\mathbf{L} \\mathbf{U}`.
         * For symmetric matrix (when ``assume='sym'``), this is the diagonal
           entries of the matrix :math:`\\mathbf{D}` in the LDL decomposition
-          :math:`\\mathbf{P} \\mathbf{A} = \\mathbf{U}^{\\intercal}
+          :math:`\\mathbf{P} \\mathbf{M} = \\mathbf{U}^{\\intercal}
           \\mathbf{D} \\mathbf{U}` where :math:`\\mathbf{U}` is
           upper-triangular.
         * For symmetric positive-definite matrix (when ``assume='spd'``), this
           is the diagonal entries of the matrix :math:`\\mathbf{L}` in the
-          Cholesky decomposition :math:`\\mathbf{A} = \\mathbf{U}^{\\intercal}
+          Cholesky decomposition :math:`\\mathbf{M} = \\mathbf{U}^{\\intercal}
           \\mathbf{U}` where :math:`\\mathbf{U}` is upper-triangular.
 
     perm : numpy.array
@@ -347,8 +371,8 @@ def memdet(
     ------
 
     RuntimeError
-        Error raised when ``assume='spd'`` and matrix `A` is not symmetric
-        positive-definite.
+        Error raised when ``assume='spd'`` and matrix :math:`\\mathbf{M}` is
+        not symmetric positive-definite.
 
     See also
     --------
@@ -424,14 +448,14 @@ def memdet(
     (or a permutation of ``A``) of any size ``m`` where ``m`` can be 1 to `n`.
     Here is how to use ``diag`` and ``perm``:
 
-    Denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{A}_{[:m, :m]}`
+    Denote the sub-matrix ``A[:m, :m]`` as :math:`\\mathbf{M}_{[:m, :m]}`
     and the element ``diag[i]`` as :math:`d_i`. We describe the process for
     each of the three cases of generic, symmetric, and symmetric
     positive-definite matrices separately.
 
     * For generic and symmetric matrices (if ``assume`` is set to ``'gen'`` or
       ``'sym'``), define the row-permutations of the original matrix as
-      :math:`\\mathbf{B} = \\mathbf{P}^{\\intercal} \\mathbf{A}`. This can be
+      :math:`\\mathbf{B} = \\mathbf{P}^{\\intercal} \\mathbf{M}`. This can be
       computed by ``B = A[perm, :]``. Then
 
       .. math::
@@ -441,7 +465,7 @@ def memdet(
 
     * For symmetric matrix (if ``assume`` is set to ``'sym'``), define the row
       and column permutations of the original matrix as :math:`\\mathbf{B} =
-      \\mathbf{P}^{\\intercal} \\mathbf{A} \\mathbf{P}`. This can be computed
+      \\mathbf{P}^{\\intercal} \\mathbf{M} \\mathbf{P}`. This can be computed
       by ``B = A[perm, :][:, perm]``. Then,
 
       .. math::
@@ -456,7 +480,7 @@ def memdet(
 
       .. math::
 
-          \\log \\vert \\mathrm{det}(\\mathbf{A}_{[:m, :m]}) \\vert =
+          \\log \\vert \\mathrm{det}(\\mathbf{M}_{[:m, :m]}) \\vert =
           2 \\sum_{i=1}^{m} \\log \\vert d_i \\vert.
 
     The output variable ``ld`` can also be retrieved from ``diag`` when
@@ -696,7 +720,7 @@ def memdet(
         raise ValueError('When setting "flops=True", "return_info" should ' +
                          'also be "True".')
 
-    io = initialize_io(A, max_mem, num_blocks, assume, triangle,
+    io = initialize_io(A, t, d, max_mem, num_blocks, assume, triangle,
                        mixed_precision, parallel_io, scratch_dir, flops,
                        verbose=verbose)
 
