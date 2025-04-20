@@ -471,15 +471,30 @@
 <h1>memdet<a class="headerlink" href="#memdet" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="detkit.memdet">
-<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">detkit.</span></span><span class="sig-name descname"><span class="pre">memdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float64'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scratch_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#detkit.memdet" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute log-determinant under memory constraint.</p>
+<p>This function computes the determinant of the matrix</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{M} = t \mathbf{A} + \mathbf{D}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is a square matrix, <span class="math notranslate nohighlight">\(t\)</span> is a real scalar,
+and <span class="math notranslate nohighlight">\(\mathbf{D}\)</span> is a diagonal matrix.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>A</strong><span class="classifier">numpy.ndarray, numpy.memmap, zarr.Array, dask.array,            tensotstore.array</span></dt><dd><p>Square matrix, which is either already loaded on the memory (such as
-<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), or cannot fit on the memory, and rather, stored on
-disk as Numpy’s memory map, or Zarr, Dask, or TensorStore array
-formats.</p>
+<dt><strong>A</strong><span class="classifier">numpy.ndarray, numpy.memmap, zarr.Array, dask.array,            tensotstore.array</span></dt><dd><p>Square dense matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>. This matrix can be given
+either as an array that is already loaded on the memory (such as
+<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), or if it cannot fit on the memory capacity, it can
+be provided as a memory map on disk, such as Numpy’s <code class="docutils literal notranslate"><span class="pre">memmap</span></code>, Zarr,
+Dask, or TensorStore array formats.</p>
+</dd>
+<dt><strong>t</strong><span class="classifier">float, default=1.0</span></dt><dd><p>Scalar <span class="math notranslate nohighlight">\(t\)</span>.</p>
+</dd>
+<dt><strong>d</strong><span class="classifier">float, numpy.array, default=0.0</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">d</span></code> is a scalar, the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf{D}\)</span> is
+assumed to be <span class="math notranslate nohighlight">\(\mathbf{D} = d \mathbf{I}\)</span> where
+<span class="math notranslate nohighlight">\(\mathbf{I}\)</span> is the identity matrix. If <code class="docutils literal notranslate"><span class="pre">d</span></code> is given as an
+array <span class="math notranslate nohighlight">\(\boldsymbol{d}\)</span> of size <span class="math notranslate nohighlight">\(n\)</span>, the diagonal matrix
+<span class="math notranslate nohighlight">\(\mathbf{D}\)</span> is constructed by
+<span class="math notranslate nohighlight">\(\mathbf{D} = \mathrm{diag}(\boldsymbol{d})\)</span>.</p>
 </dd>
 <dt><strong>max_mem</strong><span class="classifier">float or str, default= <code class="docutils literal notranslate"><span class="pre">float('inf')</span></code></span></dt><dd><p>The maximum memory allowed to be allocated during the computation.
 This can be specified as an integer representing the number of bytes,
@@ -598,10 +613,11 @@ machine should be installed and proper permission should be granted
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>ld</strong><span class="classifier">float</span></dt><dd><p><span class="math notranslate nohighlight">\(\mathrm{logabsdet}(\mathbf{A})\)</span>, which is the natural
+<dt><strong>ld</strong><span class="classifier">float</span></dt><dd><p><span class="math notranslate nohighlight">\(\mathrm{logabsdet}(\mathbf{M})\)</span>, which is the natural
 logarithm of the absolute value of the determinant of the input matrix.</p>
 </dd>
-<dt><strong>sign</strong><span class="classifier">int</span></dt><dd><p>Sign of determinant</p>
+<dt><strong>sign</strong><span class="classifier">int</span></dt><dd><p>Sign of determinant, <span class="math notranslate nohighlight">\(\mathrm{sign} (\vert
+\mathrm{det}(\mathbf{B}) \vert)\)</span>.</p>
 </dd>
 <dt><strong>diag</strong><span class="classifier">numpy.array</span></dt><dd><p>A one-dimensional array of the size of the number rows (or columns) of
 the matrix, containing the diagonal elements of the matrix
@@ -609,15 +625,15 @@ decomposition as follows:</p>
 <ul class="simple">
 <li><p>For genetic matrix (when <code class="docutils literal notranslate"><span class="pre">assume='gen'</span></code>), this is the diagonal
 entries of the matrix <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> in the LU decomposition
-<span class="math notranslate nohighlight">\(\mathbf{P} \mathbf{A} = \mathbf{L} \mathbf{U}\)</span>.</p></li>
+<span class="math notranslate nohighlight">\(\mathbf{P} \mathbf{M} = \mathbf{L} \mathbf{U}\)</span>.</p></li>
 <li><p>For symmetric matrix (when <code class="docutils literal notranslate"><span class="pre">assume='sym'</span></code>), this is the diagonal
 entries of the matrix <span class="math notranslate nohighlight">\(\mathbf{D}\)</span> in the LDL decomposition
-<span class="math notranslate nohighlight">\(\mathbf{P} \mathbf{A} = \mathbf{U}^{\intercal}
+<span class="math notranslate nohighlight">\(\mathbf{P} \mathbf{M} = \mathbf{U}^{\intercal}
 \mathbf{D} \mathbf{U}\)</span> where <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is
 upper-triangular.</p></li>
 <li><p>For symmetric positive-definite matrix (when <code class="docutils literal notranslate"><span class="pre">assume='spd'</span></code>), this
 is the diagonal entries of the matrix <span class="math notranslate nohighlight">\(\mathbf{L}\)</span> in the
-Cholesky decomposition <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{U}^{\intercal}
+Cholesky decomposition <span class="math notranslate nohighlight">\(\mathbf{M} = \mathbf{U}^{\intercal}
 \mathbf{U}\)</span> where <span class="math notranslate nohighlight">\(\mathbf{U}\)</span> is upper-triangular.</p></li>
 </ul>
 </dd>
@@ -758,8 +774,8 @@ ordering during computation.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt>RuntimeError</dt><dd><p>Error raised when <code class="docutils literal notranslate"><span class="pre">assume='spd'</span></code> and matrix <cite>A</cite> is not symmetric
-positive-definite.</p>
+<dt>RuntimeError</dt><dd><p>Error raised when <code class="docutils literal notranslate"><span class="pre">assume='spd'</span></code> and matrix <span class="math notranslate nohighlight">\(\mathbf{M}\)</span> is
+not symmetric positive-definite.</p>
 </dd>
 </dl>
 </dd>
@@ -822,14 +838,14 @@ variables. Both of these variables are one-dimensional array of size <cite>n</ci
 log-abs-determinants of all leading (principal) sub-matrices of <code class="docutils literal notranslate"><span class="pre">A</span></code>
 (or a permutation of <code class="docutils literal notranslate"><span class="pre">A</span></code>) of any size <code class="docutils literal notranslate"><span class="pre">m</span></code> where <code class="docutils literal notranslate"><span class="pre">m</span></code> can be 1 to <cite>n</cite>.
 Here is how to use <code class="docutils literal notranslate"><span class="pre">diag</span></code> and <code class="docutils literal notranslate"><span class="pre">perm</span></code>:</p>
-<p>Denote the sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> as <span class="math notranslate nohighlight">\(\mathbf{A}_{[:m, :m]}\)</span>
+<p>Denote the sub-matrix <code class="docutils literal notranslate"><span class="pre">A[:m,</span> <span class="pre">:m]</span></code> as <span class="math notranslate nohighlight">\(\mathbf{M}_{[:m, :m]}\)</span>
 and the element <code class="docutils literal notranslate"><span class="pre">diag[i]</span></code> as <span class="math notranslate nohighlight">\(d_i\)</span>. We describe the process for
 each of the three cases of generic, symmetric, and symmetric
 positive-definite matrices separately.</p>
 <ul>
 <li><p>For generic and symmetric matrices (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to <code class="docutils literal notranslate"><span class="pre">'gen'</span></code> or
 <code class="docutils literal notranslate"><span class="pre">'sym'</span></code>), define the row-permutations of the original matrix as
-<span class="math notranslate nohighlight">\(\mathbf{B} = \mathbf{P}^{\intercal} \mathbf{A}\)</span>. This can be
+<span class="math notranslate nohighlight">\(\mathbf{B} = \mathbf{P}^{\intercal} \mathbf{M}\)</span>. This can be
 computed by <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">A[perm,</span> <span class="pre">:]</span></code>. Then</p>
 <div class="math notranslate nohighlight">
 \[\log \vert \mathrm{det}(\mathbf{B}_{[:m, :m]}) \vert =
@@ -837,7 +853,7 @@ computed by <code class="docutils literal notranslate"><span class="pre">B</span
 </li>
 <li><p>For symmetric matrix (if <code class="docutils literal notranslate"><span class="pre">assume</span></code> is set to <code class="docutils literal notranslate"><span class="pre">'sym'</span></code>), define the row
 and column permutations of the original matrix as <span class="math notranslate nohighlight">\(\mathbf{B} =
-\mathbf{P}^{\intercal} \mathbf{A} \mathbf{P}\)</span>. This can be computed
+\mathbf{P}^{\intercal} \mathbf{M} \mathbf{P}\)</span>. This can be computed
 by <code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">A[perm,</span> <span class="pre">:][:,</span> <span class="pre">perm]</span></code>. Then,</p>
 <div class="math notranslate nohighlight">
 \[\log \vert \mathrm{det}(\mathbf{B}_{[:m, :m]}) \vert =
@@ -848,7 +864,7 @@ by <code class="docutils literal notranslate"><span class="pre">B</span> <span c
 represents identity matrix (meaning no permutation), and hence, we do not
 need to use it. As such,</p>
 <div class="math notranslate nohighlight">
-\[\log \vert \mathrm{det}(\mathbf{A}_{[:m, :m]}) \vert =
+\[\log \vert \mathrm{det}(\mathbf{M}_{[:m, :m]}) \vert =
 2 \sum_{i=1}^{m} \log \vert d_i \vert.\]</div>
 </li>
 </ul>
