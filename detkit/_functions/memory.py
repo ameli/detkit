@@ -314,8 +314,8 @@ class Memory(object):
         -----
 
         Allocatable memory is obtained by the difference of total and used
-        memory. Used memory is obtaiend as the summ of all RSS for all
-        processes. This is a similar apporach that ``top`` and ``htop`` report.
+        memory. Used memory is obtained as the sum of all RSS for all
+        processes. This is a similar approach that ``top`` and ``htop`` report.
 
         See Also
         --------
@@ -358,7 +358,9 @@ class Memory(object):
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
 
-        allocatable_mem = total_mem - total_rss
+        # Sometimes total_rss is larger than total_mem, making allocatable
+        # memory to be negative. So here we take max with available memory.
+        allocatable_mem = max(mem_info.available, total_mem - total_rss)
 
         info_ = {
             'total': mem_info.total,
