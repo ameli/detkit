@@ -74,6 +74,7 @@ def memdet(
         scratch_dir=None,
         overwrite=False,
         return_info=False,
+        check=False,
         flops=False,
         verbose=False):
     """
@@ -220,6 +221,9 @@ def memdet(
         Returns a dictionary containing profiling information such as wall and
         process times, memory allocation, disk usage, etc. See ``info``
         variable in the return section below.
+
+    check : bool, default=False
+        If `True`, it checks for ``inf`` and ``nan`` values in the matrix.
 
     flops : boolean, default=False
         if `True`, FLOP count will be included in ``info`` output under
@@ -721,7 +725,7 @@ def memdet(
                          'also be "True".')
 
     io = initialize_io(A, t, d, max_mem, num_blocks, assume, triangle,
-                       mixed_precision, parallel_io, scratch_dir, flops,
+                       mixed_precision, parallel_io, scratch_dir, check, flops,
                        verbose=verbose)
 
     # Track memory up to this point

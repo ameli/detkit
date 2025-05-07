@@ -220,7 +220,7 @@ def _cleanup(scratch_file):
 # =============
 
 def initialize_io(A, t, d, max_mem, num_blocks, assume, triangle,
-                  mixed_precision, parallel_io, scratch_dir, flops,
+                  mixed_precision, parallel_io, scratch_dir, check, flops,
                   verbose=False):
     """
     Initialize the io dictionary.
@@ -666,6 +666,7 @@ def initialize_io(A, t, d, max_mem, num_blocks, assume, triangle,
             't': t,
             'd': d,
             'cached': cached,
+            'check': check,
         },
         'arrays': {
             'A11': A11,

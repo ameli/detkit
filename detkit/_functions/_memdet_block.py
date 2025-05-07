@@ -106,6 +106,7 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
     ts_A = io['data']['ts_A']
     A = io['data']['A']
     cached = io['data']['cached']
+    check = io['data']['check']
 
     # Counter of the number of block loadings
     io['profile']['num_block_loads'] += 1
@@ -333,6 +334,27 @@ def load_block(io, array, i, j, trans=False, perm=None, verbose=False):
                 array_[diag_idx, diag_idx] += d
             else:
                 array_[diag_idx, diag_idx] += d[i1:i2]
+
+    # Sanity check
+    if check:
+        # Get buffer from shared memory
+        array_ = get_array(array, array_shape_on_mem, dtype, order)
+
+        # Do two O(1)-memory sweeps
+        mn = array_.min()
+        mx = array_.max()
+        mag_max = max(numpy.abs(mn), numpy.abs(mx))
+
+        # Check the scalars
+        upper = 1e+100
+        if numpy.isnan(mn) or numpy.isnan(mx):
+            raise ValueError("contains NaN")
+        elif numpy.isneginf(mn):
+            raise ValueError("contains -inf")
+        elif numpy.isposinf(mx):
+            raise ValueError("contains +inf")
+        elif mag_max > upper:
+            raise ValueError(f"values too large: max={mx} > {upper}")
 
     # load times
     io['profile']['load_wall_time'] += time.time() - init_load_wall_time
