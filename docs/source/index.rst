@@ -26,6 +26,23 @@ A python package to compute common functions involving determinant of matrices u
         :link: https://hub.docker.com/r/sameli/detkit
         :text-align: center
         :class-card: custom-card-link
+        
+.. grid:: 4
+
+    .. grid-item-card:: Paper
+        :link: https://openreview.net/pdf?id=nkV9PPp8R8
+        :text-align: center
+        :class-card: custom-card-link
+
+    .. grid-item-card:: Slides
+        :link: https://www.dropbox.com/scl/fi/it8cd6gx3qhl794qk9h1q/memdet_flodance_slides.pdf?rlkey=rc7j6d6lc9svgdvac5psenqzu&st=kjj6spqy&dl=0
+        :text-align: center
+        :class-card: custom-card-link
+
+    .. .. grid-item-card:: Live Demo
+    ..     :link: https://colab.research.google.com/github/ameli/freealg/blob/main/notebooks/quick_start.ipynb
+    ..     :text-align: center
+    ..     :class-card: custom-card-link
 
 Supported Platforms
 ===================
