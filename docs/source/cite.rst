@@ -27,7 +27,7 @@ If you publish work that uses |project|, please consider citing the following ma
 
    .. raw:: html
 
-        <div class="highlight-BibTeX notranslate collapse" id="collapse-bib1">
+        <div class="highlight-BibTeX notranslate collapse" id="collapse-bib2">
         <div class="highlight">
         <pre class="language-bib">
         <code class="language-bib">@inproceedings{
@@ -73,13 +73,13 @@ If you publish work that uses |project|, please consider citing the following ma
 
 .. |btn-bib-2| raw:: html
 
-    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib1">
+    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib2">
         BibTeX
     </button>
     
 .. |btn-bib-3| raw:: html
 
-    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib2">
+    <button class="btn btn-outline-info btn-sm btn-extra-sm" type="button" data-toggle="collapse" data-target="#collapse-bib3">
         BibTeX
     </button>
 
