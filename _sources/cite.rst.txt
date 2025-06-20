@@ -30,15 +30,13 @@ If you publish work that uses |project|, please consider citing the following ma
         <div class="highlight-BibTeX notranslate collapse" id="collapse-bib1">
         <div class="highlight">
         <pre class="language-bib">
-        <code class="language-bib">@article{ameli-2025,
-            title = {Determinant Estimation under Memory Constraints and Neural Scaling Laws},
-            journal = {},
-            volume = {},
-            pages = {},
-            year = {},
-            issn = {},
-            doi = {},
-            author = {Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney},
+        <code class="language-bib">@inproceedings{
+            ameli2025determinant,
+            title={Determinant Estimation under Memory Constraints and Neural Scaling Laws},
+            author={Siavash Ameli and Chris van der Heide and Liam Hodgkinson and Fred Roosta and Michael W. Mahoney},
+            booktitle={Forty-second International Conference on Machine Learning},
+            year={2025},
+            url={https://openreview.net/forum?id=nkV9PPp8R8}
         }</code></pre>
         </div>
         </div>
@@ -65,7 +63,7 @@ If you publish work that uses |project|, please consider citing the following ma
 
 .. |btn-nip-doi| raw:: html
 
-    <a href="https://doi.org/10.1016/j.amc.2023.128032" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a>
+    <a href="https://openreview.net/pdf?id=nkV9PPp8R8" class="btn btn-outline-info btn-sm btn-extra-sm" role="button">DOI</a>
 
 .. |btn-bib-1| raw:: html
 
