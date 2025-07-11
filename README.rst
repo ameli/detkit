@@ -1,17 +1,22 @@
 ******
 |logo|
 ******
+.. figure:: https://raw.githubusercontent.com/ameli/detkit/main/docs/source/_static/images/icons/logo-detkit-light.svg
+    :align: left
+    :width: 240
+
+`Paper <https://openreview.net/pdf?id=nkV9PPp8R8>`__ |
+`Slides <https://www.dropbox.com/scl/fi/it8cd6gx3qhl794qk9h1q/memdet_flodance_slides.pdf?rlkey=rc7j6d6lc9svgdvac5psenqzu&e=1&st=kjj6spqy&dl=0>`__ |
+`Poster <https://www.dropbox.com/scl/fi/sbdiojqozl8tn95v1r8ws/memdet_flodance_poster.pdf?rlkey=zp6zjpe21cwa37a7t2kvhkelt&st=hm10n9rj&dl=0>`__ |
+`Docs <https://ameli.github.io/detkit>`__ |
+`API <https://ameli.github.io/detkit/api>`__ |
+`PyPI <https://pypi.org/project/detkit/>`__ |
+`Anaconda <https://anaconda.org/s-ameli/detkit>`__ |
+`Docker Hub <https://hub.docker.com/r/sameli/detkit>`__ |
+`Github <https://github.com/ameli/detkit>`__
 
 ``detKit`` is a Python package for computing determinant functions of matrices.
 
-Links
-=====
-
-* `Documentation <https://ameli.github.io/detkit>`__
-* `PyPI <https://pypi.org/project/detkit/>`__
-* `Anaconda <https://anaconda.org/s-ameli/detkit>`__
-* `Docker Hub <https://hub.docker.com/r/sameli/detkit>`__
-* `Github <https://github.com/ameli/detkit>`__
 
 Install
 =======
@@ -104,6 +109,34 @@ How to Cite
 ===========
 
 If you publish work that uses ``detkit``, please consider citing the manuscripts available `here <https://ameli.github.io/detkit/cite.html>`__.
+
+.. [1] Ameli, S., and Shadden. S. C. (2023). *A Singular Woodbury and Pseudo-Determinant Matrix Identities and Application to Gaussian Process Regression*. Applied Mathematics and Computation 452, 128032. `doi <https://doi.org/10.1016/j.amc.2023.128032>`__
+
+   .. code::
+   
+       @article{amc-2023,
+           title = {A singular Woodbury and pseudo-determinant matrix identities and application to Gaussian process regression},
+           journal = {Applied Mathematics and Computation},
+           volume = {452},
+           pages = {128032},
+           year = {2023},
+           issn = {0096-3003},
+           doi = {https://doi.org/10.1016/j.amc.2023.128032},
+           author = {Siavash Ameli and Shawn C. Shadden},
+       }
+
+.. [2] Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2025). *Determinant Estimation under Memory Constraints and Neural Scaling Laws*. Forty-second International Conference on Machine Learning. `doi <https://openreview.net/forum?id=nkV9PPp8R8>`__
+
+   .. code::
+
+        @inproceedings{
+            ameli2025determinant,
+            title={Determinant Estimation under Memory Constraints and Neural Scaling Laws},
+            author={Siavash Ameli and Chris van der Heide and Liam Hodgkinson and Fred Roosta and Michael W. Mahoney},
+            booktitle={Forty-second International Conference on Machine Learning},
+            year={2025},
+            url={https://openreview.net/forum?id=nkV9PPp8R8}
+        }
 
 License
 =======

@@ -39,10 +39,15 @@ A python package to compute common functions involving determinant of matrices u
         :text-align: center
         :class-card: custom-card-link
 
-    .. .. grid-item-card:: Live Demo
-    ..     :link: https://colab.research.google.com/github/ameli/freealg/blob/main/notebooks/quick_start.ipynb
-    ..     :text-align: center
-    ..     :class-card: custom-card-link
+    .. grid-item-card:: Poster
+        :link: https://www.dropbox.com/scl/fi/sbdiojqozl8tn95v1r8ws/memdet_flodance_poster.pdf?rlkey=zp6zjpe21cwa37a7t2kvhkelt&st=hm10n9rj&dl=0
+        :text-align: center
+        :class-card: custom-card-link
+
+.. .. grid-item-card:: Live Demo
+..     :link: https://colab.research.google.com/github/ameli/freealg/blob/main/notebooks/quick_start.ipynb
+..     :text-align: center
+..     :class-card: custom-card-link
 
 Supported Platforms
 ===================
