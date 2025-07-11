@@ -123,7 +123,7 @@ If you publish work that uses ``detkit``, please consider citing the manuscripts
            author = {Siavash Ameli and Shawn C. Shadden},
        }
 
-2. Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2025). *Determinant Estimation under Memory Constraints and Neural Scaling Laws*. Forty-second International Conference on Machine Learning. `doi <https://openreview.net/forum?id=nkV9PPp8R8>`__
+2. Siavash Ameli, Chris van der Heide, Liam Hodgkinson, Fred Roosta, Michael W. Mahoney (2025). *Determinant Estimation under Memory Constraints and Neural Scaling Laws*. Forty-second International Conference on Machine Learning. `doi <https://openreview.net/pdf?id=nkV9PPp8R8>`__
 
    .. code::
 
