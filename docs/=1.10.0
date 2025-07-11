@@ -1,0 +1,45 @@
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: sphinx-prompt in /home/sia/.local/lib/python3.10/site-packages (1.5.0)
+Collecting sphinx-prompt
+  Using cached sphinx_prompt-1.9.0-py3-none-any.whl.metadata (3.2 kB)
+Collecting Sphinx<9.0.0,>=8.0.0 (from sphinx-prompt)
+  Using cached sphinx-8.1.3-py3-none-any.whl.metadata (6.4 kB)
+Requirement already satisfied: certifi in /opt/miniconda3/lib/python3.10/site-packages (from sphinx-prompt) (2025.1.31)
+Requirement already satisfied: docutils in /home/sia/.local/lib/python3.10/site-packages (from sphinx-prompt) (0.21.2)
+Requirement already satisfied: idna in /opt/miniconda3/lib/python3.10/site-packages (from sphinx-prompt) (3.7)
+Requirement already satisfied: pygments in /opt/miniconda3/lib/python3.10/site-packages (from sphinx-prompt) (2.15.1)
+Requirement already satisfied: urllib3 in /opt/miniconda3/lib/python3.10/site-packages (from sphinx-prompt) (2.3.0)
+Requirement already satisfied: sphinxcontrib-applehelp>=1.0.7 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.0.0)
+Requirement already satisfied: sphinxcontrib-devhelp>=1.0.6 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.0.0)
+Requirement already satisfied: sphinxcontrib-htmlhelp>=2.0.6 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.1.0)
+Requirement already satisfied: sphinxcontrib-jsmath>=1.0.1 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (1.0.1)
+Requirement already satisfied: sphinxcontrib-qthelp>=1.0.6 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.0.0)
+Requirement already satisfied: sphinxcontrib-serializinghtml>=1.1.9 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.0.0)
+Requirement already satisfied: Jinja2>=3.1 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (3.1.6)
+Collecting pygments (from sphinx-prompt)
+  Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Requirement already satisfied: snowballstemmer>=2.2 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.2.0)
+Requirement already satisfied: babel>=2.13 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.17.0)
+Requirement already satisfied: alabaster>=0.7.14 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (0.7.16)
+Requirement already satisfied: imagesize>=1.3 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (1.4.1)
+Requirement already satisfied: requests>=2.30.0 in /opt/miniconda3/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.32.3)
+Requirement already satisfied: packaging>=23.0 in /opt/miniconda3/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (24.2)
+Requirement already satisfied: tomli>=2 in /home/sia/.local/lib/python3.10/site-packages (from Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (2.2.1)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/sia/.local/lib/python3.10/site-packages (from Jinja2>=3.1->Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (3.0.2)
+Requirement already satisfied: charset-normalizer<4,>=2 in /opt/miniconda3/lib/python3.10/site-packages (from requests>=2.30.0->Sphinx<9.0.0,>=8.0.0->sphinx-prompt) (3.3.2)
+Downloading sphinx_prompt-1.9.0-py3-none-any.whl (7.3 kB)
+Downloading sphinx-8.1.3-py3-none-any.whl (3.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 15.0 MB/s eta 0:00:00
+Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 16.4 MB/s eta 0:00:00
+Installing collected packages: pygments, Sphinx, sphinx-prompt
+  Attempting uninstall: Sphinx
+    Found existing installation: Sphinx 5.3.0
+    Uninstalling Sphinx-5.3.0:
+      Successfully uninstalled Sphinx-5.3.0
+  Attempting uninstall: sphinx-prompt
+    Found existing installation: sphinx-prompt 1.5.0
+    Uninstalling sphinx-prompt-1.5.0:
+      Successfully uninstalled sphinx-prompt-1.5.0
+
+Successfully installed Sphinx-8.1.3 pygments-2.19.2 sphinx-prompt-1.9.0
