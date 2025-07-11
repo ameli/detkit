@@ -112,7 +112,8 @@ If you publish work that uses ``detkit``, please consider citing the manuscripts
    .. code::
    
        @article{amc-2023,
-           title = {A singular Woodbury and pseudo-determinant matrix identities and application to Gaussian process regression},
+           title = {A singular Woodbury and pseudo-determinant matrix identities and
+                    application to Gaussian process regression},
            journal = {Applied Mathematics and Computation},
            volume = {452},
            pages = {128032},
@@ -129,7 +130,8 @@ If you publish work that uses ``detkit``, please consider citing the manuscripts
         @inproceedings{
             ameli2025determinant,
             title={Determinant Estimation under Memory Constraints and Neural Scaling Laws},
-            author={Siavash Ameli and Chris van der Heide and Liam Hodgkinson and Fred Roosta and Michael W. Mahoney},
+            author={Siavash Ameli and Chris van der Heide and Liam Hodgkinson and
+                    Fred Roosta and Michael W. Mahoney},
             booktitle={Forty-second International Conference on Machine Learning},
             year={2025},
             url={https://openreview.net/forum?id=nkV9PPp8R8}
