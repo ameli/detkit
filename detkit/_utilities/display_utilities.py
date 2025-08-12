@@ -50,7 +50,7 @@ def is_notebook():
             return False
 
         elif 'google.colab' in str(type(shell)):
-            # Colab’s shell (older runtimes)
+            # Colab's shell (older runtimes)
             return True
 
         else:
